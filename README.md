@@ -2,6 +2,8 @@
 
 A reusable documentation scaffold for LLM-assisted software projects. This template provides a complete workflow for managing projects where humans collaborate with LLMs (like Claude, ChatGPT, or others), ensuring consistent documentation, version control, and knowledge handoff between sessions.
 
+**Scaffold Version:** 2.0.0 (see [CHANGELOG.md](CHANGELOG.md))
+
 ## Why LLM-DocKit?
 
 When working with LLMs on software projects, you need:
@@ -51,15 +53,19 @@ Before each work session, give your LLM this file: **[LLM_START_HERE.md](LLM_STA
 - **[LLM_START_HERE.md](LLM_START_HERE.md)** - Mandatory reading for all LLMs (rules, workflow, policies)
 - **[HOW_TO_USE.md](HOW_TO_USE.md)** - Setup guide for humans after forking
 - **[docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md)** - Template for project vision, architecture, and status
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Optional template for architecture, contracts, and roadmap
 - **[docs/STRUCTURE.md](docs/STRUCTURE.md)** - Document your repository organization
 - **[docs/VERSIONING_RULES.md](docs/VERSIONING_RULES.md)** - Semantic versioning guidelines
 
 ### LLM Handoff System
+- **[docs/llm/README.md](docs/llm/README.md)** - LLM docs index and rules of thumb
 - **[docs/llm/HANDOFF.md](docs/llm/HANDOFF.md)** - Current work state and priorities (updated every session)
 - **[docs/llm/HISTORY.md](docs/llm/HISTORY.md)** - Chronological log of all changes (append-only)
+- **[docs/llm/DECISIONS.md](docs/llm/DECISIONS.md)** - Stable decision rationale (tradeoffs, rejected options)
+- **[docs/llm/REVIEWS.md](docs/llm/REVIEWS.md)** - Optional reviews and quality gate notes
 
 ### Operations & Runbooks
-- **[docs/operations/](docs/operations/)** - Placeholder for operational procedures, deployment guides, incident response
+- **[docs/operations/](docs/operations/)** - Operational procedures, deployment guides, incident response
 
 ### Optional Boilerplate
 - **src/** - Source code (remove if not needed)

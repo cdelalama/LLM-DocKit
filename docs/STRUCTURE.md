@@ -26,6 +26,16 @@ Use this template to document how the repository is organized. Update the table 
 | tests/ | Automated tests | Optional |
 | .github/ | Issue/PR templates and workflows | Optional |
 
+## Generated / Runtime Directories (Optional)
+Document directories that are produced at runtime/build time and should not be committed.
+
+Examples:
+- `output/` - generated artifacts
+- `audio/` - downloaded or derived media
+- `dist/` - build outputs
+- `node_modules/` - dependencies (Node.js)
+- `.venv/` - virtual environment (Python)
+
 ## Custom Modules or Packages
 Document any additional folders specific to your project. Explain how they relate to the architecture in docs/PROJECT_CONTEXT.md.
 

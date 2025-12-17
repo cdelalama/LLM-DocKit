@@ -10,6 +10,14 @@ Current version sources:
 - <File or module>: <Version>
 - <File or module>: <Version>
 
+## Scaffold Versioning (LLM-DocKit Itself)
+If you are using LLM-DocKit as a scaffold/template repository, version the scaffold so downstream forks can pin a known structure.
+
+Recommended sources of truth:
+- Git tags / GitHub releases (e.g., `v2.0.0`)
+- A `VERSION` file at repo root (e.g., `2.0.0`)
+- `CHANGELOG.md` describing user-visible changes
+
 ## Version Bump Guidelines
 
 ### Patch (x.y.Z)

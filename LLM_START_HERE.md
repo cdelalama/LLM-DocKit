@@ -7,8 +7,11 @@ Welcome to <PROJECT_NAME>. Before you contribute, review and adapt the sections 
 Recommended reading order:
 1. This file (rules, workflows, and current expectations)
 2. docs/PROJECT_CONTEXT.md (vision, architecture, current state)
-3. docs/VERSIONING_RULES.md (version management policy)
-4. docs/llm/HANDOFF.md (current work state and priorities)
+3. docs/ARCHITECTURE.md (optional: architecture, contracts, roadmap)
+4. docs/VERSIONING_RULES.md (version management policy)
+5. docs/llm/README.md (LLM docs index)
+6. docs/llm/HANDOFF.md (current work state and priorities)
+7. docs/llm/DECISIONS.md (stable rationale; link from HANDOFF)
 
 ## Critical Rules (Non-Negotiable)
 
@@ -22,6 +25,8 @@ Recommended reading order:
 - Update docs/llm/HANDOFF.md every time you make a change.
 - Append an entry to docs/llm/HISTORY.md in every session.
 - HISTORY format: YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: [yes/no + details]
+- Put long-form rationale in docs/llm/DECISIONS.md and link to it from HANDOFF.
+- Prefer ASCII-only in docs/llm/* to avoid Windows encoding issues.
 
 ### Commit Message Policy
 - Every response that includes code or documentation changes must end with suggested commit information:
@@ -71,9 +76,13 @@ Keep this section synchronized with the "Current Status" block in docs/llm/HANDO
 
 ## Quick Navigation
 - Project Overview: docs/PROJECT_CONTEXT.md
+- Architecture: docs/ARCHITECTURE.md
 - Version Rules: docs/VERSIONING_RULES.md
+- LLM Docs Index: docs/llm/README.md
 - Current Work State: docs/llm/HANDOFF.md
 - Change History: docs/llm/HISTORY.md
+- Decision Rationale: docs/llm/DECISIONS.md
+- Reviews (optional): docs/llm/REVIEWS.md
 - Runbooks: docs/operations/
 
 ## LLM-to-LLM Communication

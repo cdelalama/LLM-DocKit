@@ -76,6 +76,9 @@ Edit these files with your project details:
 - **Stakeholders**: Who owns this?
 - **Architecture**: High-level design
 
+#### [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (Optional)
+- Capture architecture, contracts, and roadmap/phases (keeps PROJECT_CONTEXT shorter).
+
 #### [docs/STRUCTURE.md](docs/STRUCTURE.md)
 - Document your actual folder structure
 - Explain naming conventions
@@ -85,6 +88,18 @@ Edit these files with your project details:
 - Review all rules and adapt to your workflow
 - Update the "Current Focus" section
 - Remove sections that don't apply
+
+### Optional: Pin the Scaffold Version (If You Forked LLM-DocKit)
+If you want reproducible scaffolds, keep the upstream version information:
+- `VERSION` (human-readable SemVer)
+- `CHANGELOG.md` (what changed)
+
+If you do not want scaffold metadata in your new project, remove those files after forking.
+
+#### LLM Working Memory (`docs/llm/`)
+- Start with [docs/llm/README.md](docs/llm/README.md) (what goes where)
+- Keep [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) short and actionable
+- Put long rationale in [docs/llm/DECISIONS.md](docs/llm/DECISIONS.md)
 
 ### 4. Initialize Your Project Structure
 
