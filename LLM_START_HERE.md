@@ -1,3 +1,4 @@
+<!-- doc-version: 3.0.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -28,6 +29,12 @@ Recommended reading order:
 - Put long-form rationale in docs/llm/DECISIONS.md and link to it from HANDOFF.
 - Prefer ASCII-only in docs/llm/* to avoid Windows encoding issues.
 
+### Documentation Sync Rules
+- Keep this file's "Current Focus" section synchronized with docs/llm/HANDOFF.md "Current Status".
+- Keep docs/STRUCTURE.md synchronized with the actual repository file tree.
+- Keep docs/PROJECT_CONTEXT.md synchronized with architectural reality.
+- Version markers (`<!-- doc-version: X.Y.Z -->`) in documentation files are managed by `scripts/bump-version.sh`. See `docs/version-sync-manifest.yml` for the full list of tracked files.
+
 ### Commit Message Policy
 - Every response that includes code or documentation changes must end with suggested commit information:
   - **Title:** under 72 characters
@@ -40,9 +47,10 @@ Recommended reading order:
   `
 
 ### Version Management
-- Check VERSION declarations in scripts or modules before editing.
-- Do not bump versions without consulting docs/VERSIONING_RULES.md.
-- Synchronize version numbers across related files when changes span multiple scripts.
+- For version bumps, run `scripts/bump-version.sh <new_version>`; do not edit version strings manually.
+- The bump script reads `docs/version-sync-manifest.yml` to update all tracked files atomically.
+- Validate sync with `scripts/check-version-sync.sh` (also available as pre-commit hook).
+- Do not bump versions without consulting docs/VERSIONING_RULES.md for impact level (patch/minor/major).
 
 ### Environment Files (If Applicable)
 - Do not edit generated .env.example files directly.
@@ -63,6 +71,8 @@ Keep this section synchronized with the "Current Status" block in docs/llm/HANDO
 - [ ] Review docs/PROJECT_CONTEXT.md
 - [ ] Review docs/VERSIONING_RULES.md
 - [ ] Read the current docs/llm/HANDOFF.md
+- [ ] Install pre-commit hook: `cp scripts/pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
+- [ ] Run `scripts/check-version-sync.sh` to verify version markers
 - [ ] Confirm scope with the user
 - [ ] Complete the work
 - [ ] Update docs/llm/HANDOFF.md
@@ -78,6 +88,7 @@ Keep this section synchronized with the "Current Status" block in docs/llm/HANDO
 - Project Overview: docs/PROJECT_CONTEXT.md
 - Architecture: docs/ARCHITECTURE.md
 - Version Rules: docs/VERSIONING_RULES.md
+- Version Sync Manifest: docs/version-sync-manifest.yml
 - LLM Docs Index: docs/llm/README.md
 - Current Work State: docs/llm/HANDOFF.md
 - Change History: docs/llm/HISTORY.md

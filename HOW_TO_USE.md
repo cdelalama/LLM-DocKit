@@ -189,10 +189,12 @@ Add operational procedures to [docs/operations/](docs/operations/):
 ### Version Management
 
 When bumping versions:
-1. Consult [docs/VERSIONING_RULES.md](docs/VERSIONING_RULES.md)
-2. Update all related files in the same component
-3. Document in [docs/llm/HISTORY.md](docs/llm/HISTORY.md)
-4. Update [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) "Current Versions" section
+1. Consult [docs/VERSIONING_RULES.md](docs/VERSIONING_RULES.md) for impact level
+2. Run `scripts/bump-version.sh <new_version>` to update all tracked files
+3. Fill in the CHANGELOG.md section created by the bump script
+4. Document in [docs/llm/HISTORY.md](docs/llm/HISTORY.md)
+5. Update [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) "Current Versions" section (prose, not just marker)
+6. Run `scripts/check-version-sync.sh` to validate
 
 ### Documentation Maintenance
 
@@ -200,6 +202,7 @@ Keep these files synchronized:
 - [LLM_START_HERE.md](LLM_START_HERE.md) "Current Focus" <-> [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) "Current Status"
 - [docs/STRUCTURE.md](docs/STRUCTURE.md) <-> actual folder structure
 - [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) <-> architecture reality
+- Version markers in documentation files: managed by `scripts/bump-version.sh`, tracked in [docs/version-sync-manifest.yml](docs/version-sync-manifest.yml)
 
 ## Common Scenarios
 
@@ -285,7 +288,8 @@ docs/
 - Check if rules are marked as "non-negotiable"
 
 **Q: Documentation gets out of sync**
-- Set up a pre-commit hook to check HANDOFF/HISTORY have recent dates
+- Run `scripts/check-version-sync.sh` to detect version drift
+- Install the pre-commit hook: `cp scripts/pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
 - Make documentation updates part of your definition of "done"
 
 **Q: Too much history in HISTORY.md**

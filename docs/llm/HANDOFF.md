@@ -1,3 +1,4 @@
+<!-- doc-version: 3.0.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Keep it short.

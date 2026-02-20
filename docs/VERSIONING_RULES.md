@@ -1,3 +1,4 @@
+<!-- doc-version: 3.0.0 -->
 # Versioning Rules
 
 ## Version Format
@@ -7,8 +8,8 @@ Use Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 Document where version identifiers live in your project (e.g., VERSION="x.y.z" at the top of scripts, package.json, or pyproject.toml).
 
 Current version sources:
-- <File or module>: <Version>
-- <File or module>: <Version>
+- `VERSION`: primary source of truth for project version
+- `docs/version-sync-manifest.yml`: lists all files tracked for version sync
 
 ## Scaffold Versioning (LLM-DocKit Itself)
 If you are using LLM-DocKit as a scaffold/template repository, version the scaffold so downstream forks can pin a known structure.
@@ -36,13 +37,51 @@ Recommended sources of truth:
 - Large architectural shifts that require operator action
 
 ## Synchronization Rules
-When a change affects multiple files within the same component or module, update all relevant version identifiers to keep them aligned.
+
+All files requiring version markers are listed in `docs/version-sync-manifest.yml`.
+This manifest is the single source of truth for version sync.
+
+### Automated Version Bump
+Run the bump script to update all tracked files atomically:
+```
+scripts/bump-version.sh <new_version>
+```
+The script reads the manifest and updates:
+- `VERSION` file (plain version string)
+- `<!-- doc-version: X.Y.Z -->` HTML comment markers in documentation files
+- `CHANGELOG.md` section header (adds `## [X.Y.Z]` placeholder)
+
+### Validation
+Run the check script to detect version drift:
+```
+scripts/check-version-sync.sh
+```
+This exits 0 if all files match VERSION, or exits 1 with details on which files are out of sync.
+
+### Pre-Commit Hook
+Install the pre-commit hook to catch drift before it is committed:
+```
+cp scripts/pre-commit-hook.sh .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+The hook:
+1. Blocks commits where VERSION is staged but manifest targets are not.
+2. Warns when code/config files change without a HISTORY.md update.
+3. Runs check-version-sync.sh.
+
+### Adding New Files to Version Tracking
+To track a new file:
+1. Add an entry to `docs/version-sync-manifest.yml`.
+2. Insert `<!-- doc-version: X.Y.Z -->` (matching current VERSION) on line 1 of the file.
+3. Run `scripts/check-version-sync.sh` to verify.
 
 ## Update Process
 1. Determine the impact level (patch, minor, major).
-2. Locate all affected version identifiers.
-3. Update version numbers and document the rationale in docs/llm/HISTORY.md.
-4. Reflect the change in docs/llm/HANDOFF.md (or a dedicated changelog) so the next contributor is aware.
+2. Run `scripts/bump-version.sh <new_version>` to update all tracked files.
+3. Fill in the CHANGELOG.md section created by the bump script.
+4. Update docs/llm/HANDOFF.md with the new version context (prose, not just marker).
+5. Append a HISTORY.md entry documenting the version change rationale.
+6. Run `scripts/check-version-sync.sh` to confirm everything is in sync.
 
 ## Environment Variables (If Applicable)
 - Avoid editing generated .env.example files directly; update the source .env or secrets management system and regenerate the template.

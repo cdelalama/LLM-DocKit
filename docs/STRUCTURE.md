@@ -3,17 +3,29 @@
 Use this template to document how the repository is organized. Update the table below once your folders and files are in place.
 
 ## Top-Level Layout
-`
+```
 <PROJECT_ROOT>/
-+- README.md
-+- LLM_START_HERE.md
++- README.md               (project introduction and quick start)
++- LLM_START_HERE.md        (mandatory reading for LLM contributors)
++- VERSION                  (project version, source of truth)
++- CHANGELOG.md             (user-visible change log)
++- HOW_TO_USE.md            (scaffold setup guide for humans)
 +- docs/
+|  +- PROJECT_CONTEXT.md
+|  +- ARCHITECTURE.md       (optional)
+|  +- STRUCTURE.md           (this file)
+|  +- VERSIONING_RULES.md
+|  +- version-sync-manifest.yml  (lists files tracked for version sync)
+|  +- llm/                  (LLM working memory)
+|  +- operations/            (runbooks)
++- scripts/
+|  +- bump-version.sh       (updates version markers in all tracked files)
+|  +- check-version-sync.sh (validates version markers match VERSION)
+|  +- pre-commit-hook.sh    (git pre-commit hook template)
 +- src/ (optional)
-+- scripts/ (optional)
 +- tests/ (optional)
 +- .github/ (optional)
-+- ...
-`
+```
 
 ## Directory Descriptions
 | Path | Purpose | Notes |
@@ -21,8 +33,11 @@ Use this template to document how the repository is organized. Update the table 
 | docs/ | Central documentation, policies, and runbooks | Required |
 | docs/llm/ | Handoff and history for LLM contributors | Required |
 | docs/operations/ | Runbooks and operational procedures | Recommended |
+| docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
+| scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |
+| scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
+| scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
 | src/ | Application or library source code | Optional |
-| scripts/ | Utility scripts or tooling | Optional |
 | tests/ | Automated tests | Optional |
 | .github/ | Issue/PR templates and workflows | Optional |
 

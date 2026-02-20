@@ -1,0 +1,19 @@
+# Version Sync Manifest -- single source of truth
+# Read by scripts/bump-version.sh and scripts/check-version-sync.sh
+#
+# Marker types:
+#   version-file  -> plain X.Y.Z (first line of file)
+#   changelog     -> ## [X.Y.Z] section header
+#   html-comment  -> <!-- doc-version: X.Y.Z --> on first line of file
+#
+# Downstream projects: add your own files below the template entries.
+
+targets:
+- path: VERSION                    marker: version-file
+- path: CHANGELOG.md               marker: changelog
+- path: README.md                  marker: html-comment
+- path: LLM_START_HERE.md          marker: html-comment
+- path: docs/PROJECT_CONTEXT.md    marker: html-comment
+- path: docs/ARCHITECTURE.md       marker: html-comment
+- path: docs/VERSIONING_RULES.md   marker: html-comment
+- path: docs/llm/HANDOFF.md        marker: html-comment
