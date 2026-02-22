@@ -14,8 +14,4 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
-Start logging your changes below. Remove the example above once you have real entries.
-
----
-
-- 2025-01-01 - ExampleLLM - Initial project setup from LLM-DocKit scaffold - Files: [README.md, LLM_START_HERE.md, docs/PROJECT_CONTEXT.md] - Version impact: no
+- 2026-02-22 - Claude Opus 4.6 - Add dockit-sync tool system for template propagation to downstream projects. New sync manifest, sync script (~620 lines POSIX sh), check script. Added DOCKIT-TEMPLATE section markers to LLM_START_HERE.md. Bumped to v4.0.0. - Files: [dockit-sync-manifest.yml, scripts/dockit-sync.sh, scripts/dockit-sync-check.sh, LLM_START_HERE.md, CHANGELOG.md, docs/llm/HANDOFF.md, docs/llm/HISTORY.md, VERSION] - Version impact: yes (3.0.0 -> 4.0.0, major: requires downstream action to add markers and .dockit-enabled)

@@ -4,6 +4,25 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.0.0] - 2026-02-22
+
+### Added
+- `dockit-sync-manifest.yml`: sync strategy manifest (copy/skip/section-merge/yaml-merge per file)
+- `scripts/dockit-sync.sh`: template sync tool with dry-run, apply, backup/rollback, conflict detection, lock, JSON output, git-branch support (~620 lines, POSIX sh)
+- `scripts/dockit-sync-check.sh`: downstream project status checker (CURRENT/OUTDATED/NO_STATE)
+- `<!-- DOCKIT-TEMPLATE:START/END -->` section markers in `LLM_START_HERE.md` for 9 syncable sections
+- `.dockit-enabled` opt-in marker file concept for downstream projects
+- `.dockit-config.yml` human-managed config (adoption_mode, exclude_sections) for downstream projects
+- `.git/.dockit/` runtime directory (state, lock, backups) -- auto-ignored by git
+
+### Changed
+- `LLM_START_HERE.md`: 9 sections now wrapped in DOCKIT-TEMPLATE markers for automated sync
+
+### Breaking
+- Downstream projects must add DOCKIT-TEMPLATE markers to their `LLM_START_HERE.md` for section-merge to work
+- Downstream projects must create `.dockit-enabled` to opt in to sync
+- Downstream projects must run `--init-state` to establish baseline before first sync
+
 ## [3.0.0] - 2026-02-20
 
 ### Added

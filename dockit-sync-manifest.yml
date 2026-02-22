@@ -1,0 +1,58 @@
+# dockit-sync-manifest.yml -- Sync strategies for downstream projects.
+# Read by scripts/dockit-sync.sh
+#
+# This file uses a restricted flat grammar (not generic YAML).
+# Format contract:
+#   - One entry per line: - path: <path> strategy: <strategy>
+#   - No tabs, no spaces in paths, no multiline values
+#   - Strategies: copy | skip | section-merge | yaml-merge
+#   - yaml-merge scope: only targets with path as identity key
+#
+# Strategies:
+#   copy          -> overwrite downstream with template version
+#   skip          -> never touch (project-specific content)
+#   section-merge -> replace marked template sections, preserve project customizations
+#   yaml-merge    -> merge by identity key (path), preserve local-only entries
+
+schema_version: 1
+
+files:
+# --- Scripts (copy: always latest template) ---
+# Note: dockit-sync.sh and dockit-sync-check.sh are NOT listed here.
+# They are control-plane scripts that run only from LLM-DocKit root.
+- path: scripts/bump-version.sh           strategy: copy
+- path: scripts/check-version-sync.sh     strategy: copy
+- path: scripts/pre-commit-hook.sh        strategy: copy
+
+# --- GitHub templates (copy) ---
+- path: .github/ISSUE_TEMPLATE/bug_report.md    strategy: copy
+- path: .github/PULL_REQUEST_TEMPLATE.md         strategy: copy
+
+# --- Hybrid: section-merge ---
+- path: LLM_START_HERE.md                 strategy: section-merge
+
+# --- Hybrid: yaml-merge (identity key = path in targets) ---
+- path: docs/version-sync-manifest.yml    strategy: yaml-merge
+
+# --- Skip: project-specific content ---
+- path: VERSION                           strategy: skip
+- path: CHANGELOG.md                      strategy: skip
+- path: README.md                         strategy: skip
+- path: docs/PROJECT_CONTEXT.md           strategy: skip
+- path: docs/ARCHITECTURE.md              strategy: skip
+- path: docs/STRUCTURE.md                 strategy: skip
+- path: docs/VERSIONING_RULES.md          strategy: skip
+- path: docs/llm/README.md               strategy: skip
+- path: docs/llm/HANDOFF.md              strategy: skip
+- path: docs/llm/HISTORY.md              strategy: skip
+- path: docs/llm/DECISIONS.md            strategy: skip
+- path: docs/llm/REVIEWS.md              strategy: skip
+- path: docs/operations/README.md         strategy: skip
+- path: docs/operations/API_CONTRACT.md   strategy: skip
+- path: docs/operations/DEPLOY_PLAYBOOK.md strategy: skip
+
+# --- LLM-DocKit only (not relevant to downstream) ---
+- path: HOW_TO_USE.md                     strategy: skip
+- path: LICENSE                           strategy: skip
+- path: .gitignore                        strategy: skip
+- path: dockit-sync-manifest.yml          strategy: skip

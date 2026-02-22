@@ -1,46 +1,54 @@
-<!-- doc-version: 3.0.0 -->
+<!-- doc-version: 4.0.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Keep it short.
 Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
-- Last Updated: <YYYY-MM-DD - Author>
-- Session Focus: <What you worked on>
-- Status: <High-level summary>
+- Last Updated: 2026-02-22 - Claude Opus 4.6
+- Session Focus: dockit-sync tool system (v4.0.0)
+- Status: Core implementation complete. All scripts created and tested. Rollout to downstream projects pending.
 
 ## Immediate Context
-Provide any relevant background the next contributor needs. Mention dependencies, prerequisites, or outstanding reviews.
+LLM-DocKit now has a sync tool system to propagate template updates to downstream projects. The system uses 4 strategies: copy (scripts), skip (project-specific), section-merge (LLM_START_HERE.md), yaml-merge (version-sync-manifest.yml). Sync scripts run only from LLM-DocKit root (control-plane), never copied to downstream.
 
 ## Active Files
-List the files touched or relevant to the current work stream.
-- <path/to/file>
-- <path/to/another-file>
+- dockit-sync-manifest.yml (new: sync strategy per file)
+- scripts/dockit-sync.sh (new: main sync tool, ~620 lines)
+- scripts/dockit-sync-check.sh (new: status checker)
+- LLM_START_HERE.md (modified: 9 DOCKIT-TEMPLATE markers added)
+- CHANGELOG.md (updated: v4.0.0 entries)
 
 ## Current Versions
-Document relevant version identifiers if they changed or need monitoring.
-- <component/file>: <version>
+- LLM-DocKit: 4.0.0
+- sync_tool_version: 1.0.0
 
 ## Top Priorities
-1. <Next action>
-2. <Next action>
-3. <Next action>
+1. Rollout first wave: nas-backup (full) + youtube2text (partial) -- add markers to their LLM_START_HERE.md
+2. Rollout remaining projects
+3. Commit + tag v4.0.0
 
 ## Key Decisions (Links)
-Link to relevant items in `docs/llm/DECISIONS.md` instead of duplicating long context.
-- <D-001> - <Short label>
+- Restricted flat grammar for manifest (not generic YAML parser) -- see plan file
+- Runtime in .git/.dockit/ (auto-ignored, no .gitignore changes needed)
+- CONFLICT without --force triggers full rollback, no state written
+- OUTDATED = string compare (not SemVer), (partial) is detail suffix not state
 
 ## Do Not Touch
-Identify areas that should remain unchanged without explicit approval from the user.
-- <component or file>
+- scripts/bump-version.sh, scripts/check-version-sync.sh, scripts/pre-commit-hook.sh (template-managed, synced via copy)
+- dockit-sync-manifest.yml schema (schema_version: 1)
 
 ## Open Questions
-Capture unresolved questions or assumptions that need confirmation.
-- <Question or detail>
+- None
 
 ## Testing Notes
-Summarize the testing performed (manual or automated) and any gaps or follow-up needed.
-- <Test> - <Result>
+- Syntax check: sh -n on both scripts -- PASS
+- --help: displays usage correctly -- PASS
+- --init-state on nas-backup: creates state.yml without modifying files -- PASS
+- --dry-run on nas-backup: copy=SKIPPED (up to date), section-merge=ERROR (expected: no markers yet), yaml-merge=UPDATED -- PASS
+- dockit-sync-check: reports nas-backup as CURRENT -- PASS
+- --json output: valid JSON array -- PASS
+- grep -c bug found and fixed (|| echo "0" caused double output) -- FIXED
 
 ---
 
