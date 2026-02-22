@@ -31,7 +31,7 @@ while [ $# -gt 0 ]; do
             SRC_ROOT="$1"
             ;;
         -h|--help)
-            head -15 "$0" | grep '^#' | sed 's/^# \?//'
+            tail -n +2 "$0" | head -14 | grep '^#' | sed 's/^# \?//'
             exit 0
             ;;
         *)

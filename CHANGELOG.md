@@ -8,7 +8,7 @@ This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
 ### Added
 - `dockit-sync-manifest.yml`: sync strategy manifest (copy/skip/section-merge/yaml-merge per file)
-- `scripts/dockit-sync.sh`: template sync tool with dry-run, apply, backup/rollback, conflict detection, lock, JSON output, git-branch support (~620 lines, POSIX sh)
+- `scripts/dockit-sync.sh`: template sync tool with dry-run, apply, backup/rollback, conflict detection, lock, JSON output, git-branch support (~1200 lines, POSIX sh)
 - `scripts/dockit-sync-check.sh`: downstream project status checker (CURRENT/OUTDATED/NO_STATE)
 - `<!-- DOCKIT-TEMPLATE:START/END -->` section markers in `LLM_START_HERE.md` for 9 syncable sections
 - `.dockit-enabled` opt-in marker file concept for downstream projects

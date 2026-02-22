@@ -54,12 +54,15 @@ BACKUP_DIR=""
 BACKUP_MANIFEST=""
 HAS_CONFLICTS=false
 
-# Counters
+# Counters (per-project, reset in sync_project)
 COUNT_UPDATED=0
 COUNT_NEW=0
 COUNT_SKIPPED=0
 COUNT_CONFLICT=0
 COUNT_ERROR=0
+
+# Global exit code (accumulates across --all)
+GLOBAL_EXIT=0
 
 # JSON accumulator (newline-separated lines)
 JSON_ENTRIES=""
@@ -900,16 +903,20 @@ do_init_state() {
 # Main sync logic for one project
 # ============================================================================
 
+# sync_project returns 0 on success, 1 on failure.
+# It never calls die() -- errors are reported and accumulated.
 sync_project() {
     _project_root="$1"
     _project_name=$(basename "$_project_root")
     _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    _project_failed=false
 
     info ""
     info "=== Syncing: $_project_name ($MODE) ==="
 
     if [ ! -d "$_project_root/.git" ]; then
-        die "$_project_root is not a git repository"
+        echo "ERROR: $_project_root is not a git repository" >&2
+        return 1
     fi
 
     # Acquire lock
@@ -932,7 +939,8 @@ sync_project() {
     # Require state (unless init-state)
     if [ ! -f "$_state_file" ]; then
         release_lock
-        die "No sync state found for $_project_name. Run with --init-state first to establish baseline."
+        echo "ERROR: No sync state found for $_project_name. Run with --init-state first to establish baseline." >&2
+        return 1
     fi
 
     # Parse manifest entries
@@ -942,15 +950,6 @@ sync_project() {
     # Create backup if applying
     if [ "$MODE" = "apply" ]; then
         create_backup_dir "$_project_root"
-
-        # Pre-scan to backup files that will change
-        while read -r _relpath _strategy; do
-            case "$_strategy" in
-                copy|section-merge|yaml-merge)
-                    # These might change files; backup handled per-strategy
-                    ;;
-            esac
-        done < "$_entries_file"
     fi
 
     # Create git branch if requested
@@ -996,26 +995,29 @@ sync_project() {
             warn "Conflicts detected without --force. Rolling back all changes."
             rollback "$_project_root" "$BACKUP_DIR"
         fi
-        release_lock
-        print_summary
-        die "Sync failed: $COUNT_CONFLICT conflict(s) detected. Use --force to override."
+        _project_failed=true
     fi
 
-    # Post-sync validation (only on apply)
-    if [ "$MODE" = "apply" ] && [ "$COUNT_ERROR" -eq 0 ]; then
+    # Rollback on errors in apply mode
+    if [ "$COUNT_ERROR" -gt 0 ] && [ "$MODE" = "apply" ] && [ -n "$BACKUP_DIR" ]; then
+        warn "Errors detected. Rolling back all changes."
+        rollback "$_project_root" "$BACKUP_DIR"
+        _project_failed=true
+    fi
+
+    # Post-sync validation (only on apply, only if no errors/conflicts)
+    if [ "$MODE" = "apply" ] && ! $_project_failed; then
         if ! validate_project "$_project_root"; then
             if [ -n "$BACKUP_DIR" ]; then
                 warn "Validation failed. Rolling back all changes."
                 rollback "$_project_root" "$BACKUP_DIR"
             fi
-            release_lock
-            print_summary
-            die "Sync failed: post-sync validation failed. Changes rolled back."
+            _project_failed=true
         fi
     fi
 
-    # Write state only on full success (no conflicts, no validation failure)
-    if [ "$MODE" = "apply" ] && [ "$COUNT_ERROR" -eq 0 ]; then
+    # Write state only on full success (no errors, no conflicts, no validation failure)
+    if [ "$MODE" = "apply" ] && ! $_project_failed; then
         _hashes_arg=""
         if [ -s "$TMPDIR/all_section_hashes.txt" ]; then
             _hashes_arg="$TMPDIR/all_section_hashes.txt"
@@ -1033,6 +1035,12 @@ sync_project() {
 
     # Release lock
     release_lock
+
+    # Return failure if errors or unforced conflicts
+    if $_project_failed || [ "$COUNT_ERROR" -gt 0 ]; then
+        return 1
+    fi
+    return 0
 }
 
 # ============================================================================
@@ -1086,7 +1094,7 @@ parse_args() {
                 JSON_OUTPUT=true
                 ;;
             -h|--help)
-                head -20 "$0" | grep '^#' | sed 's/^# \?//'
+                tail -n +2 "$0" | head -19 | grep '^#' | sed 's/^# \?//'
                 exit 0
                 ;;
             *)
@@ -1149,9 +1157,11 @@ main() {
         if [ ! -f "$_abs_path/.dockit-enabled" ]; then
             die "Project does not have .dockit-enabled: $_abs_path"
         fi
-        sync_project "$_abs_path"
+        if ! sync_project "$_abs_path"; then
+            GLOBAL_EXIT=1
+        fi
     else
-        # All projects
+        # All projects (best-effort: continue on failure, report at end)
         _projects_file="$TMPDIR/projects.txt"
         find_projects "$SRC_ROOT" "$_projects_file"
 
@@ -1162,10 +1172,21 @@ main() {
         _project_count=$(wc -l < "$_projects_file" | tr -d '[:space:]')
         info "Found $_project_count project(s) with .dockit-enabled"
 
+        _failed_projects=""
         while IFS= read -r _proj; do
-            sync_project "$_proj"
+            if ! sync_project "$_proj"; then
+                GLOBAL_EXIT=1
+                _failed_projects="$_failed_projects $(basename "$_proj")"
+            fi
         done < "$_projects_file"
+
+        if [ -n "$_failed_projects" ]; then
+            echo "" >&2
+            echo "FAILED projects:$_failed_projects" >&2
+        fi
     fi
+
+    exit "$GLOBAL_EXIT"
 }
 
 main "$@"
