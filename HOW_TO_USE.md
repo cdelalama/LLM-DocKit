@@ -141,6 +141,133 @@ mv src/ cli/
 3. Start working on your first feature
 4. **Important**: Ensure the LLM updates [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) and [docs/llm/HISTORY.md](docs/llm/HISTORY.md) after every change
 
+## Keeping Downstream Projects in Sync (dockit-sync)
+
+When LLM-DocKit improves (new scripts, updated rules, better checklist), your existing projects fall behind. The **dockit-sync** tool propagates template updates to all your projects without losing project-specific content.
+
+### How It Works
+
+Each file in the template has a **sync strategy** defined in `dockit-sync-manifest.yml`:
+
+| Strategy | What it does | Example files |
+|----------|-------------|---------------|
+| `copy` | Overwrites downstream with template version | `scripts/bump-version.sh`, GitHub templates |
+| `skip` | Never touches (100% project-specific) | `VERSION`, `CHANGELOG.md`, `docs/llm/HANDOFF.md` |
+| `section-merge` | Replaces only marked sections, preserves everything else | `LLM_START_HERE.md` |
+| `yaml-merge` | Merges by identity key, preserves local-only entries | `docs/version-sync-manifest.yml` |
+
+### Section Markers in LLM_START_HERE.md
+
+Template-managed sections are wrapped in markers:
+
+```markdown
+<!-- DOCKIT-TEMPLATE:START commit-policy -->
+### Commit Message Policy
+- Every response that includes code...
+<!-- DOCKIT-TEMPLATE:END commit-policy -->
+```
+
+Content **between** markers gets updated by sync. Content **outside** markers (your project name, custom rules, Quick Navigation) is never touched.
+
+### Opting In a Project
+
+1. Create an empty `.dockit-enabled` file in the project root:
+   ```sh
+   touch .dockit-enabled
+   ```
+
+2. Add `DOCKIT-TEMPLATE:START/END` markers to your project's `LLM_START_HERE.md`, wrapping the sections that match the template. Leave your custom rules (Security, Architecture, etc.) **outside** the markers.
+
+3. Establish the baseline (required before first sync):
+   ```sh
+   /path/to/LLM-DocKit/scripts/dockit-sync.sh --init-state --project /path/to/your-project
+   ```
+
+4. Preview what would change:
+   ```sh
+   /path/to/LLM-DocKit/scripts/dockit-sync.sh --dry-run --project /path/to/your-project
+   ```
+
+5. Apply when ready:
+   ```sh
+   /path/to/LLM-DocKit/scripts/dockit-sync.sh --apply --project /path/to/your-project
+   ```
+
+### Checking All Projects at Once
+
+```sh
+scripts/dockit-sync-check.sh
+```
+
+Output:
+```
+  PROJECT                        STATUS       DETAILS
+  -------                        ------       -------
+  nas-backup                     CURRENT      v4.0.0
+  cortex                         OUTDATED     v3.0.0 -> v4.0.0
+  youtube2text                   NO_STATE     run --init-state
+```
+
+### Adoption Modes
+
+Create `.dockit-config.yml` in your project root:
+
+```yaml
+# full: all template sections must have markers (missing = ERROR)
+# partial: only marked sections are synced (missing = WARN, skip)
+adoption_mode: full
+
+# Sections to exclude from sync (optional)
+exclude_sections:
+  LLM_START_HERE.md:
+    - llm-communication    # project has a completely rewritten version
+```
+
+### Safety Features
+
+- **Dry-run by default**: `--apply` is required to make changes
+- **Automatic backup**: every apply creates a backup in `.git/.dockit/backups/`
+- **Conflict detection**: if you edited a section locally AND the template changed, the tool reports CONFLICT and rolls back
+- **Auto-rollback**: if post-sync validation fails, all changes are reverted
+- **Lock file**: prevents concurrent syncs on the same project
+
+### Syncing All Projects
+
+```sh
+# Preview changes across all .dockit-enabled projects
+scripts/dockit-sync.sh --dry-run --all
+
+# Apply to all
+scripts/dockit-sync.sh --apply --all
+```
+
+### Restoring from Backup
+
+```sh
+# List available backups
+ls /path/to/project/.git/.dockit/backups/
+
+# Restore a specific backup
+scripts/dockit-sync.sh --restore 20260222_163000 --project /path/to/project
+```
+
+### Full CLI Reference
+
+```
+scripts/dockit-sync.sh [options]
+
+  --dry-run          Show changes without applying (DEFAULT)
+  --apply            Apply changes
+  --init-state       Bootstrap: adopt current state as baseline
+  --project PATH     Sync a single project
+  --all              Sync all .dockit-enabled projects
+  --src-root PATH    Root directory for projects (default: ~/src)
+  --force            Overwrite even with conflicts
+  --git-branch       Create git branch before applying
+  --json             Report in JSON format
+  --restore TS       Restore backup by timestamp
+```
+
 ## Detailed Customization
 
 ### Update README.md
@@ -289,8 +416,22 @@ docs/
 
 **Q: Documentation gets out of sync**
 - Run `scripts/check-version-sync.sh` to detect version drift
+- Run `scripts/dockit-sync-check.sh` to see which projects need updating
 - Install the pre-commit hook: `cp scripts/pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
 - Make documentation updates part of your definition of "done"
+
+**Q: dockit-sync says "missing markers for section"**
+- Your project's `LLM_START_HERE.md` needs `<!-- DOCKIT-TEMPLATE:START/END -->` markers around the template sections
+- If you only want to sync some sections, set `adoption_mode: partial` in `.dockit-config.yml`
+
+**Q: dockit-sync shows CONFLICT**
+- You edited a section locally AND the template changed the same section
+- Review both versions and decide which to keep
+- Use `--force` to accept the template version, or update the template to include your changes
+
+**Q: "No sync state found" error**
+- Run `--init-state` first: `scripts/dockit-sync.sh --init-state --project /path`
+- This is required once per project to establish the baseline (it does not modify any files)
 
 **Q: Too much history in HISTORY.md**
 - Archive entries older than 12 months to `docs/llm/HISTORY_ARCHIVE_<YEAR>.md`

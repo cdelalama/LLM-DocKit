@@ -35,6 +35,7 @@
 | [docs/STRUCTURE.md](docs/STRUCTURE.md) | Repository layout |
 | [docs/VERSIONING_RULES.md](docs/VERSIONING_RULES.md) | Version management policy |
 | [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) | Current work state |
+| [HOW_TO_USE.md](HOW_TO_USE.md) | Scaffold setup guide and sync tool docs |
 
 ## Contributing
 

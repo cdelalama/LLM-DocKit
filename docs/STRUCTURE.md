@@ -5,23 +5,28 @@ Use this template to document how the repository is organized. Update the table 
 ## Top-Level Layout
 ```
 <PROJECT_ROOT>/
-+- README.md               (project introduction and quick start)
-+- LLM_START_HERE.md        (mandatory reading for LLM contributors)
-+- VERSION                  (project version, source of truth)
-+- CHANGELOG.md             (user-visible change log)
-+- HOW_TO_USE.md            (scaffold setup guide for humans)
++- README.md                    (project introduction and quick start)
++- LLM_START_HERE.md             (mandatory reading for LLM contributors)
++- VERSION                       (project version, source of truth)
++- CHANGELOG.md                  (user-visible change log)
++- HOW_TO_USE.md                 (scaffold setup guide for humans)
++- dockit-sync-manifest.yml      (sync strategies per file -- template only)
++- .dockit-enabled               (opt-in marker for sync -- downstream only)
++- .dockit-config.yml            (sync config: adoption_mode -- downstream only)
 +- docs/
 |  +- PROJECT_CONTEXT.md
-|  +- ARCHITECTURE.md       (optional)
-|  +- STRUCTURE.md           (this file)
+|  +- ARCHITECTURE.md            (optional)
+|  +- STRUCTURE.md                (this file)
 |  +- VERSIONING_RULES.md
 |  +- version-sync-manifest.yml  (lists files tracked for version sync)
-|  +- llm/                  (LLM working memory)
-|  +- operations/            (runbooks)
+|  +- llm/                       (LLM working memory)
+|  +- operations/                 (runbooks)
 +- scripts/
-|  +- bump-version.sh       (updates version markers in all tracked files)
-|  +- check-version-sync.sh (validates version markers match VERSION)
-|  +- pre-commit-hook.sh    (git pre-commit hook template)
+|  +- bump-version.sh            (updates version markers in all tracked files)
+|  +- check-version-sync.sh      (validates version markers match VERSION)
+|  +- pre-commit-hook.sh         (git pre-commit hook template)
+|  +- dockit-sync.sh             (sync template to downstream -- template only)
+|  +- dockit-sync-check.sh       (check downstream sync status -- template only)
 +- src/ (optional)
 +- tests/ (optional)
 +- .github/ (optional)
@@ -34,9 +39,15 @@ Use this template to document how the repository is organized. Update the table 
 | docs/llm/ | Handoff and history for LLM contributors | Required |
 | docs/operations/ | Runbooks and operational procedures | Recommended |
 | docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
+| dockit-sync-manifest.yml | Sync strategy per file (copy/skip/section-merge/yaml-merge) | Template only |
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |
 | scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
 | scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
+| scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
+| scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
+| .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
+| .dockit-config.yml | Human-managed sync config (adoption_mode, exclude_sections) | Downstream only |
+| .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
 | .github/ | Issue/PR templates and workflows | Optional |

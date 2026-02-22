@@ -17,6 +17,9 @@ LLM-DocKit now has a sync tool system to propagate template updates to downstrea
 - scripts/dockit-sync.sh (new: main sync tool, ~620 lines)
 - scripts/dockit-sync-check.sh (new: status checker)
 - LLM_START_HERE.md (modified: 9 DOCKIT-TEMPLATE markers added)
+- HOW_TO_USE.md (updated: full sync tool docs, troubleshooting)
+- docs/STRUCTURE.md (updated: new files in tree and table)
+- README.md (updated: HOW_TO_USE.md in docs table)
 - CHANGELOG.md (updated: v4.0.0 entries)
 
 ## Current Versions
