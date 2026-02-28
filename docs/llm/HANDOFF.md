@@ -42,7 +42,7 @@ LLM-DocKit now has a sync tool system to propagate template updates to downstrea
 - dockit-sync-manifest.yml schema (schema_version: 1)
 
 ## Open Questions
-- None
+- **Infrastructure plugin**: Add an optional mechanism for projects to reference a central infrastructure docs repo (e.g., `~/src/home-infra/docs/`). When a scaffolded project installs software, adds services, or changes versions, the LLM should automatically update the infra docs. This should be generic (not hardcoded to any specific path) — configurable via a file like `.llm-dockit.yml` or a section in the scaffold. The goal: any user of LLM-DocKit can point to their own infra repo, and all scaffolded projects inherit the cross-reference rule. Currently this is handled manually via `~/.claude/CLAUDE.md` global instructions, which is tool-specific and fragile.
 
 ## Testing Notes
 - Syntax check: sh -n on both scripts -- PASS
