@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -96,6 +96,7 @@ HANDOFF="$PROJECT_ROOT/docs/llm/HANDOFF.md"
 HISTORY="$PROJECT_ROOT/docs/llm/HISTORY.md"
 DECISIONS="$PROJECT_ROOT/docs/llm/DECISIONS.md"
 CHECK_VERSION_SCRIPT="$PROJECT_ROOT/scripts/check-version-sync.sh"
+CONFIG_FILE="$PROJECT_ROOT/.dockit-config.yml"
 
 # ── Results accumulator ─────────────────────────────────────────────────────
 
@@ -231,12 +232,140 @@ check_version_sync() {
     fi
 }
 
+# ── External context parser helpers ──────────────────────────────────────────
+# State-machine parser for .dockit-config.yml external_context section.
+# Each helper reads CONFIG_FILE independently (simple, no shared state needed).
+
+_read_ext_path() {
+    [ -f "$CONFIG_FILE" ] || return
+    _in=false
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        if [ "$_i" -eq 0 ]; then
+            [ "$_s" = "external_context:" ] && _in=true || _in=false
+            continue
+        fi
+        if [ "$_in" = true ] && [ "$_i" -eq 2 ]; then
+            case "$_s" in path:*) echo "$_s" | sed 's/^path: *//' ;; esac
+        fi
+    done < "$CONFIG_FILE"
+}
+
+_read_ext_read_files() {
+    [ -f "$CONFIG_FILE" ] || return
+    _in=false; _in_read=false
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        if [ "$_i" -eq 0 ]; then
+            [ "$_s" = "external_context:" ] && { _in=true; _in_read=false; } || { _in=false; _in_read=false; }
+            continue
+        fi
+        [ "$_in" = false ] && continue
+        if [ "$_i" -eq 2 ]; then
+            [ "$_s" = "read:" ] && _in_read=true || _in_read=false
+            continue
+        fi
+        if [ "$_i" -eq 4 ] && [ "$_in_read" = true ]; then
+            echo "$_s" | sed 's/^- *//'
+        fi
+    done < "$CONFIG_FILE"
+}
+
+_read_ext_triggers() {
+    [ -f "$CONFIG_FILE" ] || return
+    _in=false; _in_trig=false
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        if [ "$_i" -eq 0 ]; then
+            [ "$_s" = "external_context:" ] && { _in=true; _in_trig=false; } || { _in=false; _in_trig=false; }
+            continue
+        fi
+        [ "$_in" = false ] && continue
+        if [ "$_i" -eq 2 ]; then
+            [ "$_s" = "update_triggers:" ] && _in_trig=true || _in_trig=false
+            continue
+        fi
+        if [ "$_i" -eq 4 ] && [ "$_in_trig" = true ]; then
+            _t=$(echo "$_s" | sed 's/^- *//')
+            _local=$(echo "$_t" | sed 's/^local: *//; s/ *target:.*$//')
+            _target=$(echo "$_t" | sed 's/.*target: *//')
+            echo "$_local|$_target"
+        fi
+    done < "$CONFIG_FILE"
+}
+
+check_external_context() {
+    if ! should_run "external-context"; then return; fi
+
+    # CI portability: skip if env var set
+    if [ "${DOCKIT_SKIP_EXTERNAL:-0}" = "1" ]; then
+        add_result "external-context" "PASS" "Skipped (DOCKIT_SKIP_EXTERNAL=1)"
+        return
+    fi
+
+    # No config file -> explicit skip (opt-in feature)
+    if [ ! -f "$CONFIG_FILE" ]; then
+        add_result "external-context" "PASS" "Skipped (no .dockit-config.yml)"
+        return
+    fi
+
+    # Read path from config
+    _ext_path=$(_read_ext_path)
+
+    # No external_context section -> explicit skip
+    if [ -z "$_ext_path" ]; then
+        add_result "external-context" "PASS" "Skipped (no external_context in config)"
+        return
+    fi
+
+    # Normalize path (~ expansion, resolve)
+    _expanded=$(echo "$_ext_path" | sed "s|^~|$HOME|")
+    _resolved=$(cd "$_expanded" 2>/dev/null && pwd) || {
+        add_result "external-context" "FAIL" "External docs path not accessible: $_ext_path"
+        return
+    }
+
+    # Read file list and validate existence
+    _files=$(_read_ext_read_files)
+    if [ -z "$_files" ]; then
+        add_result "external-context" "FAIL" "external_context.path set but no read: files in $CONFIG_FILE"
+        return
+    fi
+
+    _missing=""
+    _count=0
+    _old_ifs="$IFS"
+    IFS='
+'
+    for _f in $_files; do
+        [ -z "$_f" ] && continue
+        _count=$((_count + 1))
+        if [ ! -f "$_resolved/$_f" ]; then
+            _missing="$_missing $_f"
+        fi
+    done
+    IFS="$_old_ifs"
+
+    if [ -n "$_missing" ]; then
+        add_result "external-context" "FAIL" "Missing files in $_ext_path:$_missing"
+    else
+        add_result "external-context" "PASS" "All $_count external context files exist at $_ext_path"
+    fi
+}
+
 # ── Run all checks ──────────────────────────────────────────────────────────
 
 check_handoff_date
 check_history_entry
 check_decisions_referenced
 check_version_sync
+check_external_context
 
 # ── Output ───────────────────────────────────────────────────────────────────
 

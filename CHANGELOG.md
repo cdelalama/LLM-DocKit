@@ -4,6 +4,14 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.2.0] - 2026-03-01
+
+### Added
+- `scripts/dockit-generate-external-context.sh`: generates External Context section in LLM_START_HERE.md from `.dockit-config.yml` configuration (--dry-run/--apply, idempotent)
+- `check_external_context` check in `dockit-validate-session.sh`: validates external doc path and read files exist (opt-in, skippable via `DOCKIT_SKIP_EXTERNAL=1`)
+- `DOCKIT-EXTERNAL-CONTEXT:START/END` markers in `LLM_START_HERE.md` template
+- D-006: External context uses separate markers to avoid sync interference
+
 ## [4.1.0] - 2026-03-01
 
 ### Added

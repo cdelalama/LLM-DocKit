@@ -23,6 +23,7 @@ files:
 - path: scripts/bump-version.sh           strategy: copy
 - path: scripts/check-version-sync.sh     strategy: copy
 - path: scripts/pre-commit-hook.sh        strategy: copy
+- path: scripts/dockit-generate-external-context.sh  strategy: copy
 
 # --- GitHub templates (copy) ---
 - path: .github/ISSUE_TEMPLATE/bug_report.md    strategy: copy

@@ -1,12 +1,12 @@
-<!-- doc-version: 4.1.0 -->
+<!-- doc-version: 4.2.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-03-01 - Claude Opus 4.6
-- Session Focus: Phase 1 QA fixes + External Context plugin design
-- Status: v4.1.0. Phase 1 enforcement active. External Context plugin designed and approved (v1 deferred to next version).
+- Session Focus: External Context plugin v1 implementation
+- Status: v4.2.0. Phase 1 enforcement active. External Context plugin v1 implemented (generation + existence validation).
 
 ## Project Summary
 
@@ -19,7 +19,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 - Downstream template sync (dockit-sync.sh, 1192 lines POSIX sh, 4 strategies)
 
 **Repository:** https://github.com/cdelalama/LLM-DocKit
-**Current version:** 4.1.0
+**Current version:** 4.2.0
 **Tech stack:** POSIX shell scripts only, zero external dependencies
 
 ## The Core Problem
@@ -52,7 +52,7 @@ Without Layer 1 (enforcement), Layers 2 and 3 are advisory — the same problem 
 Implement now, pilot 10 sessions, then decide B/C with real data.
 
 **Components:**
-1. `scripts/dockit-validate-session.sh` — portable POSIX validator (checks: handoff-date, history-entry, decisions-referenced, version-sync)
+1. `scripts/dockit-validate-session.sh` — portable POSIX validator (checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context)
 2. `.claude/settings.json` — Stop hook (blocking), PostToolUse nudge (non-blocking), PreCompact reminder
 3. `.claude/rules/require-docs-on-code-change.md` — path-triggered rule
 4. `.claude/skills/update-docs/SKILL.md` — convenience `/update-docs` command
@@ -113,13 +113,14 @@ Adopt only parts that solve problems demonstrated during pilot.
 ## Files in This Repository
 
 ### Committed (in git)
-- `VERSION` -> 4.1.0
+- `VERSION` -> 4.2.0
 - `scripts/dockit-sync.sh` -> template propagation (1192 lines)
 - `scripts/dockit-sync-check.sh` -> downstream status checker
 - `scripts/bump-version.sh` -> atomic version bump
 - `scripts/check-version-sync.sh` -> version drift validator
 - `scripts/pre-commit-hook.sh` -> git hook template
-- `scripts/dockit-validate-session.sh` -> documentation enforcement validator (Phase 1)
+- `scripts/dockit-validate-session.sh` -> documentation enforcement validator (Phase 1 + external-context)
+- `scripts/dockit-generate-external-context.sh` -> External Context section generator
 - `.claude/settings.json` -> Claude Code hook configuration (Phase 1)
 - `.claude/rules/require-docs-on-code-change.md` -> path-triggered doc reminder
 - `.claude/skills/update-docs/SKILL.md` -> /update-docs convenience command
@@ -136,12 +137,12 @@ Adopt only parts that solve problems demonstrated during pilot.
 - `documento.md` — comparative analysis: LLM-DocKit vs Code Factory (Initiative C, 264 lines, Spanish)
 
 ## Current Versions
-- LLM-DocKit: 4.1.0
+- LLM-DocKit: 4.2.0
 - sync_tool_version: 1.0.0
 
 ## Top Priorities
 1. Pilot: 10 sessions with enforcement active in LLM-DocKit repo
-2. Git tags (v4.0.0 for commit 29b6c70, v4.1.0 for current)
+2. Git tags (v4.0.0 for commit 29b6c70, v4.1.0, v4.2.0)
 3. Evaluate pilot data and decide B/C adoption
 4. Rollout to downstream projects (nas-backup, youtube2text) — after pilot
 
@@ -151,24 +152,19 @@ Adopt only parts that solve problems demonstrated during pilot.
 - D-003: CONFLICT without --force triggers full rollback — see docs/llm/DECISIONS.md
 - D-004: OUTDATED = template_version string compare, not SemVer — see docs/llm/DECISIONS.md (corrected 2026-03-01)
 - D-005: Pre-commit blocks product code commits without VERSION bump — see docs/llm/DECISIONS.md
+- D-006: External context uses separate markers (DOCKIT-EXTERNAL-CONTEXT) — see docs/llm/DECISIONS.md
 
 ## Do Not Touch
 - scripts/bump-version.sh, scripts/check-version-sync.sh (template-managed, synced via copy)
 - dockit-sync-manifest.yml schema (schema_version: 1)
 
-## Planned: External Context Plugin (next version)
+## External Context Plugin
 
-Design approved by human + GPT review. Full plan: `docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`
+Design: `docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`
 
-**What:** Projects declare external doc repos to read + update triggers in `.dockit-config.yml`. Generation script populates `LLM_START_HERE.md` section. Validator checks existence.
+**v1 (implemented, v4.2.0):** `scripts/dockit-generate-external-context.sh` + `check_external_context` in validator. Projects declare external doc repos in `.dockit-config.yml`. Generation script populates `LLM_START_HERE.md` section between `DOCKIT-EXTERNAL-CONTEXT` markers. Validator checks path + file existence. `DOCKIT_SKIP_EXTERNAL=1` skips in CI.
 
-**Rollout:**
-- v1: `scripts/dockit-generate-external-context.sh` + `check_external_context` (path/file existence)
-- v1.1: Trigger detection (WARN) + `--claude-rules` generation
-
-**Cautelas from GPT review:**
-1. CI portability: external path may not exist in CI. Check must be configurable (strict|warn) or disableable via env var (e.g., `DOCKIT_SKIP_EXTERNAL=1`).
-2. Parser contract: document exact `.dockit-config.yml` grammar in one place. Test against all parsers to prevent drift.
+**v1.1 (pending):** Trigger detection (WARN when local changes match update_triggers) + `--claude-rules` generation.
 
 ## Claude Code Documentation References (verified 2026-03-01)
 - Hooks (17 events): https://docs.anthropic.com/en/docs/claude-code/hooks

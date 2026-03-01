@@ -1,4 +1,4 @@
-<!-- doc-version: 4.1.0 -->
+<!-- doc-version: 4.2.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -122,6 +122,9 @@ When handing off to another LLM:
 ## Do Not Touch Zones
 Use the Do Not Touch section in docs/llm/HANDOFF.md to flag any files or areas that must remain unchanged without explicit approval from the user.
 <!-- DOCKIT-TEMPLATE:END do-not-touch -->
+
+<!-- DOCKIT-EXTERNAL-CONTEXT:START -->
+<!-- DOCKIT-EXTERNAL-CONTEXT:END -->
 
 <!-- DOCKIT-TEMPLATE:START footer -->
 ---

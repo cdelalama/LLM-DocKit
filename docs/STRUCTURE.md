@@ -28,6 +28,7 @@ Use this template to document how the repository is organized. Update the table 
 |  +- dockit-sync.sh             (sync template to downstream -- template only)
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
 |  +- dockit-validate-session.sh (validates LLM documentation state)
+|  +- dockit-generate-external-context.sh (generates External Context section)
 +- .claude/
 |  +- settings.json              (Claude Code hook configuration)
 |  +- rules/
@@ -56,8 +57,9 @@ Use this template to document how the repository is organized. Update the table 
 | scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
 | scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
+| scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
-| .dockit-config.yml | Human-managed sync config (adoption_mode, exclude_sections) | Downstream only |
+| .dockit-config.yml | Human-managed sync config (adoption_mode, exclude_sections, external_context) | Downstream only |
 | .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |

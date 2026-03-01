@@ -152,3 +152,31 @@ Option 3 chosen. Product code (scripts/*.sh, src/**, *.py, etc.) represents user
 ### Follow-ups
 - Monitor false-positive rate during pilot (10 sessions)
 - Consider adding a --no-version-check flag for exceptional cases if needed
+
+---
+
+## D-006 - External context uses separate markers
+
+**Status:** accepted
+
+### Decision
+The External Context plugin uses `DOCKIT-EXTERNAL-CONTEXT:START/END` markers, not `DOCKIT-TEMPLATE:START/END` markers.
+
+### Context
+LLM_START_HERE.md already uses `DOCKIT-TEMPLATE:START <section-id>` / `DOCKIT-TEMPLATE:END <section-id>` markers for section-merge sync. External context content is project-specific (generated from `.dockit-config.yml`), not template content.
+
+### Options Considered
+1. Reuse DOCKIT-TEMPLATE markers with a new section ID (e.g., `external-context`)
+2. Use separate DOCKIT-EXTERNAL-CONTEXT markers
+
+### Rationale
+Option 2 chosen. DOCKIT-TEMPLATE markers are managed by `dockit-sync.sh` during template propagation. If external context used the same marker namespace, `dockit-sync.sh` would try to merge/replace it during sync, overwriting project-specific content. Separate markers keep the two systems independent: sync manages template sections, the generation script manages external context.
+
+### Implications
+- `dockit-sync.sh` ignores DOCKIT-EXTERNAL-CONTEXT markers (different prefix)
+- `dockit-generate-external-context.sh` ignores DOCKIT-TEMPLATE markers
+- Both can coexist in the same LLM_START_HERE.md without interference
+- Markers must be added manually to LLM_START_HERE.md (script errors if missing, never creates them silently)
+
+### Follow-ups
+- None currently
