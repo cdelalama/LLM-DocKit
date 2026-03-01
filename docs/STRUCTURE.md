@@ -35,7 +35,9 @@ Use this template to document how the repository is organized. Update the table 
 |  |  +- require-docs-on-code-change.md (path-triggered doc reminder)
 |  +- skills/
 |     +- update-docs/
-|        +- SKILL.md              (/update-docs convenience command)
+|     |  +- SKILL.md              (/update-docs convenience command)
+|     +- adopt-dockit/
+|        +- SKILL.md              (/adopt-dockit: add scaffold to existing repo)
 +- .github/
 |  +- workflows/
 |     +- doc-validation.yml      (CI documentation validation)

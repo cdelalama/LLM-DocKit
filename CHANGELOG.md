@@ -4,6 +4,11 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.4.0] - 2026-03-01
+
+### Added
+- `.claude/skills/adopt-dockit/SKILL.md`: `/adopt-dockit` skill for adding LLM-DocKit scaffold to existing repositories (7-step guided process: analyze project, copy templates, replace placeholders, personalize with intelligence, technical setup, validate, optional external context)
+
 ## [4.3.0] - 2026-03-01
 
 ### Added

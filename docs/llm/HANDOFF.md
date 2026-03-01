@@ -1,12 +1,12 @@
-<!-- doc-version: 4.3.0 -->
+<!-- doc-version: 4.4.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-03-01 - Claude Opus 4.6
-- Session Focus: External Context plugin v1 + v1.1 implementation
-- Status: v4.3.0. Phase 1 enforcement active. External Context plugin complete (v1: generation + existence, v1.1: trigger WARN + --claude-rules).
+- Session Focus: /adopt-dockit skill + External Context v1.1
+- Status: v4.4.0. Phase 1 enforcement active. External Context plugin complete. /adopt-dockit skill complete.
 
 ## Project Summary
 
@@ -19,7 +19,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 - Downstream template sync (dockit-sync.sh, 1192 lines POSIX sh, 4 strategies)
 
 **Repository:** https://github.com/cdelalama/LLM-DocKit
-**Current version:** 4.3.0
+**Current version:** 4.4.0
 **Tech stack:** POSIX shell scripts only, zero external dependencies
 
 ## The Core Problem
@@ -113,7 +113,7 @@ Adopt only parts that solve problems demonstrated during pilot.
 ## Files in This Repository
 
 ### Committed (in git)
-- `VERSION` -> 4.3.0
+- `VERSION` -> 4.4.0
 - `scripts/dockit-sync.sh` -> template propagation (1192 lines)
 - `scripts/dockit-sync-check.sh` -> downstream status checker
 - `scripts/bump-version.sh` -> atomic version bump
@@ -124,6 +124,7 @@ Adopt only parts that solve problems demonstrated during pilot.
 - `.claude/settings.json` -> Claude Code hook configuration (Phase 1)
 - `.claude/rules/require-docs-on-code-change.md` -> path-triggered doc reminder
 - `.claude/skills/update-docs/SKILL.md` -> /update-docs convenience command
+- `.claude/skills/adopt-dockit/SKILL.md` -> /adopt-dockit skill for existing repos
 - `.github/workflows/doc-validation.yml` -> CI validation for PRs
 - `dockit-sync-manifest.yml` -> sync strategies per file
 - `docs/version-sync-manifest.yml` -> version-tracked files
@@ -137,7 +138,7 @@ Adopt only parts that solve problems demonstrated during pilot.
 - `documento.md` — comparative analysis: LLM-DocKit vs Code Factory (Initiative C, 264 lines, Spanish)
 
 ## Current Versions
-- LLM-DocKit: 4.3.0
+- LLM-DocKit: 4.4.0
 - sync_tool_version: 1.0.0
 
 ## Top Priorities
