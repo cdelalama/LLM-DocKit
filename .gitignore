@@ -1,7 +1,10 @@
 # LLM-DocKit .gitignore
 
-# Claude Code local settings
-.claude/
+# Claude Code -- ignore user-specific files, track enforcement config
+.claude/*
+!.claude/settings.json
+!.claude/rules/
+!.claude/skills/
 
 # Editor directories and files
 .vscode/

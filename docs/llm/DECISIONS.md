@@ -99,24 +99,26 @@ Full rollback is the safest default. A partial sync could leave template-managed
 **Status:** accepted
 
 ### Decision
-dockit-sync-check.sh determines if a downstream project is OUTDATED by comparing SHA256 hashes of synced content, not by comparing version numbers semantically.
+dockit-sync-check.sh determines if a downstream project is OUTDATED by comparing the `template_version` string stored in the project's state file against LLM-DocKit's current VERSION. This is a plain string compare, not SemVer parsing.
 
 ### Context
-Need to determine if downstream files match the template versions. Could compare version strings (SemVer) or actual file content.
+Need to determine if downstream files match the template versions. Could compare version strings semantically (SemVer), compare actual file content (hashes), or compare timestamps.
 
 ### Options Considered
-1. SemVer comparison - Compare template version vs downstream version, flag if template is newer
-2. String/hash comparison - Compare actual file content, flag if different
-3. Timestamp comparison - Compare modification times (unreliable across git clones)
+1. SemVer comparison - Parse and compare major.minor.patch semantically
+2. String comparison of template_version - Simple equality check, no parser needed
+3. Content hash comparison - SHA256 of each synced file, catches all drift including whitespace
+4. Timestamp comparison - Compare modification times (unreliable across git clones)
 
 ### Rationale
-Hash comparison catches ALL drift, not just version bumps. A downstream file could be modified without changing its version marker (manual edits, merge artifacts). Hash comparison detects this. SemVer comparison only catches version-tracked changes. The `(partial)` suffix in output is a detail indicator for adoption mode, not a separate state.
+String comparison of `template_version` is the simplest approach that works: if the downstream state records version "4.0.0" and the template is now "4.1.0", the strings differ → OUTDATED. No SemVer parser needed in POSIX sh. The `(partial)` suffix in output is a detail indicator for adoption mode, not a separate state.
 
 ### Implications
-- Any file content change triggers OUTDATED, even whitespace
-- No false negatives (if content differs, it's flagged)
-- Possible false positives if downstream has intentional local modifications in copy-strategy files
-- States: CURRENT | OUTDATED | NO_STATE (no SemVer ordering needed)
+- Only detects version bumps, not content-level drift within the same version
+- Simple and fast (grep + string equality)
+- States: CURRENT | OUTDATED | NO_STATE
+- Does not catch manual edits to downstream files that don't change the version
 
 ### Follow-ups
-- Consider adding an ignore-list for known intentional downstream deviations
+- Consider adding content-hash checks as a stricter optional mode
+- Corrected 2026-03-01: original D-004 text incorrectly described SHA256 hash comparison; actual implementation uses template_version string compare (verified against scripts/dockit-sync-check.sh)

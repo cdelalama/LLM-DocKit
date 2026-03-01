@@ -1,4 +1,4 @@
-<!-- doc-version: 4.0.0 -->
+<!-- doc-version: 4.1.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -54,10 +54,12 @@ Recommended reading order:
 
 <!-- DOCKIT-TEMPLATE:START version-management -->
 ### Version Management
+- Every commit that changes code/config files MUST include a version bump. The pre-commit hook enforces this.
 - For version bumps, run `scripts/bump-version.sh <new_version>`; do not edit version strings manually.
 - The bump script reads `docs/version-sync-manifest.yml` to update all tracked files atomically.
 - Validate sync with `scripts/check-version-sync.sh` (also available as pre-commit hook).
 - Do not bump versions without consulting docs/VERSIONING_RULES.md for impact level (patch/minor/major).
+- Do NOT batch multiple code commits without versioning. No exceptions.
 <!-- DOCKIT-TEMPLATE:END version-management -->
 
 <!-- DOCKIT-TEMPLATE:START env-policy -->

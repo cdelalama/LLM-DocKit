@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'if ! scripts/dockit-validate-session.sh --json --quiet >/dev/null 2>&1; then printf \"{\\\"decision\\\":\\\"block\\\",\\\"reason\\\":\\\"Documentation not up to date. Update docs/llm/HANDOFF.md (Last Updated date) and add an entry to docs/llm/HISTORY.md before ending the session. Run: scripts/dockit-validate-session.sh --human\\\"}\"; fi'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'if ! scripts/dockit-validate-session.sh --json --quiet --check handoff-date --check history-entry >/dev/null 2>&1; then printf \"{\\\"additionalContext\\\":\\\"Reminder: docs/llm/HANDOFF.md and/or docs/llm/HISTORY.md need updating for today.\\\"}\"; fi'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"IMPORTANT: Before this session ends, update docs/llm/HANDOFF.md (Last Updated date + status) and add an entry to docs/llm/HISTORY.md. Run scripts/dockit-validate-session.sh --human to check.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,6 +4,16 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.1.0] - 2026-03-01
+
+### Added
+- Pre-commit hook Check 2: BLOCKS commits when code/config files are staged without VERSION (enforcement, not just warning)
+- `.ps1` added to code file extensions pattern in pre-commit hook
+
+### Changed
+- `LLM_START_HERE.md`: version management section now requires per-commit versioning (not per-session)
+- Pre-commit hook checks renumbered (5 checks total, was 4)
+
 ## [4.0.0] - 2026-02-22
 
 ### Added

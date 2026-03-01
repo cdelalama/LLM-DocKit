@@ -1,0 +1,9 @@
+name: Documentation Validation
+on: [pull_request]
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate documentation state
+        run: scripts/dockit-validate-session.sh --human

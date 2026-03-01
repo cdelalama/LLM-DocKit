@@ -27,9 +27,19 @@ Use this template to document how the repository is organized. Update the table 
 |  +- pre-commit-hook.sh         (git pre-commit hook template)
 |  +- dockit-sync.sh             (sync template to downstream -- template only)
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
+|  +- dockit-validate-session.sh (validates LLM documentation state)
++- .claude/
+|  +- settings.json              (Claude Code hook configuration)
+|  +- rules/
+|  |  +- require-docs-on-code-change.md (path-triggered doc reminder)
+|  +- skills/
+|     +- update-docs/
+|        +- SKILL.md              (/update-docs convenience command)
++- .github/
+|  +- workflows/
+|     +- doc-validation.yml      (CI documentation validation)
 +- src/ (optional)
 +- tests/ (optional)
-+- .github/ (optional)
 ```
 
 ## Directory Descriptions
@@ -43,6 +53,7 @@ Use this template to document how the repository is organized. Update the table 
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |
 | scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
 | scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
+| scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
 | scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
@@ -50,6 +61,10 @@ Use this template to document how the repository is organized. Update the table 
 | .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
+| .claude/settings.json | Claude Code hook configuration (Stop, PostToolUse, PreCompact) | Claude Code only |
+| .claude/rules/ | Path-triggered rules for Claude Code | Claude Code only |
+| .claude/skills/ | Custom slash commands for Claude Code | Claude Code only |
+| .github/workflows/doc-validation.yml | CI validation for PRs | Recommended |
 | .github/ | Issue/PR templates and workflows | Optional |
 
 ## Generated / Runtime Directories (Optional)

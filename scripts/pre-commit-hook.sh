@@ -7,8 +7,10 @@
 #
 # What it does:
 # 1. If VERSION is staged, verifies all manifest targets are also staged.
-# 2. If code/config files changed, warns if HISTORY.md not updated.
-# 3. Runs check-version-sync.sh to catch any version drift.
+# 2. If code/config files changed, BLOCKS if VERSION is not also staged.
+# 3. If code/config files changed, warns if HISTORY.md not updated.
+# 4. Runs check-version-sync.sh to catch any version drift.
+# 5. Runs dockit-validate-session.sh to check documentation state.
 
 MANIFEST="docs/version-sync-manifest.yml"
 CHECK_SCRIPT="scripts/check-version-sync.sh"
@@ -47,8 +49,19 @@ if echo "$STAGED" | grep -q '^VERSION$'; then
     fi
 fi
 
-# --- Check 2: Code/config changed -> warn if HISTORY.md not updated ---
-CODE_CHANGED=$(echo "$STAGED" | grep -E '\.(sh|py|js|ts|yml|yaml|json|toml|cfg|conf|sql)$' | grep -v 'version-sync-manifest' || true)
+# --- Check 2: Code/config changed -> VERSION must be staged ---
+CODE_CHANGED=$(echo "$STAGED" | grep -E '\.(sh|ps1|py|js|ts|yml|yaml|json|toml|cfg|conf|sql)$' | grep -v 'version-sync-manifest' || true)
+if [ -n "$CODE_CHANGED" ]; then
+    if ! echo "$STAGED" | grep -q '^VERSION$'; then
+        echo "ERROR: Code/config files changed but VERSION not staged."
+        echo "Changed: $(echo "$CODE_CHANGED" | tr '\n' ' ')"
+        echo ""
+        echo "Run: scripts/bump-version.sh <new_version>"
+        exit 1
+    fi
+fi
+
+# --- Check 3: Code/config changed -> warn if HISTORY.md not updated ---
 if [ -n "$CODE_CHANGED" ]; then
     if ! echo "$STAGED" | grep -q 'docs/llm/HISTORY.md'; then
         echo "WARNING: Code/config files changed but docs/llm/HISTORY.md not staged."
@@ -58,7 +71,18 @@ if [ -n "$CODE_CHANGED" ]; then
     fi
 fi
 
-# --- Check 3: Full version sync validation ---
+# --- Check 4: Full version sync validation ---
 if [ -f "$CHECK_SCRIPT" ]; then
     "$CHECK_SCRIPT"
+fi
+
+# --- Check 5: Documentation session validation ---
+VALIDATE_SCRIPT="scripts/dockit-validate-session.sh"
+if [ -f "$VALIDATE_SCRIPT" ]; then
+    if ! "$VALIDATE_SCRIPT" --quiet --check handoff-date --check history-entry >/dev/null 2>&1; then
+        echo "WARNING: Documentation not up to date (HANDOFF.md or HISTORY.md)."
+        echo "Run: scripts/dockit-validate-session.sh --human"
+        echo ""
+        # Warning only, not blocking (pre-commit should not block normal code commits)
+    fi
 fi
