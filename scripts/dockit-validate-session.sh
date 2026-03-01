@@ -122,8 +122,8 @@ add_result() {
     if [ -n "$RESULTS" ]; then
         RESULTS="$RESULTS,"
     fi
-    # Escape double quotes in message
-    _escaped_msg=$(printf '%s' "$_message" | sed 's/"/\\"/g')
+    # Escape for valid JSON: backslashes, double quotes, newlines, tabs
+    _escaped_msg=$(printf '%s' "$_message" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' ' | sed 's/\t/ /g')
     RESULTS="$RESULTS{\"name\":\"$_name\",\"status\":\"$_status\",\"message\":\"$_escaped_msg\"}"
 }
 
@@ -221,12 +221,10 @@ check_version_sync() {
         return
     fi
 
-    # Run the existing version sync check and capture output
-    sync_output=$("$CHECK_VERSION_SCRIPT" 2>&1) || true
-    sync_exit=$?
+    # Run from PROJECT_ROOT so relative paths in check-version-sync.sh work
+    sync_output=$(cd "$PROJECT_ROOT" && "$CHECK_VERSION_SCRIPT" 2>&1) && sync_rc=0 || sync_rc=$?
 
-    # Re-run to get actual exit code (set -e may interfere)
-    if "$CHECK_VERSION_SCRIPT" >/dev/null 2>&1; then
+    if [ "$sync_rc" -eq 0 ]; then
         add_result "version-sync" "PASS" "$sync_output"
     else
         add_result "version-sync" "FAIL" "$sync_output"

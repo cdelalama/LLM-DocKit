@@ -7,7 +7,8 @@
 #
 # What it does:
 # 1. If VERSION is staged, verifies all manifest targets are also staged.
-# 2. If code/config files changed, BLOCKS if VERSION is not also staged.
+# 2. If product code/config files changed, BLOCKS if VERSION is not also staged.
+#    (excludes .claude/, .github/, docs/ -- tooling, not product code)
 # 3. If code/config files changed, warns if HISTORY.md not updated.
 # 4. Runs check-version-sync.sh to catch any version drift.
 # 5. Runs dockit-validate-session.sh to check documentation state.
@@ -49,11 +50,17 @@ if echo "$STAGED" | grep -q '^VERSION$'; then
     fi
 fi
 
-# --- Check 2: Code/config changed -> VERSION must be staged ---
-CODE_CHANGED=$(echo "$STAGED" | grep -E '\.(sh|ps1|py|js|ts|yml|yaml|json|toml|cfg|conf|sql)$' | grep -v 'version-sync-manifest' || true)
+# --- Check 2: Product code/config changed -> VERSION must be staged ---
+# Excludes tooling paths (.claude/, .github/, docs/) that are not product code.
+CODE_CHANGED=$(echo "$STAGED" | grep -E '\.(sh|ps1|py|js|ts|yml|yaml|json|toml|cfg|conf|sql)$' \
+    | grep -v 'version-sync-manifest' \
+    | grep -v '^\\.claude/' \
+    | grep -v '^\\.github/' \
+    | grep -v '^docs/' \
+    || true)
 if [ -n "$CODE_CHANGED" ]; then
     if ! echo "$STAGED" | grep -q '^VERSION$'; then
-        echo "ERROR: Code/config files changed but VERSION not staged."
+        echo "ERROR: Product code/config files changed but VERSION not staged."
         echo "Changed: $(echo "$CODE_CHANGED" | tr '\n' ' ')"
         echo ""
         echo "Run: scripts/bump-version.sh <new_version>"

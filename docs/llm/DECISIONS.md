@@ -122,3 +122,33 @@ String comparison of `template_version` is the simplest approach that works: if 
 ### Follow-ups
 - Consider adding content-hash checks as a stricter optional mode
 - Corrected 2026-03-01: original D-004 text incorrectly described SHA256 hash comparison; actual implementation uses template_version string compare (verified against scripts/dockit-sync-check.sh)
+
+---
+
+## D-005 - Pre-commit blocks product code commits without VERSION bump
+
+**Status:** accepted
+
+### Decision
+The pre-commit hook (Check 2) blocks commits when product code/config files are staged without VERSION also being staged. Tooling paths (.claude/, .github/, docs/) are excluded from this requirement.
+
+### Context
+LLM-DocKit uses SemVer with a single VERSION file as source of truth. The version sync system (bump-version.sh, check-version-sync.sh) propagates VERSION to all tracked files. Without enforcement, LLMs frequently commit code changes without bumping the version.
+
+### Options Considered
+1. Warning only (non-blocking) - Alerts but doesn't prevent unversioned commits
+2. Block all code/config file commits without VERSION - Catches everything but causes false positives for tooling changes (.claude/, .github/, docs/)
+3. Block product code commits only, exclude tooling paths - Targeted enforcement, fewer false positives
+
+### Rationale
+Option 3 chosen. Product code (scripts/*.sh, src/**, *.py, etc.) represents user-facing changes that must be versioned per SemVer. Tooling paths (.claude/ hooks config, .github/ workflows, docs/ documentation) are internal changes that don't warrant a version bump.
+
+### Implications
+- Product file extensions triggering the check: .sh, .ps1, .py, .js, .ts, .yml, .yaml, .json, .toml, .cfg, .conf, .sql
+- Excluded paths: .claude/*, .github/*, docs/*, version-sync-manifest
+- LLM_START_HERE.md template updated to state per-commit versioning requirement
+- Check is blocking (exit 1), not a warning
+
+### Follow-ups
+- Monitor false-positive rate during pilot (10 sessions)
+- Consider adding a --no-version-check flag for exceptional cases if needed

@@ -5,8 +5,8 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 ## Current Status
 - Last Updated: 2026-03-01 - Claude Opus 4.6
-- Session Focus: Phase 1 enforcement — added version-bumped blocking check to pre-commit hook
-- Status: v4.1.0. Pre-commit now blocks code commits without VERSION. Decision Lock confirmed by human + cross-LLM review.
+- Session Focus: Fix 7 issues from cross-LLM QA (GPT + Claude review of Phase 1)
+- Status: v4.1.0. Phase 1 enforcement active. Fixes applied: pre-commit path exclusions, --project bug, JSON escaping, double execution, HANDOFF stale entries, D-005.
 
 ## Project Summary
 
@@ -19,7 +19,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 - Downstream template sync (dockit-sync.sh, 1192 lines POSIX sh, 4 strategies)
 
 **Repository:** https://github.com/cdelalama/LLM-DocKit
-**Current version:** 4.0.0
+**Current version:** 4.1.0
 **Tech stack:** POSIX shell scripts only, zero external dependencies
 
 ## The Core Problem
@@ -140,17 +140,17 @@ Adopt only parts that solve problems demonstrated during pilot.
 - sync_tool_version: 1.0.0
 
 ## Top Priorities
-1. Complete Phase 1 implementation (this session)
-2. Pilot: 10 sessions with enforcement active in LLM-DocKit repo
-3. Git tag v4.0.0 (commit 29b6c70 exists, only tag missing)
-4. Evaluate pilot data and decide B/C adoption
-5. Rollout to downstream projects (nas-backup, youtube2text) — after pilot
+1. Pilot: 10 sessions with enforcement active in LLM-DocKit repo
+2. Git tags (v4.0.0 for commit 29b6c70, v4.1.0 for current)
+3. Evaluate pilot data and decide B/C adoption
+4. Rollout to downstream projects (nas-backup, youtube2text) — after pilot
 
 ## Key Decisions (Links)
 - D-001: Restricted flat grammar for manifest — see docs/llm/DECISIONS.md
 - D-002: Runtime in .git/.dockit/ — see docs/llm/DECISIONS.md
 - D-003: CONFLICT without --force triggers full rollback — see docs/llm/DECISIONS.md
 - D-004: OUTDATED = template_version string compare, not SemVer — see docs/llm/DECISIONS.md (corrected 2026-03-01)
+- D-005: Pre-commit blocks product code commits without VERSION bump — see docs/llm/DECISIONS.md
 
 ## Do Not Touch
 - scripts/bump-version.sh, scripts/check-version-sync.sh (template-managed, synced via copy)
