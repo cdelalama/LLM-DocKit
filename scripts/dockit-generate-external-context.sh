@@ -7,6 +7,7 @@
 # Usage:
 #   scripts/dockit-generate-external-context.sh                     # dry-run (default)
 #   scripts/dockit-generate-external-context.sh --apply             # replace markers in LLM_START_HERE.md
+#   scripts/dockit-generate-external-context.sh --claude-rules      # generate .claude/rules/ trigger file
 #   scripts/dockit-generate-external-context.sh --project /path     # custom project root
 #
 # Exit codes:
@@ -20,6 +21,7 @@ set -e
 
 PROJECT_ROOT=""
 MODE="dry-run"
+CLAUDE_RULES=false
 
 # ── Parse arguments ──────────────────────────────────────────────────────────
 
@@ -33,6 +35,10 @@ while [ $# -gt 0 ]; do
             MODE="apply"
             shift
             ;;
+        --claude-rules)
+            CLAUDE_RULES=true
+            shift
+            ;;
         --project)
             if [ -z "$2" ]; then
                 echo "ERROR: --project requires a path" >&2
@@ -42,14 +48,15 @@ while [ $# -gt 0 ]; do
             shift 2
             ;;
         --help|-h)
-            echo "Usage: $0 [--dry-run|--apply] [--project PATH]"
+            echo "Usage: $0 [--dry-run|--apply] [--claude-rules] [--project PATH]"
             echo ""
             echo "Generates External Context section for LLM_START_HERE.md"
             echo "from .dockit-config.yml external_context configuration."
             echo ""
             echo "Modes:"
-            echo "  --dry-run   Print generated markdown to stdout (default)"
-            echo "  --apply     Replace content between markers in LLM_START_HERE.md"
+            echo "  --dry-run       Print generated markdown to stdout (default)"
+            echo "  --apply         Replace content between markers in LLM_START_HERE.md"
+            echo "  --claude-rules  Generate .claude/rules/external-context-triggers.md"
             echo ""
             echo "Exit codes: 0=success, 1=validation error, 2=script error"
             exit 0
@@ -282,6 +289,42 @@ apply_to_file() {
     rm -f "$_replaced"
 }
 
+# ── Generate Claude rules file ───────────────────────────────────────────────
+
+generate_claude_rules() {
+    _triggers="$1"
+    _rules_dir="$PROJECT_ROOT/.claude/rules"
+    _rules_file="$_rules_dir/external-context-triggers.md"
+
+    if [ -z "$_triggers" ]; then
+        echo "No update_triggers defined -- skipping --claude-rules generation." >&2
+        return
+    fi
+
+    # Build globs list for frontmatter
+    _globs=""
+    echo "$_triggers" | while IFS='|' read -r _local _target; do
+        [ -z "$_local" ] && continue
+        echo "  - \"$_local\""
+    done > /tmp/_dockit_globs.tmp
+    _globs=$(cat /tmp/_dockit_globs.tmp)
+    rm -f /tmp/_dockit_globs.tmp
+
+    mkdir -p "$_rules_dir"
+
+    cat > "$_rules_file" << RULEEOF
+---
+globs:
+$_globs
+---
+When modifying these files, check .dockit-config.yml external_context.update_triggers
+for external docs that may need updating.
+Run: scripts/dockit-validate-session.sh --check external-triggers --human
+RULEEOF
+
+    echo "OK: Claude rules written to $_rules_file"
+}
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 parse_external_context
@@ -323,6 +366,11 @@ elif [ "$MODE" = "apply" ]; then
     apply_to_file "$_tmpfile"
     rm -f "$_tmpfile"
     echo "OK: External context section applied to $LLM_FILE"
+fi
+
+# Generate Claude rules if requested (independent of mode)
+if [ "$CLAUDE_RULES" = true ]; then
+    generate_claude_rules "$EXT_TRIGGERS"
 fi
 
 exit 0

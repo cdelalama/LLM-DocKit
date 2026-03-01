@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -102,6 +102,7 @@ CONFIG_FILE="$PROJECT_ROOT/.dockit-config.yml"
 
 RESULTS=""
 ERRORS=0
+WARNINGS=0
 CHECKS_RUN=0
 
 add_result() {
@@ -113,6 +114,8 @@ add_result() {
 
     if [ "$_status" = "FAIL" ]; then
         ERRORS=$((ERRORS + 1))
+    elif [ "$_status" = "WARN" ]; then
+        WARNINGS=$((WARNINGS + 1))
     fi
 
     # In quiet mode, suppress PASS results from output
@@ -359,6 +362,62 @@ check_external_context() {
     fi
 }
 
+check_external_triggers() {
+    if ! should_run "external-triggers"; then return; fi
+
+    # CI portability: skip if env var set
+    if [ "${DOCKIT_SKIP_EXTERNAL:-0}" = "1" ]; then
+        add_result "external-triggers" "PASS" "Skipped (DOCKIT_SKIP_EXTERNAL=1)"
+        return
+    fi
+
+    # No config file -> explicit skip
+    if [ ! -f "$CONFIG_FILE" ]; then
+        add_result "external-triggers" "PASS" "Skipped (no .dockit-config.yml)"
+        return
+    fi
+
+    # Read triggers from config
+    _triggers=$(_read_ext_triggers)
+    if [ -z "$_triggers" ]; then
+        add_result "external-triggers" "PASS" "No update_triggers defined"
+        return
+    fi
+
+    # Get changed files: staged + unstaged working tree
+    _changed=$(cd "$PROJECT_ROOT" && {
+        git diff --name-only HEAD 2>/dev/null
+        git diff --cached --name-only 2>/dev/null
+    } | sort -u) || true
+
+    if [ -z "$_changed" ]; then
+        add_result "external-triggers" "PASS" "No local changes to match against triggers"
+        return
+    fi
+
+    # Match changed files against trigger globs
+    _matched=""
+    _old_ifs="$IFS"
+    IFS='
+'
+    for _trigger in $_triggers; do
+        _glob=$(echo "$_trigger" | cut -d'|' -f1)
+        _target=$(echo "$_trigger" | cut -d'|' -f2)
+        for _file in $_changed; do
+            [ -z "$_file" ] && continue
+            # POSIX glob matching via case
+            eval "case \"\$_file\" in $_glob) _matched=\"\$_matched \$_file->$_target\" ;; esac"
+        done
+    done
+    IFS="$_old_ifs"
+
+    if [ -n "$_matched" ]; then
+        add_result "external-triggers" "WARN" "Local changes may require external doc updates:$_matched"
+    else
+        add_result "external-triggers" "PASS" "No trigger matches in changed files"
+    fi
+}
+
 # ── Run all checks ──────────────────────────────────────────────────────────
 
 check_handoff_date
@@ -366,6 +425,7 @@ check_history_entry
 check_decisions_referenced
 check_version_sync
 check_external_context
+check_external_triggers
 
 # ── Output ───────────────────────────────────────────────────────────────────
 
@@ -382,16 +442,18 @@ fi
 TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date +%Y-%m-%dT%H:%M:%SZ)
 
 if [ "$OUTPUT_MODE" = "json" ]; then
-    printf '{"ok":%s,"timestamp":"%s","checks":[%s]}\n' "$OK_VALUE" "$TIMESTAMP" "$RESULTS"
+    printf '{"ok":%s,"warnings":%d,"timestamp":"%s","checks":[%s]}\n' "$OK_VALUE" "$WARNINGS" "$TIMESTAMP" "$RESULTS"
 else
     # Human-readable output
     echo "=== Documentation Validation ==="
     echo "Date: $TODAY"
     echo ""
 
-    # Parse results for human display (re-run checks with human output)
+    # Parse results for human display
     if [ "$ERRORS" -gt 0 ]; then
-        echo "RESULT: FAIL ($ERRORS error(s) in $CHECKS_RUN check(s))"
+        echo "RESULT: FAIL ($ERRORS error(s), $WARNINGS warning(s) in $CHECKS_RUN check(s))"
+    elif [ "$WARNINGS" -gt 0 ]; then
+        echo "RESULT: PASS with $WARNINGS warning(s) ($CHECKS_RUN check(s))"
     else
         echo "RESULT: PASS ($CHECKS_RUN check(s) passed)"
     fi
@@ -403,11 +465,7 @@ else
         status=$(printf '%s' "$entry" | sed 's/.*"status":"\([^"]*\)".*/\1/')
         message=$(printf '%s' "$entry" | sed 's/.*"message":"\([^"]*\)".*/\1/' | sed 's/\\"/"/g')
 
-        if [ "$status" = "PASS" ]; then
-            printf '  [PASS] %s: %s\n' "$name" "$message"
-        else
-            printf '  [FAIL] %s: %s\n' "$name" "$message"
-        fi
+        printf '  [%s] %s: %s\n' "$status" "$name" "$message"
     done
 fi
 

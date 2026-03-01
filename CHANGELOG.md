@@ -4,6 +4,14 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.3.0] - 2026-03-01
+
+### Added
+- `check_external_triggers` check in `dockit-validate-session.sh`: detects local file changes matching `update_triggers` globs and produces WARN (non-blocking)
+- WARN status support in validator (non-blocking, shown in output, does not affect exit code)
+- `--claude-rules` flag in `dockit-generate-external-context.sh`: generates `.claude/rules/external-context-triggers.md` with glob frontmatter (no absolute paths)
+- `warnings` field in validator JSON output
+
 ## [4.2.0] - 2026-03-01
 
 ### Added
