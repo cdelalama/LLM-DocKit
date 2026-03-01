@@ -5,8 +5,8 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 ## Current Status
 - Last Updated: 2026-03-01 - Claude Opus 4.6
-- Session Focus: Fix 7 issues from cross-LLM QA (GPT + Claude review of Phase 1)
-- Status: v4.1.0. Phase 1 enforcement active. Fixes applied: pre-commit path exclusions, --project bug, JSON escaping, double execution, HANDOFF stale entries, D-005.
+- Session Focus: Phase 1 QA fixes + External Context plugin design
+- Status: v4.1.0. Phase 1 enforcement active. External Context plugin designed and approved (v1 deferred to next version).
 
 ## Project Summary
 
@@ -156,8 +156,19 @@ Adopt only parts that solve problems demonstrated during pilot.
 - scripts/bump-version.sh, scripts/check-version-sync.sh (template-managed, synced via copy)
 - dockit-sync-manifest.yml schema (schema_version: 1)
 
-## Open Questions
-- **Infrastructure plugin**: Generic mechanism for projects to reference a central infrastructure docs repo. Configurable via `.llm-dockit.yml` or scaffold section. Currently handled manually via `~/.claude/CLAUDE.md` global instructions (tool-specific, fragile).
+## Planned: External Context Plugin (next version)
+
+Design approved by human + GPT review. Full plan: `docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`
+
+**What:** Projects declare external doc repos to read + update triggers in `.dockit-config.yml`. Generation script populates `LLM_START_HERE.md` section. Validator checks existence.
+
+**Rollout:**
+- v1: `scripts/dockit-generate-external-context.sh` + `check_external_context` (path/file existence)
+- v1.1: Trigger detection (WARN) + `--claude-rules` generation
+
+**Cautelas from GPT review:**
+1. CI portability: external path may not exist in CI. Check must be configurable (strict|warn) or disableable via env var (e.g., `DOCKIT_SKIP_EXTERNAL=1`).
+2. Parser contract: document exact `.dockit-config.yml` grammar in one place. Test against all parsers to prevent drift.
 
 ## Claude Code Documentation References (verified 2026-03-01)
 - Hooks (17 events): https://docs.anthropic.com/en/docs/claude-code/hooks
