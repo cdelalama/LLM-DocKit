@@ -64,7 +64,7 @@ Keep entries in ascending order. Once an entry reaches `implemented` or
 - Source: plaud-mirror (v0.4.13)
 - Date observed: 2026-04-24
 - Category: drift
-- Status: open
+- Status: implemented (plaud-mirror v0.4.15 removed the Kali bash block, enumerated acceptable substitutes, added explicit rejection paragraph). Protocol-level validator check proposed in the body below is still `open` — the fix was one-off, not systemic.
 
 Observation: `docs/operations/DEPLOY_PLAYBOOK.md` contained a bash block
 recommending `export PLAUD_MIRROR_DOCKER_BUILD_IMAGE="vxcontrol/kali-linux:latest"`
@@ -89,7 +89,7 @@ co-located with their reasoning.
 - Source: plaud-mirror (v0.4.13 — HOW_TO_USE.md stuck at v0.1.0 prose content)
 - Date observed: 2026-04-24
 - Category: gap
-- Status: open
+- Status: implemented (plaud-mirror v0.4.15 rewrote HOW_TO_USE.md to v0.4.15 reality AND added it as the 20th manifest target — the structural fix that prevents recurrence, not just the content patch). Protocol-level orphan-scan check proposed in the body below is still `open`.
 
 Observation: `HOW_TO_USE.md` at the plaud-mirror repo root was not listed in
 `docs/version-sync-manifest.yml`, so `bump-version.sh` and
@@ -112,7 +112,7 @@ manifest; chosen explicitly as the cure rather than deleting the file.
 - Source: plaud-mirror (v0.4.13 HANDOFF Current Status → "Next: rebuild image, verify VERSION, commit + push" after all three had been done)
 - Date observed: 2026-04-24
 - Category: drift
-- Status: open
+- Status: implemented (plaud-mirror v0.4.15 dropped the trailing "Next:" from HANDOFF Current Status and re-synced LLM_START_HERE Current Focus). Protocol-level convention/check proposed in the body below is still `open`.
 
 Observation: HANDOFF and `LLM_START_HERE.md` "Current Focus" snapshots
 contained end-of-line narrative ("Next: …") that was accurate at write time
@@ -646,3 +646,82 @@ can use this log to decide which semantic checks and which sync-contract
 generalizations are worth their false-positive and maintenance cost. The
 graduated-mode proposal (DF-020) is the natural surface on which to
 dispatch them.
+
+## DF-024 — Documenting drift is not fixing drift: the LLM may write a DF entry about a specific instance and leave the instance broken
+
+- Source: plaud-mirror (DF-001 DEPLOY_PLAYBOOK Kali, DF-002 HOW_TO_USE orphan-marker, DF-003 HANDOFF stale "Next:" were all catalogued in this very file on 2026-04-24 at v4.5.0; the plaud-mirror instances were not fixed until v4.5.2 / plaud-mirror v0.4.15 — two iterations and a second GPT-5 review later)
+- Date observed: 2026-04-24
+- Category: process
+- Status: open
+- Related: DF-010, DF-022
+
+Observation: when the LLM is asked to collect protocol-level feedback, it
+may produce excellent DOWNSTREAM_FEEDBACK entries that precisely describe
+the failure mode (file paths, line numbers, protocol implication) and
+then declare the work complete. The specific instance that surfaced the
+pattern stays broken. In the plaud-mirror case: DF-001 was written at
+v4.5.0 citing `docs/operations/DEPLOY_PLAYBOOK.md:28` recommending
+`vxcontrol/kali-linux:latest` in executable bash. DF-002 cited
+`HOW_TO_USE.md` stuck at "v0.1.0 is a design-and-governance baseline" at
+plaud-mirror v0.4.14. DF-003 cited HANDOFF Current Status trailing "Next:
+rebuild image, verify VERSION, commit + push" after those had all
+landed. All three stayed broken in plaud-mirror until a second GPT-5
+review on the same day explicitly flagged that the DF entries existed
+but the fixes did not — at which point plaud-mirror v0.4.15 closed
+them.
+
+This is a distinct failure mode from DF-010 ("validator PASS ≠ docs
+useful"). In DF-010, the LLM hasn't noticed the content problem at all.
+In DF-024, the LLM HAS noticed — and turned the noticing into a polished
+governance artifact (DF entry, CHANGELOG note, HISTORY entry) that feels
+productive. The net effect is worse than DF-010 because it creates a
+false sense of care: a reader of the DF log sees the problem
+acknowledged and assumes it is either resolved or actively being
+worked. Neither is true.
+
+Protocol implication: several options, not mutually exclusive.
+
+(a) **Convention**: every DF-NNN entry that cites a specific instance
+(file:line in any adopter repo) must either (i) ship with a fix commit
+in the same adopter release that closes the instance, OR (ii) carry a
+`Status: open` with a `TODO:` block that names the exact file:line
+blocking remediation. Writing the entry alone, without either of those,
+is not acceptable submission. Document this in the file header of
+DOWNSTREAM_FEEDBACK.md (this file already models the convention as of
+DocKit v4.5.2 — the `DF-001..DF-003` entries' `Status: open` has a
+follow-up `Fixed: <adopter-version>` line once the adopter closes the
+instance).
+
+(b) **Validator check** (stretch): scan DF entries in DOWNSTREAM_FEEDBACK
+for `Source: <project> (<version>)` declarations and `cites <file>:<line>`
+patterns, cross-reference with the adopter's git log, and warn when a DF
+entry cites an adopter instance that has not been touched in any commit
+between the DF's creation date and the current date. Would catch the
+exact lapse that produced DF-024.
+
+(c) **Session-end ritual**: before declaring a session complete, the LLM
+must review every DF entry it wrote in the session and answer "is the
+instance cited in this entry fixed in the adopter repo, or is the DF
+entry's Status truthful about what's still open?" This is an
+LLM_START_HERE / session-closing-checklist addition, cheap to adopt,
+zero validator cost.
+
+Mitigation in source project: plaud-mirror v0.4.15 now has
+`Fixed-in: plaud-mirror v0.4.15` written into DF-001/002/003 as status
+updates (see below). The lesson — document + fix in the same loop — is
+being generalised via this DF-024 entry and a proposal for the session
+convention above.
+
+### Backfill: update Status on DF-001, DF-002, DF-003
+
+Per the convention proposed in DF-024(a), those three entries are now
+updated:
+
+- **DF-001** — Status now `implemented` (plaud-mirror v0.4.15 — DEPLOY_PLAYBOOK rewrote the Kali-recommending bash block to the acceptable-substitutes list, with a pointed rejection paragraph for pentesting/general-purpose distro bases).
+- **DF-002** — Status now `implemented` (plaud-mirror v0.4.15 — HOW_TO_USE.md rewritten end-to-end + added to `docs/version-sync-manifest.yml` as the 20th target, so future rot is structurally blocked, not just patched).
+- **DF-003** — Status now `implemented` (plaud-mirror v0.4.15 — HANDOFF Current Status and LLM_START_HERE Current Focus cleaned of trailing "Next: rebuild + push" forward-looking text now that the rebuild+push had landed).
+
+Keeping DF-024 `open` because the proposed convention/check/ritual has
+not yet landed in DocKit itself; the plaud-mirror fix closes the three
+symptoms but the root cause (the LLM's tendency to confuse documenting
+with fixing) is still live for the next adopter.

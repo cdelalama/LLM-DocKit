@@ -1,12 +1,12 @@
-<!-- doc-version: 4.5.1 -->
+<!-- doc-version: 4.5.2 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-04-24 - Claude Opus 4.7
-- Session Focus: Expand `docs/DOWNSTREAM_FEEDBACK.md` from 16 to 23 seed entries after a second pass focused on LLM-native workflow patterns the first batch missed (context compaction, auto-memory ↔ docs/llm bridge, cross-LLM review metadata, graduated validator modes, external version correlation, HISTORY quality, DocKit self-application).
-- Status: v4.5.1 lands the additional seven entries (DF-017..DF-023) and an extended meta-observation that names TWO distinct patterns running through the log — "structural vs semantic enforcement" and "single-fact-in-multiple-places-with-no-sync-contract" — instead of the single pattern the 4.5.0 version called out. DocKit's own blind spots are now documented as DF-023; the file is also a modest indictment of DocKit itself (no external reviewer, untracked planning docs in the working tree). Still no validator or template change ships in this patch — the deliverable is the content. DF-005 remains the only `implemented` entry; the other 22 are `open`.
+- Session Focus: Add DF-024 — "Documenting drift is not fixing drift" — and update the Status lines on DF-001/002/003 now that plaud-mirror v0.4.15 actually closed those three instances. This DF entry names an anti-pattern the LLM performed during the v4.5.0/4.5.1 releases: writing excellent DF entries about specific file:line drifts in an adopter repo, then leaving the adopter instances unrepaired while declaring the feedback work complete.
+- Status: v4.5.2 ships DF-024 in `docs/DOWNSTREAM_FEEDBACK.md`, with proposed mitigations (convention: every DF citing file:line must ship with fix-commit OR explicit TODO block; stretch validator check cross-referencing DF entries against adopter git log; session-end ritual to audit every DF written in the session for fix-vs-status truthfulness). DF-001, DF-002, DF-003 are now `Status: implemented (plaud-mirror v0.4.15)` — the residual protocol-level checks those entries proposed stay `open`. Together with DF-005, four of the 24 entries are now `implemented`; the other 20 are `open`. Still no validator or template change in this patch — the value is epistemic: the LLM learned a new failure mode of its own.
 
 ### Feedback intake workflow
 - Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).

@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.2] - 2026-04-24
+
+### Added
+- DF-024 in `docs/DOWNSTREAM_FEEDBACK.md`: "Documenting drift is not fixing drift." Distinct failure mode from DF-010: the LLM HAS noticed the content problem and turned the noticing into a polished DF entry — then declared the work complete while the underlying instance stays broken. Observed directly on 2026-04-24: DF-001/002/003 were written at v4.5.0 with precise file:line citations in plaud-mirror, and the plaud-mirror instances remained broken until a second GPT-5 review at v4.5.2/plaud-mirror v0.4.15 forced the actual fix. Proposed mitigations: (a) convention that every DF citing `<file>:<line>` in an adopter must either ship with a fix-commit OR carry explicit `TODO:` remediation block, (b) stretch validator check that cross-references DF entries against adopter git log, (c) session-end ritual requiring review of every DF written in session for "fix vs Status truthfulness".
+
+### Changed
+- DF-001, DF-002, DF-003 Status lines updated from `open` to `implemented (plaud-mirror v0.4.15)` with a pointer to the concrete fix that closed each instance. The protocol-level checks proposed in each entry's body remain `open` — the adopter-specific symptom is gone but the systemic cure is still ahead.
+- Meta-observation at the bottom of the file unchanged in wording; DF-024 is the new through-line of this release, threaded in below the last entry.
+
+### Notes
+- This release's value is primarily epistemic: it names a failure mode the LLM had been performing without realising it. No validator or template change ships. The three concrete adopter symptoms (DEPLOY_PLAYBOOK Kali, HOW_TO_USE orphan, HANDOFF stale "Next:") were fixed in plaud-mirror v0.4.15 and carry `Fixed-in:` pointers in their Status lines so future readers of DOWNSTREAM_FEEDBACK see the full audit trail — entry, fix, residual protocol work.
+
 ## [4.5.1] - 2026-04-24
 
 ### Added
