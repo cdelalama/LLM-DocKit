@@ -1,12 +1,21 @@
-<!-- doc-version: 4.4.0 -->
+<!-- doc-version: 4.5.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
-- Last Updated: 2026-03-01 - Claude Opus 4.6
-- Session Focus: /adopt-dockit skill + External Context v1.1
-- Status: v4.4.0. Phase 1 enforcement active. External Context plugin complete. /adopt-dockit skill complete.
+- Last Updated: 2026-04-24 - Claude Opus 4.7
+- Session Focus: Introduce `docs/DOWNSTREAM_FEEDBACK.md` as a living log of drift/gap/usability/process issues observed when DocKit is adopted by real projects. Seeded with 16 entries (DF-001..DF-016) from `plaud-mirror`'s v0.1.0 → v0.4.13 experience.
+- Status: v4.5.0 ships the new feedback log, plus a `skip` strategy entry in `dockit-sync-manifest.yml` so the log stays DocKit-only and is never propagated to adopters. No validator/template change lands in this minor; the log is preparatory — the 16 entries are the prioritised backlog for the next round of protocol work (semantic-content checks, orphan-marker detection, prose-version lag, CHANGELOG emptiness guard, deploy-verify playbook snippet, decision supersession syntax). DF-005 is already implemented (the existing `handoff-start-here-sync` check) and kept in the log as an audit-trail example of a closed pattern; the other 15 are open.
+
+### Feedback intake workflow
+- Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).
+- DocKit maintainer reviews the log when planning a bump; open entries become candidate work.
+- When a fix lands, the entry is updated to `Status: implemented` with a pointer to the commit/doc change, NOT deleted.
+- Rejected entries also stay in place with rationale.
+
+### Prior session context (v4.4.0, 2026-03-23 - Claude Opus 4.6)
+Read-only session — reviewed full project state, summarized completed Phase 1 work, identified pending items (git tags, uncommitted changes, pilot sessions remaining), outlined short/medium/long-term roadmap. Left in place here as the last technical snapshot before v4.5.0.
 
 ## Project Summary
 

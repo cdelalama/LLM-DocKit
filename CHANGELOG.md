@@ -4,6 +4,19 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.0] - 2026-04-24
+
+### Added
+- `docs/DOWNSTREAM_FEEDBACK.md`: living log of drift, gap, usability and process issues observed when DocKit is adopted by real projects. Each entry (`DF-NNN`) records source project + version, category, observation with file:line references, and the protocol-level implication (what DocKit should change to address it). The doc opens with 16 seed entries collected from `plaud-mirror`'s v0.1.0 → v0.4.13 experience — four flagged explicitly by a GPT-5 review (DEPLOY_PLAYBOOK Kali drift, orphan HOW_TO_USE, stale "Next:" snapshots, asymmetric enforcement) and the rest distilled from personal-memory feedback the downstream LLM assistant had saved to itself.
+- `dockit-sync-manifest.yml`: explicit `skip` entry for `docs/DOWNSTREAM_FEEDBACK.md` so the feedback log stays DocKit-only and is never propagated to adopters.
+
+### Changed
+- `docs/llm/HANDOFF.md`: Current Status updated to reference the new feedback-intake workflow and points at the 16 seeded entries for anyone picking up protocol work next.
+
+### Notes
+- No code or validator change ships in this minor. The feedback log is intentionally a preparatory artifact — the entries in it are the prioritised backlog for the next round of validator / template work (semantic-content checks, orphan-marker detection, prose-version lag, CHANGELOG emptiness guard, deploy-verify playbook snippet, decision supersession syntax).
+- Follow-up items DF-001..DF-004 correspond directly to the four concrete drifts a sibling LLM found in the plaud-mirror repo on 2026-04-24; DF-005 is an already-implemented check documented here for audit trail; DF-006..DF-016 extend the log into adjacent problem classes observed across the same project over the preceding week.
+
 ## [4.4.0] - 2026-03-01
 
 ### Added

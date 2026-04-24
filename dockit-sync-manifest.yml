@@ -24,6 +24,11 @@ files:
 - path: scripts/check-version-sync.sh     strategy: copy
 - path: scripts/pre-commit-hook.sh        strategy: copy
 - path: scripts/dockit-generate-external-context.sh  strategy: copy
+- path: scripts/dockit-validate-session.sh strategy: copy
+
+# --- Claude Code hooks (copy: needed by .claude/settings.json hooks) ---
+- path: .claude/settings.json             strategy: copy
+- path: .claude/rules/require-docs-on-code-change.md  strategy: copy
 
 # --- GitHub templates (copy) ---
 - path: .github/ISSUE_TEMPLATE/bug_report.md    strategy: copy
@@ -57,3 +62,4 @@ files:
 - path: LICENSE                           strategy: skip
 - path: .gitignore                        strategy: skip
 - path: dockit-sync-manifest.yml          strategy: skip
+- path: docs/DOWNSTREAM_FEEDBACK.md       strategy: skip
