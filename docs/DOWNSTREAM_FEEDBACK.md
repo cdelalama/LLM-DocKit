@@ -13,7 +13,8 @@ maintainer's backlog of protocol-level work suggested by real adoption.
 
 - `open` — observed, no fix planned yet
 - `accepted` — fix is in the DocKit roadmap
-- `implemented` — a check, template change, or doc has landed that addresses it
+- `partially implemented (<adopter-version>)` — the adopter-symptom axis is closed in a concrete release, but the protocol-level axis (template rule, validator check, etc.) still has work left. Many DF entries have both axes; this Status keeps the residual protocol work visible without losing the audit trail of the symptom-level fix.
+- `implemented` — a check, template change, or doc has landed that addresses it (both adopter and protocol axes, where both apply)
 - `rejected` — intentionally out of scope; includes rationale
 - `superseded-by: DF-NNN` — merged into another entry
 
@@ -778,7 +779,7 @@ exists. Probably too noisy to be useful, but worth prototyping.
 - Source: plaud-mirror v0.4.14 (Main/Configuration tabs, collapsible Historical backfill, localStorage persistence — all shipped with the only web-side test being `tests/integration/web-build.test.mjs:6` which only asserts the build emits a shell)
 - Date observed: 2026-04-24
 - Category: gap
-- Status: open
+- Status: partially implemented (plaud-mirror v0.4.17 — pure UI helpers extracted into `packages/shared/src/formatting.ts` and covered by 12 dedicated `node:test` tests, hooked into the root suite). Component-level rendering tests for tabs persistence, collapsible card ARIA / mount-unmount, and BackfillPreview lifecycle are still `open` — those would need vitest+jsdom+@testing-library/react which is a real dependency addition deferred for a later patch. Protocol-level template rule (split testing rule by layer) is also still `open`.
 
 Observation: at plaud-mirror v0.4.16 the suite is 53/53 green. The
 backend is surgically tested (client parse, store CRUD, service logic,

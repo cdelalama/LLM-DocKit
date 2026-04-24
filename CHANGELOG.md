@@ -4,6 +4,15 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.4] - 2026-04-24
+
+### Changed
+- DF-026 Status updated from `open` to `partially implemented (plaud-mirror v0.4.17)`. The adopter (plaud-mirror v0.4.17) extracted the previously local-to-App.tsx pure UI helpers (`formatDuration`, `formatBytes`, `formatRecordingsMetric`, `computeMissing`, `formatDeviceLabel`, `formatDeviceShortName`, `coerceNonNegativeInteger`, `summarizeRun`, `describeBusy`) into `packages/shared/src/formatting.ts` and added 12 dedicated `node:test` tests hooked into the root suite. That closes the helper-level half of DF-026 — a regression in any of those would now actually fail the suite. Component-level rendering tests (tabs persistence + switch, collapsible card ARIA + mount/unmount of BackfillPreview, debounced fetch behaviour) remain `open` because they would require introducing vitest+jsdom+@testing-library/react as new dependencies, which is a non-trivial scope addition deferred for a later patch. Protocol-level template change (split DocKit's "every new runtime case must come with tests" rule by layer, with explicit waiver path in HISTORY for UI cases) also still `open`.
+
+### Notes
+- Adopter count: 26 entries, 5 `implemented`, 1 `partially implemented` (DF-026), 20 `open`.
+- The partial-implementation pattern is itself worth tracking. DF-024's convention requires every entry citing `<file>:<line>` to ship with a fix-commit OR a `TODO:` block. Adding `partially implemented (<adopter-version>)` as a third valid Status value extends that convention naturally — the adopter half of the work is closed in a concrete release while the protocol half stays visible as ongoing. If this pattern recurs (likely; many DF entries have an adopter-symptom axis and a protocol-level axis), the file's "Status legend" header should grow this value formally. Watch for it on the next pass.
+
 ## [4.5.3] - 2026-04-24
 
 ### Added

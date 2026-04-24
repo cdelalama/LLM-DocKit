@@ -1,12 +1,12 @@
-<!-- doc-version: 4.5.3 -->
+<!-- doc-version: 4.5.4 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-04-24 - Claude Opus 4.7
-- Session Focus: Add DF-025 ("runbook promises a configuration the codebase doesn't support") and DF-026 ("backend tests green while UI-state features ship without assertions"). DF-025 is a specialisation of DF-024 — the plaud-mirror Alpine/bash instance that surfaced it is fixed in plaud-mirror v0.4.16, so DF-025 ships as `implemented` on the adopter-symptom axis with the protocol-level convention still `open`. DF-026 names a layer-asymmetry in the existing "every new runtime case must come with tests" rule that adopter LLMs were interpreting as "backend tests count"; no adopter fix attached because the cure is a DocKit template change.
-- Status: v4.5.3 ships DF-025 + DF-026. The log is now 26 entries, 5 `implemented` (DF-005, 001, 002, 003, 025 — all on the adopter-symptom axis), 21 `open`. Still no validator or template change lands in this patch. The two-axis pattern from v4.5.1 — "structural vs semantic enforcement" and "single-fact-in-multiple-places-with-no-sync-contract" — now has a third strand forming in the background: **code-vs-docs drift** (DF-001 kind-of, DF-007, DF-025). That'll probably be the next meta-observation revision when it's clearer whether it's a distinct pattern or a specialisation of the existing two.
+- Session Focus: Update DF-026 from `open` to `partially implemented (plaud-mirror v0.4.17)` after the adopter extracted pure UI helpers into `packages/shared` with 12 dedicated `node:test` tests, and formalise `partially implemented (<adopter-version>)` as a third Status value in the file's Status legend. This is the first DF entry with an explicit two-axis status (adopter-symptom closed; protocol-level template work still open) — many entries have this shape but the legend didn't model it.
+- Status: v4.5.4 lands the DF-026 status update + the legend extension. The log is now 26 entries, 5 `implemented`, **1 `partially implemented`**, 20 `open`. Still no validator or template change lands in this patch — the deliverable is the more accurate Status taxonomy. The two-axis pattern is itself worth watching: many DF entries are "adopter symptom + protocol cure" pairs (DF-001/002/003/025 closed both axes simultaneously because the protocol work was a one-off doc; DF-026 split because the protocol work is a real template change). Future entries should default to using `partially implemented` when only one axis is closed, instead of forcing the choice between `open` (understates the adopter fix) and `implemented` (overclaims the protocol cure).
 
 ### Feedback intake workflow
 - Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).
