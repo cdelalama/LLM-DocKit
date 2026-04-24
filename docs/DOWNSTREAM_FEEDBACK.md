@@ -423,15 +423,226 @@ matches what the docs promise, not just that it round-trips through
 storage." Not a check DocKit can run; just a rule adopters can cite when
 reviewing each other.
 
+## DF-017 — Context compaction can lose detail the LLM wrote to persist
+
+- Source: plaud-mirror (this very session was continued after context compaction)
+- Date observed: 2026-04-24
+- Category: gap
+- Status: open
+
+Observation: an LLM session's working context is compacted when it exceeds
+limits. The auto-summary tries to preserve detail but is necessarily lossy
+(tool-call outputs and intermediate reasoning are collapsed to prose). DocKit
+prescribes `docs/llm/HANDOFF.md`, `HISTORY.md`, and `DECISIONS.md` as the
+durable memory meant to survive session boundaries — but DocKit does not
+prescribe WHEN to checkpoint them. In practice the LLM only updates them at
+"natural" milestones and trusts the auto-summary for everything else. If
+compaction strikes mid-task, the resumed session reads the summary, not the
+doc, and can diverge subtly from what actually happened.
+
+Protocol implication: add template guidance in `LLM_START_HERE.md` (or a
+dedicated `docs/llm/COMPACTION.md`): "before your working context
+approaches limits, write a full-fidelity HANDOFF snapshot with explicit
+file:line references for in-flight edits; do not rely on the auto-summary
+to reconstruct surgical detail." Optional: a PreCompact-style hook that
+detects context pressure and nudges the LLM to run `/update-docs` before
+the compaction runs. This is specifically an LLM-native problem DocKit is
+well-placed to solve — no other protocol in this space has a compaction
+convention.
+
+## DF-018 — LLM personal auto-memory and `docs/llm/` drift as two parallel stores
+
+- Source: plaud-mirror LLM assistant (saved 7 `feedback_*.md` entries to Claude's auto-memory during v0.4.x; only surfaced when the user explicitly asked for a DOWNSTREAM_FEEDBACK seed)
+- Date observed: 2026-04-24
+- Category: process
+- Status: open
+
+Observation: the LLM's personal auto-memory (e.g. Claude's `memory/MEMORY.md`
+at `~/.claude/projects/<slug>/memory/`) captures lessons for the LLM's own
+future sessions. DocKit's `docs/llm/` captures lessons for any future
+contributor (human or another LLM). They are two persistence stores with no
+bridge — a lesson saved to auto-memory stays invisible to the project, and a
+lesson written in DECISIONS.md stays invisible to the LLM's next cold session
+unless that session re-reads DECISIONS. In practice lessons land in one store
+or the other, rarely both, and drift.
+
+Protocol implication: DocKit should recommend that every auto-memory
+`feedback_*` entry generate a parallel artifact — either a DECISIONS.md
+entry (if it's durable) or a DOWNSTREAM_FEEDBACK.md candidate (if it's
+about DocKit itself). This very session is the first documented instance of
+that translation happening on demand; codifying it makes it systematic.
+Optional: a skill (`/export-memory`) that scans the LLM's auto-memory and
+produces a draft `docs/llm/*` diff for the maintainer to review. Lighter
+option: LLM_START_HERE block that instructs the LLM to list its auto-memory
+contents in every HISTORY entry so at minimum the existence of
+auto-memory-captured lessons is visible to the project.
+
+## DF-019 — Cross-LLM review metadata is unstructured prose
+
+- Source: plaud-mirror (GPT-5 reviews interleaved with Claude implementation work over April 2026)
+- Date observed: 2026-04-24
+- Category: usability
+- Status: open
+- Related: DF-010
+
+Observation: when multiple LLMs collaborate (GPT reviews, Claude implements,
+human arbitrates) the trail is prose in HISTORY and occasional REVIEWS.md
+entries. No structured metadata: who reviewed, at which version, how many
+findings, how many accepted, which commit implemented which finding. A
+future LLM reading HISTORY sees "GPT flagged…; Claude fixed…" as
+undifferentiated narrative. Tracing "which findings are still open from the
+2026-04-24 review" requires rereading the whole session.
+
+Protocol implication: extend the existing REVIEWS.md "enriched entry"
+convention with a standardized, grep-able header block:
+
+```
+## Review YYYY-MM-DD - <reviewer-llm-id>
+- Reviewer-LLM: <name + model id>
+- Reviewed-Version: <X.Y.Z>
+- Reviewed-Commit: <sha>
+- Findings: <N>
+- Accepted: <k>/<N>
+- Implemented-In: <commit-sha or "pending">
+- Rejected: <k>/<N>   (reasons listed below per-finding)
+```
+
+Validator could grep for missing required fields (`Reviewer-LLM`,
+`Reviewed-Version`, `Findings`) and warn. The per-finding body stays prose;
+only the header is structured.
+
+## DF-020 — Validator has no graduated execution modes
+
+- Source: plaud-mirror (`scripts/dockit-validate-session.sh --human` always runs all 6 checks)
+- Date observed: 2026-04-24
+- Category: usability
+- Status: open
+- Related: DF-010
+
+Observation: every invocation runs every check. There is no fast mode for
+during-edit checks (just marker + version-sync, milliseconds), no strict
+mode for pre-release (add DF-001/006/008/013 semantic checks), no paranoid
+mode for major bumps (add DF-002 orphan scan, DF-004 doc-freshness, DF-018
+external-version probe). Adopters either pay the strict cost on every
+commit (and disable hooks out of friction) or they skip strict checks
+entirely (and drift accumulates until a human review fires).
+
+Protocol implication: add `--mode <fast|normal|strict|paranoid>` flag to
+`dockit-validate-session.sh`. Fast: marker + version-sync only. Normal:
+today's default (6 checks, no content inspection). Strict: adds the
+semantic-content checks proposed in DF-001/006/008/013. Paranoid: adds
+structural checks proposed in DF-002/004/018. Pre-commit hook stays on
+Normal; release-branch CI uses Strict; major-bump ritual uses Paranoid.
+Users can set `default_mode: <...>` in `.dockit-config.yml`.
+
+## DF-021 — External-context checks are edit-triggered but not version-correlated
+
+- Source: plaud-mirror ↔ home-infra/docs/PROJECTS.md (PROJECTS.md lagged behind plaud-mirror's VERSION on at least three occasions before the LLM assistant started sweeping it manually every bump)
+- Date observed: 2026-04-24
+- Category: gap
+- Status: open
+- Related: DF-009
+
+Observation: the `external-triggers` check fires when a locally-tracked
+file changes, telling the operator "external doc X may need updating".
+It does NOT verify that the external doc's stated version of the downstream
+project matches the downstream's current `VERSION`. Concretely:
+`~/src/home-infra/docs/PROJECTS.md` has a table row stating
+`| plaud-mirror | ~/src/plaud-mirror | 0.4.10 | ...`. The LLM can bump
+plaud-mirror's VERSION to 0.4.13, skip the PROJECTS.md update, and the
+validator never complains because no LOCAL file that matches an
+`update_triggers` glob was changed — just VERSION, which is tracked by
+version-sync but not by external-triggers.
+
+Protocol implication: extend `.dockit-config.yml`'s
+`external_context.update_triggers` mapping with an optional version-probe:
+
+```yaml
+external_context:
+  update_triggers:
+    - local_glob: "VERSION"
+      external_path: "~/src/home-infra/docs/PROJECTS.md"
+      version_probe: "| plaud-mirror | ~/src/plaud-mirror | %VERSION% |"
+```
+
+The validator reads `VERSION`, substitutes `%VERSION%`, greps the external
+file; mismatch = warn. This directly catches the class of drift DF-009
+describes at the "next action" level, by catching it at the "is the claim
+still true?" level.
+
+## DF-022 — HISTORY entry quality varies with no guardrail
+
+- Source: plaud-mirror (HISTORY entries for 0.1.1, 0.2.0 etc. are surgical with exact file:line and numerical claims; others from the same project are summary-level)
+- Date observed: 2026-04-24
+- Category: process
+- Status: open
+
+Observation: HISTORY.md accepts any prose. Some entries are excellent
+(every file touched listed, exact module paths, numbered test counts, "X
+commits ahead of…"); others collapse to "Fixed several issues in the
+backfill flow." A future LLM reconstructing "what happened in 0.4.5"
+inherits a dataset of uneven quality. Over a long project lifetime this
+degrades the value of HISTORY as a reconstruction source.
+
+Protocol implication: add a non-blocking lint. Heuristics:
+(a) entry has `- Files: [...]` list with at least one path
+(b) entry has `- Version impact:` line ending in `yes` or `no`
+(c) entry body length is between a sensible floor and ceiling (e.g. 400
+    to 4000 chars — too short = vague, too long = unstructured dump)
+(d) entry references at least one numerical or file:line-level assertion
+    ("N tests pass", "file.ts:42")
+Warn on (a) or (b) missing, info on (c)/(d). Combined with a "good
+example" sample block at the top of HISTORY.md, most authors will pattern
+on the example.
+
+## DF-023 — DocKit uses DocKit on itself, with no external reviewer
+
+- Source: LLM-DocKit self-observation (as of v4.5.0, DEFERRED_NEXT_VERSION.md, HOOKS_ENFORCEMENT_PROPOSAL.md and LLM_DOCKIT_CE_V2_PROPOSAL.md are visible in the working tree but untracked in git; none of DocKit's own docs are reviewed by a sibling LLM the way plaud-mirror's docs are reviewed by GPT-5)
+- Date observed: 2026-04-24
+- Category: process
+- Status: open
+
+Observation: the irony is acute — the protocol whose main value is
+"structure for LLM collaboration" has no external reviewer for its own
+docs. The same blind spot DF-010 identifies for adopters applies to DocKit
+itself: validator PASS + maintainer eyeball is the bar, and untracked
+planning docs accumulate in the working tree. The CONTRIBUTING story is
+also absent, so contributors coming from outside have no prescribed
+review/acceptance path.
+
+Protocol implication: DocKit's own release process should run DocKit in
+Strict or Paranoid mode (see DF-020) on DocKit, and periodically cross-LLM
+review DocKit's docs and planning notes. Codify as
+`docs/CONTRIBUTING.md` template (for adopter projects) and as a section
+in DocKit's own `HOW_TO_USE.md`. Parallel: enforce that DocKit's own
+working tree has no long-lived untracked `.md` files — either track them
+or put them in `.gitignore` explicitly, so the repo state is never
+"working tree has plans that don't exist in git history".
+
 ---
 
 ## Meta-observation
 
-A pattern running through the entries: DocKit currently enforces
-**structural** discipline (markers, dates, manifest membership, paired file
-sync) excellently, and **semantic** discipline not at all. Every
-implemented check is about the shape of the artifact; every open entry above
-is about the content inside the artifact. The next generation of DocKit work
-(see `docs/HOOKS_ENFORCEMENT_PROPOSAL.md`, `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md`)
-can use this log to decide which semantic checks are worth their
-false-positive cost.
+Two patterns run through the 23 entries, not one:
+
+**Structural vs semantic.** DocKit currently enforces **structural**
+discipline (markers, dates, manifest membership, paired file sync)
+excellently and **semantic** discipline not at all. DF-001, DF-006, DF-008,
+DF-011, DF-016, DF-019 are all "the artifact is shaped correctly but says
+the wrong thing." Every implemented check is about shape; every open
+entry about shape-passing-but-content-wrong.
+
+**Persistence stores that should be one but are many.** DF-015 (same
+policy in 5 docs), DF-018 (LLM auto-memory vs `docs/llm/`), DF-021
+(internal VERSION vs external claim about VERSION) are all the same
+abstract failure: "a single fact lives in multiple places with no sync
+contract." DocKit's `version-sync-manifest.yml` solves this for
+structural version strings. It does not solve it for content-level claims,
+policy statements, or cross-repo cross-references.
+
+The next generation of DocKit work (see
+`docs/HOOKS_ENFORCEMENT_PROPOSAL.md`, `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md`)
+can use this log to decide which semantic checks and which sync-contract
+generalizations are worth their false-positive and maintenance cost. The
+graduated-mode proposal (DF-020) is the natural surface on which to
+dispatch them.

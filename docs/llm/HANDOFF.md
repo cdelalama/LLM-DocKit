@@ -1,12 +1,12 @@
-<!-- doc-version: 4.5.0 -->
+<!-- doc-version: 4.5.1 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-04-24 - Claude Opus 4.7
-- Session Focus: Introduce `docs/DOWNSTREAM_FEEDBACK.md` as a living log of drift/gap/usability/process issues observed when DocKit is adopted by real projects. Seeded with 16 entries (DF-001..DF-016) from `plaud-mirror`'s v0.1.0 → v0.4.13 experience.
-- Status: v4.5.0 ships the new feedback log, plus a `skip` strategy entry in `dockit-sync-manifest.yml` so the log stays DocKit-only and is never propagated to adopters. No validator/template change lands in this minor; the log is preparatory — the 16 entries are the prioritised backlog for the next round of protocol work (semantic-content checks, orphan-marker detection, prose-version lag, CHANGELOG emptiness guard, deploy-verify playbook snippet, decision supersession syntax). DF-005 is already implemented (the existing `handoff-start-here-sync` check) and kept in the log as an audit-trail example of a closed pattern; the other 15 are open.
+- Session Focus: Expand `docs/DOWNSTREAM_FEEDBACK.md` from 16 to 23 seed entries after a second pass focused on LLM-native workflow patterns the first batch missed (context compaction, auto-memory ↔ docs/llm bridge, cross-LLM review metadata, graduated validator modes, external version correlation, HISTORY quality, DocKit self-application).
+- Status: v4.5.1 lands the additional seven entries (DF-017..DF-023) and an extended meta-observation that names TWO distinct patterns running through the log — "structural vs semantic enforcement" and "single-fact-in-multiple-places-with-no-sync-contract" — instead of the single pattern the 4.5.0 version called out. DocKit's own blind spots are now documented as DF-023; the file is also a modest indictment of DocKit itself (no external reviewer, untracked planning docs in the working tree). Still no validator or template change ships in this patch — the deliverable is the content. DF-005 remains the only `implemented` entry; the other 22 are `open`.
 
 ### Feedback intake workflow
 - Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).
@@ -28,7 +28,7 @@ Read-only session — reviewed full project state, summarized completed Phase 1 
 - Downstream template sync (dockit-sync.sh, 1192 lines POSIX sh, 4 strategies)
 
 **Repository:** https://github.com/cdelalama/LLM-DocKit
-**Current version:** 4.4.0
+**Current version:** see `VERSION` (single source of truth — prose strings here drift; the file does not)
 **Tech stack:** POSIX shell scripts only, zero external dependencies
 
 ## The Core Problem

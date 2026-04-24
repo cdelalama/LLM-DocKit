@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.1] - 2026-04-24
+
+### Added
+- Seven more seed entries in `docs/DOWNSTREAM_FEEDBACK.md` (DF-017..DF-023) after a second pass over the plaud-mirror adoption experience focused on LLM-native workflow patterns the first 16 entries missed. Categories: context compaction checkpoint discipline (DF-017), parallel persistence stores with no bridge — LLM personal auto-memory vs `docs/llm/*` (DF-018), cross-LLM review metadata (DF-019), graduated validator execution modes — fast/normal/strict/paranoid (DF-020), external-context version correlation not just edit-trigger (DF-021), HISTORY entry quality lint (DF-022), DocKit self-application without external reviewer (DF-023).
+- Extended meta-observation at the bottom of `DOWNSTREAM_FEEDBACK.md` now names two distinct patterns instead of one: "structural vs semantic" (DF-001, DF-006, DF-008, DF-011, DF-016, DF-019) and "single-fact-in-multiple-places-with-no-sync-contract" (DF-015, DF-018, DF-021) — the latter is a generalization of what `version-sync-manifest.yml` already solves for version strings.
+
+### Changed
+- `docs/llm/HANDOFF.md`: Current Status refreshed to point at all 23 entries (not just the first 16) and flags DF-023 as DocKit's own blind spot. Also corrects a pre-existing drift: the "Project Summary" block still said `Current version: 4.4.0` at v4.5.0 — now cites `VERSION` file as the single source of truth instead of carrying a prose version string.
+
+### Notes
+- Still no validator or template change. The content of the log is the deliverable. The three most actionable next steps implied by the 23 entries are: (a) implement DF-002 (orphan marker scan) and DF-008 (empty CHANGELOG guard) first — they are low-cost and high-signal; (b) adopt the graduated-mode framing from DF-020 as the surface on which DF-001/006/013/018/021 attach; (c) codify DF-018 by publishing a small `/export-memory` skill so adopters stop losing auto-memory lessons to the protocol.
+
 ## [4.5.0] - 2026-04-24
 
 ### Added
