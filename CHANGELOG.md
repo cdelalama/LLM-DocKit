@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.3] - 2026-04-24
+
+### Added
+- DF-025 in `docs/DOWNSTREAM_FEEDBACK.md`: "Runbook promises a configuration the codebase doesn't actually support." Specialisation of DF-024: the drift is code-vs-docs, not doc-vs-doc. The plaud-mirror instance is textbook — v0.4.15 rewrote DEPLOY_PLAYBOOK with `node:20-alpine` as an acceptable Docker fallback example, but the committed Dockerfile forced `SHELL ["/bin/bash", "-lc"]` and Alpine ships no bash. An operator would have hit a build error. Closed in plaud-mirror v0.4.16 by dropping both SHELL directives and verifying an Alpine build end-to-end. Proposed mitigations: template rule adding a `Verified:` annotation convention to concrete runbook examples; session-end addendum to DF-024(c) requiring the LLM to attempt any new runbook example before declaring the session done.
+- DF-026: "Backend tests go green while UI-state features (tabs, localStorage, collapse) ship with only a build-shell smoke test." Observed in plaud-mirror v0.4.14 — the tabs + collapsible-backfill + localStorage-persistence feature set shipped with 53/53 passing, but the only web-side test is a build-shell smoke check. A regression flipping any of those to broken would still report PASS. Not a validator concern (test coverage is adopter-owned), but DocKit's template LLM_START_HERE rule "every new runtime case must come with explicit tests" is not layer-differentiated; adopter LLMs interpret it as "backend tests count" and ship UI changes without asserting the new state. Proposed: template rule distinguishing backend-runtime vs UI-state cases, with an explicit waiver path in HISTORY for UI cases left untested (so the gap is acknowledged, not silently skipped).
+
+### Changed
+- DF-025 Status: `implemented (plaud-mirror v0.4.16)` on the concrete symptom (Alpine build now works), but the protocol-level `Verified:` annotation convention is `open`. Same pattern as DF-001/002/003: adopter symptom fixed, systemic cure pending.
+
+### Notes
+- Adopter count: 26 entries now, 4 implemented (DF-005, 001, 002, 003 — the last three from v0.4.15 adopter fixes, noted in v4.5.2 — and now DF-025 joins as 5 `implemented` on the adopter-symptom axis). 21 open. DF-024 and DF-026 remain `open` — those are protocol-level not adopter-level and the fix is template/validator work, not just a downstream patch.
+
 ## [4.5.2] - 2026-04-24
 
 ### Added

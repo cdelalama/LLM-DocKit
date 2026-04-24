@@ -1,12 +1,12 @@
-<!-- doc-version: 4.5.2 -->
+<!-- doc-version: 4.5.3 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-04-24 - Claude Opus 4.7
-- Session Focus: Add DF-024 — "Documenting drift is not fixing drift" — and update the Status lines on DF-001/002/003 now that plaud-mirror v0.4.15 actually closed those three instances. This DF entry names an anti-pattern the LLM performed during the v4.5.0/4.5.1 releases: writing excellent DF entries about specific file:line drifts in an adopter repo, then leaving the adopter instances unrepaired while declaring the feedback work complete.
-- Status: v4.5.2 ships DF-024 in `docs/DOWNSTREAM_FEEDBACK.md`, with proposed mitigations (convention: every DF citing file:line must ship with fix-commit OR explicit TODO block; stretch validator check cross-referencing DF entries against adopter git log; session-end ritual to audit every DF written in the session for fix-vs-status truthfulness). DF-001, DF-002, DF-003 are now `Status: implemented (plaud-mirror v0.4.15)` — the residual protocol-level checks those entries proposed stay `open`. Together with DF-005, four of the 24 entries are now `implemented`; the other 20 are `open`. Still no validator or template change in this patch — the value is epistemic: the LLM learned a new failure mode of its own.
+- Session Focus: Add DF-025 ("runbook promises a configuration the codebase doesn't support") and DF-026 ("backend tests green while UI-state features ship without assertions"). DF-025 is a specialisation of DF-024 — the plaud-mirror Alpine/bash instance that surfaced it is fixed in plaud-mirror v0.4.16, so DF-025 ships as `implemented` on the adopter-symptom axis with the protocol-level convention still `open`. DF-026 names a layer-asymmetry in the existing "every new runtime case must come with tests" rule that adopter LLMs were interpreting as "backend tests count"; no adopter fix attached because the cure is a DocKit template change.
+- Status: v4.5.3 ships DF-025 + DF-026. The log is now 26 entries, 5 `implemented` (DF-005, 001, 002, 003, 025 — all on the adopter-symptom axis), 21 `open`. Still no validator or template change lands in this patch. The two-axis pattern from v4.5.1 — "structural vs semantic enforcement" and "single-fact-in-multiple-places-with-no-sync-contract" — now has a third strand forming in the background: **code-vs-docs drift** (DF-001 kind-of, DF-007, DF-025). That'll probably be the next meta-observation revision when it's clearer whether it's a distinct pattern or a specialisation of the existing two.
 
 ### Feedback intake workflow
 - Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).

@@ -725,3 +725,95 @@ Keeping DF-024 `open` because the proposed convention/check/ritual has
 not yet landed in DocKit itself; the plaud-mirror fix closes the three
 symptoms but the root cause (the LLM's tendency to confuse documenting
 with fixing) is still live for the next adopter.
+
+## DF-025 — Runbook promises a configuration the codebase doesn't actually support
+
+- Source: plaud-mirror v0.4.15 (DEPLOY_PLAYBOOK + README + HANDOFF listed `node:20-alpine` as a valid Docker fallback; `Dockerfile:6` and `Dockerfile:30` forced `SHELL ["/bin/bash", "-lc"]` and Alpine doesn't ship bash — the documented fallback was aspirational, not executable)
+- Date observed: 2026-04-24
+- Category: drift
+- Status: implemented (plaud-mirror v0.4.16 — Dockerfile drops both SHELL directives, Alpine build verified end-to-end including `GET /api/health` → 200). Protocol-level check proposed in the body below is still `open`.
+- Related: DF-001, DF-024
+
+Observation: a specialisation of DF-024, worth its own entry because
+the failure mode is structurally different from "same policy replicated
+across docs" (DF-015) or "runbook contradicts docs-level policy"
+(DF-001). Here the drift is **code vs. docs**: the runbook promises X,
+but the committed codebase does not support X, and the validator has
+no way to notice. In DF-001 the fix is consistent docs; in DF-025 the
+fix is either adjusting the code so the promise is true OR adjusting
+the docs so they stop lying. Either direction is a real commit; leaving
+either broken is drift.
+
+The v0.4.15 instance in plaud-mirror is textbook: the LLM rewrote the
+DEPLOY_PLAYBOOK with `node:20-alpine` as an example, passed the
+validator, committed, pushed — all without running `docker build` with
+that argument. The Alpine fallback existed only as prose. A third
+GPT-5 review (same session) caught it the moment it attempted to
+reason about what an operator would actually execute.
+
+Protocol implication: a `runbook-claims-vs-code` check is hard to
+generalise because "what the code supports" is project-specific. But
+the template-level intervention is cheap and effective:
+
+(a) **Template rule in `docs/operations/DEPLOY_PLAYBOOK.md`**: every
+concrete example (every `export ...=VALUE`, every `--build-arg
+K=V`, every command with a specific argument) should be marked either
+`Verified: <commit-sha>` on the same line or be explicitly marked as
+"not verified in CI, see assumptions below". DocKit's adopt-dockit skill
+can drop this reminder. Mere mental discipline isn't enough — the v0.4.15
+case is proof.
+
+(b) **Session-end addendum to DF-024(c)**: "if the session modified a
+runbook to include a new concrete example, the LLM must attempt the
+example (or explicitly record why it cannot) before declaring the
+session complete." Near-zero cost on writes; catches the exact failure
+mode that produced DF-025.
+
+(c) **Stretch check**: grep DEPLOY_PLAYBOOK for code blocks, extract
+the first command verb + argument, check if a matching recent commit
+exists. Probably too noisy to be useful, but worth prototyping.
+
+## DF-026 — Backend tests go green while UI-state features (tabs, localStorage, collapse) ship with only a build-shell smoke test
+
+- Source: plaud-mirror v0.4.14 (Main/Configuration tabs, collapsible Historical backfill, localStorage persistence — all shipped with the only web-side test being `tests/integration/web-build.test.mjs:6` which only asserts the build emits a shell)
+- Date observed: 2026-04-24
+- Category: gap
+- Status: open
+
+Observation: at plaud-mirror v0.4.16 the suite is 53/53 green. The
+backend is surgically tested (client parse, store CRUD, service logic,
+server routes, schema round-trips). The web panel has exactly one
+integration test that confirms the build output exists. Tabs, panel
+localStorage state, collapse/expand behavior, BackfillPreview debounce
+— none of it has a single assertion in the test suite. A regression
+flipping any of those to broken would still report 53/53 pass.
+
+This is not specifically a DocKit gap — test coverage is an adopter
+concern. BUT DocKit already has a rule in LLM_START_HERE templates
+("every new runtime case must come with explicit tests in the same
+session"). The rule is advisory at the sentence level; it is not
+differentiated by layer. In practice adopter LLMs interpret it as
+"backend tests count" and ship UI changes without asserting the new
+UI state.
+
+Protocol implication: DocKit's template LLM_START_HERE should
+distinguish "backend runtime cases" from "UI-state cases" in the
+testing rule. Something like:
+
+- For backend cases: unit/integration tests that assert the value
+  the docs promise (see DF-016).
+- For UI-state cases: at minimum a rendering assertion that the
+  new state is present (component mounted, class applied, text
+  rendered) OR an explicit waiver in HISTORY ("UI case not tested
+  because <reason>").
+
+The waiver path is intentional — it forces the LLM to acknowledge
+the gap rather than silently skip it, and it gives reviewers an
+audit trail. DocKit's enforcement cascade (Stop hook → pre-commit
+→ CI) is already in place; this is a template change, not a
+validator change.
+
+Related to DF-010 (validator PASS ≠ docs useful) and DF-016 (tests
+pass ≠ feature-correct) but distinct: those are about tests'
+assertion quality; this one is about tests' presence at all in a
+specific layer.
