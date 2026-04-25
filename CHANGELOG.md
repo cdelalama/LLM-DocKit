@@ -4,6 +4,15 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.5.5] - 2026-04-25
+
+### Added
+- DF-027 in `docs/DOWNSTREAM_FEEDBACK.md`: "`git add -u` silently skips new untracked files; commit succeeds, workspace stays green, origin is broken." A specialisation of DF-024 ("documenting without verifying") at the git-mechanics layer, distinct enough from DF-014 ("commit accumulation across version bumps") to deserve its own entry. The plaud-mirror v0.4.17 commit (`d1bc317`) was published broken to `origin/main`: the LLM created two new source files with the Write tool, used `git add -u && git commit`, and the new files stayed `??`-untracked while the commit succeeded with the modified-only changes. Local workspace stayed green because tsc/node read from filesystem; a fresh clone would have failed `npm install && npm run build` at import-resolution. Closed in plaud-mirror v0.4.18 (commit `d2f17f2`) by re-staging the missing files explicitly + version bump + CHANGELOG entry naming the broken release. DF-027 ships as `partially implemented (plaud-mirror v0.4.18)` on the adopter-symptom axis; the protocol-level pre-commit hook check is `open` and proposed in detail (grep the staged tree for relative-path imports that resolve to files NOT present in the staged set, error if any are missing).
+
+### Notes
+- Adopter count: 27 entries, 5 `implemented`, 2 `partially implemented` (DF-026, DF-027), 20 `open`. The `partially implemented` count is now plural — exactly the case the v4.5.4 legend extension was anticipating.
+- The most actionable next bump is the pre-commit hook proposed by DF-027(b). It's mechanical, false-positive risk is low (skip dynamic imports / module aliases), and it would have prevented the v0.4.17 → v0.4.18 cycle entirely. Pair it naturally with DF-002 (orphan-marker scan) and DF-008 (empty-CHANGELOG guard) — three pre-commit checks that target concrete failure modes already observed in the field. That would be a meaningful v4.6.0 (minor: new validator capabilities) rather than another DF entry release.
+
 ## [4.5.4] - 2026-04-24
 
 ### Changed

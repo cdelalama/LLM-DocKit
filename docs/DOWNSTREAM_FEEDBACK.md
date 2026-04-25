@@ -818,3 +818,88 @@ Related to DF-010 (validator PASS ≠ docs useful) and DF-016 (tests
 pass ≠ feature-correct) but distinct: those are about tests'
 assertion quality; this one is about tests' presence at all in a
 specific layer.
+
+## DF-027 — `git add -u` silently skips new untracked files; commit succeeds, workspace stays green, origin is broken
+
+- Source: plaud-mirror v0.4.17 (commit `d1bc317` on origin/main; closed by forward-fix v0.4.18 commit `d2f17f2` on the same branch)
+- Date observed: 2026-04-25
+- Category: process
+- Status: partially implemented (plaud-mirror v0.4.18 — adopter symptom closed by re-staging the missing files explicitly + version bump + CHANGELOG entry naming the broken release). Protocol-level pre-commit hook check proposed in the body below is still `open`.
+- Related: DF-024, DF-014
+
+Observation: a specialisation of DF-024 ("documenting without
+verifying") at the git-mechanics layer, distinct enough from DF-014
+("commit accumulation across version bumps") to deserve its own entry.
+
+The concrete failure: the LLM creates new files with the Write tool
+(here `packages/shared/src/formatting.ts` and `formatting.test.ts`),
+then runs `git add -u && git commit -m "..."`. The `-u` flag means
+"stage all MODIFIED tracked files" — it does NOT stage new untracked
+files. The new files stay `??` in `git status`. The commit succeeds
+with whatever was modified-and-tracked, references the new files in
+its commit message and CHANGELOG narrative, and pushes cleanly.
+
+Local workspace stays green because:
+
+- `tsc -b` reads source files from filesystem, not from git → the
+  build succeeds.
+- `node --test` reads compiled output the same way → tests pass.
+- `docker compose build` uses `COPY . .` → the container ships with
+  the missing-from-git files AS IF they had been versioned, and
+  `cat /app/VERSION` returns the bumped value.
+- `scripts/dockit-validate-session.sh` checks markers, dates, sync
+  pairings — none of them inspect git tracking state of source files.
+
+The only signal during the commit itself is the stat line
+(`N files changed, X insertions(+), Y deletions(-)`). For
+plaud-mirror v0.4.17 this read `128 insertions, 183 deletions` —
+net negative for a release whose narrative claimed ~500 added lines
+of new helpers + tests. That mismatch was visible in the commit's
+output and the LLM read past it.
+
+GPT-5 caught it on a fresh review by running `git status` (showing
+the untracked files) and grepping for orphan references in tracked
+files (`package.json`, `index.ts`, `App.tsx`, `service.ts` all
+imported the missing module). A clean clone of the broken commit
+would fail `npm install && npm run build` at import-resolution.
+
+Protocol implication: three layers, low-cost to high-cost.
+
+(a) **LLM convention** (already adopted in plaud-mirror's auto-memory
+as `feedback_git_status_post_stage.md`): post-stage, run
+`git status` and confirm zero untracked source/test files before
+committing; post-commit, read the stat line and verify the magnitude
+is consistent with the release narrative (net-negative on a feature
+add ⇒ stop and inspect). Also: prefer `git add <explicit-paths>`
+when files were created in the session; reserve `-u` for "I know
+nothing was created."
+
+(b) **Pre-commit hook check** (stretch, mechanical): grep the
+staged tree for `import` / `from "..."` / `require(...)` /
+`export * from "..."` references that resolve to paths NOT
+present in the staged set. Implementation sketch: build the set
+of staged files, parse each staged `.ts`/`.tsx`/`.js`/`.mjs` for
+relative-path imports (`from "./foo"`, `from "../bar"`), resolve
+them against the file's location, error if the resolved target
+is neither in the staged set nor in the existing committed tree.
+Catches DF-027 mechanically. False-positive risk: dynamic imports,
+module aliases, JS-by-string-concat — fine to skip those, the
+common case is plain relative imports and they would catch this
+class of bug.
+
+(c) **Stat-line plausibility check** (further stretch, advisory): a
+post-commit `print "WARNING: net negative line count for a commit
+whose message includes 'add' or 'feature'"` nudge. Heuristic, very
+optional, cheap to add as a hook. Probably overkill for most
+projects; would catch the DF-027 signal that the LLM missed.
+
+Mitigation in source project: plaud-mirror v0.4.18 closes the
+adopter symptom (the missing files are now in HEAD via
+`git ls-tree -r HEAD packages/shared/src/`, the v0.4.17 tag stays
+in history as a known-broken release with the CHANGELOG entry
+acknowledging that explicitly, no force-push). The personal LLM
+lesson is captured in
+`~/.claude/projects/-home-cdelalama-src-plaud-mirror/memory/feedback_git_status_post_stage.md`
+so future plaud-mirror sessions inherit it. The protocol-level
+hook check (b) is the systemic cure and is the natural next-bump
+candidate.
