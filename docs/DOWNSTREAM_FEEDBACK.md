@@ -903,3 +903,78 @@ lesson is captured in
 so future plaud-mirror sessions inherit it. The protocol-level
 hook check (b) is the systemic cure and is the natural next-bump
 candidate.
+
+## DF-028 — Six recurrences of the same prose-version-drift class across one project's release line: first empirical demand for CE_V2 P0 ("Manifest = intención, CI = evidencia") from a downstream
+
+- Source: plaud-mirror v0.4.x → v0.5.3 (six instances of the same drift class across five releases in a single day's work). Local mitigation shipped in plaud-mirror v0.5.4: `scripts/check-prose-drift.sh` + `check_prose_drift` wrapper in `scripts/dockit-validate-session.sh` per the Layer-1/Layer-2 architecture from `HOOKS_ENFORCEMENT_PROPOSAL.md`. See plaud-mirror's `docs/llm/DECISIONS.md` D-016 for the full design.
+- Date observed: 2026-04-26
+- Category: gap (DocKit) + framework-validation (CE_V2)
+- Status: candidate, awaiting validation
+
+### Dependencies (block resolution)
+
+- `~/src/LLM-DocKit/docs/HOOKS_ENFORCEMENT_PROPOSAL.md` — status: draft, untracked, working source-of-truth. Defines the Layer-1/Layer-2 architecture this DF's mitigation implements. Until this RFC is committed and adopted, the mitigation is a downstream artifact, not a DocKit feature.
+- `~/src/LLM-DocKit/docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` — status: "Ready for Pilot", 18 LOCKED decisions, untracked. Section 3 P0 #1 ("Manifest = intención, CI = evidencia") describes exactly the failure mode this DF demonstrates empirically. Section 13 (Piloto) calls for "2 repos, 6-10 sesiones" as the validation scope; plaud-mirror v0.5.4 is offered as the first.
+
+### Resolution path
+
+`candidate` (now) → `validated` (after the v0.5.5 cycle in plaud-mirror confirms the WARN→FAIL ramp behaves as designed and the baseline shape settles) → `tracked` (after the upstream RFCs above are committed and locked) → `adopted` (the script and the wrapper move into DocKit's template, syncable to other adopters via `dockit-sync.sh`).
+
+Note: this DF does NOT propose merging into DocKit before the upstream RFCs are firmed up. The mitigation in plaud-mirror is local; this entry reserves the slot, registers the empirical evidence, and links the artifact for review.
+
+### Observation
+
+Plaud-mirror's `auto-memory` (`~/.claude/projects/-home-cdelalama-src-plaud-mirror/memory/feedback_prose_version_drift.md`) had captured the failure mode after the second occurrence. The rule was extended four times across subsequent releases:
+
+1. **v0.4.1** — stale `v0.3.0` in PROJECT_CONTEXT/ARCHITECTURE prose. Memory created.
+2. **v0.4.2** — stale `v0.4.1` in `docs/ROADMAP.md:15`, `docs/PROJECT_CONTEXT.md:27`, `docs/ARCHITECTURE.md:4`. Memory extended.
+3. **v0.5.0 → v0.5.1** — invented `"Phase 2 - manual sync"` string in docs that did NOT match `service.ts`'s actual `"Phase 2 - first usable slice"`. Memory extended.
+4. **v0.5.2** — README still listing continuous sync as a "later phase" while v0.5.2 shipped exactly that. HANDOFF Top Priorities frozen at the v0.5.0 mapping. Memory extended.
+5. **v0.5.3** — `DECISIONS.md` D-013 still describing the pre-implementation draft (5-attempt schedule, `/api/webhook-outbox/:id/retry` endpoint) when the shipped code was 8 attempts and `/api/outbox/:id/retry`. `DEPLOY_PLAYBOOK.md` Notes still claiming the durable outbox was "later in 0.5.x." Memory extended.
+
+Each release's external review (GPT-5) caught the drift; the LLM (Claude) read its own memory, acknowledged the rule, fixed the immediate instance, extended the memory rule, and shipped — only for the next release to manifest a new variant of the same class.
+
+The diagnosis arrived at by both reviewers and both LLMs in plaud-mirror's session of 2026-04-26: **memory is advisory; compliance depended on LLM discipline; the failure mode demanded enforcement.** This is the principle that `HOOKS_ENFORCEMENT_PROPOSAL.md` opens with, and it is exactly the modal failure that `LLM_DOCKIT_CE_V2_PROPOSAL.md` Section 3 P0 #1 prevents structurally:
+
+> P0 #1: Manifest = intención, CI = evidencia.
+> Por qué: si CI confía en booleanos auto-reportados, el guardrail es teatro.
+
+Plaud-mirror's `auto-memory` rule was, in CE_V2 terms, an auto-reported boolean ("the LLM will sweep these N files"). With no CI evidence, the guardrail was theater for six releases.
+
+### Mitigation in source project (v0.5.4)
+
+Plaud-mirror v0.5.4 ships:
+
+1. **`scripts/check-prose-drift.sh`** (POSIX sh, ~280 lines, zero external deps). Four rules:
+   - `R1-stale-version` — `vX.Y.Z` literals that don't match `VERSION` and aren't baselined.
+   - `R2-phase-string-mismatch` — phase string literals in docs that don't match what `service.ts` emits.
+   - `R3-future-claim-already-shipped` — "still later", "lands during", "deferred to vX.Y.Z" in `docs/operations/` and `docs/llm/DECISIONS.md` that cite versions ≤ current.
+   - `R4-decision-status-stale` — `D-XXX` entries whose `Status:` says "designed/lands during" while `CHANGELOG.md` mentions them as shipped.
+   Three modes: `--strict` (default; exit 1 on drift), `--review` (JSON output for the future agent-based check, on-ramp to Layer 2), `--update-baseline --note "<reason>"` (deliberate operation that records auditable acceptances). The baseline file `scripts/.prose-drift-baseline.json` carries `{id, literal, file, rule, reason, commit_sha, created_at, transient_until?}` per entry; `transient_until` is enforced (when `current VERSION >= transient_until`, the entry is reported as expired with a remediation message).
+2. **`check_prose_drift()` wrapper** in `scripts/dockit-validate-session.sh`. Thin driver per the Layer-1/Layer-2 split from `HOOKS_ENFORCEMENT_PROPOSAL.md`. Severity `WARN` during v0.5.4 (calibration window), promoted to `FAIL` from v0.5.5.
+3. **First-run validation:** running the script against the live tree in v0.5.3 caught two real drifts immediately (D-012 and D-014 had stale `Status:` lines that `R4` flagged). After fixing both, the script returns PASS. The script paid for itself before its own commit.
+
+### Implications for DocKit (when the upstream RFCs commit)
+
+1. **Adopt `check-prose-drift.sh` into the DocKit template** with the existing `dockit-sync.sh` `copy` strategy. Adopters get the artifact plus the validator wrapper without rework.
+2. **Reframe the `auto-memory` mental model in `LLM_START_HERE.md` template.** The current convention (memory holds rules) is empirically dangerous when the rule attempts to enforce. Plaud-mirror v0.5.4 added a global rule in `~/.claude/CLAUDE.md` ("Before adding a passive rule") plus a `PostToolUse` hook in `~/.claude/hooks/check-passive-rule.sh` that nudges the LLM whenever a write lands in `~/.claude/projects/*/memory/*`. That nudge is the meta-enforcement; the heuristic in CLAUDE.md is the rationale. Both are project-agnostic; both belong in DocKit's onboarding template once the global hook surface is documented in DocKit (currently it lives in the LLM tool's own configuration, not in DocKit).
+3. **`LLM_DOCKIT_CE_V2_PROPOSAL.md` Section 13 piloto rules** call for 2 repos. plaud-mirror v0.5.4 is offered as the first — every condition the RFC describes (manifest ≠ CI evidence, prefiltered checks, advisory-then-strict severity, version-correlated checks) is now empirically demanded by a real adopter. The RFC's "Ready for Pilot" status is justified by a downstream signal, not by theoretical foresight.
+4. **Optional Enhancement B (agent-based Stop hook)** of `HOOKS_ENFORCEMENT_PROPOSAL.md` is the closure path for the semantic-drift class that regex cannot cover (e.g. "we're still designing the ETL phase" while ETL is implemented — no version literal, no phrase the regex matches). The `--review` JSON output of `check-prose-drift.sh` is the explicit handoff format for that future agent. Schema is documented inside the script; do not rename fields without coordinating with the consumer.
+
+### Link to the artifact
+
+After plaud-mirror v0.5.4 commits to `origin/main`, the canonical pointer for review is:
+
+```
+github.com/cdelalama/plaud-mirror/blob/81b3fe0004884ffc6983a48a16ef00bbbaf7a4d3/scripts/check-prose-drift.sh
+github.com/cdelalama/plaud-mirror/blob/81b3fe0004884ffc6983a48a16ef00bbbaf7a4d3/scripts/dockit-validate-session.sh
+github.com/cdelalama/plaud-mirror/blob/81b3fe0004884ffc6983a48a16ef00bbbaf7a4d3/docs/llm/DECISIONS.md  (see D-016)
+```
+
+The link uses the SHA of the v0.5.4 release commit, not `HEAD` — the script will continue to evolve in plaud-mirror, and DocKit reviewers should read the version that made the empirical demand. The exact SHA will be filled in by the closing entry of this DF once the v0.5.4 cycle commits.
+
+### Cross-references
+
+- Related to **DF-016** (tests pass ≠ feature-correct). Same family: "the artifact says X" can be a lie that no current check catches. DF-016 is about test assertions; DF-028 is about prose claims.
+- Related to **DF-024** (documenting drift is not fixing drift). DF-028 is the structural cure to the class DF-024 names: this is the first empirical demand for moving from "we wrote down that we drifted" (current state) to "the system catches drift before it ships" (target state).
+- Related to **DF-027** (`git add -u` silently skips new files). Same modal failure as DF-028: the local memory of the lesson did not prevent the recurrence (DF-027 still happened despite plaud-mirror's `feedback_git_status_post_stage` memory entry). Together DF-027 + DF-028 are the strongest signal yet that DocKit needs CE_V2 P0 ("CI = evidencia") to graduate from "Ready for Pilot" to "Piloting now."
