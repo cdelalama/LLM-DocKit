@@ -1,12 +1,27 @@
-<!-- doc-version: 4.5.5 -->
+<!-- doc-version: 4.6.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
-- Last Updated: 2026-04-25 - Claude Opus 4.7
-- Session Focus: Add DF-027 — "`git add -u` silently skips new untracked files; commit succeeds, workspace stays green, origin is broken" — after plaud-mirror v0.4.17 was published broken to its `origin/main` and forward-fixed in v0.4.18 (commit `d2f17f2`). DF-027 is a specialisation of DF-024 at the git-mechanics layer.
-- Status: v4.5.5 ships DF-027 as `partially implemented (plaud-mirror v0.4.18)` on the adopter-symptom axis, with the protocol-level pre-commit hook check `open` and proposed in detail (grep the staged tree for relative-path imports that don't resolve to staged files; block on mismatch). Adopter count: 27 entries, 5 implemented, 2 partially implemented (DF-026 + DF-027 — the `partially implemented` count is plural now, exactly the case the v4.5.4 legend extension was anticipating). 20 open. The next meaningful bump in DocKit's own roadmap should probably be **v4.6.0 (minor)** that lands three concrete pre-commit checks: (a) DF-027(b) staged-imports-resolve, (b) DF-002 orphan-marker scan, (c) DF-008 empty-CHANGELOG guard. All three target failure modes already observed in the field; together they would have prevented two of the recent plaud-mirror releases (v0.4.17 broken commit, v0.3.2/v0.4.0 empty CHANGELOG) without LLM discipline.
+- Last Updated: 2026-05-01 - Claude Opus 4.7 (1M context)
+- Session Focus: v4.6.0 (minor) — `scripts/dockit-init-project.sh`, the from-scratch project initializer that closes the gap between `/adopt-dockit` (existing repos) and the manual instructions in `HOW_TO_USE.md`. One command produces a clean, validator-green project at `0.1.0`.
+- Status: v4.6.0 ships the new init script with strict scope: no GitHub, no ecosystem profiles, no `~/.claude/` edits. Tracked-files-only copy via `git archive HEAD` (no working-tree leak — same risk class as DF-027). Smoke-tested in `/tmp/smoke-init`: validator passes 6/6 with version-sync OK on 8 targets. The previously speculated "v4.6.0 = three pre-commit checks (DF-027(b) staged-imports-resolve + DF-002 orphan-marker scan + DF-008 empty-CHANGELOG guard)" plan from the v4.5.5 HANDOFF is **deferred to v4.7.0**: that pre-commit work is orthogonal to from-scratch initialization and is not bundled here. Adopter count from DOWNSTREAM_FEEDBACK is unchanged this release (27 entries, 5 implemented, 2 partially implemented, 20 open) — this release adds a new generic capability rather than addressing a specific DF entry.
+
+## Patch 4.6.0 Outcome
+- `scripts/dockit-init-project.sh`: new POSIX `sh` script. Inputs: `<project-name>` plus optional `--target-dir`, `--language`, `--source` flags. Outputs a self-contained new project ready for first session. The script:
+  1. Validates inputs (slug pattern, target absent, source is a git repo with VERSION).
+  2. `git archive HEAD | tar -x` from the source DocKit checkout into the target directory (tracked files only — drafts in the source working tree never leak).
+  3. Removes DocKit-internal meta files: `HOW_TO_USE.md`, `docs/DOWNSTREAM_FEEDBACK.md`, `docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`, `dockit-sync-manifest.yml`, `scripts/dockit-sync.sh`, `scripts/dockit-sync-check.sh`, `scripts/dockit-init-project.sh` itself.
+  4. Resets live operational docs (`CHANGELOG.md`, `docs/llm/HANDOFF.md`, `docs/llm/HISTORY.md`, `docs/llm/DECISIONS.md`) to fresh stubs — so DocKit's own DF entries / D-001..D-006 / session history don't leak into the new project.
+  5. Substitutes `<PROJECT_NAME>`, `<CONVERSATION_LANGUAGE>`, `<YYYY-MM-DD>` and similar placeholders in remaining `*.md`/`*.yml`/`*.json`.
+  6. Runs `scripts/bump-version.sh 0.1.0` to set VERSION and sync doc-version markers atomically.
+  7. Initializes a fresh git repository with a single "chore: initial scaffold from LLM-DocKit X.Y.Z" commit.
+- Strict scope respected: no GitHub remote, no push, no ecosystem-profile application, no global config edits. Higher-layer orchestrators (such as a future `home-infra-protocol/integrations/dockit/new-homelab-project.sh`) call this script as their first step and add their own concerns on top.
+- `HOW_TO_USE.md` reorganized: the new "Quick Start (one command, recommended)" section is now the canonical path; the previous manual flow remains available as "Quick Start (manual)" for Windows / CI environments without the helper script.
+- Smoke test: ran the script three times against `/tmp/smoke-init` while iterating. Two real bugs caught and fixed before commit — (a) `tar` from the working tree leaked five untracked DocKit drafts (`documento.md`, `LLM_DOCKIT_CE_V2_PROPOSAL.md`, `HOOKS_ENFORCEMENT_PROPOSAL.md`, `DEFERRED_NEXT_VERSION.md`, `EXTERNAL_CONTEXT_PLUGIN_PLAN.md`) into the new project; switched to `git archive HEAD` and added a hard-fail when source has no `.git`. (b) The fresh `CHANGELOG.md` had no `## [` anchor for `bump-version.sh` to insert before, leaving the new project's `[0.1.0]` section empty; fixed by emitting the section directly in the stub. Final smoke run: validator 6/6 PASS, 8 doc-version targets in sync at 0.1.0.
+
+### Pre-existing v4.5.x backlog (still relevant, deferred to v4.7.0)
 
 ### Feedback intake workflow
 - Downstream adopter observes a problem → summarises it into a DF-NNN entry in `docs/DOWNSTREAM_FEEDBACK.md` of this repo (fields: Source, Date, Category, Status, Observation, Protocol implication).

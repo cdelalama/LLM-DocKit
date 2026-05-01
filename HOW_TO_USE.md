@@ -2,7 +2,54 @@
 
 This guide walks you through setting up a new project using LLM-DocKit.
 
-## Quick Start (5 Minutes)
+## Quick Start (one command, recommended)
+
+If you already have a local checkout of LLM-DocKit at `~/src/LLM-DocKit/`,
+the easiest way to start a new project is:
+
+```bash
+cd ~/src
+~/src/LLM-DocKit/scripts/dockit-init-project.sh my-new-project
+```
+
+This single command does the equivalent of every step in *Quick Start
+(manual)* below: it copies the scaffold (tracked files only, via
+`git archive`, so no untracked drafts leak), strips DocKit-internal
+meta files (`HOW_TO_USE.md`, `DOWNSTREAM_FEEDBACK.md`,
+`docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`, `dockit-sync-manifest.yml`,
+`scripts/dockit-sync*.sh`, `scripts/dockit-init-project.sh`), resets
+the live operational docs (CHANGELOG, HANDOFF, HISTORY, DECISIONS) to
+fresh stubs for the new project, substitutes placeholders
+(`<PROJECT_NAME>`, `<CONVERSATION_LANGUAGE>`, `<YYYY-MM-DD>`), runs
+`scripts/bump-version.sh 0.1.0` to set VERSION and sync doc-version
+markers, and creates the first git commit.
+
+Useful flags:
+
+```bash
+dockit-init-project.sh my-new-project --target-dir ./my-new-project
+dockit-init-project.sh my-new-project --language English
+dockit-init-project.sh my-new-project --source ~/path/to/LLM-DocKit
+LLM_DOCKIT_ROOT=~/src/LLM-DocKit dockit-init-project.sh my-new-project
+```
+
+The script does **not** create a GitHub remote, push, or apply any
+ecosystem-specific profile. Those steps are deliberate operator choices
+and live elsewhere (for example, `home-infra-protocol/integrations/dockit/`
+ships a homelab profile applied with its own script after this one runs).
+
+After the script finishes:
+
+1. `cd my-new-project`
+2. Edit `docs/PROJECT_CONTEXT.md` with vision, objectives, stakeholders.
+3. Edit `docs/llm/HANDOFF.md` with the real session focus.
+4. Run `scripts/dockit-validate-session.sh --human` to confirm the
+   scaffold is in a clean state.
+
+## Quick Start (manual)
+
+The same flow without the helper script. Useful if you are on Windows or
+working from a CI environment without `dockit-init-project.sh`.
 
 ### 1. Fork or Clone This Repository
 

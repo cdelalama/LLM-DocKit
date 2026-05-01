@@ -4,6 +4,56 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.6.0] - 2026-05-01
+
+### Added
+
+- `scripts/dockit-init-project.sh`: from-scratch project initializer.
+  Closes the gap between `/adopt-dockit` (which bolts the scaffold
+  onto an existing repo) and the manual instructions in `HOW_TO_USE.md`
+  (clone + strip + sed + git init). One command produces a clean,
+  validator-green project at `0.1.0`. Behavior:
+  - Copies tracked files only via `git archive HEAD` (drafts and
+    untracked notes in the source LLM-DocKit checkout never leak
+    into the new project — addresses the same risk class as DF-027).
+  - Strips DocKit-internal meta files: `HOW_TO_USE.md`,
+    `docs/DOWNSTREAM_FEEDBACK.md`, `docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`,
+    `dockit-sync-manifest.yml`, `scripts/dockit-sync.sh`,
+    `scripts/dockit-sync-check.sh`, and `scripts/dockit-init-project.sh`
+    itself (template-only utilities).
+  - Resets live operational docs (`CHANGELOG.md`,
+    `docs/llm/HANDOFF.md`, `docs/llm/HISTORY.md`,
+    `docs/llm/DECISIONS.md`) to fresh stubs so DocKit's own DF-027 /
+    plaud-mirror / D-001..D-006 content does not leak.
+  - Substitutes `<PROJECT_NAME>`, `<CONVERSATION_LANGUAGE>`,
+    `<YYYY-MM-DD>` placeholders in remaining `*.md`/`*.yml`/`*.json`.
+  - Runs `scripts/bump-version.sh 0.1.0` to set VERSION and sync
+    doc-version markers atomically.
+  - Initializes a fresh git repo with a single
+    "chore: initial scaffold from LLM-DocKit X.Y.Z" commit.
+  - Refuses to overwrite an existing target directory; exits with a
+    clear error if the source is not a git repository (no working-
+    tree fallback — that path was the source of leaks during early
+    smoke-testing).
+- Strict scope: no GitHub remote creation, no push, no
+  ecosystem-specific profile application, no `~/.claude/` edits.
+  Those concerns belong to higher layers (orchestrator scripts in
+  consumer repositories such as `home-infra-protocol`).
+- `HOW_TO_USE.md` rewritten so the new "Quick Start (one command,
+  recommended)" section ships above the existing manual flow, which
+  is preserved as "Quick Start (manual)" for Windows / CI cases.
+
+### Changed
+
+- `docs/llm/HANDOFF.md`: Current Status, Session Focus, and
+  Patch 4.6.0 Outcome blocks reflect the new feature. The previously
+  speculated "next 4.6.0 = pre-commit checks for DF-027(b) +
+  DF-002 + DF-008" plan is acknowledged and explicitly deferred to a
+  future v4.7.0 — that work is unrelated to from-scratch
+  initialization and is not bundled here.
+
+### Fixed
+
 ## [4.5.5] - 2026-04-25
 
 ### Added
