@@ -1,14 +1,18 @@
-<!-- doc-version: 4.6.0 -->
+<!-- doc-version: 4.6.1 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Current Status
 - Last Updated: 2026-05-01 - Claude Opus 4.7 (1M context)
-- Session Focus: v4.6.0 (minor) — `scripts/dockit-init-project.sh`, the from-scratch project initializer that closes the gap between `/adopt-dockit` (existing repos) and the manual instructions in `HOW_TO_USE.md`. One command produces a clean, validator-green project at `0.1.0`.
-- Status: v4.6.0 ships the new init script with strict scope: no GitHub, no ecosystem profiles, no `~/.claude/` edits. Tracked-files-only copy via `git archive HEAD` (no working-tree leak — same risk class as DF-027). Smoke-tested in `/tmp/smoke-init`: validator passes 6/6 with version-sync OK on 8 targets. The previously speculated "v4.6.0 = three pre-commit checks (DF-027(b) staged-imports-resolve + DF-002 orphan-marker scan + DF-008 empty-CHANGELOG guard)" plan from the v4.5.5 HANDOFF is **deferred to v4.7.0**: that pre-commit work is orthogonal to from-scratch initialization and is not bundled here. Adopter count from DOWNSTREAM_FEEDBACK refreshed to current reality (the previous HANDOFF text said 27 entries; the file now has 28: DF-028 was added in commit `d3b6607` between v4.5.5 and this session). Current breakdown: 28 entries, 5 implemented, 2 partially implemented (DF-026 + DF-027), 1 candidate awaiting validation (DF-028 — first empirical demand for CE_V2 P0 from a real downstream), 20 open. This release adds a new generic capability rather than addressing a specific DF entry.
+- Session Focus: v4.6.1 (patch) — fix `dockit-init-project.sh` so new projects are born on `main`, not `master`. Found by GPT-5 review during smoke testing of the orchestrator in `home-infra-protocol`.
+- Status: v4.6.1 ships a one-line fix on top of v4.6.0. The init script now runs `git symbolic-ref HEAD refs/heads/main` immediately after `git init -q`, so the first commit lands on `main` regardless of the host system's `init.defaultBranch`. The orchestrator script and `/new-homelab-project` skill in `home-infra-protocol` documented `git push origin main`, so a master-branch repo would have failed at first push. Re-smoke-tested: `git branch --show-current` now returns `main`. v4.6.0's broader feature description (init script + HOW_TO_USE reorganization + DocKit-meta-file pruning + git-archive copy) carries forward unchanged. Adopter count unchanged at 28 entries (5 implemented, 2 partially implemented, 1 candidate, 20 open).
 
-## Patch 4.6.0 Outcome
+## Patch 4.6.1 Outcome
+- `scripts/dockit-init-project.sh`: added `git symbolic-ref HEAD refs/heads/main` immediately after `git init -q`. Portable to any Git version (no dependency on `git init -b main` from 2.28+). Smoke test confirms `main` from the first commit.
+- `CHANGELOG.md`: 4.6.1 section explains the bug and the fix; references the GPT-5 review that surfaced it.
+
+## Patch 4.6.0 Outcome (carried forward from previous session)
 - `scripts/dockit-init-project.sh`: new POSIX `sh` script. Inputs: `<project-name>` plus optional `--target-dir`, `--language`, `--source` flags. Outputs a self-contained new project ready for first session. The script:
   1. Validates inputs (slug pattern, target absent, source is a git repo with VERSION).
   2. `git archive HEAD | tar -x` from the source DocKit checkout into the target directory (tracked files only — drafts in the source working tree never leak).

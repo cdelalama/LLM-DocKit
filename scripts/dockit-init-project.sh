@@ -310,8 +310,13 @@ if [ -d scripts ]; then
 fi
 
 # ── 7. Initialize fresh git repository ──────────────────────────────────────
+#
+# Force the default branch to `main` regardless of the system's
+# init.defaultBranch setting. Using `git symbolic-ref` rather than
+# `git init -b main` keeps the script portable to Git < 2.28.
 
 git init -q
+git symbolic-ref HEAD refs/heads/main
 git add -A
 git -c user.email='no-reply@local' -c user.name='LLM-DocKit init' \
     commit -q -m "chore: initial scaffold from LLM-DocKit $DOCKIT_VERSION

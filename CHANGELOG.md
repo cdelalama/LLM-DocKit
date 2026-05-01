@@ -4,6 +4,20 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.6.1] - 2026-05-01
+
+### Fixed
+
+- `scripts/dockit-init-project.sh`: new projects were being created
+  on the `master` branch instead of `main` (depended on the host
+  system's `init.defaultBranch`). The orchestrator and skill in
+  `home-infra-protocol` document `git push origin main` and the
+  whole ecosystem standardises on `main`. Fixed by adding
+  `git symbolic-ref HEAD refs/heads/main` immediately after
+  `git init -q`. Portable to Git < 2.28 (no dependency on the
+  `-b main` flag). Found by GPT-5 review during smoke testing of
+  the orchestrator.
+
 ## [4.6.0] - 2026-05-01
 
 ### Added
