@@ -984,8 +984,9 @@ The link uses the SHA of the v0.5.4 release commit, not `HEAD` — the script wi
 - Source: `infra-portal` v0.8.0 in repo / v0.7.2 in production + `tomatic` v0.1.5 audit, 2026-05-02 → 2026-05-03
 - Date observed: 2026-05-03
 - Category: gap
-- Status: open
+- Status: partially accepted — process side resolved by `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`; validator side (`--check deployed-version`) still open as a future patch.
 - Related: DF-016, DF-021, DF-024
+- Resolution path: a Consensus Protocol run on 2026-05-03 produced two sibling proposals: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (this repo) formalising the deliberation primitive; `~/src/home-infra-protocol/docs/DEPLOYMENT_EVIDENCE_PROPOSAL.md` formalising the deployment evidence contract. Together they address the pattern at the LLM-DocKit level (a recorded protocol that names the rule "no `deployed` claim without evidence") and at the infrastructure protocol level (a typed vocabulary + schema block that lets a consumer measure drift). The optional `--check deployed-version` validator check is the remaining work and is not part of either proposal; it is the natural next patch once an adopter project asks for it. The deliberation is recorded in `docs/llm/REVIEWS.md` 2026-05-03.
 
 ### Observation
 
