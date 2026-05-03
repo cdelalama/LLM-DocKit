@@ -114,13 +114,15 @@ fi
 #   2. docs/PROJECT_CONTEXT.md (vision, architecture, current state)
 #   ...
 #
-# We extract the numbered list that immediately follows the
-# "Recommended reading order:" line, stopping at the first blank line.
+# We extract the numbered list following the "Recommended reading order:"
+# header. Blank lines BEFORE the first numbered item are skipped (some
+# customised templates put a blank line between the header and the list);
+# the first blank line AFTER capture has started terminates the list.
 
 READING_ORDER=$(awk '
-    /^[Rr]ecommended reading order:/ { capture = 1; next }
-    capture && /^[[:space:]]*$/      { exit }
-    capture && /^[[:space:]]*[0-9]+\./ { print }
+    /^[Rr]ecommended reading order:/   { capture = 1; next }
+    capture && started && /^[[:space:]]*$/ { exit }
+    capture && /^[[:space:]]*[0-9]+\./ { started = 1; print }
 ' "$START_HERE")
 
 # If the section is missing or unrecognisable, fall back to a generic

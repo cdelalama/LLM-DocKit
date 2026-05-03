@@ -4,6 +4,24 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.7.1] - 2026-05-03
+
+### Fixed
+
+- `scripts/dockit-bootstrap-context.sh`: awk regex for extracting the
+  "Recommended reading order:" section no longer exits early when there
+  is a blank line between the header and the first numbered item.
+  Repos that customise the LLM-DocKit template with a blank-line gap
+  (e.g. `home-infra-protocol`'s `LLM_START_HERE.md`) were falling back
+  to a generic 2-item list instead of extracting the full per-repo
+  reading order. Surfaced during the 2026-05-03 smoke test of the v4.7.0
+  primitive against the originally-failing repo. Fix: track a `started`
+  flag in awk so the blank-line-exit only fires after the first numbered
+  item has been captured. Verified post-fix: home-infra-protocol now
+  emits its 7 real items (SPEC.md, PROJECT_CONTEXT.md, ARCHITECTURE.md,
+  COMPLETION_RULE.md, HANDOFF.md, DECISIONS.md, this file); tomatic
+  still emits 9 items; LLM-DocKit still emits 7 items (regression-clean).
+
 ## [4.7.0] - 2026-05-03
 
 ### Added
