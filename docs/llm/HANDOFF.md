@@ -14,7 +14,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 - `docs/llm/REVIEWS.md`: rewritten from the legacy stub into a structured audit trail. First entry (2026-05-03) records the consensus run that produced this very proposal — the protocol applied to itself. Six load-bearing decisions documented with causal reasoning; four explicit rejections. Legacy informal format kept as backward-compatibility appendix.
 - `docs/DOWNSTREAM_FEEDBACK.md` DF-029 status → `accepted` with cross-reference to the proposal (per the file's legend: `accepted` = listed in a `*_PROPOSAL.md` and committed to the roadmap, which is exactly the current state). The DF moves to `partially implemented` only when the template-side changes (LLM_START_HERE block, REVIEWS template, README pointer) actually ship in a release. Validator-side cure (`--check deployed-version`) remains a separate open follow-up.
 
-## Do Not Touch (for paralel sessions)
+## Do Not Touch (for parallel sessions)
 
 These files are present in the working tree but deliberately untracked, owned by the operator, and **must not be staged or committed by parallel sessions**:
 

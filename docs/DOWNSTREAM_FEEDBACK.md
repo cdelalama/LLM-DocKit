@@ -40,7 +40,7 @@ failure mode so they can be resolved independently. Link related entries via
 - Source: <project> (<version or date at time of observation>)
 - Date observed: YYYY-MM-DD
 - Category: drift | gap | usability | process
-- Status: open | accepted | implemented | rejected | superseded-by: DF-NNN
+- Status: open | accepted | partially implemented (<adopter-version>) | implemented | rejected | superseded-by: DF-NNN
 - Related: DF-AAA, DF-BBB   (optional)
 
 Observation: what concretely happened, with file:line references when
