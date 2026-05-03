@@ -1033,3 +1033,45 @@ This DF has a sibling in `home-infra-protocol/docs/DOWNSTREAM_FEEDBACK.md` (`DF-
 `tomatic` v0.1.5 records the deploy lag in `home-infra/docs/{INVENTORY,SERVICES}.md` (operator-readable) and accepts the limitation: until `infra-portal:0.8.0` is promoted to production, the catalog's `interface: mqtt` / `interface: web` declarations and the `mosquitto` status will look identical to old behaviour. The image promotion is a separate operator-driven action; DocKit could not have caught the gap with today's checks.
 
 `infra-portal` v0.8.0's HANDOFF documents the repo-vs-deployed split explicitly ("production stays at infra-portal:0.7.2; repo at 0.8.0... deploy to NAS is gated to a separate operator-driven session; it is NOT part of this commit"). That HANDOFF text is, in effect, an inline DF-029 mitigation: the LLM-authored doc tells the next reader the truth that the validator cannot. Codifying this convention into the LLM_START_HERE template is the fix path (a) above.
+
+## DF-030 — Five refinement lessons from the Consensus Protocol's first self-application audit
+
+- Source: 2026-05-03 audit cycle around `tomatic` 0.1.5 + `home-infra-protocol` 0.2.2/0.2.3 + LLM-DocKit `1784318`/`b3de32e`/`3cbd37f`. Three audit passes by GPT-5 over the same week's deliberation.
+- Date observed: 2026-05-03
+- Category: process
+- Status: open (deliberately captured here without a Consensus run; this entry is **not** intended to trigger another audit pass — it is a forward-pointer for the next session that touches the protocol)
+- Related: DF-005 (HANDOFF↔LLM_START_HERE drift, the original mirror-pair pattern), DF-015 (policy replicated across docs drifts independently), DF-029 (deployment lag invisibility).
+
+### Observation
+
+The first sustained self-application of the Consensus Protocol — a session producing two cross-repo proposals + REVIEWS entries + multiple audit passes — surfaced five distinct refinement lessons that the proposal itself does not name. The lessons are real, repeatable, and structurally interesting; capturing them here so a future session that returns to the Consensus Protocol can incorporate them.
+
+The lessons are listed in increasing structural cost. Each is implementable as a small additive change to the existing protocol artefacts; none require redesign.
+
+**1. The auditor is a fourth role the protocol does not name.** The proposer/critic/arbiter triangle handles deliberation but has a structural blind spot: every participant is engaged with the artefact under construction, none reads the closed artefact holistically from outside. Three audit passes over this week's commits found drifts none of the original deliberation participants noticed. The auditor role is post-closure (operates on already-closed artefacts), produces findings (not decisions), and dispatches to either fix-forward (if drift is mechanical) or to a new Consensus run (if structural). Where to land: a new section in `CONSENSUS_PROTOCOL_PROPOSAL.md` titled "Auditor role (post-closure)".
+
+**2. Drift findings must be classified mechanical vs structural before responding.** Not every audit finding warrants a new Consensus run. Mechanical drifts — typos, status strings outside legend, missing HISTORY entries, legend-template misalignment — are resolved deterministically by the existing rules; the response is a micro-commit, not new deliberation. Structural drifts — an example contradicting its own ontology, a contract conflicting with another contract — may require deliberation if the resolution is non-obvious. The two responses share form (a fix-forward commit) but differ in process (the latter passes through a Consensus run, the former does not). The protocol does not articulate this distinction today and risks treating every drift as either trivial (noise) or major (paralysing). Where to land: sub-section "Fix-forward classification" of the proposal.
+
+**3. Audit cycles need an explicit termination criterion.** Each audit pass tends to find something. Without a stop rule, "another audit, another fix" can compound into ceremony. A workable termination rule: *"a session is considered closed when two consecutive audit passes by distinct roles produce no new findings, or when the human arbiter explicitly declares 'ship as is, residual drift accepted'."* Without this, the audit-fatigue dynamic erodes the practice the proposal is trying to install. Where to land: "Termination criteria for audit cycles" sub-section, or a paragraph in the Failure modes section.
+
+**4. Legend ↔ template drift is generalisable beyond DF-005.** This week's audit caught the DF-NNN status template (line 43) lagging the legend (line 17) — exactly the family that `DF-005 — HANDOFF ↔ LLM_START_HERE Current Focus drift` already names but solves only for that specific pair. The generalised pattern: any document that contains both a definition (legend, rule, schema) and a usage example (template, instance, reference) needs a sync check that diffs the two and warns on divergence. Today the validator solves this for one mirror pair (HANDOFF ↔ LLM_START_HERE); generalising it would catch DF-030's own surface plus, say, schema↔example pairs in `home-infra-protocol`. Where to land: dedicated DF? Or a candidate work item for a future PROPOSAL that extends the validator with a `mirror-pairs` configurable check (akin to how `external_context.update_triggers` works today). Lean toward the latter — keeps the catch generic.
+
+**5. The audit primitive is non-trivially relevant to ForgeOS' consensus subsystem design.** Stated explicitly: ForgeOS' planned consensus subsystem should *not* clone the three-role protocol. It should clone the four-role protocol, with the auditor as a first-class automatable role (a residual agent reading closed artefacts on a schedule and emitting findings). Without an automatable auditor, ForgeOS inherits the same blind spot the original three-role protocol had — and that is exactly the kind of architectural sin a precedent should avoid. Where to land: a one-line addendum to the "Future consumer / precedent" section of `CONSENSUS_PROTOCOL_PROPOSAL.md`, pointing here.
+
+### Protocol implication summary
+
+Lessons 1, 2, 3 are additive refinements to `CONSENSUS_PROTOCOL_PROPOSAL.md` — total cost ~30-45 minutes of writing for a future session that returns to the proposal.
+
+Lesson 4 is its own work item: extending the validator with a generalised mirror-pair check. Cost is moderate (~50-100 lines POSIX shell + per-project config). Filed as a candidate PROPOSAL trigger, not a separate DF, because it is a clear specialisation of an already-named family (DF-005 + DF-015).
+
+Lesson 5 is one line in a future ForgeOS design document. Today it lives only here.
+
+### Why this entry exists without an accompanying Consensus run
+
+This DF is captured as a forward-pointer, not as a triggered work item. The audit cycle that produced these lessons has reached the operator-declared "ship as is" terminus per Lesson 3 above (avant la lettre). Subsequent audit passes on this entry should *not* spawn new commits in this session; they belong to the future session that picks up Lessons 1-3 as a Consensus Protocol refinement.
+
+The five lessons are observable empirically, formally, and consistently across the three audit passes. They are not speculative. They are the protocol's first round of dogfooding feedback on itself — exactly the kind of input the protocol claims to consume but had not yet been tested with at this scope.
+
+### Mitigation in source projects
+
+None — these are protocol-level lessons, not adopter-symptom drifts. The mitigation is the existence of this entry.
