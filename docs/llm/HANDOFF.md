@@ -12,11 +12,20 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 ## Patch 2026-05-03 Outcome
 - `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`: new self-contained proposal formalising the deliberation primitive that has been in informal use across recent sessions. Roles (proposer / critic / arbiter), invocation thresholds (contract changes / multi-repo / security / multi-week reversibility / precedent-setting), mechanics (N rounds, classify outcome, terminate), recording format (structured `REVIEWS.md` entry preserving causality, not transcript), failure modes (non-convergence, arbiter unavailable, supersession, critic capture), and explicit relationship with `DOWNSTREAM_FEEDBACK.md` + `*_PROPOSAL.md`. Acceptance criteria included for the future implementing session that wires the protocol into LLM_START_HERE / docs/llm/README templates.
 - `docs/llm/REVIEWS.md`: rewritten from the legacy stub into a structured audit trail. First entry (2026-05-03) records the consensus run that produced this very proposal — the protocol applied to itself. Six load-bearing decisions documented with causal reasoning; four explicit rejections. Legacy informal format kept as backward-compatibility appendix.
-- `docs/DOWNSTREAM_FEEDBACK.md` DF-029 status → `partially accepted` with cross-reference to the proposal. Validator-side cure (`--check deployed-version`) remains an open follow-up.
+- `docs/DOWNSTREAM_FEEDBACK.md` DF-029 status → `accepted` with cross-reference to the proposal (per the file's legend: `accepted` = listed in a `*_PROPOSAL.md` and committed to the roadmap, which is exactly the current state). The DF moves to `partially implemented` only when the template-side changes (LLM_START_HERE block, REVIEWS template, README pointer) actually ship in a release. Validator-side cure (`--check deployed-version`) remains a separate open follow-up.
+
+## Do Not Touch (for paralel sessions)
+
+These files are present in the working tree but deliberately untracked, owned by the operator, and **must not be staged or committed by parallel sessions**:
+
+- `docs/DEFERRED_NEXT_VERSION.md` — operator's planning notes for v4.7.0+, ongoing.
+- `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` — operator's draft proposal, not yet ready to land.
+- `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` — operator's draft proposal, not yet ready to land.
+- `documento.md` — operator's scratch notes.
+
+Sessions that need to stage changes should use explicit paths (`git add <path>`), never `git add -A` or `git add .`. The `dockit-init-project.sh` script in this repo is robust against these (uses `git archive HEAD` so untracked files never leak); manual sessions need the same discipline.
 
 ## Patch 4.6.1 Outcome (previous session)
-
-## Patch 4.6.1 Outcome
 - `scripts/dockit-init-project.sh`: added `git symbolic-ref HEAD refs/heads/main` immediately after `git init -q`. Portable to any Git version (no dependency on `git init -b main` from 2.28+). Smoke test confirms `main` from the first commit.
 - `CHANGELOG.md`: 4.6.1 section explains the bug and the fix; references the GPT-5 review that surfaced it.
 

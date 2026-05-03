@@ -303,10 +303,14 @@ are true:
       the protocol under "Project-Specific Rules", with a pointer to
       the full proposal. The paragraph names the invocation
       thresholds in one sentence and the no-go zones in another.
-- [ ] `docs/DOWNSTREAM_FEEDBACK.md` DF-029 status moves to
-      `partially implemented` (the protocol is documented as a
-      practice; the validator side, "no `deployed` claim without
-      evidence", remains a future check).
+- [ ] `docs/DOWNSTREAM_FEEDBACK.md` DF-029 status moves from
+      `accepted` to `partially implemented (X.Y.Z)` *only* once a
+      template change actually ships (the LLM_START_HERE block,
+      REVIEWS template, and README pointer named in the bullets
+      above). Until then it stays `accepted`. The validator side
+      ("no `deployed` claim without evidence" via `--check
+      deployed-version`) is a separate future patch and does not
+      gate this status transition.
 - [ ] `CHANGELOG.md` records the addition.
 - [ ] Version bump per the manifest.
 
