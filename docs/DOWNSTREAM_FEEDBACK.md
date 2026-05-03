@@ -978,3 +978,57 @@ The link uses the SHA of the v0.5.4 release commit, not `HEAD` — the script wi
 - Related to **DF-016** (tests pass ≠ feature-correct). Same family: "the artifact says X" can be a lie that no current check catches. DF-016 is about test assertions; DF-028 is about prose claims.
 - Related to **DF-024** (documenting drift is not fixing drift). DF-028 is the structural cure to the class DF-024 names: this is the first empirical demand for moving from "we wrote down that we drifted" (current state) to "the system catches drift before it ships" (target state).
 - Related to **DF-027** (`git add -u` silently skips new files). Same modal failure as DF-028: the local memory of the lesson did not prevent the recurrence (DF-027 still happened despite plaud-mirror's `feedback_git_status_post_stage` memory entry). Together DF-027 + DF-028 are the strongest signal yet that DocKit needs CE_V2 P0 ("CI = evidencia") to graduate from "Ready for Pilot" to "Piloting now."
+
+## DF-029 — Repo VERSION advances and `git push` succeeds, but the deployment lags invisibly
+
+- Source: `infra-portal` v0.8.0 in repo / v0.7.2 in production + `tomatic` v0.1.5 audit, 2026-05-02 → 2026-05-03
+- Date observed: 2026-05-03
+- Category: gap
+- Status: open
+- Related: DF-016, DF-021, DF-024
+
+### Observation
+
+The `infra-portal` consumer of `home-infra-protocol` shipped `0.8.0` in repo on 2026-05-02 (TCP probe + `Service.interface`-aware rendering), with the validator returning PASS, all markers in sync, the commit pushed cleanly to `origin/main`. From DocKit's vantage, the release is "done": every check the protocol measures is green, the `external-triggers` warning fires correctly, the manifest is consistent.
+
+In the next audit cycle, the operator pointed out that the deployed instance at `https://infra.lamanoriega.com/api/health` still answers `{"version":"0.7.2"}`. The image on the NAS was never rebuilt, never `docker save | docker load`-ed, never `docker compose restart`-ed. From the operator's vantage, the release is "shipped to git but not to users." Both vantages are simultaneously true and the two persistence stores (repo + deployment) carry contradictory facts about the same project.
+
+DocKit's circuit covers the repo. The `version-sync-manifest`, `bump-version.sh`, `pre-commit-hook.sh`, and `dockit-validate-session.sh` all measure properties of the local file tree and `git log`. Nothing reaches outside the repo to ask "is the artifact this release describes also live somewhere?" — and for a homelab project with manual `docker save | docker load` deploys, that question is unanswered by default. The drift is structurally invisible until a human notices.
+
+This is the deployment-plane analogue of the patterns already filed:
+
+- **DF-016** (tests pass ≠ feature-correct): the artifact says X but the artifact does not deliver X. There the lie was at the assertion level; here the lie is at the deployment level.
+- **DF-021** (external-context checks are edit-triggered but not version-correlated): the inverse direction. DF-021 is about `home-infra/PROJECTS.md` lagging behind a project's `VERSION`. DF-029 is about a *deployed runtime* lagging behind a project's `VERSION`. Both are "two stores, one truth, no sync contract."
+- **DF-024** (documenting drift is not fixing drift): an LLM can mark a release as shipped and the bug stays alive. DF-029 is a specialisation: the LLM can mark a release as shipped, the bug is not the bug being addressed but the deploy itself, and nothing reads the deployed reality back.
+
+### Protocol implication
+
+Three layers of fix, low to high cost.
+
+(a) **Adopter convention** (cheap, project-local). Document in `LLM_START_HERE.md` template: *"After bumping VERSION and pushing, treat the release as 'in repo, not deployed' until you have personally verified the runtime returns the new VERSION. If your project does not run as a container with a `/api/health`-style endpoint, document the equivalent verification step (image tag inspection, file fingerprint, etc.) in `docs/operations/DEPLOY_PLAYBOOK.md`."* Pure prose; zero validator cost; relies on LLM discipline (which DF-024 already taught us is fragile, but the prose anchor is still the cheapest first step).
+
+(b) **Optional `deployed-version` validator check.** New `.dockit-config.yml` block:
+
+```yaml
+deployment:
+  health_endpoints:
+    - name: production
+      url: https://example.lamanoriega.com/api/health
+      version_jsonpath: $.version
+```
+
+`scripts/dockit-validate-session.sh --check deployed-version` reads `VERSION`, fetches the URL, parses out the version field, warns or errors when they diverge by more than N patch levels. Skipped when no `deployment:` block is configured. Mirrors the structure of `external_context.update_triggers` from DF-009/-021. Cost: ~30 lines of POSIX `sh` + curl + a small JSON path implementation.
+
+(c) **CE_V2 P0 generalisation.** This DF is a clean instance of the same principle DF-028 names: "Manifest = intención, CI = evidencia." A project's `VERSION` is intent (what the maintainer claims is shipped). A live `/api/health` is evidence (what the runtime actually serves). Today the manifest is the only artifact DocKit reads; the evidence side is unmeasured. Folding deployed-version into the CE_V2 strict-mode probe set (alongside DF-001, DF-006, DF-008, DF-013, DF-028's prose-drift) closes one of the largest remaining gaps in the cure path that the LLM_DOCKIT_CE_V2_PROPOSAL describes.
+
+Recommended sequence: (a) immediately in the next adopter session that touches `LLM_START_HERE.md`; (b) as a `--check deployed-version` opt-in once one adopter explicitly asks; (c) as part of CE_V2 P0 strict mode when that proposal lands.
+
+### Cross-protocol relationship
+
+This DF has a sibling in `home-infra-protocol/docs/DOWNSTREAM_FEEDBACK.md` (`DF-003`) describing the same class as it manifests in the protocol's "Consumer support for `interface`" matrix, where `Version` was implicitly read as "repo HEAD" but only `deployed version` would close the gap that motivated the matrix in the first place. The two protocols address the class at different levels: home-infra-protocol fixes a documentation artifact (its SPEC matrix); LLM-DocKit fixes a generic validator surface that any DocKit project can opt into.
+
+### Mitigation in source projects
+
+`tomatic` v0.1.5 records the deploy lag in `home-infra/docs/{INVENTORY,SERVICES}.md` (operator-readable) and accepts the limitation: until `infra-portal:0.8.0` is promoted to production, the catalog's `interface: mqtt` / `interface: web` declarations and the `mosquitto` status will look identical to old behaviour. The image promotion is a separate operator-driven action; DocKit could not have caught the gap with today's checks.
+
+`infra-portal` v0.8.0's HANDOFF documents the repo-vs-deployed split explicitly ("production stays at infra-portal:0.7.2; repo at 0.8.0... deploy to NAS is gated to a separate operator-driven session; it is NOT part of this commit"). That HANDOFF text is, in effect, an inline DF-029 mitigation: the LLM-authored doc tells the next reader the truth that the validator cannot. Codifying this convention into the LLM_START_HERE template is the fix path (a) above.
