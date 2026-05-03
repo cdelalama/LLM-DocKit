@@ -1148,7 +1148,7 @@ The 2026-05-04 session deposits its digest manually at `~/src/llm-council/raw/se
 - Source: 2026-05-03 — operator opened a Codex CLI session inside `home-infra-protocol` to audit the freshly-landed `DEPLOYMENT_EVIDENCE_PROPOSAL` acceptance. Asked the agent for an opinion on the broader ecosystem of protocols. The agent answered partially and disclosed it had not read `LLM_START_HERE.md`, `docs/llm/HANDOFF.md`, or the master ecosystem roadmap (`~/src/home-infra/docs/SESSION_HANDOFF_2026-05-04_ECOSYSTEM_RECONCILIATION.md`). Pressed by the operator, the agent confirmed the rule was declared in `LLM_START_HERE.md` lines 9 and 87 but had been skipped because the immediate user instruction ("audit, do not implement") established a narrower scope. After the operator forced the orientation, the agent read the missing files and acknowledged the failure mode.
 - Date observed: 2026-05-03
 - Category: process
-- Status: implemented (LLM-DocKit 4.7.0 ships `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook). The protocol-level cure is shipped; the rollout to non-Claude LLMs (Codex CLI, Cursor) remains advisory pending those tools growing equivalent hooks — the `--human` mode of the script is the manual workaround until then.
+- Status: implemented (Claude Code + Codex CLI axes via SessionStart hooks). LLM-DocKit 4.7.0 ships the scaffold-side artefacts: `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook + `dockit-sync-manifest.yml` entry. Codex CLI axis closed 2026-05-03 by operator-side wiring of `~/.codex/config.toml` SessionStart hook pointing at the central script with `--project "$(git rev-parse --show-toplevel)"` (Codex's hook JSON shape is identical to Claude Code's, so the same script drives both). Smoke-tested live: the very repo where DF-033 was originally observed (`home-infra-protocol`) now opens Codex with `Onboarding loaded.` as the first line of the first substantive reply, followed by content that demonstrably consumed the listed docs (cites version 0.3.0, deployment evidence contract, intent-vs-telemetry rule). Non-hook LLMs (Cursor, Aider, web ChatGPT) remain advisory pending those tools growing SessionStart equivalents — the `--human` mode of the script is the manual workaround until then.
 - Related: DF-005 (HANDOFF↔LLM_START_HERE drift — same family: prose-only rule, no enforcement), DF-015 (policy replicated across docs drifts independently), DF-024 (documenting drift is not fixing drift), DF-031 (ecosystem prior-art search). Inverse counterpart of `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` (Stop hook for session-end validation): this DF closes the equivalent gap at session-start.
 
 ### Observation
@@ -1185,9 +1185,17 @@ This DF is **not** a Consensus Protocol artefact. It does not change a contract 
 
 ### Mitigation in source projects
 
-LLM-DocKit 4.7.0 ships:
+LLM-DocKit 4.7.0 ships (scaffold-side):
 - `scripts/dockit-bootstrap-context.sh` (POSIX, zero deps, ~7 KB)
 - `.claude/settings.json` `SessionStart` block calling the script with `--json`
 - `dockit-sync-manifest.yml` entry with `strategy: copy`
 
-Tomatic adopts immediately (in the same session that surfaced the gap, applied without waiting for `dockit-sync` so the failure mode is closed for the project under active work). Other downstream projects (`plaud-mirror`, `home-infra-protocol`, `infra-portal`, `llm-council`, etc.) close it when the operator runs `dockit-sync` against them, scheduled at next regular dockit-sync pass. This is consistent with how the existing Stop-hook validator was rolled out.
+Operator-side wiring (not part of the scaffold; lives in user's home directory):
+- `~/.claude/settings.json` already had hooks; the project-local `.claude/settings.json` from LLM-DocKit takes precedence per Claude Code's hook resolution.
+- `~/.codex/config.toml` augmented 2026-05-03 with `[features] codex_hooks = true` + `[[hooks.SessionStart]]` block calling the central LLM-DocKit script via absolute path with `--project "$(git rev-parse --show-toplevel)"`. This applies to every Codex CLI session globally and works even in repos that have not yet received the script via `dockit-sync`. Reversible by removing the block; backup at `~/.codex/config.toml.bak.20260503`.
+
+Tomatic adopts immediately (in the same session that surfaced the gap, applied without waiting for `dockit-sync` so the failure mode is closed for the project under active work). Other downstream projects (`plaud-mirror`, `home-infra-protocol`, `infra-portal`, `llm-council`, etc.) get the scaffold-side artefacts when the operator runs `dockit-sync` against them — but the Codex CLI hook covers them all today via the global user-level config.
+
+Smoke test (2026-05-03 in `home-infra-protocol`, the originally-failing repo): Codex opened, first substantive reply began with literally `Onboarding loaded.` followed by ecosystem-aware content. The same simulation from `/tmp` (non-git, no `LLM_START_HERE.md`) produced exit 0 with no output — graceful no-op confirmed.
+
+Known limitation captured during the smoke test (filed as a follow-up patch for 4.7.1): the script's awk extraction of the "Recommended reading order:" section exits early when there is a blank line between the header and the numbered list. Repos following the LLM-DocKit template (no blank) extract correctly (tomatic: 9 items, LLM-DocKit: 7 items); repos with a customised template that adds a blank line (home-infra-protocol) fall back to a generic 2-item list. The hook still fires and the protocol still works — only the per-repo customisation is degraded.
