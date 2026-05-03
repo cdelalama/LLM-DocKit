@@ -180,3 +180,37 @@ Option 2 chosen. DOCKIT-TEMPLATE markers are managed by `dockit-sync.sh` during 
 
 ### Follow-ups
 - None currently
+
+---
+
+## D-007 - Session-start onboarding is enforced mechanically, not by prose
+
+**Status:** accepted
+
+### Decision
+Future rules of the form "always read X before doing Y at session start" must ship as a hook + script (mechanical guarantee), not as another prose paragraph in `LLM_START_HERE.md` or `CLAUDE.md` (advisory only). The prose remains as the human-readable contract; the hook is the enforcement.
+
+### Context
+LLM-DocKit 4.0.0–4.6.1 already enforces this principle on the **session-end** side via the `Stop` hook calling `dockit-validate-session.sh` (D-005, `docs/HOOKS_ENFORCEMENT_PROPOSAL.md`). The **session-start** side was never instrumented: `LLM_START_HERE.md` declared a "Recommended reading order" but compliance depended on LLM discipline alone. Empirically (DF-033, observed 2026-05-03 in a Codex CLI session inside `home-infra-protocol`), agents skip the reading order under narrow user scopes ("audit X", "fix typo Y"), produce work on partial context, and only catch up when the operator notices.
+
+The operator's standing rule (`~/.claude/CLAUDE.md`, "Before adding a passive rule" section) explicitly forbids encoding "always do X before Y" as more prose. The DF-033 incident is the inverse instance — a prose rule that *was* the failure mode. Writing more prose to enforce a prose rule is the loop the heuristic prohibits.
+
+### Options Considered
+1. **Strengthen the prose** in `LLM_START_HERE.md` (more bold, more "MUST", more emphasis). Maintains zero-mechanism baseline.
+2. **Add a Claude Code SessionStart hook + portable POSIX script** (`scripts/dockit-bootstrap-context.sh`). Forces the reading-order instruction to arrive as injected `additionalContext` before the user's first prompt. The script also has a `--human` mode for non-Claude LLMs (operator pastes the output).
+3. **Wait for tooling parity**: defer until Codex CLI / Cursor / etc. all grow SessionStart equivalents, then ship a unified driver. Means the gap stays open for months.
+
+### Rationale
+Option 2 chosen. The prose-only path has empirical evidence of failure (DF-005, DF-024, DF-033 all in this repo's own backlog). The "wait for parity" path leaves Claude-Code-specific repos unprotected indefinitely; the SessionStart hook is a real primitive in Claude Code today and should not be deferred for tools that don't yet match. The `--human` mode bridges the gap for non-Claude LLMs at modest manual cost (operator pastes one block at session start).
+
+This decision is the **inverse counterpart of D-005** (which established that session-end gating is mechanical, not advisory). Together D-005 and D-007 bracket the session: enforcement at start (D-007) and at end (D-005), with prose `LLM_START_HERE.md`/`CLAUDE.md` rules as the human-readable contract in between.
+
+### Implications
+- New rules of the form "always read X" or "always check Y" at session start are not implemented as prose paragraphs. They are implemented by extending `dockit-bootstrap-context.sh` (or a sibling script) and surfaced via the SessionStart hook.
+- The prose in `LLM_START_HERE.md` is preserved (humans still read it, and the script reads it dynamically to extract the list of mandatory docs); the prose is the single source of truth for **what** to read, the hook is the mechanism that makes the instruction arrive.
+- Downstream projects scaffolded from LLM-DocKit get the hook automatically via `dockit-sync` (manifest entries with `strategy: copy` for both the script and `.claude/settings.json`).
+- The pattern generalises: future "passive rule that depends on LLM discipline" failures (open candidates: DF-022 HISTORY entry quality, DF-031 ecosystem prior-art search) are eligible for the same treatment if and when they prove load-bearing.
+
+### Follow-ups
+- Watch for DF-033-class recurrences in non-Claude LLMs over the next few sessions; they are the test of whether `--human` mode reduces friction enough or whether it is itself the next failure mode.
+- If Codex CLI / Cursor / Aider grow SessionStart hooks, add tool-specific drivers that call `dockit-bootstrap-context.sh --json` (the script is already designed for that — only the wrapper config changes).

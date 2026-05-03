@@ -4,6 +4,46 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.7.0] - 2026-05-03
+
+### Added
+
+- `scripts/dockit-bootstrap-context.sh`: new POSIX shell script that emits the
+  project's mandatory onboarding context as a Claude Code SessionStart
+  `additionalContext` JSON payload (`--json`, default) or as plain text for
+  pasting into non-Claude LLM sessions (`--human`). Reads
+  `LLM_START_HERE.md` dynamically to extract the "Recommended reading order:"
+  list, so updates to that section flow through without changing the script.
+  Output is short (~1.5 KB at default project) — points the LLM at the docs
+  to read rather than concatenating them, staying well under the 10 KB
+  SessionStart hook limit. Closes `docs/DOWNSTREAM_FEEDBACK.md` DF-033.
+- `.claude/settings.json` `SessionStart` hook entry calling
+  `scripts/dockit-bootstrap-context.sh --json`. Wrapped in
+  `sh -c 'if [ -x ... ]; then ... ; fi'` so downstream copies of
+  `settings.json` that arrive before the script gracefully degrade to a
+  no-op rather than break sessions. Inverse counterpart of the existing
+  `Stop` hook (which guards session end via
+  `dockit-validate-session.sh`); together they bracket the session.
+- `dockit-sync-manifest.yml`: new entry registering
+  `scripts/dockit-bootstrap-context.sh` with `strategy: copy` so downstream
+  projects pick it up on the next `dockit-sync` pass.
+- `docs/DOWNSTREAM_FEEDBACK.md` DF-033: "Passive onboarding instructions in
+  repo docs do not enforce session-start context loading." Captures the
+  failure mode observed in a 2026-05-03 Codex CLI session inside
+  `home-infra-protocol`, where the agent gave a partial ecosystem opinion
+  because it had not read `LLM_START_HERE.md` despite the rule being
+  declared at lines 9 and 87. Status: implemented (this release ships
+  the cure for Claude Code; non-Claude LLMs use `--human` mode manually
+  until they grow equivalent hooks).
+
+### Changed
+
+- `docs/llm/DECISIONS.md`: D-007 added — "Session-start onboarding is
+  enforced mechanically, not by prose." Records the precedent that future
+  rules of the form "always read X before doing Y" should ship as a hook
+  + script, not as another prose paragraph.
+
+
 ## [4.6.1] - 2026-05-01
 
 ### Fixed

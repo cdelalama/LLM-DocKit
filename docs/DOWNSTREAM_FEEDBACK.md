@@ -1142,3 +1142,52 @@ DF-032 sits at the intersection of `llm-council` (which owns the destination for
 ### Mitigation in source projects
 
 The 2026-05-04 session deposits its digest manually at `~/src/llm-council/raw/session-2026-05-04-consensus-self-application/`. That is the proof-of-concept input format and the empirical evidence that the manual step adds friction. Future sessions should not need to do this manually.
+
+## DF-033 — Passive onboarding instructions in repo docs do not enforce session-start context loading
+
+- Source: 2026-05-03 — operator opened a Codex CLI session inside `home-infra-protocol` to audit the freshly-landed `DEPLOYMENT_EVIDENCE_PROPOSAL` acceptance. Asked the agent for an opinion on the broader ecosystem of protocols. The agent answered partially and disclosed it had not read `LLM_START_HERE.md`, `docs/llm/HANDOFF.md`, or the master ecosystem roadmap (`~/src/home-infra/docs/SESSION_HANDOFF_2026-05-04_ECOSYSTEM_RECONCILIATION.md`). Pressed by the operator, the agent confirmed the rule was declared in `LLM_START_HERE.md` lines 9 and 87 but had been skipped because the immediate user instruction ("audit, do not implement") established a narrower scope. After the operator forced the orientation, the agent read the missing files and acknowledged the failure mode.
+- Date observed: 2026-05-03
+- Category: process
+- Status: implemented (LLM-DocKit 4.7.0 ships `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook). The protocol-level cure is shipped; the rollout to non-Claude LLMs (Codex CLI, Cursor) remains advisory pending those tools growing equivalent hooks — the `--human` mode of the script is the manual workaround until then.
+- Related: DF-005 (HANDOFF↔LLM_START_HERE drift — same family: prose-only rule, no enforcement), DF-015 (policy replicated across docs drifts independently), DF-024 (documenting drift is not fixing drift), DF-031 (ecosystem prior-art search). Inverse counterpart of `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` (Stop hook for session-end validation): this DF closes the equivalent gap at session-start.
+
+### Observation
+
+LLM-DocKit (and projects scaffolded from it) declare a mandatory reading order in `LLM_START_HERE.md`. The rule is prose. Empirically, agents skip it under three conditions:
+
+1. The user issues a narrow scope ("audit X", "fix the typo in Y", "write a one-liner to do Z") that does not appear to require ecosystem context.
+2. The agent's session prompt does not surface `LLM_START_HERE.md` automatically — the agent only reads it if it remembers to look.
+3. No mechanical signal interrupts the agent before it answers the user's first prompt.
+
+The 2026-05-03 incident on `home-infra-protocol` is a representative instance: the agent gave a partial ecosystem opinion based on this-repo content alone, and only loaded the missing context after the operator explicitly pointed it out. The same failure mode is plausible across every LLM-DocKit-scaffolded project; it is not specific to Codex CLI, the operator, or that particular repo. Claude Code in `~/src/tomatic` has the same exposure today — the global `~/.claude/CLAUDE.md` mitigates it for tomatic-via-Claude specifically (it injects the homelab reading order via the always-loaded user-level CLAUDE.md), but every other (project × LLM-tool) pair lacks an equivalent.
+
+This is the same root cause already named in this file: `compliance depends on LLM discipline, not on system enforcement` (legend prelude; DF-005 prose; HOOKS_ENFORCEMENT_PROPOSAL §Problem Statement). DF-033 is the SessionStart-side specialisation.
+
+### Protocol implication
+
+Three layers, in increasing portability:
+
+(a) **Claude Code SessionStart hook** (highest enforcement, lowest portability). A new `scripts/dockit-bootstrap-context.sh` POSIX script reads the project's `LLM_START_HERE.md` "Recommended reading order:" section and emits a Claude Code SessionStart `additionalContext` JSON payload that arrives before the user's first prompt. The payload (~1.5 KB; well under the 10 KB SessionStart limit) instructs the agent to begin its first substantive reply with literally `Onboarding loaded.` after reading the listed files, or `Onboarding skipped: <reason>` for trivial requests. The string is short and observable in transcripts — the operator can spot agents that skip silently.
+
+(b) **`--human` mode of the same script** (medium portability). For non-Claude LLMs (Codex CLI, Cursor, web ChatGPT), the operator runs `scripts/dockit-bootstrap-context.sh --human` and pastes the output into the session as the first message. Same content, manual delivery. Friction is real but the artefact is identical; the moment those tools grow SessionStart equivalents, the same script is invoked from there with no rewrite.
+
+(c) **Existing prose** in `LLM_START_HERE.md` and `~/.claude/CLAUDE.md` (lowest enforcement, highest portability). Stays as-is; no change. (a) and (b) are additive — they do not remove the prose-level rule. The prose remains the human-readable contract; the hook is the mechanical guarantee.
+
+### Why this is shipping as a script + hook (not as more docs)
+
+The operator's standing rule (in `~/.claude/CLAUDE.md`, "Before adding a passive rule" section) is explicit: *"If you are about to write a memory entry that includes the words always, every time, before/after, must, remember to, or don't forget — stop. Convert to code or hook before saving."* This DF is the inverse instance — a prose rule that already exists and *was* the failure mode. Writing more prose to enforce a prose rule is the loop the operator's heuristic prohibits. The fix has to be mechanical.
+
+### Cross-protocol relationship
+
+DF-033 sits at the intersection of LLM-DocKit (which owns the scaffold and its hook surface) and the LLM-tool ecosystem (which owns the hook execution). The script lives in LLM-DocKit (scaffold-internal, propagated via `dockit-sync-manifest.yml: copy`); the hook configuration in `.claude/settings.json` is also `copy`-strategy; together they ship as one bundle. Tools without hook surfaces consume the same script via `--human`.
+
+This DF is **not** a Consensus Protocol artefact. It does not change a contract or alter cross-repo scope; it adds a small enforcement primitive to an existing convention. Capture as DF + ship a 4.7.0 minor, no PROPOSAL needed (compare to DF-031 which *does* warrant a PROPOSAL — different blast radius).
+
+### Mitigation in source projects
+
+LLM-DocKit 4.7.0 ships:
+- `scripts/dockit-bootstrap-context.sh` (POSIX, zero deps, ~7 KB)
+- `.claude/settings.json` `SessionStart` block calling the script with `--json`
+- `dockit-sync-manifest.yml` entry with `strategy: copy`
+
+Tomatic adopts immediately (in the same session that surfaced the gap, applied without waiting for `dockit-sync` so the failure mode is closed for the project under active work). Other downstream projects (`plaud-mirror`, `home-infra-protocol`, `infra-portal`, `llm-council`, etc.) close it when the operator runs `dockit-sync` against them, scheduled at next regular dockit-sync pass. This is consistent with how the existing Stop-hook validator was rolled out.
