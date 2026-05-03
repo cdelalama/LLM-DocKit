@@ -1075,3 +1075,70 @@ The five lessons are observable empirically, formally, and consistently across t
 ### Mitigation in source projects
 
 None — these are protocol-level lessons, not adopter-symptom drifts. The mitigation is the existence of this entry.
+
+## DF-031 — Ecosystem-wide prior-art search is missing before high-blast-radius proposals
+
+- Source: 2026-05-04 — operator audit during the Consensus Protocol self-application session caught that `LLM-DocKit/docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (created 2026-05-03) substantially duplicated `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` (created 2026-03-01). Same scope, same empirical motivation, two months apart, by the same operator. Three LLM rounds did not catch the duplication; the operator did, by remembering the prior project.
+- Date observed: 2026-05-04
+- Category: process
+- Status: open (placeholder — full content to be expanded in Session 4 of the ecosystem reconciliation roadmap, see `~/src/home-infra/docs/SESSION_HANDOFF_2026-05-04_ECOSYSTEM_RECONCILIATION.md`)
+- Related: DF-030 (audit role surfaces structural drift), DF-018 (LLM personal auto-memory and `docs/llm/` drift as parallel stores)
+
+### Observation
+
+When a session proposes work of high blast radius (per Consensus Protocol thresholds — contract changes, multi-repo spans, security/persistence implications, multi-week reversibility, precedent-setting decisions), it should first search the ecosystem for prior art. Today there is no canonical, machine-readable list of ecosystem projects with their scopes, so the search is manual, optional, and easily skipped. The gap surfaced visibly in the 2026-05-03 / 2026-05-04 deliberation: `CONSENSUS_PROTOCOL_PROPOSAL.md` re-discovered substantial portions of `llm-council` two months after the latter had been formalised. None of the LLMs involved (Claude proposer, GPT-5 critic) brought up `llm-council` until the operator did during a post-closure audit.
+
+### Protocol implication
+
+Three layers, low to high cost:
+
+(a) **Convention in `LLM_START_HERE.md` template**: "Before proposing work of high blast radius, read the Ecosystem Map and search the listed repos for prior art. Document the search in your proposal's *Prior art* section." Pure prose; relies on LLM discipline.
+
+(b) **The Ecosystem Map artefact itself**, planned for `~/src/home-infra-protocol/docs/ECOSYSTEM_MAP.md`. Columns: Repo, Scope, Owns, Does not own, Key docs, Consumers, Related protocols, **Prior-art keywords**, Status. The keywords column is the seed for (c).
+
+(c) **Validator check `--check ecosystem-prior-art` (future)**: scan the new proposal's title and first section for keywords matching any registered protocol's prior-art keywords; warn if overlap above a threshold. Cheap to implement once (b) exists.
+
+The recommended sequence: ship (b) in Session 4, ship (a) in Session 5, defer (c) until volume justifies.
+
+### Cross-protocol relationship
+
+This DF complements DF-030: where DF-030 names auditing as a role for *artefacts within a repo*, DF-031 names ecosystem prior-art search as a discipline for *cross-repo scope*. Both are different facets of the same observation: the human arbiter sees things the LLMs don't, because the human carries cross-project memory. ForgeOS' future automation must address both.
+
+### Mitigation in source projects
+
+The 2026-05-04 ecosystem reconciliation roadmap (Session 4) addresses the symptom by producing the Ecosystem Map. The protocol-level cure (validator check) is deferred. The convention in `LLM_START_HERE.md` will land via Session 5's merge implementation.
+
+## DF-032 — Cross-LLM deliberation logs are not automatically captured into `llm-council/raw/`
+
+- Source: 2026-05-04 — the very session that surfaced DF-031 (and produced two PROPOSALs + multiple REVIEWS entries + audit cycles) has no automatic mechanism to deposit its log into `~/src/llm-council/raw/`. The protocol's empirical foundation (8500 lines in `raw/` from manual exports done in March 2026) has not received a new session log automatically since. The aspiration in `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` §3.6 (a session file format under `~/.llm-council/sessions/<session-id>/`) is unimplemented.
+- Date observed: 2026-05-04
+- Category: gap
+- Status: open (placeholder — full content to be expanded in Session 4 of the ecosystem reconciliation roadmap)
+- Related: DF-018 (auto-memory vs `docs/llm/` drift), DF-030 (auditor role)
+
+### Observation
+
+The Consensus Protocol's empirical base depends on `~/src/llm-council/raw/`. That directory has six logs (~8500 lines) from sessions exported manually by the operator in March 2026. Since then, multiple deliberations have happened (the entire 2026-05-03 / 2026-05-04 work, plus other operator sessions) without depositing new logs. Two consequences:
+
+1. The protocol's empirical base ages — its analysis of "what patterns emerge" is anchored to two-month-old data.
+2. New deliberations (this very session is the most recent example) only survive in scattered form: the digest is in REVIEWS, the rationale is in DFs, the implementation is in commits, the conversational flow is in chat scrollback (volatile). No single artefact captures the full session for analysis.
+
+The session that surfaced this DF had to **manually** export a digest to `~/src/llm-council/raw/session-2026-05-04-consensus-self-application/` (done in this session's closing actions). That manual step is exactly the friction the gap names.
+
+### Protocol implication
+
+(a) **A small CLI / skill that exports a session** — Claude Code transcript + manually-pasted GPT replies + operator arbitration — into a normalised log under `llm-council/raw/session-<id>/`. Probably a `dockit-export-session.sh` style script, or a Claude Code skill that reads the current session's transcript and produces `summary.md` + `sources.yml` + (optionally) raw transcript.
+
+(b) **A convention** in `LLM_START_HERE.md` for projects scaffolded with the Consensus Protocol integration: "When closing a consensus run, export the session digest to `~/src/llm-council/raw/session-<id>/` so the protocol's empirical foundation grows."
+
+(c) **A periodic check**: scan `llm-council/raw/` for last-modified date; warn if no new session log in N days while other ecosystem repos show activity that should have produced sessions.
+
+The minimum viable starting point is (a). (b) follows naturally once (a) exists. (c) is bonus.
+
+### Cross-protocol relationship
+
+DF-032 sits at the intersection of `llm-council` (which owns the destination format) and LLM-DocKit (which owns scaffold-level conventions). The export tool itself is more naturally a llm-council artefact (it knows the session file format); the convention to invoke it is more naturally a LLM-DocKit template addition. Session 4 should decide ownership cleanly.
+
+### Mitigation in source projects
+
+The 2026-05-04 session deposits its digest manually at `~/src/llm-council/raw/session-2026-05-04-consensus-self-application/`. That is the proof-of-concept input format and the empirical evidence that the manual step adds friction. Future sessions should not need to do this manually.

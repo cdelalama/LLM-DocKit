@@ -3,6 +3,16 @@
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
+## Pending session — Ecosystem Reconciliation
+
+A multi-day deliberation on 2026-05-02→04 produced two cross-repo proposals AND surfaced a significant prior-art gap: `~/src/llm-council` (created 2026-03-01) substantially predates the `CONSENSUS_PROTOCOL_PROPOSAL.md` written this week. The reconciliation work is gated to a follow-up session.
+
+**Master roadmap**: `~/src/home-infra/docs/SESSION_HANDOFF_2026-05-04_ECOSYSTEM_RECONCILIATION.md`
+
+**For LLM-DocKit specifically**: do NOT implement `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` until Session 4 of the roadmap closes its merge plan. The proposal in this repo conflicts with `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` and Session 4 reconciles them.
+
+DFs to expand in Session 4 (currently placeholders): DF-031, DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`.
+
 ## Current Status
 - Last Updated: 2026-05-03 - Claude Opus 4.7 (1M context) (proposer) + GPT-5 (critic) + Carlos (arbiter)
 - Session Focus: Add `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` and the matching structured `REVIEWS.md` audit-trail entry. Doc-only addition; no scaffold logic, no validator, no bump (only `docs/` paths touched, which the pre-commit hook excludes from version-bump enforcement, consistent with how previous proposals like `HOOKS_ENFORCEMENT_PROPOSAL.md` and `LLM_DOCKIT_CE_V2_PROPOSAL.md` live in this repo).
