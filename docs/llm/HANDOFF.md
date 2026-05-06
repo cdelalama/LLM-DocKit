@@ -3,6 +3,14 @@
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
+## Open work — next concrete step
+
+**DF-034 closure** (option (a) static orientation check, likely a minor bump). The DF entry in `docs/DOWNSTREAM_FEEDBACK.md` carries an *Implementation hints* block listing the exact files to touch (`scripts/dockit-validate-session.sh`, `LLM_START_HERE.md` reading-order section, the HANDOFF stub in `scripts/dockit-init-project.sh`, this HANDOFF for dogfooding) and the version-bump expectation. No proposal needed, no Consensus run; the option is decided.
+
+A fresh Claude Code session opening this repo should be able to read `LLM_START_HERE.md` → this HANDOFF *Open work* block → `docs/DOWNSTREAM_FEEDBACK.md` DF-034 *Implementation hints* and ship the static check without bespoke prompting. **Closing DF-034 is itself the test of fire** for whether LLM-DocKit's auto-orientation contract works as advertised — if the closing session needs a hand-written prompt to know what to do, the failure mode this DF describes is reproduced and the DF is its own evidence.
+
+The pre-existing *Pending session — Ecosystem Reconciliation* below remains carried forward; DF-034 is independent of Session 4 (architectural reconciliation) and can ship before, in parallel, or after. Session 4 still requires a non-Claude critic per the Consensus Protocol.
+
 ## Pending session — Ecosystem Reconciliation
 
 A multi-day deliberation on 2026-05-02→04 produced two cross-repo proposals AND surfaced a significant prior-art gap: `~/src/llm-council` (created 2026-03-01) substantially predates the `CONSENSUS_PROTOCOL_PROPOSAL.md` written this week. The reconciliation work is gated to a follow-up session.
@@ -14,8 +22,10 @@ A multi-day deliberation on 2026-05-02→04 produced two cross-repo proposals AN
 DFs whose ownership and full expansion are pending Session 4: DF-031, DF-032 in `docs/DOWNSTREAM_FEEDBACK.md` (both have content; what Session 4 decides is which repo owns the cure and how it ships).
 
 ## Current Status
-- Last Updated: 2026-05-03 - Claude Opus 4.7 (1M context) + GPT-5 (concur) + Carlos (arbiter)
-- Session Focus: Cut **v4.7.0** (minor) shipping the SessionStart-side enforcement primitive — `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook + `dockit-sync-manifest.yml` entry — closing **DF-033** (passive onboarding instructions in repo docs do not enforce session-start context loading). New decision **D-007** records the precedent that future "always read X at session start" rules ship as a hook + script, not as more prose. Counterpart of D-005 (session-end enforcement); together they bracket the session.
+- Last Updated: 2026-05-06 - Claude Opus 4.7 (1M context) + GPT-5 (concur) + Carlos (arbiter)
+- Session Focus: **DF-034 filed** — auto-orientation contract is asserted by docs but tested nowhere. Doc-only commit, no version bump. The DF anchors its observation in commit SHAs from `home-infra-protocol` and `home-infra` (the multi-day cleanup chain that surfaced the gap). Three layered options (static check / dry-run / headless LLM); option (a) is the recommended first ship, with *Implementation hints* provided in the DF itself so the closing session can dispatch from this repo's own docs without bespoke context. Closing DF-034 is the test of fire for LLM-DocKit's self-sufficiency contract. The pre-existing 4.7.0/4.7.1 work and the Ecosystem Reconciliation gating remain unchanged.
+
+- Previous: Cut **v4.7.0** (minor) shipping the SessionStart-side enforcement primitive — `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook + `dockit-sync-manifest.yml` entry — closing **DF-033** (passive onboarding instructions in repo docs do not enforce session-start context loading). New decision **D-007** records the precedent that future "always read X at session start" rules ship as a hook + script, not as more prose. Counterpart of D-005 (session-end enforcement); together they bracket the session.
 - Status: **Mechanical cure shipped on the Claude Code axis.** The new POSIX script reads `LLM_START_HERE.md` dynamically to extract the recommended reading order and emits a Claude Code `additionalContext` JSON payload (~1.5–2.4 KB; under the 10 KB SessionStart limit) with a small protocol the LLM must follow (`Onboarding loaded.` or `Onboarding skipped: <reason>` as the first line of the first substantive reply). `--human` mode of the same script is the manual workaround for non-Claude LLMs (Codex CLI, Cursor, web ChatGPT) until those tools grow equivalent hooks. Smoke-tested in both LLM-DocKit (1905 bytes JSON) and tomatic (9-item reading order, ~2.4 KB JSON), `python3 -m json.tool` validates output. Tomatic adopted directly in this same session (script + settings.json copied without waiting for `dockit-sync`); other downstream projects close on next sync pass. Adopter count of DF entries: 30 (DF-033 marked `implemented` on the Claude axis; rollout to other LLMs remains advisory). Previous session focus (CONSENSUS_PROTOCOL_PROPOSAL) carried forward — gated on Session 4 of the ecosystem reconciliation roadmap above.
 - Pending Proposals: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (carried forward; Session 4 gated); `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` (untracked, pre-existing); `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` (untracked, pre-existing).
 

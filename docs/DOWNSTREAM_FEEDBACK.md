@@ -1199,3 +1199,62 @@ Tomatic adopts immediately (in the same session that surfaced the gap, applied w
 Smoke test (2026-05-03 in `home-infra-protocol`, the originally-failing repo): Codex opened, first substantive reply began with literally `Onboarding loaded.` followed by ecosystem-aware content. The same simulation from `/tmp` (non-git, no `LLM_START_HERE.md`) produced exit 0 with no output — graceful no-op confirmed.
 
 Refinement caught and fixed in 4.7.1 (same session): GPT's audit of the smoke test pointed out that the per-repo extraction degraded silently in `home-infra-protocol` — the originally-failing repo. Its `LLM_START_HERE.md` has a blank line after the "Recommended reading order:" header, so the awk regex exited early and emitted a generic 2-item fallback. The smoke test still passed at the protocol level (Codex began with "Onboarding loaded.") but the agent had been instructed on 2 items instead of the 7 real ones (SPEC.md, PROJECT_CONTEXT.md, ARCHITECTURE.md, COMPLETION_RULE.md, HANDOFF.md, DECISIONS.md, this file). GPT correctly framed this as a near-recurrence of DF-024: documenting closure while the originally-failing instance gets degraded onboarding. Fixed in 4.7.1 by tracking a `started` flag in awk so the blank-line-exit only fires after the first numbered item is captured. Post-fix: home-infra-protocol emits the 7 real items; tomatic emits 9; LLM-DocKit emits 7. Lesson recorded in D-007 follow-ups: cross-LLM audit before declaring closure is exactly the discipline that catches this class of slow-creep drift.
+
+---
+
+## DF-034 — Auto-orientation contract is asserted by docs but tested nowhere
+
+- Source: operator-driven cross-repo audit, 2026-05-06. **Honesty note**: this DF was filed by an operator session that already had context from a multi-day meta cleanup. Re-readers should weight the framing accordingly; the observation is anchored in commit SHAs (verifiable evidence), but the prioritisation and option-naming carry operator-context bias.
+- Date observed: 2026-05-06
+- Category: process
+- Status: open
+- Related: DF-029 (claim-vs-deployment drift), DF-030 (auditor as fourth role; the meta-discipline this DF generalises), DF-033 (passive onboarding rules → mechanical hook; covers the *trigger* axis, this DF covers the *content* axis), D-007.
+
+### Observation
+
+LLM-DocKit's central promise to downstream projects is that **a fresh session opening a scaffolded repo can ship the next concrete step without bespoke context**. `dockit-validate-session.sh` enforces five checks (`handoff-date`, `history-entry`, `decisions-referenced`, `version-sync`, `external-context`, `external-triggers`); none of them assert *"can a fresh session in this repo orient itself to the open work the repo claims is open"*. The contract is aspirational, not testable.
+
+Empirical evidence from the cross-repo chain 2026-05-02 → 2026-05-06:
+
+- `home-infra-protocol`: every DF closure between 0.1.6 and 0.3.0 shipped with a 50–100 line bespoke session prompt. The prompt encoded operator preferences, file-by-file translations of DF prose, and "do/do-not" rules that already lived in the repo. Each prompt was hand-written from chat context that the repo lacked. See commits `8ecec98` (0.2.2 — DEPLOYMENT_EVIDENCE_PROPOSAL filed), `05b5106` (0.3.0 — same proposal implemented from a long bespoke prompt), and the cleanup chain `5dd8301` (0.3.0 meta cleanup: HANDOFF *Open work* + LLM_WORKFLOW *When Changing Field Semantics* + DOWNSTREAM_FEEDBACK template *Implementation hints*) → `home-infra@0519777` → `home-infra@b5e61f0` (no-prompt commitment) → `home-infra@cfbae96` (factual reconciliation). The 2026-05-06 cleanup is the first commit chain in the ecosystem that treated the bespoke-prompt habit as a bug rather than as a workflow.
+- After that cleanup, the Session 6 dispatch prompt (DF-004 closure) dropped from ~100 lines to zero. But none of the additions are testable from outside — they live as prose. The next time a session has context that the repo lacks, the bypass is again the path of least resistance, and the cleanup decays.
+- LLM-DocKit itself is the natural home for the cure because the contract belongs to the scaffold, not to any single downstream project. `4.7.0`'s `dockit-bootstrap-context.sh` (DF-033 closure) is the closest existing artefact: it enforces *"read `LLM_START_HERE.md` at session start"* mechanically, but it does not assert that `LLM_START_HERE.md` points at HANDOFF *Open work*, that HANDOFF *Open work* exists, or that *Open work* names files that exist. The bootstrap covers the *trigger* axis of orientation; this DF covers the *content* axis.
+
+The pattern this DF attacks is the same one DF-029 and DF-033 attacked at different layers. DF-029: contract asserts deployment but evidence is uncollected. DF-033: contract asserts session-start onboarding but enforcement was prose. DF-034: contract asserts session-orientation-from-open-work but the assertion is untested.
+
+### Protocol implication
+
+A self-orientation check, layered from cheap-and-static to expensive-and-LLM-bound. Three options, each independently shippable; the recommendation is to ship (a) immediately and reserve (b)/(c) for after at least one downstream adopter has tripped on (a)'s false negatives.
+
+(a) **Static orientation check** (cheap, CI-friendly). New validator function (probably `check_orientation` inside `scripts/dockit-validate-session.sh` or a peer script `scripts/dockit-orientation-check.sh`) that asserts:
+  1. `docs/llm/HANDOFF.md` contains a recognisable *Open work* (or operator-configurable equivalent) section near the top of the file.
+  2. That section names at least one concrete file path inside the repo.
+  3. Each named path actually exists at the named location.
+  4. (Optional) Each named path is referenced by name from at least one other context-defining doc (`LLM_START_HERE.md`, `DOWNSTREAM_FEEDBACK.md`, the master roadmap if pointed at).
+
+  Catches: HANDOFF saying "Pending Proposals: (none)" without naming the next concrete step, or naming a path that was renamed/deleted. Misses (false-negative): HANDOFF naming a path that exists but contains stale or wrong content; only (b) or (c) catch that.
+
+(b) **Dry-run orientation output** (medium). New `--orientation` mode for `dockit-validate-session.sh` (or a peer script) that prints the next concrete step and the reading order a session should follow, in the same format as the SessionStart hook payload. The operator runs it before closing the session; if the printed output does not match what an actual session would do, the operator catches the drift without invoking an LLM. Builds on (a): (a) asserts the structure exists, (b) asserts the structure renders to what the operator expects.
+
+(c) **Headless LLM smoke test** (expensive, CI-fragile). Script that spawns a Claude (or any LLM) headless session in the repo with no prompt, asks "what is the next concrete step?", and asserts the response matches what HANDOFF *Open work* says. Catches the failure modes (a) and (b) miss — semantic drift between the prose of *Open work* and the actual content of the named files. Worth designing only after (a) and (b) have stabilised; depends on model versioning, prompt-cache effects, cost per CI run, and LLM-vendor availability.
+
+### Implementation hints (option (a) — provisional)
+
+Files to touch:
+  - `scripts/dockit-validate-session.sh`: add `check_orientation` function alongside the existing checks; expose via the `--check orientation` flag pattern already in place.
+  - `LLM_START_HERE.md`: extend the *Recommended reading order* (or its surrounding prose) to name HANDOFF *Open work* explicitly as the canonical "what is the next concrete step" section. Without this, downstream projects can declare *Open work* in different idioms and the static check has no fixed target.
+  - `dockit-sync-manifest.yml`: nothing new — `dockit-validate-session.sh` is already synced via `copy`. The new check ships transparently to all adopters on next sync pass.
+  - `docs/llm/HANDOFF.md` (this repo): ensure the *Open work* block exists at the top so LLM-DocKit eats its own dogfood. The check should pass in this very repo before being released downstream.
+  - `dockit-init-project.sh`'s HANDOFF stub: add the *Open work* block to the scaffold so new projects start with it in place.
+  - `CHANGELOG.md`: under whatever version ships this (likely a minor — additive validator capability + new template field).
+  - `docs/DOWNSTREAM_FEEDBACK.md`: this DF's status → `implemented (X.Y.Z)`.
+
+Version bump: minor per `docs/VERSIONING_RULES.md` (additive validator capability + new optional template field). Use `scripts/bump-version.sh`; do not edit `<!-- doc-version: -->` markers manually.
+
+Cross-repo touches required: read-only smoke pass against at least two downstream adopters that already use the bootstrap hook (`tomatic`, `home-infra-protocol`) to verify the check would pass on their current HANDOFFs. Halt and report drift; do not edit cross-repo from the implementing session.
+
+### Mitigation in source projects
+
+As of 2026-05-06, the `home-infra-protocol` cleanup chain (`5dd8301`) and the `home-infra` reconciliation commits (`0519777` → `b5e61f0` → `cfbae96`) are the manual analogue of (a). They work for one project, by hand. The DocKit-level cure shipped under this DF is the same idea automated and propagated to every downstream adopter via `dockit-sync`.
+
+This DF is **not** a Consensus Protocol artefact. It does not change a contract or alter cross-repo scope; it adds a small enforcement primitive to an existing convention. Capture as DF + ship under a future minor; no `*_PROPOSAL.md` needed (compare to DF-031 which *does* warrant a PROPOSAL — different blast radius).
