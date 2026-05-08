@@ -1258,3 +1258,70 @@ Cross-repo touches required: read-only smoke pass against at least two downstrea
 As of 2026-05-06, the `home-infra-protocol` cleanup chain (`5dd8301`) and the `home-infra` reconciliation commits (`0519777` → `b5e61f0` → `cfbae96`) are the manual analogue of (a). They work for one project, by hand. The DocKit-level cure shipped under this DF is the same idea automated and propagated to every downstream adopter via `dockit-sync`.
 
 This DF is **not** a Consensus Protocol artefact. It does not change a contract or alter cross-repo scope; it adds a small enforcement primitive to an existing convention. Capture as DF + ship under a future minor; no `*_PROPOSAL.md` needed (compare to DF-031 which *does* warrant a PROPOSAL — different blast radius).
+
+## DF-035 — Scaffold ships template-residue in entry/optional docs that survives `dockit-init-project.sh`
+
+- Source: pi-fleet (0.1.1, 2026-05-08) — first homelab-profile project scaffolded via `home-infra-protocol/integrations/dockit/new-homelab-project.sh`. **Honesty note**: this DF was filed by an arbiter session in `home-infra` with multi-repo context, after a Codex audit of pi-fleet 0.1.1 surfaced 4 concurrent template-residue findings in one pass. Re-readers should weight that the *aggregation* of the 4 into a single systemic DF carries arbiter bias — the individual findings are anchored in `pi-fleet@a3eaf8d` (verifiable evidence) and were independently cazadas by the Codex audit.
+- Date observed: 2026-05-08
+- Category: gap, drift
+- Status: open
+- Related: DF-033 (SessionStart hook makes residue worse — LLM_START_HERE.md is now the *first* doc every LLM reads, so any scaffold-author voice there is the first thing seen as authoritative), DF-034 (orientation contract checks structure exists and paths are valid; does NOT check that the docs the orientation routes the LLM through are real content vs template — a project can pass DF-034's option (a) check and still poison fresh-session orientation with template residue).
+
+### Observation
+
+Codex audit of pi-fleet 0.1.1 on 2026-05-08 cazó four concurrent template-residue findings, all surviving the scaffold + populate-docs commit chain (`da954f8` initial scaffold → `97c85ee` apply homelab profile → `a3eaf8d` fill 0.1.1 scaffold per brainstorm):
+
+1. **`docs/ARCHITECTURE.md`** ships with `<Names>`, `<Invariant>`, `<Step>`, `<Phase 0>` placeholders in body content (lines 7, 19–20, 31–37, 64–65 of pi-fleet `a3eaf8d`). Marked "(Optional)" in title but README links it as "Technical architecture details" — a fresh LLM treats it as canonical architecture documentation. The optional flag is invisible to the consumer.
+2. **`docs/STRUCTURE.md`** ships with the literal sentence *"Use this template to document how the repository is organized"* (line 1) and a generic project tree (lines 7–46) that never gets project-shaped during scaffold or populate. Template-shaped content survives indefinitely.
+3. **`LLM_START_HERE.md`** retains scaffold-author voice surfaced in the Mandatory section that DF-033's SessionStart hook routes every LLM to read first: *"Replace angle-bracket placeholders (<...>) with real values and share this file with every LLM agent"* (line 6), *"Replace pi-fleet with the actual project name"* + *"Customization Notes for Maintainers"* (lines 95–99). The first words an LLM reads in any new project carry the author voice of the scaffold's writer talking to a hypothetical adopter, not the project speaking to its own future contributors.
+4. **`docs/llm/DECISIONS.md`** ships with the stub *"(No decisions recorded yet. Add the first entry as `## D-001 - <title>` when the first durable choice is made.)"* and stays empty. Real durable decisions accumulate inline in HANDOFF (pi-fleet 0.1.1 had 6: Mosquitto-on-zigbee, TimescaleDB-recorder, data-local-NAS-backup-only, CIFS-for-NAS, HAOS-before-roles, no-install-scripts-in-0.1.x); the migration to DECISIONS.md only happens when an LLM remembers to extract — not by default. The orientation contract DF-034 implements points the next session at HANDOFF *Open work*, but durable rationale is supposed to live in DECISIONS — when DECISIONS is empty the next session reads HANDOFF inline decisions and treats them as operational scratch, not durable fact.
+
+DF-033's enforcement worsens (1)+(3): the SessionStart hook (`scripts/dockit-bootstrap-context.sh`) now mandates LLM_START_HERE.md as the first doc any LLM reads in any DocKit-adopting repo. Any scaffold residue in that file is the FIRST thing an LLM sees and treats as authoritative — exactly the failure mode DF-033 was meant to prevent for orientation routing, recurring on a different axis (content quality of the doc routed to).
+
+The four findings share a single root cause: the scaffold step ships template content as *content*, not as *placeholders to be replaced*. There is no enforcement that template placeholder content has been removed before a project crosses any threshold (first commit after scaffold, first version > 0.1.0, first release tag, etc.). The check passes because the validator only inspects markers, dates, and cross-file pairings — it does not read content.
+
+### Protocol implication
+
+Three options, increasing in mechanical strictness; the recommendation is to ship (a) immediately and (b) in the same minor if scope allows.
+
+(a) **Static template-residue check (cheap, CI-friendly).** New validator function (probably `check_template_residue` inside `scripts/dockit-validate-session.sh`) that regex-sweeps the canonical scaffold-shipped docs for known residue patterns:
+
+  - `LLM_START_HERE.md`: must NOT contain `Replace angle-bracket placeholders`, `Replace pi-fleet with`, `Customization Notes for Maintainers`, or any `<[A-Za-z][^>]*>` outside `<!-- -->` HTML comments and `<...>` placeholder examples explicitly nested inside fenced code blocks.
+  - `docs/STRUCTURE.md`: must NOT contain `Use this template to document` or `<PROJECT_ROOT>` (the literal placeholder used in the template tree).
+  - `docs/ARCHITECTURE.md` (when present): must NOT contain `<Names>`, `<Invariant`, `<Step>`, `<Phase 0>`, or the literal phrase `Authors: <Names>`.
+  - `docs/llm/DECISIONS.md`: a WARN (not ERROR) if no `## D-NNN` heading exists after a configurable threshold (default: 5 commits OR 7 days from `dockit-init-project.sh` run, whichever first). Threshold lives in `dockit-validate-session.sh` constants; tuning is per-project via env override.
+
+  Catches the exact pi-fleet 0.1.1 case. Misses semantic drift (template-shaped content where placeholders were replaced with project names but the structure remained generic) — only (b) or (c) catch that. Acceptable trade-off: covers the recurring 90% case mechanically.
+
+(b) **Scaffold-time strip / removal (medium).** Modify `dockit-init-project.sh` (and homelab profile's `apply-profile.sh` where applicable) to strip scaffold-author voice and template-only content during init. Concretely:
+
+  - Strip the *Customization Notes for Maintainers* section + the *"Replace angle-bracket placeholders"* sentence from `LLM_START_HERE.md` post-init. These are author voice, not project voice.
+  - `docs/ARCHITECTURE.md`: revisit whether default scaffold should include this at all. It's marked optional, but mere presence with template content signals "fill me in" without enforcement. Options: (b.i) delete from default scaffold; create on demand via a hypothetical `dockit-add-architecture.sh`; (b.ii) keep but rename to `ARCHITECTURE.md.example` until the project replaces it. Either eliminates (1) above structurally.
+  - `docs/STRUCTURE.md`: rewrite opening sentence from *"Use this template to document"* to *"Document the repository structure here. Replace this paragraph and the example tree below with project-specific layout once the tree stabilises."*. Project voice, not author voice. Or: remove the example tree from default scaffold and require the populate step to write one — same pattern as PROJECT_CONTEXT.md.
+  - `docs/llm/DECISIONS.md`: stub stays (the file must exist for HANDOFF cross-references); the (a) WARN handles the empty-after-N-commits case.
+
+  Pairs naturally with (a): (b) reduces residue at source for what we know to remove; (a) catches what we missed plus the configurable threshold cases.
+
+(c) **Mandatory DECISIONS.md content gate (expensive, philosophical).** Require `docs/llm/DECISIONS.md` to have ≥1 `## D-NNN` entry before the project crosses 0.x → 1.0 (or before `bump-version.sh` accepts a non-patch bump, configurable). Forces extraction of durable decisions from HANDOFF inline accumulation. Less mechanical than (a)+(b) — the question *"did you actually record the decisions?"* is real and not regex-catchable. Reserve for v5 or after (a)+(b) are stable.
+
+### Implementation hints (option (a))
+
+Files to touch:
+  - `scripts/dockit-validate-session.sh`: add `check_template_residue` function alongside existing checks; expose via `--check template-residue` flag pattern. Threshold for DECISIONS.md emptiness as an env-overridable constant (`DOCKIT_DECISIONS_EMPTY_THRESHOLD_COMMITS`, default 5).
+  - `scripts/dockit-init-project.sh`: review template files copied during init for known residue patterns; strip per option (b) where the residue is unambiguous author voice (the `Customization Notes` section is the lowest-risk candidate).
+  - `LLM_START_HERE.md` template: extend the *Recommended reading order* note with explicit guidance that scaffold-author lines must be removed before first commit. Without this, downstream projects can disagree on what counts as residue and the static check has no fixed target.
+  - `docs/STRUCTURE.md` template: rewrite opening per (b).
+  - `docs/ARCHITECTURE.md` template: decide (b.i) vs (b.ii) before shipping.
+  - `dockit-sync-manifest.yml`: ensure new check function ships to all adopters via `dockit-sync.sh`. The new validator capability is additive, no migration needed in adopters' configs.
+  - `CHANGELOG.md`: minor bump (additive validator capability + template edits — no breaking change).
+  - `docs/DOWNSTREAM_FEEDBACK.md`: this DF's status → `implemented (X.Y.Z)` when shipped.
+
+Version bump: minor per `docs/VERSIONING_RULES.md` (additive validator + template edits, no breaking change). Use `scripts/bump-version.sh`; do not edit `<!-- doc-version: -->` markers manually.
+
+Cross-repo touches required: read-only sweep of existing downstream adopters (`home-infra-protocol`, `tomatic`, `plaud-mirror`, `infra-portal`, `forgeos`, `pi-fleet`) to see how many would currently fail the new `check_template_residue`. Many likely will (historical residue from earlier scaffold versions). Halt and report drift; do **not** edit cross-repo from the implementing session — file local follow-ups per project so each adopter chooses its own remediation pace.
+
+### Mitigation in source project
+
+pi-fleet 0.1.1 → 0.2.0 cleanup commit (in flight as of 2026-05-08, bundled with the pre-installer-backup runbook) addresses the four symptoms locally: ARCHITECTURE.md deleted, STRUCTURE.md rewritten with the real `roles/`/`shared/`/`legacy/`/`docs/runbooks/` tree, LLM_START_HERE.md stripped of scaffold-author voice, DECISIONS.md populated with 6 D-NNN entries extracted from HANDOFF. That is one project, by hand, after the residue had already shipped to GitHub. The DocKit-level cure shipped under this DF is the same idea automated and propagated to every downstream adopter via `dockit-sync`.
+
+Note on protocol-recognition: this DF aggregates four concurrent findings into one systemic entry because they share a single root cause (template content as content, not placeholder). The aggregation step — recognising that four local findings in a single audit are facets of one upstream gap — is itself missing from the proto-`/consensus` flow today; without an arbiter session with multi-repo context, the four findings would have been fixed in pi-fleet 0.2.0 and the systemic root would not have surfaced. See `forgeos/docs/llm/HANDOFF.md` *Open work* item #8 (cross-LLM protocol gap, upstream-recognition step). That gap is recorded in ForgeOS rather than here because the missing step belongs to the operator-toolbox layer (D-008), not to LLM-DocKit's scaffold layer.
