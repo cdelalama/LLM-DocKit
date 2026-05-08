@@ -1,4 +1,4 @@
-<!-- doc-version: 4.7.1 -->
+<!-- doc-version: 4.8.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -11,7 +11,7 @@ Recommended reading order:
 3. docs/ARCHITECTURE.md (optional: architecture, contracts, roadmap)
 4. docs/VERSIONING_RULES.md (version management policy)
 5. docs/llm/README.md (LLM docs index)
-6. docs/llm/HANDOFF.md (current work state and priorities)
+6. docs/llm/HANDOFF.md — current work state. Read the **Open work — next concrete step** section near the top first; it is the canonical declaration of "what to do next" and must name concrete file paths inside the repo. The static check `scripts/dockit-validate-session.sh --check orientation` enforces that contract.
 7. docs/llm/DECISIONS.md (stable rationale; link from HANDOFF)
 
 ## Critical Rules (Non-Negotiable)

@@ -4,6 +4,87 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.8.0] - 2026-05-08
+
+### Added
+
+- `scripts/dockit-validate-session.sh`: new `check_orientation` function (DF-034
+  closure, option (a)). Asserts `docs/llm/HANDOFF.md` declares the next concrete
+  step in a recognisable section (`## Open work`, `## Next concrete step`, or
+  `## Next Steps`), that the section names at least one in-repo file path
+  (backtick-quoted markdown spans matching `*.md`/`*.sh`/`*.yml`/`*.yaml`/
+  `*.json`/`*.txt`/`*.py`/`*.js`/`*.ts`/`*.toml` extensions), and that each
+  named in-repo path actually exists. Cross-repo absolute paths (`~/`, `/`)
+  are excluded from the existence check. Exposed via `--check orientation`.
+  Closes `docs/DOWNSTREAM_FEEDBACK.md` DF-034 ("auto-orientation contract is
+  asserted by docs but tested nowhere"). The contract was the central promise
+  LLM-DocKit makes downstream — that a fresh session can ship the next concrete
+  step without bespoke prompting — but no check enforced it before this
+  release. Counterpart of v4.7.0's `dockit-bootstrap-context.sh`: 4.7.0 covers
+  the *trigger* axis of orientation (LLM reads `LLM_START_HERE.md` at session
+  start), 4.8.0 covers the *content* axis (HANDOFF *Open work* names real
+  paths that exist).
+- `scripts/dockit-validate-session.sh`: new `check_template_residue` function
+  (DF-035 closure, option (a)). Greps canonical scaffold-shipped docs for known
+  scaffold-author voice / template placeholder patterns that survive
+  `dockit-init-project.sh` and poison fresh-session orientation:
+  `LLM_START_HERE.md` ("Replace angle-bracket placeholders", "Customization
+  Notes for Maintainers", "Replace `<project>` with the actual project name"),
+  `docs/STRUCTURE.md` ("Use this template to document", `<PROJECT_ROOT>`),
+  `docs/ARCHITECTURE.md` (`<Names>`, `<Invariant`, `<Step>`, `<Phase 0>`,
+  "Authors: `<Names>`"). Reports as FAIL on hard residue. Reports `WARN` if
+  `docs/llm/DECISIONS.md` has no `## D-NNN` heading after a configurable
+  commit threshold (`DOCKIT_DECISIONS_EMPTY_THRESHOLD_COMMITS`, default 5).
+  Skips on the LLM-DocKit source repo itself (presence of
+  `dockit-sync-manifest.yml` is the source-repo marker — that file is
+  intentionally stripped from downstream by `dockit-init-project.sh`).
+  Exposed via `--check template-residue`. Closes
+  `docs/DOWNSTREAM_FEEDBACK.md` DF-035 option (a) ("scaffold ships
+  template-residue in entry/optional docs that survives
+  `dockit-init-project.sh`"). Option (b) — strip-at-scaffold-time inside
+  `dockit-init-project.sh` — is deliberately deferred to a future minor;
+  the (b.i) vs (b.ii) decision (delete `docs/ARCHITECTURE.md` from default
+  scaffold vs rename to `.example`) is design, not mechanical, and merits
+  its own deliberation pass after this minor's smoke sweep produces empirical
+  data on adopter residue rates.
+
+### Changed
+
+- `LLM_START_HERE.md`: item 6 of the "Recommended reading order:" section
+  now names HANDOFF *Open work — next concrete step* explicitly as the
+  canonical declaration of "what to do next" and points at
+  `scripts/dockit-validate-session.sh --check orientation` as the
+  enforcement primitive. Without this, downstream projects could declare
+  *Open work* in arbitrary idioms and the static check would have no
+  fixed target.
+- `scripts/dockit-init-project.sh`: HANDOFF stub renamed from `## Next Steps`
+  to `## Open work — next concrete step`. The stub's three bullets now name
+  `docs/PROJECT_CONTEXT.md` and `docs/STRUCTURE.md` as backtick-quoted
+  paths (already present in the previous stub via the same idiom), so a
+  freshly-scaffolded project passes the new orientation check from its
+  first commit. The check expects this exact heading name as the
+  preferred form, but accepts `Next concrete step` and `Next Steps` for
+  back-compat with already-deployed projects that have not yet adopted
+  the new heading.
+
+### Notes
+
+- Empirical observation from this release's smoke test of
+  `dockit-init-project.sh`: a freshly-scaffolded project PASSES
+  `check_orientation` (the new HANDOFF stub names two existing paths) but
+  FAILS `check_template_residue` (the canonical templates ship with all
+  the residue patterns DF-035 catalogues). This is the *correct* signal:
+  downstream adopters scaffolding with v4.8.0 will see the FAIL on first
+  validator run and know to clean residue before first commit. Option (b)
+  in a future minor will make the strip happen at scaffold time so the
+  cleanup is mechanical rather than manual.
+- Cross-repo smoke read-only sweep performed on `tomatic`,
+  `home-infra-protocol`, and `pi-fleet` adopters; results recorded in
+  `docs/llm/HANDOFF.md`. Per DF-034 *Cross-repo touches required* and
+  operator instruction, NO cross-repo edits made from this session — any
+  adopter findings are filed as local follow-ups for each adopter to
+  adopt at its own pace.
+
 ## [4.7.1] - 2026-05-03
 
 ### Fixed

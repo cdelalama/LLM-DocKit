@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, template-residue"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -418,6 +418,131 @@ check_external_triggers() {
     fi
 }
 
+# ── Check: orientation (DF-034) ──────────────────────────────────────────────
+# Asserts HANDOFF.md declares the next concrete step in a recognisable section
+# that names at least one in-repo file path, and that each named path exists.
+# Accepted section headings (operator-configurable): "Open work", "Next concrete
+# step", "Next Steps". Paths are detected as backtick-quoted markdown spans
+# matching common source extensions; cross-repo absolute paths (~/, /) are
+# excluded from the existence check.
+
+check_orientation() {
+    if ! should_run "orientation"; then return; fi
+
+    if [ ! -f "$HANDOFF" ]; then
+        add_result "orientation" "FAIL" "HANDOFF.md not found at $HANDOFF"
+        return
+    fi
+
+    section_start=$(grep -nE '^##[[:space:]]+(Open [Ww]ork|Next concrete step|Next [Ss]teps)' "$HANDOFF" | head -1 | cut -d: -f1)
+    if [ -z "$section_start" ]; then
+        add_result "orientation" "FAIL" "No 'Open work' section found in HANDOFF.md (accepted headings: 'Open work', 'Next concrete step', 'Next Steps')"
+        return
+    fi
+
+    section_end=$(awk -v start="$section_start" 'NR>start && /^## / {print NR-1; exit}' "$HANDOFF")
+    if [ -z "$section_end" ]; then
+        section_end=$(wc -l < "$HANDOFF")
+    fi
+
+    paths=$(sed -n "${section_start},${section_end}p" "$HANDOFF" \
+        | grep -oE '`[^`]+\.(md|sh|yml|yaml|json|txt|py|js|ts|toml)`' \
+        | sed 's/`//g' \
+        | grep -vE '^(/|~)' \
+        | sort -u)
+
+    if [ -z "$paths" ]; then
+        add_result "orientation" "FAIL" "Open work section names no in-repo file paths (expected backtick-quoted paths like \`scripts/foo.sh\`)"
+        return
+    fi
+
+    missing=""
+    count=0
+    for p in $paths; do
+        count=$((count + 1))
+        if [ ! -e "$PROJECT_ROOT/$p" ]; then
+            missing="$missing $p"
+        fi
+    done
+
+    if [ -n "$missing" ]; then
+        add_result "orientation" "FAIL" "Open work names $count path(s); missing in repo:$missing"
+    else
+        add_result "orientation" "PASS" "Open work names $count file path(s), all present in repo"
+    fi
+}
+
+# ── Check: template-residue (DF-035 option (a)) ──────────────────────────────
+# Greps canonical scaffold-shipped docs for known author-voice / template
+# placeholder patterns that survive `dockit-init-project.sh` and poison
+# fresh-session orientation. Skips on the LLM-DocKit source repo itself
+# (templates contain placeholders by design — `dockit-sync-manifest.yml` is
+# the source-repo marker, stripped from downstream by `dockit-init-project.sh`).
+# DECISIONS.md emptiness is reported as WARN once the repo crosses a configurable
+# commit threshold (DOCKIT_DECISIONS_EMPTY_THRESHOLD_COMMITS, default 5).
+
+check_template_residue() {
+    if ! should_run "template-residue"; then return; fi
+
+    if [ -f "$PROJECT_ROOT/dockit-sync-manifest.yml" ]; then
+        add_result "template-residue" "PASS" "Skipped (LLM-DocKit source repo; templates carry placeholders by design)"
+        return
+    fi
+
+    _issues=""
+
+    _f="$PROJECT_ROOT/LLM_START_HERE.md"
+    if [ -f "$_f" ]; then
+        for _pat in 'Replace angle-bracket placeholders' 'Customization Notes for Maintainers'; do
+            if grep -qF "$_pat" "$_f"; then
+                _issues="$_issues; LLM_START_HERE.md: '$_pat'"
+            fi
+        done
+        if grep -qE 'Replace [A-Za-z0-9_-]+ with the actual project name' "$_f"; then
+            _issues="$_issues; LLM_START_HERE.md: 'Replace <project> with the actual project name' (scaffold author voice)"
+        fi
+    fi
+
+    _f="$PROJECT_ROOT/docs/STRUCTURE.md"
+    if [ -f "$_f" ]; then
+        for _pat in 'Use this template to document' '<PROJECT_ROOT>'; do
+            if grep -qF "$_pat" "$_f"; then
+                _issues="$_issues; STRUCTURE.md: '$_pat'"
+            fi
+        done
+    fi
+
+    _f="$PROJECT_ROOT/docs/ARCHITECTURE.md"
+    if [ -f "$_f" ]; then
+        for _pat in '<Names>' '<Invariant' '<Step>' '<Phase 0>' 'Authors: <Names>'; do
+            if grep -qF "$_pat" "$_f"; then
+                _issues="$_issues; ARCHITECTURE.md: '$_pat'"
+            fi
+        done
+    fi
+
+    _warn=""
+    _f="$PROJECT_ROOT/docs/llm/DECISIONS.md"
+    if [ -f "$_f" ]; then
+        if ! grep -qE '^## D-[0-9]{3}' "$_f"; then
+            _threshold="${DOCKIT_DECISIONS_EMPTY_THRESHOLD_COMMITS:-5}"
+            _commits=$(cd "$PROJECT_ROOT" && git rev-list --count HEAD 2>/dev/null || echo 0)
+            if [ "$_commits" -ge "$_threshold" ]; then
+                _warn="DECISIONS.md has no D-NNN entry after $_commits commits (threshold: $_threshold). Extract durable decisions from HANDOFF inline accumulation."
+            fi
+        fi
+    fi
+
+    if [ -n "$_issues" ]; then
+        _msg=$(echo "$_issues" | sed 's/^; //')
+        add_result "template-residue" "FAIL" "Template residue: $_msg"
+    elif [ -n "$_warn" ]; then
+        add_result "template-residue" "WARN" "$_warn"
+    else
+        add_result "template-residue" "PASS" "No template residue in canonical scaffold-shipped docs"
+    fi
+}
+
 # ── Run all checks ──────────────────────────────────────────────────────────
 
 check_handoff_date
@@ -426,6 +551,8 @@ check_decisions_referenced
 check_version_sync
 check_external_context
 check_external_triggers
+check_orientation
+check_template_residue
 
 # ── Output ───────────────────────────────────────────────────────────────────
 

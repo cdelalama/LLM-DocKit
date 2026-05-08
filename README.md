@@ -1,4 +1,4 @@
-<!-- doc-version: 4.7.1 -->
+<!-- doc-version: 4.8.0 -->
 # <PROJECT_NAME>
 
 <One-line description of what this project does.>

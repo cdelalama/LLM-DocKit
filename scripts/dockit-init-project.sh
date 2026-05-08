@@ -216,7 +216,14 @@ This file is the current operational snapshot. Long-form rationale lives in
 
 $PROJECT_NAME — describe what this project does in 1-2 paragraphs.
 
-## Next Steps
+## Open work — next concrete step
+
+Canonical declaration of "what to do next" for any LLM session opening this
+repository. Must name concrete file paths inside the repo so a fresh session
+can dispatch without bespoke prompting. Enforced by
+\`scripts/dockit-validate-session.sh --check orientation\`.
+
+For a freshly-scaffolded project (no work done yet):
 
 1. Edit \`docs/PROJECT_CONTEXT.md\` with vision, objectives, stakeholders.
 2. Edit \`docs/STRUCTURE.md\` with the actual repository layout once code lands.
