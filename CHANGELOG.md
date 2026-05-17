@@ -4,6 +4,25 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.8.2] - 2026-05-17
+
+### Added
+
+- `scripts/test-validator.sh`: new POSIX smoke test runner for
+  `dockit-validate-session.sh`. It builds throwaway git repos under `/tmp` and
+  verifies the DF-039 read-only skip matrix, the orientation glob filter, and
+  malformed clean repos missing HANDOFF/HISTORY. Registered in
+  `dockit-sync-manifest.yml` with `strategy: copy` so adopters receive the
+  validator and its smoke tests together.
+
+### Fixed
+
+- `scripts/dockit-validate-session.sh`: `check_handoff_date` and
+  `check_history_entry` now verify the target file exists before applying the
+  `DOCKIT_ALLOW_READ_ONLY_SKIP=1` zero-diff escape. Clean but malformed repos
+  without `docs/llm/HANDOFF.md` or `docs/llm/HISTORY.md` now fail explicitly
+  even when the Claude Stop hook opt-in is present.
+
 ## [4.8.1] - 2026-05-17
 
 ### Changed

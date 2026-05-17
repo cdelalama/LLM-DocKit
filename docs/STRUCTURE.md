@@ -28,6 +28,7 @@ Use this template to document how the repository is organized. Update the table 
 |  +- dockit-sync.sh             (sync template to downstream -- template only)
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
 |  +- dockit-validate-session.sh (validates LLM documentation state)
+|  +- test-validator.sh          (smoke-tests validator edge cases)
 |  +- dockit-generate-external-context.sh (generates External Context section)
 +- .claude/
 |  +- settings.json              (Claude Code hook configuration)
@@ -57,6 +58,7 @@ Use this template to document how the repository is organized. Update the table 
 | scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
 | scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
 | scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
+| scripts/test-validator.sh | Smoke-tests validator edge cases in throwaway repos | Recommended before validator changes |
 | scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |

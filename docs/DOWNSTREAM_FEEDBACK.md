@@ -1402,7 +1402,7 @@ Mitigation in source project: none yet; operator maintains `~/.codex/config.toml
 - Source: LLM-DocKit itself (v4.8.0); observed across three `/brief` sessions on 2026-05-08, 2026-05-13, 2026-05-17
 - Date observed: 2026-05-17
 - Category: usability
-- Status: implemented (4.8.1) — option (a) shipped in `scripts/dockit-validate-session.sh` plus `.claude/settings.json` Stop hook wiring. `check_handoff_date` and `check_history_entry` early-PASS only when BOTH gates are true: caller opts in via `DOCKIT_ALLOW_READ_ONLY_SKIP=1` and the repo has no staged or unstaged tracked-file diff (`git diff HEAD --quiet` and `git diff --cached --quiet`). Claude Code Stop hook opts in; CI and pre-commit do not. Six-case smoke test verified env-var and worktree combinations. Closes Case B (clean-start read-only session). Case C remains operator commit discipline.
+- Status: implemented (4.8.1; hardened in 4.8.2) — option (a) shipped in `scripts/dockit-validate-session.sh` plus `.claude/settings.json` Stop hook wiring. `check_handoff_date` and `check_history_entry` early-PASS only when BOTH gates are true: caller opts in via `DOCKIT_ALLOW_READ_ONLY_SKIP=1` and the repo has no staged or unstaged tracked-file diff (`git diff HEAD --quiet` and `git diff --cached --quiet`). Claude Code Stop hook opts in; CI and pre-commit do not. 4.8.2 moves the skip after target-file existence checks so clean malformed repos without HANDOFF/HISTORY still fail, and adds `scripts/test-validator.sh` to make the smoke matrix reproducible. Closes Case B (clean-start read-only session). Case C remains operator commit discipline.
 - Related: DF-024, DF-034
 
 Observation: `scripts/dockit-validate-session.sh` enforces `check_handoff_date` (HANDOFF `Last Updated` matches today) and `check_history_entry` (HISTORY has an entry dated today) at Stop. These checks fire regardless of whether the session produced any tracked-file diff. The `/brief` skill is explicitly read-only on the project's docs (see `~/.claude/skills/brief/SKILL.md` *What NOT to do*: "Do not write update-HANDOFF-style bookkeeping just because this skill ran"), but the Stop hook does not know that. Result: a read-only `/brief` session is forced into a bookkeeping mini-update — refresh HANDOFF `Last Updated` to today and append a HISTORY entry that itself documents that this mini-update exists only to satisfy the validator.
@@ -1448,7 +1448,7 @@ Implementation hints:
 - `.claude/settings.json` Stop hook: change the command to `sh -c 'DOCKIT_ALLOW_READ_ONLY_SKIP=1 ...'` so Claude Code sessions opt in. PostToolUse and PreCompact hooks do NOT opt in (PostToolUse only fires after a Write/Edit, which by definition produces a diff; PreCompact is a reminder, not a check).
 - `.github/workflows/doc-validation.yml:9`: leave untouched. CI runs without the env var, so the escape never fires in CI. PRs with stale HANDOFF/HISTORY still fail validation.
 - `scripts/pre-commit-hook.sh`: leave untouched. At commit time the staged changes are non-empty, so `git diff --cached --quiet` fails regardless of the env var. Pre-commit behaviour preserved.
-- Test cases:
+- Test cases (automated in `scripts/test-validator.sh` as of 4.8.2):
   1. **Clean worktree + stale HANDOFF + `DOCKIT_ALLOW_READ_ONLY_SKIP=1`** → PASS with skip reason (Case B closed).
   2. **Clean worktree + stale HANDOFF + no env var** → FAIL (CI behaviour preserved on a fresh checkout).
   3. **Modified HANDOFF + stale date + env var set** → FAIL (the session produced tracked work, escape does not fire because diff exists).
