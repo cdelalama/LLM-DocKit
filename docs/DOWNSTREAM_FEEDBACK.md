@@ -1325,3 +1325,74 @@ Cross-repo touches required: read-only sweep of existing downstream adopters (`h
 pi-fleet 0.1.1 → 0.2.0 cleanup commit (in flight as of 2026-05-08, bundled with the pre-installer-backup runbook) addresses the four symptoms locally: ARCHITECTURE.md deleted, STRUCTURE.md rewritten with the real `roles/`/`shared/`/`legacy/`/`docs/runbooks/` tree, LLM_START_HERE.md stripped of scaffold-author voice, DECISIONS.md populated with 6 D-NNN entries extracted from HANDOFF. That is one project, by hand, after the residue had already shipped to GitHub. The DocKit-level cure shipped under this DF is the same idea automated and propagated to every downstream adopter via `dockit-sync`.
 
 Note on protocol-recognition: this DF aggregates four concurrent findings into one systemic entry because they share a single root cause (template content as content, not placeholder). The aggregation step — recognising that four local findings in a single audit are facets of one upstream gap — is itself missing from the proto-`/consensus` flow today; without an arbiter session with multi-repo context, the four findings would have been fixed in pi-fleet 0.2.0 and the systemic root would not have surfaced. See `forgeos/docs/llm/HANDOFF.md` *Open work* item #8 (cross-LLM protocol gap, upstream-recognition step). That gap is recorded in ForgeOS rather than here because the missing step belongs to the operator-toolbox layer (D-008), not to LLM-DocKit's scaffold layer.
+
+## DF-036 — Codex CLI SessionStart hook installed with `--json` mode designed for Claude Code
+
+- Source: operator homelab (`~/.codex/config.toml`); observed from a `hermes-lab` session on 2026-05-17
+- Date observed: 2026-05-17
+- Category: usability
+- Status: open
+- Related: DF-033, DF-037, DF-038
+
+Observation: `~/.codex/config.toml` registers the SessionStart hook with the command:
+
+```toml
+command = "sh -lc '... dockit-bootstrap-context.sh --json --project \"$root\"'"
+```
+
+`--json` emits Claude Code-specific JSON shaped as `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"..."}}`. Codex CLI does not parse this envelope; it appears to inject the raw JSON string into the prompt as text. The script's own docstring (`scripts/dockit-bootstrap-context.sh:23-25`) documents that `--json` is for Claude Code and `--human` is for non-Claude LLMs (Codex CLI, Cursor, web ChatGPT). The configuration is a flag mismatch at install time, not a script bug.
+
+Symptom in the operator's session: Codex prepends "Onboarding loaded." to every reply, instead of only the first substantive reply as DF-033 protocol prescribes. With Claude Code the marker fires exactly once per session, confirming the protocol works there.
+
+Protocol implication:
+- Ship a documented operator-facing instruction in LLM-DocKit (`docs/integrations/CODEX.md` or equivalent) stating that the Codex CLI hook must invoke the script with `--human`, never `--json`.
+- The docstring of `dockit-bootstrap-context.sh` already says this; promote it from inline comment to a visible integration document so operators editing `~/.codex/config.toml` pick the right flag.
+- Long-term resolution lives in DF-038 (a real installer script), but the flag-choice rule must be discoverable independently of the installer.
+
+Mitigation in source project: edit `~/.codex/config.toml` to replace `--json` with `--human`. Trivial, no script changes.
+
+## DF-037 — Codex CLI re-emits onboarding marker on every turn (suspected per-turn SessionStart firing)
+
+- Source: operator homelab Codex CLI; observed from a `hermes-lab` session on 2026-05-17
+- Date observed: 2026-05-17
+- Category: gap
+- Status: open (requires verification after DF-036 mitigation)
+- Related: DF-033, DF-036
+
+Observation: Operator reports that Codex CLI prepends "Onboarding loaded." to every reply within a single session, not only to the first substantive reply as the DF-033 protocol specifies. Claude Code, running the same script via its SessionStart hook, only emits the marker once per session. The divergence implicates either Codex CLI hook lifecycle semantics or the way Codex CLI handles the SessionStart output. Hypothesised causes:
+
+1. Codex CLI fires `SessionStart` hooks on every turn rather than once per session (semantic divergence from Claude Code).
+2. Codex CLI fires SessionStart once but re-injects the resulting context into every turn's system prompt, causing the LLM to re-evaluate the "first substantive reply" rule each turn.
+3. Combined: the LLM's session-level memory of "I already onboarded" is shorter than the persistence of the SessionStart context in the prompt, so the LLM repeatedly applies the protocol.
+
+The `[hooks.state]` section of `~/.codex/config.toml` only tracks `enabled` and `trusted_hash`. No per-session firing tracker exists in the config, so the config alone cannot disambiguate.
+
+Empirical test required: apply the DF-036 mitigation (`--json` → `--human`), open a fresh Codex CLI session, observe whether the marker still appears in turn 2+. If yes, the cause is upstream Codex behaviour, not the flag choice.
+
+Protocol implication:
+- If verified that Codex re-fires or re-injects per turn, `dockit-bootstrap-context.sh` should grow a Codex-specific output mode that short-circuits subsequent invocations within a single session via a marker file (e.g., `/tmp/dockit-onboarding-marker-${session_id}` or equivalent). The script already has the structure to support multiple output modes; add `--codex` as a third mode tracking state via filesystem.
+- LLM-DocKit should publish a short table of supported LLMs vs hook lifecycle behaviour (Claude Code, Codex CLI, Cursor, etc.) in `docs/integrations/`, so future protocol additions know the cross-LLM contract.
+- This DF is gated on DF-036 being applied first — without the `--human` fix, the diagnosis can't isolate whether the per-turn behaviour is the script's JSON output being misparsed every turn or genuinely Codex semantics.
+
+Mitigation in source project: pending DF-036 fix + empirical verification.
+
+## DF-038 — No installer script registers the Codex CLI integration of the DF-033 onboarding hook
+
+- Source: operator homelab; observed from a `hermes-lab` session on 2026-05-17
+- Date observed: 2026-05-17
+- Category: process
+- Status: open
+- Related: DF-033, DF-036
+
+Observation: A grep across `~/src/LLM-DocKit/`, `~/src/forgeos/`, `~/src/home-infra/`, `~/src/devenv-bootstrap/` for any script that touches `~/.codex/config.toml` or installs the Codex SessionStart hook returns no matches. The hook stanza in `~/.codex/config.toml` was installed manually or by a script that has since been removed. Consequences:
+
+- Reproducing the hook on a new operator machine requires remembering the TOML stanza by hand.
+- Updates to the recommended invocation (e.g., DF-036's `--json` → `--human` migration) cannot be propagated via "re-run the installer".
+- ForgeOS `bootstrap-operator.sh` installs the Claude Code SessionStart hook in `~/.claude/settings.json` but does nothing for Codex CLI. The ecosystem coverage of DF-033 across LLMs is therefore asymmetric: Claude Code is provisioned and tracked, Codex CLI is implicit and untracked.
+
+Protocol implication:
+- Add `scripts/dockit-install-codex-hook.sh` to LLM-DocKit. Idempotent. Writes the correct TOML stanza (using `--human`) to `~/.codex/config.toml`, with backup of any prior config. Mirror the shape of the existing Claude Code installer in ForgeOS.
+- ForgeOS `bootstrap-operator.sh` should call this installer during operator bootstrap, parallel to the Claude Code hook install, so a new machine gets DF-033 coverage across both LLMs in a single `bootstrap-operator.sh` invocation.
+- The two installer scripts together (Claude Code via ForgeOS, Codex CLI via LLM-DocKit) constitute the canonical operator-side installation surface for DF-033. Document the division explicitly in LLM-DocKit's README so downstream consumers know where each piece lives.
+
+Mitigation in source project: none yet; operator maintains `~/.codex/config.toml` by hand. After DF-036 mitigation lands, until DF-038 ships the installer, document the manual TOML stanza in `docs/integrations/CODEX.md`.
