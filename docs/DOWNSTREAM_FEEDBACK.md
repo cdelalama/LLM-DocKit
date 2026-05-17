@@ -1396,3 +1396,36 @@ Protocol implication:
 - The two installer scripts together (Claude Code via ForgeOS, Codex CLI via LLM-DocKit) constitute the canonical operator-side installation surface for DF-033. Document the division explicitly in LLM-DocKit's README so downstream consumers know where each piece lives.
 
 Mitigation in source project: none yet; operator maintains `~/.codex/config.toml` by hand. After DF-036 mitigation lands, until DF-038 ships the installer, document the manual TOML stanza in `docs/integrations/CODEX.md`.
+
+## DF-039 — Validator forces bookkeeping mini-update on read-only sessions, and the cure becomes the next session's cause
+
+- Source: LLM-DocKit itself (v4.8.0); observed across three `/brief` sessions on 2026-05-08, 2026-05-13, 2026-05-17
+- Date observed: 2026-05-17
+- Category: usability
+- Status: open
+- Related: DF-024, DF-034
+
+Observation: `scripts/dockit-validate-session.sh` enforces `check_handoff_date` (HANDOFF `Last Updated` matches today) and `check_history_entry` (HISTORY has an entry dated today) at Stop. These checks fire regardless of whether the session produced any tracked-file diff. The `/brief` skill is explicitly read-only on the project's docs (see `~/.claude/skills/brief/SKILL.md` *What NOT to do*: "Do not write update-HANDOFF-style bookkeeping just because this skill ran"), but the Stop hook does not know that. Result: a read-only `/brief` session is forced into a bookkeeping mini-update — refresh HANDOFF `Last Updated` to today and append a HISTORY entry that itself documents that this mini-update exists only to satisfy the validator.
+
+The pattern self-perpetuates: the mini-update produces a tracked-file diff in `docs/llm/HANDOFF.md` and `docs/llm/HISTORY.md`. If the operator commits, that commit lands at today's date. If the operator does NOT commit (as happened on 2026-05-13), the diff sits in the working tree dated to the prior session's date. The next read-only session re-triggers the same checks against the stale date and the same mini-update is required again, this time updating the stale dates of the previous mini-update. The 2026-05-13 HISTORY entry explicitly anticipated this: *"A future patch could add a validator escape for sessions with zero tracked-file diffs (...) — candidate input for a future DF if the pattern recurs."* It recurred on 2026-05-17. Three recurrences in 9 days.
+
+This is a specialised case of DF-024 ("documenting drift is not fixing drift") at the validator-design layer: the validator's design assumption is that every session is a writing session, which is contradicted by the operator's explicit use of `/brief`, `/adopt-dockit` dry-runs, and other read-only flows that legitimately produce no diff. The class also matches the empirical pattern that DF-033 names: "passive instructions in repo docs are skipped when the LLM is given a narrow scope" — here the narrow scope is "just brief me" and the bookkeeping rule does not apply, but the validator fires anyway.
+
+Protocol implication:
+
+- **Option (a) — short-circuit on zero diff (recommended)**: at the top of `check_handoff_date` and `check_history_entry`, run `git diff HEAD --quiet -- '*'` and skip the check (PASS with reason "zero-diff session, no documentation required") when the worktree has no staged or unstaged tracked changes. Untracked files (e.g., the do-not-touch `documento.md`, `*_PROPOSAL.md` drafts) should NOT count; the check is about whether *this session* produced tracked work to document. Three-line addition per check. Bundles naturally with the `check_orientation` glob-char refinement currently declared in HANDOFF *Open work* (both are validator-side refinements to the same script); together they would ship as v4.8.1 (patch).
+
+- **Option (b) — explicit `/brief`-style skip flag**: add an environment variable `DOCKIT_SESSION_READ_ONLY=1` or a per-skill marker file that `/brief` (and similar skills) sets to bypass the date+history checks. More explicit than (a) but couples the validator to specific skill names and requires every read-only skill to opt in.
+
+- **Option (c) — do nothing, accept the false-positive**: the bookkeeping is cheap (~5 line diff) and the audit trail of "session N was a read-only briefing" has some informational value (the HISTORY entries become a self-documenting record of skill usage). Rejected if (a) is judged low-risk, because the audit trail can equally be reconstructed from `git log --diff-filter=A docs/llm/HISTORY.md` or from a Stop-hook log file that records every session close without forcing a doc edit.
+
+Recommended: option (a). The `git diff HEAD --quiet` primitive is portable, requires no new state, and the semantic is precise (no tracked work → no documentation owed). The risk surface is one edge case: a session that intentionally produces tracked work but forgets to update HANDOFF/HISTORY would now pass the validator silently. Mitigation: the orientation check (`check_orientation`) and the version-sync check still fire, so a session that ships actual code without doc updates still hits a different gate. The handoff-date check was always a proxy for "did you document the change"; the proxy is too coarse for zero-diff sessions.
+
+Implementation hints:
+
+- `scripts/dockit-validate-session.sh` `check_handoff_date()`: at function entry, `if git diff HEAD --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then add_result "handoff-date" "PASS" "zero-diff session, no documentation required"; return; fi`. Same insertion in `check_history_entry()`. Use `2>/dev/null` so the check stays silent in non-git contexts (already handled elsewhere in the script).
+- `--check handoff-date,history-entry` invocations should respect the short-circuit too (the early-return covers this without extra wiring).
+- Test cases: (1) clean worktree + stale HANDOFF date → PASS with reason; (2) modified HANDOFF + stale date → FAIL (existing behaviour preserved); (3) modified unrelated file (e.g., `scripts/foo.sh`) + stale date → FAIL (the session DID produce tracked work, so docs are owed); (4) only untracked files (do-not-touch drafts) → PASS (no tracked change to document).
+- CHANGELOG entry under `### Changed`: "Validator now skips handoff-date and history-entry checks on zero-diff sessions (read-only `/brief`, dry-runs). Closes DF-039."
+
+Mitigation in source project: none yet. Operator currently absorbs the bookkeeping cost on every read-only `/brief` session. The 2026-05-13 and 2026-05-17 HISTORY entries are themselves evidence of the cost (verbose self-referential entries that exist only to satisfy the validator).
