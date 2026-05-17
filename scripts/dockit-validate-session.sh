@@ -144,10 +144,22 @@ should_run() {
     esac
 }
 
+is_zero_diff_read_only_session() {
+    [ "${DOCKIT_ALLOW_READ_ONLY_SKIP:-0}" = "1" ] || return 1
+    (cd "$PROJECT_ROOT" \
+        && git diff HEAD --quiet 2>/dev/null \
+        && git diff --cached --quiet 2>/dev/null)
+}
+
 # ── Check functions ─────────────────────────────────────────────────────────
 
 check_handoff_date() {
     if ! should_run "handoff-date"; then return; fi
+
+    if is_zero_diff_read_only_session; then
+        add_result "handoff-date" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, zero-diff session)"
+        return
+    fi
 
     if [ ! -f "$HANDOFF" ]; then
         add_result "handoff-date" "FAIL" "HANDOFF.md not found at $HANDOFF"
@@ -168,6 +180,11 @@ check_handoff_date() {
 
 check_history_entry() {
     if ! should_run "history-entry"; then return; fi
+
+    if is_zero_diff_read_only_session; then
+        add_result "history-entry" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, zero-diff session)"
+        return
+    fi
 
     if [ ! -f "$HISTORY" ]; then
         add_result "history-entry" "FAIL" "HISTORY.md not found at $HISTORY"
@@ -449,6 +466,7 @@ check_orientation() {
         | grep -oE '`[^`]+\.(md|sh|yml|yaml|json|txt|py|js|ts|toml)`' \
         | sed 's/`//g' \
         | grep -vE '^(/|~)' \
+        | grep -vE '[*?[]' \
         | sort -u)
 
     if [ -z "$paths" ]; then

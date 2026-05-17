@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'if ! scripts/dockit-validate-session.sh --json --quiet >/dev/null 2>&1; then printf \"{\\\"decision\\\":\\\"block\\\",\\\"reason\\\":\\\"Documentation not up to date. Update docs/llm/HANDOFF.md (Last Updated date) and add an entry to docs/llm/HISTORY.md before ending the session. Run: scripts/dockit-validate-session.sh --human\\\"}\"; fi'",
+            "command": "sh -c 'if ! DOCKIT_ALLOW_READ_ONLY_SKIP=1 scripts/dockit-validate-session.sh --json --quiet >/dev/null 2>&1; then printf \"{\\\"decision\\\":\\\"block\\\",\\\"reason\\\":\\\"Documentation not up to date. Update docs/llm/HANDOFF.md (Last Updated date) and add an entry to docs/llm/HISTORY.md before ending the session. Run: scripts/dockit-validate-session.sh --human\\\"}\"; fi'",
             "timeout": 10
           }
         ]

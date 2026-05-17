@@ -4,6 +4,24 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.8.1] - 2026-05-17
+
+### Changed
+
+- `scripts/dockit-validate-session.sh`: `check_handoff_date` and
+  `check_history_entry` now skip only when the caller opts in with
+  `DOCKIT_ALLOW_READ_ONLY_SKIP=1` and the repo has no staged or unstaged
+  tracked-file diff. Claude Code's Stop hook opts in; CI and pre-commit do
+  not. Closes DF-039 Case B (clean-start read-only sessions such as `/brief`);
+  Case C remains operator commit discipline.
+
+### Fixed
+
+- `scripts/dockit-validate-session.sh`: `check_orientation` now ignores
+  backtick-quoted strings containing glob characters (`*`, `?`, `[`) instead
+  of treating them as literal paths. This prevents false missing-path reports
+  for prose such as `*_PROPOSAL.md`.
+
 ## [4.8.0] - 2026-05-08
 
 ### Added
@@ -361,4 +379,3 @@ This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 ### Changed
 - `docs/llm/HANDOFF.md` emphasizes brevity and linking to DECISIONS
 - `LLM_START_HERE.md`, `README.md`, and `HOW_TO_USE.md` updated to reference the new docs
-
