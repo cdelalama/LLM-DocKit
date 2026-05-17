@@ -1411,21 +1411,50 @@ The pattern self-perpetuates: the mini-update produces a tracked-file diff in `d
 
 This is a specialised case of DF-024 ("documenting drift is not fixing drift") at the validator-design layer: the validator's design assumption is that every session is a writing session, which is contradicted by the operator's explicit use of `/brief`, `/adopt-dockit` dry-runs, and other read-only flows that legitimately produce no diff. The class also matches the empirical pattern that DF-033 names: "passive instructions in repo docs are skipped when the LLM is given a narrow scope" — here the narrow scope is "just brief me" and the bookkeeping rule does not apply, but the validator fires anyway.
 
+### Two distinct cases worth separating before designing the fix
+
+Cross-LLM review of the original DF-039 (commit `ca264eb`, 2026-05-17) flagged that the recurrence has two cases the original write-up conflated:
+
+- **Case B (clean-start read-only session)** — Session opens with a clean worktree. `/brief` produces no diff. Stop hook fires on stale `Last Updated`. Operator is forced into a mini-update. This is the case `git diff HEAD --quiet` correctly identifies, and where the proposed escape applies.
+
+- **Case C (dirty-start session inheriting uncommitted bookkeeping)** — Session opens with a stale diff from a prior session whose bookkeeping was never committed (2026-05-17 was exactly this — the 2026-05-13 mini-update sat in the working tree for 4 days). Stop hook fires on stale `Last Updated`. `git diff HEAD --quiet` is FALSE because the inherited diff exists, so a zero-diff escape would NOT trigger. The original DF-039 write-up implied the escape covered this case; it does not.
+
+The two cases interact: if Case B is solved cleanly (escape fires, no mini-update generated, no diff at session close, no commit needed), Case C never materialises in subsequent sessions. The chain breaks at B. Case C only persists if either (i) the escape is not implemented and the bookkeeping is generated, OR (ii) the escape IS implemented but the operator runs a session that legitimately produces a HANDOFF/HISTORY edit and then exits without committing (covered by the operator-side push policy in `~/.claude/CLAUDE.md` *Push Policy* — commits go up immediately).
+
+Case C therefore does NOT need a separate validator-side fix; it needs commit discipline, which exists as a global rule. Documenting it explicitly in this DF avoids the trap of designing a more invasive fix for a symptom that disappears when the upstream case is closed.
+
 Protocol implication:
 
-- **Option (a) — short-circuit on zero diff (recommended)**: at the top of `check_handoff_date` and `check_history_entry`, run `git diff HEAD --quiet -- '*'` and skip the check (PASS with reason "zero-diff session, no documentation required") when the worktree has no staged or unstaged tracked changes. Untracked files (e.g., the do-not-touch `documento.md`, `*_PROPOSAL.md` drafts) should NOT count; the check is about whether *this session* produced tracked work to document. Three-line addition per check. Bundles naturally with the `check_orientation` glob-char refinement currently declared in HANDOFF *Open work* (both are validator-side refinements to the same script); together they would ship as v4.8.1 (patch).
+- **Option (a) — opt-in zero-diff short-circuit (recommended)**: add an opt-in escape to `check_handoff_date` and `check_history_entry` that early-PASSes when (i) the caller opts in via env var `DOCKIT_ALLOW_READ_ONLY_SKIP=1` AND (ii) `git diff HEAD --quiet` AND `git diff --cached --quiet` both succeed (no staged or unstaged tracked changes). Both conditions required: the env var alone is not enough (a session that legitimately edited code MUST still document it), and the clean worktree alone is not enough (CI on a clean checkout would otherwise silently skip the check on a stale PR). Untracked files (do-not-touch drafts) do not count toward "tracked changes" — they are excluded by `git diff` semantics. The Stop-hook invocation in `.claude/settings.json` opts in by setting the env var inline; CI (`.github/workflows/doc-validation.yml:9`) does NOT opt in, so behaviour on PRs is preserved. Pre-commit (`scripts/pre-commit-hook.sh`) does NOT opt in either, and is safe regardless because at commit time the staged files produce a non-quiet diff.
 
-- **Option (b) — explicit `/brief`-style skip flag**: add an environment variable `DOCKIT_SESSION_READ_ONLY=1` or a per-skill marker file that `/brief` (and similar skills) sets to bypass the date+history checks. More explicit than (a) but couples the validator to specific skill names and requires every read-only skill to opt in.
+- **Option (b) — auto-detect interactive mode**: use heuristics like `[ -t 0 ]` (stdin is a TTY) or env-var sniffing (`CI=true`, `GITHUB_ACTIONS=true` ⇒ disable escape; otherwise enable). Rejected vs (a) because env-var coverage across CI platforms varies (GitLab uses `GITLAB_CI`, Jenkins uses `JENKINS_URL`, etc.), and Claude Code's Stop hook does not allocate a TTY. The opt-in flag is explicit and predictable.
 
-- **Option (c) — do nothing, accept the false-positive**: the bookkeeping is cheap (~5 line diff) and the audit trail of "session N was a read-only briefing" has some informational value (the HISTORY entries become a self-documenting record of skill usage). Rejected if (a) is judged low-risk, because the audit trail can equally be reconstructed from `git log --diff-filter=A docs/llm/HISTORY.md` or from a Stop-hook log file that records every session close without forcing a doc edit.
+- **Option (c) — do nothing, accept the false-positive**: rejected if (a) is judged low-risk. The bookkeeping cost (~5 line diff per session) is small in absolute terms but compounds: each mini-update is a verbose self-referential HISTORY entry, and the entries pollute the project history with bookkeeping noise that the project's own audit-trail tooling (`git log --diff-filter=A docs/llm/HISTORY.md`) does not distinguish from substantive entries.
 
-Recommended: option (a). The `git diff HEAD --quiet` primitive is portable, requires no new state, and the semantic is precise (no tracked work → no documentation owed). The risk surface is one edge case: a session that intentionally produces tracked work but forgets to update HANDOFF/HISTORY would now pass the validator silently. Mitigation: the orientation check (`check_orientation`) and the version-sync check still fire, so a session that ships actual code without doc updates still hits a different gate. The handoff-date check was always a proxy for "did you document the change"; the proxy is too coarse for zero-diff sessions.
+Recommended: option (a) with both gating conditions (opt-in env var AND clean worktree). The semantic is precise: "the caller has declared this is an interactive session where read-only is legitimate" AND "the session in fact produced no tracked work". Bundles naturally with the `check_orientation` glob-char refinement currently declared in HANDOFF *Open work* (both are validator-side refinements to the same script).
 
 Implementation hints:
 
-- `scripts/dockit-validate-session.sh` `check_handoff_date()`: at function entry, `if git diff HEAD --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then add_result "handoff-date" "PASS" "zero-diff session, no documentation required"; return; fi`. Same insertion in `check_history_entry()`. Use `2>/dev/null` so the check stays silent in non-git contexts (already handled elsewhere in the script).
-- `--check handoff-date,history-entry` invocations should respect the short-circuit too (the early-return covers this without extra wiring).
-- Test cases: (1) clean worktree + stale HANDOFF date → PASS with reason; (2) modified HANDOFF + stale date → FAIL (existing behaviour preserved); (3) modified unrelated file (e.g., `scripts/foo.sh`) + stale date → FAIL (the session DID produce tracked work, so docs are owed); (4) only untracked files (do-not-touch drafts) → PASS (no tracked change to document).
-- CHANGELOG entry under `### Changed`: "Validator now skips handoff-date and history-entry checks on zero-diff sessions (read-only `/brief`, dry-runs). Closes DF-039."
+- `scripts/dockit-validate-session.sh` `check_handoff_date()`: at function entry,
+  ```sh
+  if [ "${DOCKIT_ALLOW_READ_ONLY_SKIP:-0}" = "1" ] \
+     && git diff HEAD --quiet 2>/dev/null \
+     && git diff --cached --quiet 2>/dev/null; then
+      add_result "handoff-date" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, zero-diff session)"
+      return
+  fi
+  ```
+  Same insertion in `check_history_entry()`. The wording mirrors the existing `DOCKIT_SKIP_EXTERNAL=1` convention (lines 310, 369) for consistency.
+- `.claude/settings.json` Stop hook: change the command to `sh -c 'DOCKIT_ALLOW_READ_ONLY_SKIP=1 ...'` so Claude Code sessions opt in. PostToolUse and PreCompact hooks do NOT opt in (PostToolUse only fires after a Write/Edit, which by definition produces a diff; PreCompact is a reminder, not a check).
+- `.github/workflows/doc-validation.yml:9`: leave untouched. CI runs without the env var, so the escape never fires in CI. PRs with stale HANDOFF/HISTORY still fail validation.
+- `scripts/pre-commit-hook.sh`: leave untouched. At commit time the staged changes are non-empty, so `git diff --cached --quiet` fails regardless of the env var. Pre-commit behaviour preserved.
+- Test cases:
+  1. **Clean worktree + stale HANDOFF + `DOCKIT_ALLOW_READ_ONLY_SKIP=1`** → PASS with skip reason (Case B closed).
+  2. **Clean worktree + stale HANDOFF + no env var** → FAIL (CI behaviour preserved on a fresh checkout).
+  3. **Modified HANDOFF + stale date + env var set** → FAIL (the session produced tracked work, escape does not fire because diff exists).
+  4. **Modified unrelated file (e.g., `scripts/foo.sh`) + stale date + env var set** → FAIL (real work exists, must be documented).
+  5. **Only untracked files (do-not-touch drafts) + stale date + env var set** → PASS (`git diff` ignores untracked).
+  6. **Staged changes + stale date + env var set** → FAIL (`git diff --cached --quiet` fails).
+- CHANGELOG entry under `### Changed`: "Validator: `check_handoff_date` and `check_history_entry` skip on opt-in (`DOCKIT_ALLOW_READ_ONLY_SKIP=1`) zero-diff sessions. Claude Code Stop hook opts in; CI and pre-commit do not. Closes DF-039 Case B; Case C remains operator commit discipline."
 
-Mitigation in source project: none yet. Operator currently absorbs the bookkeeping cost on every read-only `/brief` session. The 2026-05-13 and 2026-05-17 HISTORY entries are themselves evidence of the cost (verbose self-referential entries that exist only to satisfy the validator).
+Mitigation in source project: none yet. Operator currently absorbs the bookkeeping cost on every read-only `/brief` session. The 2026-05-13 and 2026-05-17 HISTORY entries are themselves evidence of the cost (verbose self-referential entries that exist only to satisfy the validator). Until option (a) ships, the operator-side mitigation for Case C specifically is to always commit + push the mini-update before closing the session (already enforced by `~/.claude/CLAUDE.md` *Push Policy*); the 2026-05-13 case violated that and produced the 2026-05-17 recurrence.
