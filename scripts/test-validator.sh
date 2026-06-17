@@ -203,6 +203,27 @@ EOF
 expect_pass "trace-protocol valid anchor and HISTORY footer pass" \
     "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
 
+TRACE_TIME_MINUTES=$(git -C "$TRACE_REPO" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M UTC' HEAD)
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Current target: \`$TRACE_HASH\` $TRACE_SUBJECT
+- Commit time: $TRACE_TIME_MINUTES
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+
+expect_pass "trace-protocol accepts commit time without seconds" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
 cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
 # History
 
@@ -227,6 +248,25 @@ cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
 Touch \`scripts/foo.sh\`.
 EOF
 expect_fail "trace-protocol enabled requires HANDOFF Trace Anchor" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Current target: \`deadbeefdead\` fake subject
+- Commit time: 2000-01-01 00:00 UTC
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+expect_fail "trace-protocol invalid anchor hash fails" \
     "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
 
 cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF

@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.0 -->
+<!-- doc-version: 4.9.1 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -139,6 +139,8 @@ was verified, and what risk remains.
 When `trace_protocol.enabled: true` is set in `.dockit-config.yml`, the durable
 half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
 - `docs/llm/HANDOFF.md` must contain a `## Trace Anchor` section.
+- HANDOFF Trace Anchor commit times may use `YYYY-MM-DD HH:MM:SS UTC` or
+  `YYYY-MM-DD HH:MM UTC`.
 - `docs/llm/HISTORY.md` entries dated on or after `trace_protocol.since` that
   reference backtick-quoted commit hashes must end with an inline footer:
   `Trace: role=executor|auditor; commits=hash1,hash2; state=...; validation=...; next=...`

@@ -409,38 +409,41 @@ _trace_validate_commit() {
     _require_subject_time="$4"
     _upstream_branch="$5"
 
-    if ! cd "$PROJECT_ROOT" && git cat-file -e "$_hash^{commit}" 2>/dev/null; then
+    if ! git -C "$PROJECT_ROOT" cat-file -e "$_hash^{commit}" 2>/dev/null; then
         _trace_append_error "$_context references commit $_hash, but git cannot resolve it"
         return
     fi
 
-    _short=$(cd "$PROJECT_ROOT" && git rev-parse --short=7 "$_hash" 2>/dev/null || true)
+    _short=$(git -C "$PROJECT_ROOT" rev-parse --short=7 "$_hash" 2>/dev/null || true)
     if [ -n "$_short" ] && ! printf '%s\n' "$_text" | grep -qF "$_short"; then
         _trace_append_error "$_context references $_hash but does not contain canonical short hash $_short"
     fi
 
     if [ "$_require_subject_time" = true ]; then
-        _subject=$(cd "$PROJECT_ROOT" && git show -s --format=%s "$_hash" 2>/dev/null || true)
-        _commit_time=$(cd "$PROJECT_ROOT" && git show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
+        _subject=$(git -C "$PROJECT_ROOT" show -s --format=%s "$_hash" 2>/dev/null || true)
+        _commit_time_seconds=$(git -C "$PROJECT_ROOT" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
+        _commit_time_minutes=$(git -C "$PROJECT_ROOT" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M UTC' "$_hash" 2>/dev/null || true)
         if [ -n "$_subject" ] && ! printf '%s\n' "$_text" | grep -qF "$_subject"; then
             _trace_append_error "$_context target $_short is missing commit subject: $_subject"
         fi
-        if [ -n "$_commit_time" ] && ! printf '%s\n' "$_text" | grep -qF "$_commit_time"; then
-            _trace_append_error "$_context target $_short is missing commit time: $_commit_time"
+        if [ -n "$_commit_time_seconds" ] \
+            && ! printf '%s\n' "$_text" | grep -qF "$_commit_time_seconds" \
+            && ! printf '%s\n' "$_text" | grep -qF "$_commit_time_minutes"; then
+            _trace_append_error "$_context target $_short is missing commit time: $_commit_time_seconds (or $_commit_time_minutes)"
         fi
     fi
 
     _upstream_ref="refs/remotes/origin/$_upstream_branch"
-    if cd "$PROJECT_ROOT" && git show-ref --verify --quiet "$_upstream_ref" 2>/dev/null; then
-        if cd "$PROJECT_ROOT" && git merge-base --is-ancestor "$_hash" "$_upstream_ref" 2>/dev/null; then
+    if git -C "$PROJECT_ROOT" show-ref --verify --quiet "$_upstream_ref" 2>/dev/null; then
+        if git -C "$PROJECT_ROOT" merge-base --is-ancestor "$_hash" "$_upstream_ref" 2>/dev/null; then
             return
         fi
 
         _on_remote=false
-        _remote_refs=$(cd "$PROJECT_ROOT" && git for-each-ref --format='%(refname)' refs/remotes/origin 2>/dev/null || true)
+        _remote_refs=$(git -C "$PROJECT_ROOT" for-each-ref --format='%(refname)' refs/remotes/origin 2>/dev/null || true)
         for _ref in $_remote_refs; do
             case "$_ref" in */HEAD) continue ;; esac
-            if cd "$PROJECT_ROOT" && git merge-base --is-ancestor "$_hash" "$_ref" 2>/dev/null; then
+            if git -C "$PROJECT_ROOT" merge-base --is-ancestor "$_hash" "$_ref" 2>/dev/null; then
                 _on_remote=true
                 _trace_append_warning "$_context target $_short is on remote ref $_ref, not origin/$_upstream_branch"
                 break

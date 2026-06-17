@@ -4,6 +4,29 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.1] - 2026-06-17
+
+### Added
+
+- `scripts/test-validator.sh`: two Trace Protocol regression cases:
+  invalid HANDOFF Trace Anchor hash must fail, and commit time without seconds
+  (`YYYY-MM-DD HH:MM UTC`) must be accepted.
+
+### Changed
+
+- `scripts/dockit-validate-session.sh`: Trace commit validation now uses
+  `git -C "$PROJECT_ROOT"` consistently instead of `cd "$PROJECT_ROOT" && git`
+  command chains. HANDOFF Trace Anchor commit-time matching accepts both
+  `YYYY-MM-DD HH:MM:SS UTC` and `YYYY-MM-DD HH:MM UTC`.
+
+### Fixed
+
+- `scripts/dockit-validate-session.sh`: fixed a shell precedence bug in
+  `check_trace_protocol` that made invalid commit hashes in HANDOFF Trace
+  Anchors pass silently. The broken expression `! cd "$PROJECT_ROOT" && git ...`
+  negated only `cd`, so `git cat-file -e` never ran in the normal successful
+  `cd` case.
+
 ## [4.9.0] - 2026-06-17
 
 ### Added

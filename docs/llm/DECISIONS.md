@@ -252,7 +252,11 @@ Default-on chat guidance matches the operator's normal workflow and makes the ne
 - `trace_protocol.since` protects legacy history. Entries before that date are ignored by the HISTORY footer check.
 - A project that activates durable Trace validation must add a HANDOFF Trace Anchor immediately. There is no grace period; activation is an explicit migration step.
 - Remote ancestry checks use `origin/HEAD` when available, fall back to `origin/main`, and allow a project override with `trace_protocol.upstream_branch`.
+- HANDOFF Trace Anchor commit times may use either `YYYY-MM-DD HH:MM:SS UTC` or `YYYY-MM-DD HH:MM UTC`. The validator accepts both so adopters following MED D-020's minute-level convention do not fail.
 
 ### Follow-ups
 - MED can replace its local `scripts/check-trace-anchor.sh` with the integrated DocKit check after its next sync and explicit migration.
 - If future pilot data shows repeated local migration friction, add a small helper script that inserts `trace_protocol.enabled: true`, `since`, and a starter Trace Anchor in existing adopters. Do not weaken the validator to WARN-only.
+
+### Corrections
+- v4.9.1 fixed a post-ship bug in `_trace_validate_commit`: `if ! cd "$PROJECT_ROOT" && git cat-file ...` negated only the `cd` command under POSIX shell precedence, so invalid HANDOFF Trace Anchor hashes were not detected. The helper now uses `git -C "$PROJECT_ROOT"` throughout and `scripts/test-validator.sh` includes the invalid-hash regression.
