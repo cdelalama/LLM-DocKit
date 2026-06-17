@@ -216,3 +216,43 @@ This decision is the **inverse counterpart of D-005** (which established that se
 - **Cursor / Aider: still pending.** Status will move to "implemented" when those tools grow SessionStart-equivalent hooks; the script's `--json` output is already the right shape for any Claude-Code-style hook system. Until then, `--human` mode + manual paste is the workaround.
 - Watch for DF-033-class recurrences in non-hook tools over the next few sessions; they are the test of whether `--human` mode reduces friction enough or whether it is itself the next failure mode.
 - ~~Minor refinement (filed as a candidate 4.7.1 patch)~~: **shipped in 4.7.1 same session**. The awk regex for extracting the "Recommended reading order:" section now tolerates a blank line between the header and the first numbered item (`started` flag prevents premature exit). Triggered by GPT's audit of the v4.7.0 smoke test, which observed the Codex `home-infra-protocol` session was protocol-compliant ("Onboarding loaded.") but had been instructed only on the 2-item generic fallback rather than the 7 real items in that repo's customised `LLM_START_HERE.md`. Captured here as the inflection point where DF-024 ("documenting drift is not fixing drift") was about to recur — caught by cross-LLM audit, fixed before push.
+
+---
+
+## D-008 - Trace Protocol separates chat orientation from durable validation
+
+**Status:** accepted
+
+### Decision
+LLM-DocKit ships a Trace Protocol for multi-LLM executor/auditor workflows. It has two halves:
+
+1. **Chat orientation**: substantive execution reports and audit verdicts begin with a compact `Trace` header (role, timestamp, subject, repo state, validation, next gate), followed by normal prose. This is default-on in SessionStart onboarding and can be disabled with `trace_protocol.enabled: false`.
+2. **Durable validation**: when a project explicitly sets `trace_protocol.enabled: true` and `trace_protocol.since: YYYY-MM-DD` in `.dockit-config.yml`, `dockit-validate-session.sh --check trace-protocol` enforces a `## Trace Anchor` in HANDOFF and inline `Trace:` footers in qualifying HISTORY entries.
+
+The HISTORY footer intentionally uses a compact one-line field set (`role`, `commits`, `state`, `validation`, `next`) instead of copying the full chat header. HISTORY is an append-only one-line log by DocKit contract; multiline trace blocks would make entries harder to scan and more fragile to parse.
+
+### Context
+The operator now commonly works with two LLM windows per project: one executor and one auditor. After several hours or days, it is easy to lose which window produced the latest meaningful message, what role that window had, which commit was being audited, and whether the report described local state or pushed state.
+
+MED ratified this discipline as D-020 on 2026-06-16. MED's first implementation covered HANDOFF with a Trace Anchor, but its HISTORY entries stayed in the older format. Generalising the discipline in LLM-DocKit must close both surfaces: the visible chat message for human orientation and the durable repo log for later audit.
+
+### Options Considered
+1. **Prose-only rule in LLM_START_HERE** - Easy to write, but repeats the anti-pattern D-007 rejects: "remember to do this" rules drift.
+2. **Validator-only rule** - Enforces HANDOFF/HISTORY, but cannot affect the actual chat messages where the operator's confusion happens.
+3. **Split protocol** - Use SessionStart onboarding for the chat convention and validator checks for durable repo artifacts.
+
+### Rationale
+Option 3 chosen. Chat text is not visible to `dockit-validate-session.sh`, so the best available enforcement is mechanical loading through the SessionStart hook. HANDOFF and HISTORY are visible to git and can be checked. Splitting the protocol avoids pretending that the chat half is statically enforceable while still turning the durable half into code.
+
+Default-on chat guidance matches the operator's normal workflow and makes the next synced session useful immediately. Durable validation remains config-gated so existing adopters do not break merely because `dockit-sync` updated their template sections. New projects scaffolded by `dockit-init-project.sh` are created with `trace_protocol.enabled: true` and an explicit `since` date, so they start in the stricter mode.
+
+### Implications
+- `trace_protocol.fields` is not configurable in v1. The v1 field sets are frozen until real pilot data shows a need to extend them.
+- HISTORY hash detection is intentionally limited to backtick-quoted 7-40 character hex hashes. This avoids false positives from prose, filenames, or unrelated digest strings.
+- `trace_protocol.since` protects legacy history. Entries before that date are ignored by the HISTORY footer check.
+- A project that activates durable Trace validation must add a HANDOFF Trace Anchor immediately. There is no grace period; activation is an explicit migration step.
+- Remote ancestry checks use `origin/HEAD` when available, fall back to `origin/main`, and allow a project override with `trace_protocol.upstream_branch`.
+
+### Follow-ups
+- MED can replace its local `scripts/check-trace-anchor.sh` with the integrated DocKit check after its next sync and explicit migration.
+- If future pilot data shows repeated local migration friction, add a small helper script that inserts `trace_protocol.enabled: true`, `since`, and a starter Trace Anchor in existing adopters. Do not weaken the validator to WARN-only.

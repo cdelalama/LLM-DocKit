@@ -206,6 +206,14 @@ cat > docs/llm/HANDOFF.md <<EOF
 This file is the current operational snapshot. Long-form rationale lives in
 \`docs/llm/DECISIONS.md\`.
 
+## Trace Anchor
+
+- Role: executor
+- Current target: none (initial scaffold; no implementation or audit target yet)
+- State verified: local scaffold generated before first project session
+- Validation: pending first \`scripts/dockit-validate-session.sh --human\`
+- Next gate: first project session fills project context and starts implementation
+
 ## Current Status
 
 - Last Updated: $TODAY - LLM-DocKit init
@@ -253,11 +261,11 @@ Append-only record of meaningful LLM-assisted work on this project.
 
 ## Format
 
-YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: <yes/no + details>
+YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: <yes/no + details> - Trace: role=<executor|auditor>; commits=<hash|none>; state=<repo state>; validation=<checks>; next=<gate>
 
 ## Entries
 
-- $TODAY - LLM-DocKit init - Initial scaffold from LLM-DocKit $DOCKIT_VERSION. Conversation language: $LANGUAGE. - Files: [* (initial scaffold)] - Version impact: yes (initial 0.1.0)
+- $TODAY - LLM-DocKit init - Initial scaffold from LLM-DocKit $DOCKIT_VERSION. Conversation language: $LANGUAGE. - Files: [* (initial scaffold)] - Version impact: yes (initial 0.1.0) - Trace: role=executor; commits=none; state=local scaffold before first project session; validation=not-run; next=first-session
 EOF
 
 cat > docs/llm/DECISIONS.md <<EOF
@@ -276,7 +284,16 @@ Format:
 the first durable choice is made.)
 EOF
 
+cat > .dockit-config.yml <<EOF
+adoption_mode: full
+
+trace_protocol:
+  enabled: true
+  since: $TODAY
+EOF
+
 echo "  reset CHANGELOG and docs/llm/{HANDOFF,HISTORY,DECISIONS}.md"
+echo "  enabled Trace Protocol in .dockit-config.yml"
 
 # ── 4. Substitute placeholders in remaining markdown ────────────────────────
 #

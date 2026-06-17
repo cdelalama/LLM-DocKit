@@ -1,4 +1,4 @@
-<!-- doc-version: 4.8.2 -->
+<!-- doc-version: 4.9.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -117,6 +117,40 @@ When handing off to another LLM:
 2. Append an entry to docs/llm/HISTORY.md following the required format.
 3. Ensure the snapshot in this file matches the latest status.
 <!-- DOCKIT-TEMPLATE:END llm-communication -->
+
+<!-- DOCKIT-TEMPLATE:START trace-protocol -->
+## Trace Protocol
+
+For execution or audit work, begin each substantive execution report or audit
+verdict with a compact `Trace` header, then write the normal explanation in
+prose. The header is for orientation; it does not replace the message.
+
+Required chat header fields:
+- `Role`: `executor` or `auditor`
+- `Sent`: `YYYY-MM-DD HH:MM UTC`
+- `Subject`: current task, or commit hash/title being implemented or audited
+- `Repo state`: local branch vs origin and worktree status verified now
+- `Validation`: checks run and result
+- `Next gate`: who/what should act next
+
+Use clear prose after the header. Explain what changed, why it matters, what
+was verified, and what risk remains.
+
+When `trace_protocol.enabled: true` is set in `.dockit-config.yml`, the durable
+half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
+- `docs/llm/HANDOFF.md` must contain a `## Trace Anchor` section.
+- `docs/llm/HISTORY.md` entries dated on or after `trace_protocol.since` that
+  reference backtick-quoted commit hashes must end with an inline footer:
+  `Trace: role=executor|auditor; commits=hash1,hash2; state=...; validation=...; next=...`
+
+Projects that do not use executor/auditor windows can disable the chat-side
+convention with:
+
+```yaml
+trace_protocol:
+  enabled: false
+```
+<!-- DOCKIT-TEMPLATE:END trace-protocol -->
 
 <!-- DOCKIT-TEMPLATE:START do-not-touch -->
 ## Do Not Touch Zones

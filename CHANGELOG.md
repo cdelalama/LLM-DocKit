@@ -4,6 +4,40 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.0] - 2026-06-17
+
+### Added
+
+- Trace Protocol (DF-040): `LLM_START_HERE.md` now carries a synchronized
+  `trace-protocol` section for executor/auditor workflows. Substantive
+  execution reports and audit verdicts should begin with a compact Trace
+  header, then continue in normal prose.
+- `scripts/dockit-bootstrap-context.sh`: SessionStart output now appends the
+  Trace instruction by default, unless a project sets
+  `trace_protocol.enabled: false` in `.dockit-config.yml`.
+- `scripts/dockit-validate-session.sh`: new `trace-protocol` check. When a
+  project sets `trace_protocol.enabled: true` and
+  `trace_protocol.since: YYYY-MM-DD`, the validator requires a HANDOFF
+  `## Trace Anchor` and inline HISTORY `Trace:` footers for post-activation
+  entries that reference backtick-quoted commit hashes.
+- `scripts/dockit-init-project.sh`: new projects now start with
+  `.dockit-config.yml` containing `trace_protocol.enabled: true` and
+  `since: <scaffold date>`, plus a starter HANDOFF Trace Anchor and HISTORY
+  footer format.
+- `docs/llm/DECISIONS.md`: D-008 records the split between chat orientation
+  and durable validation, including the default-on chat posture and
+  config-gated validator posture.
+
+### Changed
+
+- `scripts/test-validator.sh`: smoke coverage now includes Trace Protocol
+  cases for no-config skip, valid anchor/footer pass, missing HISTORY footer
+  fail, pre-since history skip, missing HANDOFF anchor fail, and
+  enabled-without-since fail.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-040 filed and closed as implemented in
+  this release, with implementation hints for future audits and downstream
+  migration.
+
 ## [4.8.2] - 2026-05-17
 
 ### Added

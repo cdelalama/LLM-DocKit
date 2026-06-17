@@ -160,6 +160,101 @@ init_malformed_repo "$MISSING_HISTORY" history
 expect_fail "env + clean malformed repo without HISTORY still fails" \
     env DOCKIT_ALLOW_READ_ONLY_SKIP=1 "$VALIDATOR" --project "$MISSING_HISTORY" --quiet --check history-entry
 
+expect_pass "trace-protocol skips without .dockit-config.yml" \
+    "$VALIDATOR" --project "$REPO" --quiet --check trace-protocol
+
+TRACE_REPO="$TMP_ROOT/trace"
+init_repo "$TRACE_REPO"
+TRACE_HASH=$(git -C "$TRACE_REPO" rev-parse --short=7 HEAD)
+TRACE_SUBJECT=$(git -C "$TRACE_REPO" show -s --format=%s HEAD)
+TRACE_TIME=$(git -C "$TRACE_REPO" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' HEAD)
+
+cat >"$TRACE_REPO/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+
+trace_protocol:
+  enabled: true
+  since: 2000-01-01
+EOF
+
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Current target: \`$TRACE_HASH\` $TRACE_SUBJECT
+- Commit time: $TRACE_TIME
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 2000-01-02 - Smoke - Audited \`$TRACE_HASH\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_HASH; state=local-main-no-origin; validation=smoke-pass; next=operator
+EOF
+
+expect_pass "trace-protocol valid anchor and HISTORY footer pass" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 2000-01-02 - Smoke - Audited \`$TRACE_HASH\`. - Files: [scripts/foo.sh] - Version impact: no
+EOF
+expect_fail "trace-protocol backticked HISTORY hash requires footer" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 1999-12-31 - Smoke - Audited \`$TRACE_HASH\`. - Files: [scripts/foo.sh] - Version impact: no
+EOF
+expect_pass "trace-protocol ignores pre-since HISTORY hashes" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+expect_fail "trace-protocol enabled requires HANDOFF Trace Anchor" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Current target: \`$TRACE_HASH\` $TRACE_SUBJECT
+- Commit time: $TRACE_TIME
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+
+cat >"$TRACE_REPO/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+
+trace_protocol:
+  enabled: true
+EOF
+expect_fail "trace-protocol enabled requires since date" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
 printf '\nValidator smoke: %d passed, %d failed\n' "$pass_count" "$fail_count"
 
 if [ "$fail_count" -gt 0 ]; then

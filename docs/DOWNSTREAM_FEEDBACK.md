@@ -1458,3 +1458,41 @@ Implementation hints:
 - CHANGELOG entry under `### Changed`: "Validator: `check_handoff_date` and `check_history_entry` skip on opt-in (`DOCKIT_ALLOW_READ_ONLY_SKIP=1`) zero-diff sessions. Claude Code Stop hook opts in; CI and pre-commit do not. Closes DF-039 Case B; Case C remains operator commit discipline."
 
 Mitigation in source project: none yet. Operator currently absorbs the bookkeeping cost on every read-only `/brief` session. The 2026-05-13 and 2026-05-17 HISTORY entries are themselves evidence of the cost (verbose self-referential entries that exist only to satisfy the validator). Until option (a) ships, the operator-side mitigation for Case C specifically is to always commit + push the mini-update before closing the session (already enforced by `~/.claude/CLAUDE.md` *Push Policy*); the 2026-05-13 case violated that and produced the 2026-05-17 recurrence.
+
+## DF-040 — Multi-LLM executor/auditor sessions need a Trace Protocol
+
+- Source: operator workflow; generalized from MED D-020 (ratified 2026-06-16)
+- Date observed: 2026-06-17
+- Category: process
+- Status: implemented (4.9.0) — accepted and shipped in the same session. LLM-DocKit now carries a default-on chat Trace convention through `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh`, plus an opt-in durable validator check (`trace-protocol`) for HANDOFF/HISTORY when `.dockit-config.yml` sets `trace_protocol.enabled: true` and `trace_protocol.since: YYYY-MM-DD`.
+- Related: DF-019, DF-024, DF-033, DF-034
+
+Observation: The operator now commonly opens two LLM windows for the same project: one executor and one auditor. After hours or days, it is easy to lose which window is the latest meaningful state, which role the model was playing, which commit was being implemented or audited, whether the report described local state or pushed state, and which validation result was real.
+
+MED ratified this discipline as D-020 on 2026-06-16. The MED implementation proved the core idea but covered only a HANDOFF Trace Anchor; HISTORY entries after D-020 kept the older one-line format. Promoting the practice to LLM-DocKit must therefore cover both the human-visible chat surface and the durable repo log without pretending both can be enforced the same way.
+
+Protocol implication:
+
+- **Chat half (default-on, onboarding-enforced)**: execution reports and audit verdicts begin with a compact `Trace` header: `Role`, `Sent`, `Subject`, `Repo state`, `Validation`, `Next gate`. The message then continues in normal prose. This is not validator-enforceable because chat messages are not repo artifacts, so the cure is SessionStart loading via `scripts/dockit-bootstrap-context.sh`, following D-007.
+- **Durable half (config-gated, validator-enforced)**: projects that explicitly set `trace_protocol.enabled: true` and `trace_protocol.since: YYYY-MM-DD` in `.dockit-config.yml` must maintain a `## Trace Anchor` section in `docs/llm/HANDOFF.md`. `docs/llm/HISTORY.md` entries dated on or after `since` that reference backtick-quoted commit hashes must carry an inline `Trace:` footer.
+- **Default posture**: chat Trace is default-on because it matches the operator's actual multi-LLM workflow. Projects can disable it with `trace_protocol.enabled: false`. Durable validation does not hard-fail existing adopters merely from `dockit-sync`; it activates only when config says `enabled: true`. New projects scaffolded by `scripts/dockit-init-project.sh` are created with Trace enabled and `since` set to the scaffold date.
+- **HISTORY format**: one-line footer, not a multiline block:
+  ```text
+  Trace: role=executor|auditor; commits=hash1,hash2; state=...; validation=...; next=...
+  ```
+  The footer uses five fields (`role`, `commits`, `state`, `validation`, `next`). `message_sent` is already represented by the HISTORY entry date; commit times are obtained from git when hashes are present.
+- **Hash detection**: only backtick-quoted 7-40 character hex strings count as commit references. This avoids false positives from prose, filenames, or unrelated digest strings.
+- **History cutoff**: `trace_protocol.since` is the activation boundary. Entries before it are ignored. If `enabled: true` appears without `since`, the validator may infer the activation date from git history; if it cannot, it fails with an explicit "declare trace_protocol.since" message.
+- **Migration posture**: no grace period. If a project activates durable Trace, missing HANDOFF Trace Anchor is a FAIL. Activation is explicit and the migration step is small.
+- **Branch handling**: the validator detects `origin/HEAD`, falls back to `main`, and allows `trace_protocol.upstream_branch`. Commits not on the upstream branch but present on another `origin/*` ref produce WARN; commits not present on any remote ref produce FAIL when remote refs exist. Repos without origin refs skip the remote ancestry part.
+
+Implementation hints:
+
+- `LLM_START_HERE.md`: add a `DOCKIT-TEMPLATE` section named `trace-protocol`. It documents the chat header, states that prose must follow the header, and shows the HISTORY footer.
+- `scripts/dockit-bootstrap-context.sh`: read `.dockit-config.yml` enough to honor `trace_protocol.enabled: false`. Otherwise append a compact Trace instruction to the SessionStart additionalContext payload. Do not concatenate full docs; stay under hook size limits.
+- `scripts/dockit-validate-session.sh`: add parser helpers for `trace_protocol`, a `check_trace_protocol` function, `--check trace-protocol` support, and a main-loop call. The check must skip when no config exists or enabled is not true; fail on enabled-without-since unless activation date can be inferred; require HANDOFF Trace Anchor; scan only HISTORY entries with date >= since; require footer only when a qualifying entry contains backticked commit hashes.
+- `scripts/dockit-init-project.sh`: create `.dockit-config.yml` with `trace_protocol.enabled: true` and `since: <scaffold date>`, add a starter HANDOFF Trace Anchor, and include the HISTORY Trace footer in the stub format.
+- `scripts/test-validator.sh`: add smoke cases for no-config skip, valid Trace pass, missing HISTORY footer fail, pre-since skip, missing HANDOFF anchor fail, and enabled-without-since fail.
+- `dockit-sync-manifest.yml`: no new strategy required. Existing `copy` entries propagate the validator and bootstrap script; existing `section-merge` propagates the LLM_START_HERE section. `.dockit-config.yml` remains project-owned.
+
+Mitigation in source project: shipped in v4.9.0. Existing downstream projects should run `dockit-sync`, then either use the default chat Trace immediately or explicitly migrate durable enforcement by adding `trace_protocol.enabled: true`, `trace_protocol.since: YYYY-MM-DD`, and a HANDOFF Trace Anchor. No downstream project was edited from this LLM-DocKit session.

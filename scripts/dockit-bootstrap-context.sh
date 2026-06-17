@@ -96,6 +96,7 @@ fi
 
 START_HERE="$PROJECT_ROOT/LLM_START_HERE.md"
 HANDOFF="$PROJECT_ROOT/docs/llm/HANDOFF.md"
+CONFIG_FILE="$PROJECT_ROOT/.dockit-config.yml"
 
 # -- Graceful exit if onboarding not present -------------------------------
 
@@ -104,6 +105,49 @@ if [ ! -f "$START_HERE" ]; then
     # is a no-op and never breaks sessions in unrelated projects.
     exit 0
 fi
+
+# -- Trace Protocol config -------------------------------------------------
+#
+# Chat-side Trace is default-on because the operator's normal workflow uses
+# executor/auditor LLM windows. Projects that do not want the ceremony can set:
+#
+#   trace_protocol:
+#     enabled: false
+#
+# The durable validator half still requires explicit trace_protocol.enabled:
+# true plus trace_protocol.since in .dockit-config.yml, so existing adopters do
+# not get a hard validation failure merely from syncing the onboarding text.
+
+read_trace_value() {
+    _key="$1"
+    [ -f "$CONFIG_FILE" ] || return
+    _in=false
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        if [ "$_i" -eq 0 ]; then
+            [ "$_s" = "trace_protocol:" ] && _in=true || _in=false
+            continue
+        fi
+        if [ "$_in" = true ] && [ "$_i" -eq 2 ]; then
+            case "$_s" in
+                "$_key":*)
+                    echo "$_s" | sed "s/^$_key: *//; s/^\"//; s/\"$//"
+                    return
+                    ;;
+            esac
+        fi
+    done < "$CONFIG_FILE"
+}
+
+trace_chat_enabled() {
+    _enabled=$(read_trace_value enabled)
+    case "$_enabled" in
+        false|no|0) return 1 ;;
+        *) return 0 ;;
+    esac
+}
 
 # -- Extract recommended reading order from LLM_START_HERE.md --------------
 #
@@ -182,6 +226,25 @@ the reading order, edit LLM_START_HERE.md (the script reads it dynamically)."
 MESSAGE="$MESSAGE
 
 Project root: $PROJECT_ROOT"
+
+if trace_chat_enabled; then
+    MESSAGE="$MESSAGE
+
+Trace Protocol:
+  - For executor/auditor work, begin substantive execution reports and audit
+    verdicts with a compact Trace header:
+      Trace
+      Role: executor|auditor
+      Sent: YYYY-MM-DD HH:MM UTC
+      Subject: current task or commit hash/title being implemented/audited
+      Repo state: local branch vs origin and worktree status verified now
+      Validation: checks run and result
+      Next gate: who/what should act next
+  - The Trace header is only the orientation header. After it, write normal
+    prose that explains what happened, why it matters, and any remaining risk.
+  - If this project has trace_protocol.enabled: true, durable HANDOFF/HISTORY
+    trace fields are enforced by scripts/dockit-validate-session.sh."
+fi
 
 if [ -f "$HANDOFF" ]; then
     HANDOFF_DATE=$(awk -F'-' '/Last Updated:/ { print; exit }' "$HANDOFF" 2>/dev/null | head -c 200)

@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, template-residue"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, template-residue, trace-protocol"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -320,6 +320,139 @@ _read_ext_triggers() {
     done < "$CONFIG_FILE"
 }
 
+# ── Trace protocol parser helpers ───────────────────────────────────────────
+# State-machine parser for .dockit-config.yml trace_protocol section.
+# The validator enforces the durable half only when projects explicitly set
+# trace_protocol.enabled: true. Chat guidance is handled by SessionStart
+# onboarding and can be disabled independently by setting enabled: false.
+
+_read_trace_value() {
+    _key="$1"
+    [ -f "$CONFIG_FILE" ] || return
+    _in=false
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        if [ "$_i" -eq 0 ]; then
+            [ "$_s" = "trace_protocol:" ] && _in=true || _in=false
+            continue
+        fi
+        if [ "$_in" = true ] && [ "$_i" -eq 2 ]; then
+            case "$_s" in
+                "$_key":*)
+                    echo "$_s" | sed "s/^$_key: *//; s/^\"//; s/\"$//"
+                    return
+                    ;;
+            esac
+        fi
+    done < "$CONFIG_FILE"
+}
+
+_trace_enabled_for_validation() {
+    _enabled=$(_read_trace_value enabled)
+    case "$_enabled" in
+        true|yes|1) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+_infer_trace_since() {
+    [ -f "$CONFIG_FILE" ] || return
+    _commits=$(cd "$PROJECT_ROOT" && git log --reverse --format=%H -- .dockit-config.yml 2>/dev/null || true)
+    [ -n "$_commits" ] || return
+
+    for _commit in $_commits; do
+        if cd "$PROJECT_ROOT" && git show "$_commit:.dockit-config.yml" 2>/dev/null | awk '
+            /^[[:space:]]*trace_protocol:[[:space:]]*$/ { in_trace = 1; next }
+            /^[^[:space:]]/ { in_trace = 0 }
+            in_trace && /^[[:space:]]{2}enabled:[[:space:]]*(true|yes|1)[[:space:]]*$/ { found = 1 }
+            END { exit found ? 0 : 1 }
+        '; then
+            cd "$PROJECT_ROOT" && git show -s --format=%cd --date=format:%Y-%m-%d "$_commit"
+            return
+        fi
+    done
+}
+
+_detect_trace_upstream_branch() {
+    _configured=$(_read_trace_value upstream_branch)
+    if [ -n "$_configured" ]; then
+        echo "$_configured"
+        return
+    fi
+
+    _origin_head=$(cd "$PROJECT_ROOT" && git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
+    if [ -n "$_origin_head" ]; then
+        echo "$_origin_head" | sed 's|^origin/||'
+    else
+        echo "main"
+    fi
+}
+
+_trace_append_error() {
+    _trace_errors="${_trace_errors}; $1"
+}
+
+_trace_append_warning() {
+    _trace_warnings="${_trace_warnings}; $1"
+}
+
+_trace_hashes_from_text() {
+    grep -oE '`[0-9A-Fa-f]{7,40}`' 2>/dev/null | tr -d '`' | tr 'A-F' 'a-f' | sort -u || true
+}
+
+_trace_validate_commit() {
+    _hash="$1"
+    _context="$2"
+    _text="$3"
+    _require_subject_time="$4"
+    _upstream_branch="$5"
+
+    if ! cd "$PROJECT_ROOT" && git cat-file -e "$_hash^{commit}" 2>/dev/null; then
+        _trace_append_error "$_context references commit $_hash, but git cannot resolve it"
+        return
+    fi
+
+    _short=$(cd "$PROJECT_ROOT" && git rev-parse --short=7 "$_hash" 2>/dev/null || true)
+    if [ -n "$_short" ] && ! printf '%s\n' "$_text" | grep -qF "$_short"; then
+        _trace_append_error "$_context references $_hash but does not contain canonical short hash $_short"
+    fi
+
+    if [ "$_require_subject_time" = true ]; then
+        _subject=$(cd "$PROJECT_ROOT" && git show -s --format=%s "$_hash" 2>/dev/null || true)
+        _commit_time=$(cd "$PROJECT_ROOT" && git show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
+        if [ -n "$_subject" ] && ! printf '%s\n' "$_text" | grep -qF "$_subject"; then
+            _trace_append_error "$_context target $_short is missing commit subject: $_subject"
+        fi
+        if [ -n "$_commit_time" ] && ! printf '%s\n' "$_text" | grep -qF "$_commit_time"; then
+            _trace_append_error "$_context target $_short is missing commit time: $_commit_time"
+        fi
+    fi
+
+    _upstream_ref="refs/remotes/origin/$_upstream_branch"
+    if cd "$PROJECT_ROOT" && git show-ref --verify --quiet "$_upstream_ref" 2>/dev/null; then
+        if cd "$PROJECT_ROOT" && git merge-base --is-ancestor "$_hash" "$_upstream_ref" 2>/dev/null; then
+            return
+        fi
+
+        _on_remote=false
+        _remote_refs=$(cd "$PROJECT_ROOT" && git for-each-ref --format='%(refname)' refs/remotes/origin 2>/dev/null || true)
+        for _ref in $_remote_refs; do
+            case "$_ref" in */HEAD) continue ;; esac
+            if cd "$PROJECT_ROOT" && git merge-base --is-ancestor "$_hash" "$_ref" 2>/dev/null; then
+                _on_remote=true
+                _trace_append_warning "$_context target $_short is on remote ref $_ref, not origin/$_upstream_branch"
+                break
+            fi
+        done
+
+        if [ "$_on_remote" = false ]; then
+            _trace_append_error "$_context target $_short is not an ancestor of origin/$_upstream_branch or any origin/* remote ref"
+        fi
+    fi
+}
+
 check_external_context() {
     if ! should_run "external-context"; then return; fi
 
@@ -561,6 +694,130 @@ check_template_residue() {
     fi
 }
 
+# ── Check: trace-protocol (DF-040) ──────────────────────────────────────────
+# Enforces the durable half of the Trace Protocol when a project opts into it
+# with .dockit-config.yml trace_protocol.enabled: true. The chat-message Trace
+# header is a SessionStart/onboarding convention and cannot be validated here.
+#
+# Durable v1 contract:
+#   - HANDOFF.md contains a "## Trace Anchor" section with role, target, state,
+#     validation, and next-gate fields.
+#   - If the anchor references commit hashes in backticks, the hashes resolve,
+#     canonical short hash / subject / commit time appear in the anchor, and
+#     remote ancestry is checked when origin refs are available.
+#   - HISTORY.md entries dated >= trace_protocol.since that reference backticked
+#     hashes include an inline Trace footer:
+#       Trace: role=executor|auditor; commits=...; state=...; validation=...; next=...
+
+check_trace_protocol() {
+    if ! should_run "trace-protocol"; then return; fi
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+        add_result "trace-protocol" "PASS" "Skipped (no .dockit-config.yml; durable Trace enforcement activates via trace_protocol.enabled: true)"
+        return
+    fi
+
+    if ! _trace_enabled_for_validation; then
+        add_result "trace-protocol" "PASS" "Skipped (trace_protocol.enabled is not true)"
+        return
+    fi
+
+    _trace_errors=""
+    _trace_warnings=""
+    _trace_since=$(_read_trace_value since)
+    if [ -z "$_trace_since" ]; then
+        _trace_since=$(_infer_trace_since)
+    fi
+    if ! printf '%s\n' "$_trace_since" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
+        add_result "trace-protocol" "FAIL" "trace_protocol.enabled=true requires trace_protocol.since: YYYY-MM-DD (or a committed activation date that can be inferred)"
+        return
+    fi
+
+    _trace_upstream=$(_detect_trace_upstream_branch)
+
+    if [ ! -f "$HANDOFF" ]; then
+        _trace_append_error "HANDOFF.md not found"
+    else
+        _anchor=$(awk '
+            /^##[[:space:]]+Trace Anchor[[:space:]]*$/ { capture = 1; next }
+            capture && /^##[[:space:]]+/ { exit }
+            capture { print }
+        ' "$HANDOFF")
+
+        if [ -z "$_anchor" ]; then
+            _trace_append_error "HANDOFF.md is missing required ## Trace Anchor section"
+        else
+            if ! printf '%s\n' "$_anchor" | grep -qE 'Role:[[:space:]]*(executor|auditor)'; then
+                _trace_append_error "Trace Anchor missing Role: executor|auditor"
+            fi
+            if ! printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target|Subject):'; then
+                _trace_append_error "Trace Anchor missing Current target/Subject"
+            fi
+            if ! printf '%s\n' "$_anchor" | grep -qE '(State verified|Repo state):'; then
+                _trace_append_error "Trace Anchor missing State verified/Repo state"
+            fi
+            if ! printf '%s\n' "$_anchor" | grep -qE 'Validation:'; then
+                _trace_append_error "Trace Anchor missing Validation"
+            fi
+            if ! printf '%s\n' "$_anchor" | grep -qE '(Next gate|Next):'; then
+                _trace_append_error "Trace Anchor missing Next gate/Next"
+            fi
+
+            _anchor_hashes=$(printf '%s\n' "$_anchor" | _trace_hashes_from_text)
+            for _hash in $_anchor_hashes; do
+                _trace_validate_commit "$_hash" "HANDOFF Trace Anchor" "$_anchor" true "$_trace_upstream"
+            done
+        fi
+    fi
+
+    if [ ! -f "$HISTORY" ]; then
+        _trace_append_error "HISTORY.md not found"
+    else
+        _history_entries=$(awk -v since="$_trace_since" '
+            /^- [0-9]{4}-[0-9]{2}-[0-9]{2}/ {
+                d = substr($0, 3, 10)
+                if (d >= since) print
+            }
+        ' "$HISTORY")
+
+        _old_ifs="$IFS"
+        IFS='
+'
+        for _entry in $_history_entries; do
+            _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
+            [ -z "$_entry_hashes" ] && continue
+
+            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor); commits=[^;]+; state=[^;]+; validation=[^;]+; next=.+'; then
+                _date=$(printf '%s\n' "$_entry" | cut -c3-12)
+                _trace_append_error "HISTORY entry $_date references backticked commit hash(es) but lacks inline Trace footer"
+                continue
+            fi
+
+            _commits_field=$(printf '%s\n' "$_entry" | sed 's/.*Trace: role=[^;]*; commits=\([^;]*\); state=.*/\1/')
+            _commits_csv=",$(printf '%s' "$_commits_field" | tr -d ' '),"
+            for _hash in $_entry_hashes; do
+                _short=$(cd "$PROJECT_ROOT" && git rev-parse --short=7 "$_hash" 2>/dev/null || printf '%s' "$_hash")
+                case "$_commits_csv" in
+                    *,"$_hash",*|*,"$_short",*) ;;
+                    *) _trace_append_error "HISTORY Trace footer commits= does not include referenced hash $_hash" ;;
+                esac
+                _trace_validate_commit "$_hash" "HISTORY Trace footer" "$_entry" false "$_trace_upstream"
+            done
+        done
+        IFS="$_old_ifs"
+    fi
+
+    if [ -n "$_trace_errors" ]; then
+        _msg=$(echo "$_trace_errors" | sed 's/^; //')
+        add_result "trace-protocol" "FAIL" "$_msg"
+    elif [ -n "$_trace_warnings" ]; then
+        _msg=$(echo "$_trace_warnings" | sed 's/^; //')
+        add_result "trace-protocol" "WARN" "$_msg"
+    else
+        add_result "trace-protocol" "PASS" "Trace Protocol durable contract satisfied since $_trace_since"
+    fi
+}
+
 # ── Run all checks ──────────────────────────────────────────────────────────
 
 check_handoff_date
@@ -571,6 +828,7 @@ check_external_context
 check_external_triggers
 check_orientation
 check_template_residue
+check_trace_protocol
 
 # ── Output ───────────────────────────────────────────────────────────────────
 

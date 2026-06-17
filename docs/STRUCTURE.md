@@ -12,7 +12,7 @@ Use this template to document how the repository is organized. Update the table 
 +- HOW_TO_USE.md                 (scaffold setup guide for humans)
 +- dockit-sync-manifest.yml      (sync strategies per file -- template only)
 +- .dockit-enabled               (opt-in marker for sync -- downstream only)
-+- .dockit-config.yml            (sync config: adoption_mode -- downstream only)
++- .dockit-config.yml            (sync + trace config -- downstream/scaffold)
 +- docs/
 |  +- PROJECT_CONTEXT.md
 |  +- ARCHITECTURE.md            (optional)
@@ -63,7 +63,7 @@ Use this template to document how the repository is organized. Update the table 
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
-| .dockit-config.yml | Human-managed sync config (adoption_mode, exclude_sections, external_context) | Downstream only |
+| .dockit-config.yml | Human-managed sync/config file (adoption_mode, exclude_sections, external_context, trace_protocol) | Downstream + new scaffolds |
 | .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
