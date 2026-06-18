@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.1 -->
+<!-- doc-version: 4.9.2 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -129,9 +129,24 @@ Required chat header fields:
 - `Role`: `executor` or `auditor`
 - `Sent`: `YYYY-MM-DD HH:MM UTC`
 - `Subject`: current task, or commit hash/title being implemented or audited
+- `Resulting state`: what this message leaves true after it is sent
 - `Repo state`: local branch vs origin and worktree status verified now
 - `Validation`: checks run and result
 - `Next gate`: who/what should act next
+
+Recommended `Resulting state` shape:
+
+```text
+Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
+```
+
+Examples:
+
+```text
+Resulting state: HEAD=01f90bb; version=4.9.1; gate=cleared; supersedes audit of d6fc816
+Resulting state: HEAD=unchanged (01f90bb); version=none; gate=cleared; ready for next slice
+Resulting state: HEAD=unchanged (d6fc816); version=none; gate=blocked; requires executor patch v4.9.1
+```
 
 Use clear prose after the header. Explain what changed, why it matters, what
 was verified, and what risk remains.

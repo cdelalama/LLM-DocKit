@@ -4,6 +4,28 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.2] - 2026-06-18
+
+### Added
+
+- Trace Protocol v1.1 (DF-041): chat Trace headers now include required
+  `Resulting state` between `Subject` and `Repo state`. The field distinguishes
+  message time from repo effect, so a later auditor message about an older
+  commit is not mistaken for the latest project state.
+
+### Changed
+
+- `LLM_START_HERE.md`: Trace guidance now documents the recommended
+  `Resulting state` shape (`HEAD=...; version=...; gate=...`) and examples for
+  executor patches, auditors with no findings, and auditors with findings.
+- `scripts/dockit-bootstrap-context.sh`: SessionStart payload now emits the
+  `Resulting state` field, so synced adopters receive the v1.1 convention
+  mechanically at session open.
+- `docs/llm/DECISIONS.md`: D-008 records the v1.1 refinement and why HANDOFF
+  Trace Anchor and HISTORY footer do not gain this chat-only field.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-041 filed and closed as implemented in
+  this release.
+
 ## [4.9.1] - 2026-06-17
 
 ### Added

@@ -1497,3 +1497,33 @@ Implementation hints:
 - `dockit-sync-manifest.yml`: no new strategy required. Existing `copy` entries propagate the validator and bootstrap script; existing `section-merge` propagates the LLM_START_HERE section. `.dockit-config.yml` remains project-owned.
 
 Mitigation in source project: shipped in v4.9.0 and hardened in v4.9.1 after audit caught that invalid HANDOFF Trace Anchor hashes passed silently. Existing downstream projects should run `dockit-sync`, then either use the default chat Trace immediately or explicitly migrate durable enforcement by adding `trace_protocol.enabled: true`, `trace_protocol.since: YYYY-MM-DD`, and a HANDOFF Trace Anchor. No downstream project was edited from this LLM-DocKit session.
+
+## DF-041 — Trace chat header needs Resulting state to distinguish latest message from latest repo state
+
+- Source: LLM-DocKit itself; operator review of parallel executor/auditor windows after v4.9.1
+- Date observed: 2026-06-18
+- Category: usability
+- Status: implemented (4.9.2) — Trace Protocol v1.1 adds `Resulting state` to the chat header in `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh`. Durable HANDOFF Trace Anchor and HISTORY footer remain unchanged.
+- Related: DF-040, DF-033, DF-024
+
+Observation: The v4.9.0/v4.9.1 Trace header still left one real orientation ambiguity. The auditor message sent at 2026-06-17 22:34 UTC discussed `d6fc816` / v4.9.0 and requested a v4.9.1 executor patch. The executor message sent at 2026-06-17 22:24 UTC reported `01f90bb` / v4.9.1 pushed. A human returning the next morning sees the auditor message as later by `Sent`, but semantically the executor message leaves the repo in the newer state. `Sent` answers when the message was written; it does not answer whether the message advances HEAD.
+
+Protocol implication:
+
+- Add a required chat-only field: `Resulting state`. The three axes become explicit:
+  - `Sent`: when this message was sent.
+  - `Subject`: what this message is about.
+  - `Resulting state`: what this message leaves true after it is sent.
+- Recommended field shape:
+  ```text
+  Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
+  ```
+- Examples:
+  - Executor patch: `HEAD=01f90bb; version=4.9.1; gate=cleared; supersedes audit of d6fc816`
+  - Auditor with no findings: `HEAD=unchanged (01f90bb); version=none; gate=cleared; ready for next slice`
+  - Auditor with findings: `HEAD=unchanged (d6fc816); version=none; gate=blocked; requires executor patch v4.9.1`
+- Do NOT add `Resulting state` to HANDOFF Trace Anchor. HANDOFF is already the collapsed current state by convention.
+- Do NOT change the HISTORY Trace footer. HISTORY's `commits`, `state`, `validation`, and `next` fields already serve the durable one-line equivalent.
+- Treat this as LLM-DocKit Trace Protocol v1.1, evolving MED D-020. MED can re-ratify/adopt the new field when convenient; it is not a blocker for DocKit.
+
+Mitigation in source project: shipped in v4.9.2. `LLM_START_HERE.md` section-merge propagates the template wording; `scripts/dockit-bootstrap-context.sh` copy propagation ensures SessionStart hooks emit the new field immediately after downstream sync. No validator change required because chat headers are not repo artifacts.

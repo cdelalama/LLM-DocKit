@@ -226,7 +226,7 @@ This decision is the **inverse counterpart of D-005** (which established that se
 ### Decision
 LLM-DocKit ships a Trace Protocol for multi-LLM executor/auditor workflows. It has two halves:
 
-1. **Chat orientation**: substantive execution reports and audit verdicts begin with a compact `Trace` header (role, timestamp, subject, repo state, validation, next gate), followed by normal prose. This is default-on in SessionStart onboarding and can be disabled with `trace_protocol.enabled: false`.
+1. **Chat orientation**: substantive execution reports and audit verdicts begin with a compact `Trace` header (role, timestamp, subject, resulting state, repo state, validation, next gate), followed by normal prose. This is default-on in SessionStart onboarding and can be disabled with `trace_protocol.enabled: false`.
 2. **Durable validation**: when a project explicitly sets `trace_protocol.enabled: true` and `trace_protocol.since: YYYY-MM-DD` in `.dockit-config.yml`, `dockit-validate-session.sh --check trace-protocol` enforces a `## Trace Anchor` in HANDOFF and inline `Trace:` footers in qualifying HISTORY entries.
 
 The HISTORY footer intentionally uses a compact one-line field set (`role`, `commits`, `state`, `validation`, `next`) instead of copying the full chat header. HISTORY is an append-only one-line log by DocKit contract; multiline trace blocks would make entries harder to scan and more fragile to parse.
@@ -260,3 +260,19 @@ Default-on chat guidance matches the operator's normal workflow and makes the ne
 
 ### Corrections
 - v4.9.1 fixed a post-ship bug in `_trace_validate_commit`: `if ! cd "$PROJECT_ROOT" && git cat-file ...` negated only the `cd` command under POSIX shell precedence, so invalid HANDOFF Trace Anchor hashes were not detected. The helper now uses `git -C "$PROJECT_ROOT"` throughout and `scripts/test-validator.sh` includes the invalid-hash regression.
+
+### v1.1 Refinement - Resulting state
+v4.9.2 adds `Resulting state` to the chat Trace header. `Sent` answers when the message was sent, `Subject` answers what the message is about, and `Resulting state` answers what the message leaves true after it is sent. These are separate axes: an auditor can send a later message about an earlier commit, while an executor message sent earlier may have produced the newer HEAD.
+
+Recommended shape:
+
+```text
+Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
+```
+
+Examples:
+- Executor producing a patch: `HEAD=01f90bb; version=4.9.1; gate=cleared; supersedes audit of d6fc816`
+- Auditor with no findings: `HEAD=unchanged (01f90bb); version=none; gate=cleared; ready for next slice`
+- Auditor with findings: `HEAD=unchanged (d6fc816); version=none; gate=blocked; requires executor patch v4.9.1`
+
+HANDOFF Trace Anchor does not gain this field: HANDOFF is already the collapsed current state by convention. HISTORY Trace footer also stays unchanged; its `commits`, `state`, `validation`, and `next` fields already provide the durable one-line equivalent. This refinement evolves the MED D-020 seven-field chat convention into LLM-DocKit Trace Protocol v1.1; MED can upstream-adopt the new field when convenient.

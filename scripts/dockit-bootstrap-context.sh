@@ -237,6 +237,7 @@ Trace Protocol:
       Role: executor|auditor
       Sent: YYYY-MM-DD HH:MM UTC
       Subject: current task or commit hash/title being implemented/audited
+      Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
       Repo state: local branch vs origin and worktree status verified now
       Validation: checks run and result
       Next gate: who/what should act next
