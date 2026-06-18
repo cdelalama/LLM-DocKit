@@ -310,3 +310,72 @@ Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>
 ```
 
 This refinement is chat-side only. HANDOFF Trace Anchor commit times still come from git and stay UTC. HISTORY Trace footers still do not carry a `Sent` field.
+
+---
+
+## D-009 - LLM-DocKit stays the scaffold substrate; ForgeOS owns umbrella control-plane work
+
+**Status:** accepted
+
+### Decision
+LLM-DocKit remains the reusable scaffold/protocol substrate that downstream
+projects copy: onboarding, HANDOFF/HISTORY/DECISIONS conventions, version sync,
+validators, hooks, `dockit-sync`, project init, and lightweight Trace guidance.
+It does not own the broader control-plane, dashboard, protocol-runtime,
+multi-agent orchestration, or operator-workbench product surface.
+
+Those umbrella concerns belong in ForgeOS, which already formalizes the layer
+model and now has real v5-core runtime surfaces for WorkEpisode, ArtifactBus,
+CaptureLog, and AuthorityEngine, with ProtocolEngine and VisualWorkbench
+planned as ForgeOS modules.
+
+### Context
+Four long-lived local drafts were still untracked in this repository:
+
+- `docs/archive/HOOKS_ENFORCEMENT_PROPOSAL.md` - implemented by LLM-DocKit 4.x
+  itself via validator, hooks, pre-commit, and CI.
+- `docs/archive/DEFERRED_NEXT_VERSION.md` - the early "LLM Control-Plane +
+  Arbiter + Dashboard" idea, now superseded by ForgeOS's control-plane
+  architecture.
+- `docs/archive/LLM_DOCKIT_CE_V2_PROPOSAL.md` - a hybrid lineage document:
+  some pieces shipped in LLM-DocKit 4.x, while session manifests, authority,
+  review, and protocol execution now map better to ForgeOS WorkEpisode,
+  AuthorityEngine, and future ProtocolEngine.
+- `docs/archive/documento.md` - Code Factory comparison, useful as inspiration
+  for risk tiers, SHA-pinned reviews, remediation loops, and
+  evidence-over-auto-report, but not an accepted implementation proposal.
+
+Keeping these as root-level untracked drafts blurred the boundary between the
+scaffold layer and the operator/control-plane layer. It also made future
+sessions appear to have "pending DocKit work" that would actually duplicate
+ForgeOS.
+
+### Rationale
+Option 1, deleting the drafts, would lose useful lineage. Option 2, moving the
+drafts wholesale into ForgeOS, would pollute ForgeOS with obsolete scaffold-era
+prose and duplicate its own decisions. Option 3, archiving the drafts in place
+with explicit status and transferring only the live ideas into ForgeOS lineage,
+preserves auditability without confusing ownership.
+
+Option 3 is chosen.
+
+### Implications
+- New LLM-DocKit work should normally enter through `docs/DOWNSTREAM_FEEDBACK.md`
+  as a concrete DF with implementation hints, not through free-floating draft
+  proposals.
+- Scaffold-level mechanics stay here: validators, hook payloads, sync behavior,
+  default templates, and project initialization.
+- Control-plane/product concerns move to ForgeOS: WorkEpisode state,
+  protocol runs, authority/risk orchestration, visual workbench, cross-repo
+  status, and operator workflow modules.
+- Risk tiers, SHA-pinned reviews, and remediation loops remain live ideas, but
+  they require a fresh ForgeOS ticket/brainstorm or a narrow LLM-DocKit DF before
+  implementation. Do not implement them directly from archived prose.
+
+### Follow-ups
+- ForgeOS records a concise lineage note pointing at the archived drafts so the
+  next ForgeOS cleanup/version session can decide whether to absorb the live
+  ideas into W1/W2/W3 work, a module contract, or a future decision.
+- If a future DocKit validator feature is inspired by these archives, file a new
+  DF that names the archive as prior context and states why the cure belongs in
+  the scaffold layer rather than ForgeOS.

@@ -27,7 +27,8 @@ DFs whose ownership and full expansion are pending Session 4: DF-031, DF-032 in 
 
 ## Current Status
 - Last Updated: 2026-06-18 - Codex GPT-5
-- Session Focus: **Cut v4.9.4 (patch), rolled out Trace v1.2 sync broadly, then closed the second-pass sync drift in docs.** DF-043 changed `scripts/dockit-sync.sh` so `adoption_mode: full` projects insert completely missing marked template sections such as `trace-protocol` before the footer marker (or EOF), while malformed half-present markers still fail and partial adopters still skip missing sections. VERSION 4.9.3 -> 4.9.4; 8 doc-version markers in sync. Rollout state after the operator-prioritized second pass: 28 of 30 scanned projects now report `CURRENT` at template 4.9.4 and their bootstrap payloads emit Trace v1.2 `Sent: YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)`. The second pass added `youtube2text`, `house-thermal-monitor`, `audio-batch`, `rolodex`, and `unifi-mcp` to the current set; `house-thermal-monitor` needed missing doc-version markers, `rolodex` needed its changelog header normalized to `## [0.1.0]`, and `youtube2text` syncs with version validation skipped because it lacks a `VERSION` file. Remaining sync-check attention: `camofox-browser` is OUTDATED with a large dirty pre-existing worktree; `folio` is NO_STATE and was deprioritized by the operator along with `claude-quest`. Important: many downstream worktrees now contain uncommitted sync results; no downstream commits or pushes have been made from this LLM-DocKit session. DF-035 option (b) remains the primary DocKit design candidate once rollout bookkeeping is closed.
+- Session Focus: **Archived four long-lived local drafts and documented the LLM-DocKit/ForgeOS scope boundary as D-009.** The former root-level drafts now live under `docs/archive/` with explicit statuses: `HOOKS_ENFORCEMENT_PROPOSAL.md` is implemented in LLM-DocKit 4.x; `DEFERRED_NEXT_VERSION.md` is superseded by ForgeOS control-plane architecture; `LLM_DOCKIT_CE_V2_PROPOSAL.md` is hybrid lineage; `documento.md` is Code Factory inspiration, not accepted roadmap. D-009 records the durable boundary: LLM-DocKit owns scaffold/protocol substrate mechanics, while ForgeOS owns umbrella control-plane/workbench/protocol-runtime concerns. This is doc-only cleanup, no version bump. Important carry-forward from the prior rollout remains: 28 of 30 scanned projects report `CURRENT` at template 4.9.4, but many downstream worktrees contain uncommitted sync results; no downstream commits or pushes have been made from this LLM-DocKit cleanup. DF-035 option (b) remains the primary DocKit design candidate.
+- Previous (2026-06-18): Cut v4.9.4, rolled out Trace v1.2 sync broadly, and closed second-pass sync drift in docs; pushed `a057fd7`.
 - Previous (2026-06-18): Cut v4.9.3 verified dual-time `Sent` refinement; pushed `686a96e`.
 - Previous (2026-06-18): Cut v4.9.2 Trace `Resulting state` refinement; pushed `d2d7afc`.
 - Previous (2026-06-17): Cut v4.9.1 Trace commit validation hardening; pushed `01f90bb`.
@@ -42,7 +43,7 @@ DFs whose ownership and full expansion are pending Session 4: DF-031, DF-032 in 
 
 - Previous: Cut **v4.7.0** (minor) shipping the SessionStart-side enforcement primitive — `scripts/dockit-bootstrap-context.sh` + `.claude/settings.json` SessionStart hook + `dockit-sync-manifest.yml` entry — closing **DF-033** (passive onboarding instructions in repo docs do not enforce session-start context loading). New decision **D-007** records the precedent that future "always read X at session start" rules ship as a hook + script, not as more prose. Counterpart of D-005 (session-end enforcement); together they bracket the session.
 - Status: **Mechanical cure shipped on the Claude Code axis.** The new POSIX script reads `LLM_START_HERE.md` dynamically to extract the recommended reading order and emits a Claude Code `additionalContext` JSON payload (~1.5–2.4 KB; under the 10 KB SessionStart limit) with a small protocol the LLM must follow (`Onboarding loaded.` or `Onboarding skipped: <reason>` as the first line of the first substantive reply). `--human` mode of the same script is the manual workaround for non-Claude LLMs (Codex CLI, Cursor, web ChatGPT) until those tools grow equivalent hooks. Smoke-tested in both LLM-DocKit (1905 bytes JSON) and tomatic (9-item reading order, ~2.4 KB JSON), `python3 -m json.tool` validates output. Tomatic adopted directly in this same session (script + settings.json copied without waiting for `dockit-sync`); other downstream projects close on next sync pass. Adopter count of DF entries: 30 (DF-033 marked `implemented` on the Claude axis; rollout to other LLMs remains advisory). Previous session focus (CONSENSUS_PROTOCOL_PROPOSAL) carried forward — gated on Session 4 of the ecosystem reconciliation roadmap above.
-- Pending Proposals: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (carried forward; Session 4 gated); `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` (untracked, pre-existing); `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` (untracked, pre-existing).
+- Pending Proposals: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (carried forward; Session 4 gated). Former root-level drafts were archived under `docs/archive/` on 2026-06-18 with explicit status labels; see D-009.
 
 ## Patch 4.8.0 Outcome
 - `scripts/dockit-validate-session.sh`: two new check functions + `--check` registrations + main-loop additions + help-text update. `check_orientation` (~30 lines) and `check_template_residue` (~50 lines) sit alongside the existing 6 checks; both use the same `add_result` accumulator and same `should_run` filter pattern. Total checks now 8. Synthetic FAIL tests verified each branch: missing section, no paths, missing path, residue patterns all detected as expected.
@@ -80,12 +81,10 @@ The `template-residue` PASS rate (3/3) was a happy surprise: the ecosystem appea
 
 ## Do Not Touch (for parallel sessions)
 
-These files are present in the working tree but deliberately untracked, owned by the operator, and **must not be staged or committed by parallel sessions**:
-
-- `docs/DEFERRED_NEXT_VERSION.md` — operator's planning notes for v4.7.0+, ongoing.
-- `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` — operator's draft proposal, not yet ready to land.
-- `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` — operator's draft proposal, not yet ready to land.
-- `documento.md` — operator's scratch notes.
+No active Do Not Touch files are currently declared in this repo after the
+2026-06-18 draft cleanup. The former root-level drafts are now archived and
+committed under `docs/archive/` with explicit status labels. They are lineage,
+not active implementation instructions.
 
 Sessions that need to stage changes should use explicit paths (`git add <path>`), never `git add -A` or `git add .`. The `dockit-init-project.sh` script in this repo is robust against these (uses `git archive HEAD` so untracked files never leak); manual sessions need the same discipline.
 
@@ -204,8 +203,8 @@ The validator must be extensible for future B/C integration:
 
 ### Initiative B: CE V2 (deferred, split into subfases)
 
-**Document:** `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` (untracked, 407 lines)
-**Status:** Deferred until Phase 1 pilot data available. Too large for single pilot — split into:
+**Document:** `docs/archive/LLM_DOCKIT_CE_V2_PROPOSAL.md` (archived lineage, 407 lines)
+**Status:** Hybrid lineage. Some pieces shipped in LLM-DocKit 4.x; session-manifest / authority / protocol-runtime ideas now map better to ForgeOS. Too large for single pilot — split into:
 - B1: Traceability (work_unit_id, session manifests)
 - B2: Review discipline (monthly reviews, SHA pinning)
 - B3: Solutions library (candidate/canonical lifecycle)
@@ -214,8 +213,8 @@ Adopt only parts that solve problems demonstrated during pilot.
 
 ### Initiative C: Code Factory Recommendations (deferred)
 
-**Document:** `documento.md` (untracked, 264 lines, Spanish)
-**Status:** Separate policy milestone. Key items (risk tiers, CONTRACT.yaml, SHA discipline) adopt only if pilot data shows need.
+**Document:** `docs/archive/documento.md` (archived lineage, 264 lines, Spanish)
+**Status:** Inspiration source, not accepted roadmap. Key items (risk tiers, CONTRACT.yaml, SHA discipline) require a fresh DF or ForgeOS ticket before adoption.
 
 ---
 
@@ -241,10 +240,11 @@ Adopt only parts that solve problems demonstrated during pilot.
 - `HOW_TO_USE.md` -> complete setup guide
 - Full docs/ structure (see docs/STRUCTURE.md)
 
-### Untracked (local only, not in git)
-- `docs/HOOKS_ENFORCEMENT_PROPOSAL.md` — initial hooks proposal (superseded by this Decision Lock)
-- `docs/LLM_DOCKIT_CE_V2_PROPOSAL.md` — RFC for Compound Engineering v2 (Initiative B, 407 lines)
-- `documento.md` — comparative analysis: LLM-DocKit vs Code Factory (Initiative C, 264 lines, Spanish)
+### Archived lineage (committed in git)
+- `docs/archive/HOOKS_ENFORCEMENT_PROPOSAL.md` — initial hooks proposal, implemented by LLM-DocKit 4.x
+- `docs/archive/DEFERRED_NEXT_VERSION.md` — control-plane / arbiter / dashboard idea, superseded by ForgeOS
+- `docs/archive/LLM_DOCKIT_CE_V2_PROPOSAL.md` — RFC for Compound Engineering v2, hybrid lineage
+- `docs/archive/documento.md` — LLM-DocKit vs Code Factory comparison, inspiration source
 
 ## Current Versions
 - LLM-DocKit: 4.4.0
