@@ -602,13 +602,60 @@ sync_section_merge() {
         _start_marker="<!-- DOCKIT-TEMPLATE:START $_sid -->"
         _end_marker="<!-- DOCKIT-TEMPLATE:END $_sid -->"
 
+        # Extract template section content/block once. Missing-section handling
+        # for full adopters uses the full block, including markers, to onboard
+        # newly-added template sections into older downstream files.
+        _tmpl_content="$TMPDIR/tmpl_${_sid}.txt"
+        awk -v start="$_start_marker" -v end="$_end_marker" '
+            $0 == start { capture=1; next }
+            $0 == end   { capture=0; next }
+            capture { print }
+        ' "$_template_file" > "$_tmpl_content"
+
+        _tmpl_block="$TMPDIR/tmpl_block_${_sid}.txt"
+        awk -v start="$_start_marker" -v end="$_end_marker" '
+            $0 == start { capture=1 }
+            capture { print }
+            $0 == end { capture=0 }
+        ' "$_template_file" > "$_tmpl_block"
+
+        _tmpl_hash=$(hash_file "$_tmpl_content")
+
         # Check markers exist in downstream
         _start_count=$(grep -c "^$_start_marker$" "$_working_file" 2>/dev/null) || true
         _end_count=$(grep -c "^$_end_marker$" "$_working_file" 2>/dev/null) || true
 
         if [ "$_start_count" = "0" ] || [ "$_end_count" = "0" ]; then
+            if [ "$_start_count" = "0" ] && [ "$_end_count" = "0" ] && [ "$_adoption_mode" = "full" ]; then
+                _inserted="$TMPDIR/section_inserted_${_sid}.md"
+                _footer_marker="<!-- DOCKIT-TEMPLATE:START footer -->"
+
+                if [ "$_sid" != "footer" ] && grep -q "^$_footer_marker$" "$_working_file" 2>/dev/null; then
+                    awk -v marker="$_footer_marker" -v bfile="$_tmpl_block" '
+                        $0 == marker && !inserted {
+                            while ((getline l < bfile) > 0) print l
+                            close(bfile)
+                            print ""
+                            inserted = 1
+                        }
+                        { print }
+                    ' "$_working_file" > "$_inserted"
+                else
+                    {
+                        cat "$_working_file"
+                        printf '\n'
+                        cat "$_tmpl_block"
+                    } > "$_inserted"
+                fi
+
+                cp "$_inserted" "$_working_file"
+                echo "$_relpath $_sid $_tmpl_hash" >> "$_hashes_file"
+                _file_changed=true
+                continue
+            fi
+
             if [ "$_adoption_mode" = "full" ]; then
-                report_entry "$_relpath" "ERROR" "missing markers for section: $_sid"
+                report_entry "$_relpath" "ERROR" "malformed markers for section: $_sid"
                 return
             else
                 warn "Missing markers for section $_sid in $_relpath (partial mode: skipping)"
@@ -621,14 +668,6 @@ sync_section_merge() {
             return
         fi
 
-        # Extract content between markers from template (excluding marker lines themselves)
-        _tmpl_content="$TMPDIR/tmpl_${_sid}.txt"
-        awk -v start="$_start_marker" -v end="$_end_marker" '
-            $0 == start { capture=1; next }
-            $0 == end   { capture=0; next }
-            capture { print }
-        ' "$_template_file" > "$_tmpl_content"
-
         # Extract content between markers from downstream
         _down_content="$TMPDIR/down_${_sid}.txt"
         awk -v start="$_start_marker" -v end="$_end_marker" '
@@ -638,7 +677,6 @@ sync_section_merge() {
         ' "$_working_file" > "$_down_content"
 
         # Compute hashes
-        _tmpl_hash=$(hash_file "$_tmpl_content")
         _down_hash=$(hash_file "$_down_content")
 
         # Record hash for state

@@ -1571,3 +1571,22 @@ Implementation hints:
 - No validator change required; chat headers are not repo artifacts.
 
 Mitigation in source project: shipped in v4.9.3. Downstream projects receive the new chat-side convention through `dockit-sync` section-merge of `LLM_START_HERE.md` and copy propagation of `scripts/dockit-bootstrap-context.sh`; new scaffolds also get the local timezone config by default.
+
+## DF-043 — section-merge cannot propagate newly-added template sections to full adopters
+
+- Source: LLM-DocKit itself; downstream sync attempt after v4.9.3
+- Date observed: 2026-06-18
+- Category: sync tooling / migration
+- Status: implemented (4.9.4) — `scripts/dockit-sync.sh` now inserts fully-missing template sections for `adoption_mode: full` projects.
+- Related: DF-040, DF-041, DF-042, DF-024
+
+Observation: Attempting to sync adopters after Trace Protocol v1.2 exposed a structural sync gap. Existing full adopters such as `devenv` and `plaud-mirror` did not have the newly-added `trace-protocol` markers in `LLM_START_HERE.md`, so `dockit-sync.sh --dry-run` failed with `missing markers for section: trace-protocol`. Older adopters such as `nas-backup` could also lack earlier marked sections such as `doc-update-rules`. That meant a new synchronized section could not reach full adopters without manual edits, undermining the purpose of section-merge.
+
+Protocol implication:
+
+- For `adoption_mode: full`, a template section that is completely absent downstream (`START` and `END` markers both missing) should be treated as a new template section to insert, not an error.
+- If only one marker is missing, keep failing: that is malformed downstream markup, not a normal new-section migration.
+- For `adoption_mode: partial`, keep the previous behavior: missing sections warn and skip, because partial adopters intentionally opt into only the sections they carry.
+- Insert new sections before the downstream `footer` template section when present; otherwise append at EOF. Record the new section hash in sync state so future local/template conflicts are tracked normally.
+
+Mitigation in source project: shipped in v4.9.4. Dry-runs that previously failed for `devenv`, `plaud-mirror`, and `nas-backup` now complete with `LLM_START_HERE.md UPDATED sections merged` and zero errors.

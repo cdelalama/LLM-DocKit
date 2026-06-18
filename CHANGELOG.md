@@ -4,6 +4,22 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.4] - 2026-06-18
+
+### Changed
+
+- `scripts/dockit-sync.sh`: `section-merge` now inserts template sections that
+  are completely missing from `adoption_mode: full` downstream files. This lets
+  existing adopters receive newly-added marked sections such as
+  `trace-protocol` instead of failing sync with "missing markers".
+
+### Fixed
+
+- Fixed downstream sync blockage introduced by adding new template sections:
+  older full adopters can now migrate forward without hand-editing
+  `LLM_START_HERE.md` first. Partially-adopted projects still skip missing
+  sections, preserving their existing opt-in behavior.
+
 ## [4.9.3] - 2026-06-18
 
 ### Added
