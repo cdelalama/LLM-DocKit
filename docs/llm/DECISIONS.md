@@ -253,6 +253,7 @@ Default-on chat guidance matches the operator's normal workflow and makes the ne
 - A project that activates durable Trace validation must add a HANDOFF Trace Anchor immediately. There is no grace period; activation is an explicit migration step.
 - Remote ancestry checks use `origin/HEAD` when available, fall back to `origin/main`, and allow a project override with `trace_protocol.upstream_branch`.
 - HANDOFF Trace Anchor commit times may use either `YYYY-MM-DD HH:MM:SS UTC` or `YYYY-MM-DD HH:MM UTC`. The validator accepts both so adopters following MED D-020's minute-level convention do not fail.
+- Chat `Sent` uses local time first and UTC second: `YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)`. The local timezone is controlled by `trace_protocol.local_timezone` when set; this operator scaffold defaults to `Europe/Madrid`.
 
 ### Follow-ups
 - MED can replace its local `scripts/check-trace-anchor.sh` with the integrated DocKit check after its next sync and explicit migration.
@@ -276,3 +277,36 @@ Examples:
 - Auditor with findings: `HEAD=unchanged (d6fc816); version=none; gate=blocked; requires executor patch v4.9.1`
 
 HANDOFF Trace Anchor does not gain this field: HANDOFF is already the collapsed current state by convention. HISTORY Trace footer also stays unchanged; its `commits`, `state`, `validation`, and `next` fields already provide the durable one-line equivalent. This refinement evolves the MED D-020 seven-field chat convention into LLM-DocKit Trace Protocol v1.1; MED can upstream-adopt the new field when convenient.
+
+### v1.2 Refinement - Verified dual-time Sent
+v4.9.3 refines the chat `Sent` field after the operator caught a real failure: an auditor message used Madrid wall-clock time but labelled it as UTC. On 2026-06-18 the environment clock was `Etc/UTC` while the operator was in `Europe/Madrid` (CEST, UTC+2). A message such as `Sent: 2026-06-18 11:02 UTC` was therefore misleading when the UTC clock was approximately 09:55.
+
+The required order is:
+
+```text
+Sent: YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)
+```
+
+Local time comes first because it is the operator's orientation clock. UTC remains present because commits, remote logs, and cross-machine audit trails need a stable technical anchor. Reversing the order is not allowed; mixed ordering recreates the ambiguity this refinement closes.
+
+Agents with shell access must verify the clock before writing `Sent`, for example:
+
+```sh
+date -u '+%Y-%m-%d %H:%M UTC'
+TZ=Europe/Madrid date '+%Y-%m-%d %H:%M %Z'
+```
+
+Projects can override the local zone with:
+
+```yaml
+trace_protocol:
+  local_timezone: Europe/Madrid
+```
+
+Agents without clock access must not invent UTC. They should write:
+
+```text
+Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>
+```
+
+This refinement is chat-side only. HANDOFF Trace Anchor commit times still come from git and stay UTC. HISTORY Trace footers still do not carry a `Sent` field.

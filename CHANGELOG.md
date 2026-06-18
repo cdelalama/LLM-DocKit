@@ -4,6 +4,39 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.3] - 2026-06-18
+
+### Added
+
+- Trace Protocol v1.2 (DF-042): chat Trace `Sent` now uses a fixed dual-time
+  format: local time first, UTC second in parentheses. The local side defaults
+  to `Europe/Madrid` for this operator scaffold and can be overridden with
+  `trace_protocol.local_timezone`.
+
+### Changed
+
+- `LLM_START_HERE.md`: Trace guidance now requires clock verification before
+  writing `Sent`, documents the exact local-then-UTC order, and defines
+  `Sent: unverified client time ...` for agents without clock access.
+- `scripts/dockit-bootstrap-context.sh`: SessionStart payload now includes the
+  same time-order and verification rule, using `trace_protocol.local_timezone`
+  when configured.
+- `scripts/dockit-init-project.sh`: new scaffolds include
+  `trace_protocol.local_timezone: Europe/Madrid` next to the existing Trace
+  durable settings.
+- `docs/llm/DECISIONS.md`: D-008 records the v1.2 time-verification
+  refinement.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-042 filed and closed as implemented in
+  this release.
+
+### Fixed
+
+- Fixed a Trace orientation failure where LLM windows could label Madrid/CEST
+  wall-clock time as UTC, making later/earlier messages appear inconsistent.
+- `scripts/dockit-bootstrap-context.sh`: optional Trace config reads stay
+  non-fatal when `.dockit-config.yml` is absent, preserving default-on chat
+  Trace guidance in existing adopters.
+
 ## [4.9.2] - 2026-06-18
 
 ### Added

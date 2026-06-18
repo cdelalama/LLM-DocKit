@@ -1527,3 +1527,47 @@ Protocol implication:
 - Treat this as LLM-DocKit Trace Protocol v1.1, evolving MED D-020. MED can re-ratify/adopt the new field when convenient; it is not a blocker for DocKit.
 
 Mitigation in source project: shipped in v4.9.2. `LLM_START_HERE.md` section-merge propagates the template wording; `scripts/dockit-bootstrap-context.sh` copy propagation ensures SessionStart hooks emit the new field immediately after downstream sync. No validator change required because chat headers are not repo artifacts.
+
+## DF-042 — Trace Sent timestamp must verify timezone and use one fixed order
+
+- Source: LLM-DocKit itself; operator review of Trace v1.1 auditor/executor messages after v4.9.2
+- Date observed: 2026-06-18
+- Category: usability / auditability
+- Status: implemented (4.9.3) — Trace Protocol v1.2 changes chat `Sent` to local-first dual time, adds verification guidance, and exposes `trace_protocol.local_timezone`.
+- Related: DF-040, DF-041, DF-033, DF-024
+
+Observation: Trace v1.1 still allowed a real clock-orientation error. One auditor message wrote `Sent: 2026-06-18 11:02 UTC` while the actual UTC clock in the execution environment was approximately 09:55 and the operator's Madrid clock was approximately 11:55 CEST. The likely failure was Madrid wall-clock time labelled as UTC. That makes a Trace header look precise while giving the operator a false ordering cue between parallel LLM windows.
+
+Protocol implication:
+
+- `Sent` must use one mandatory order:
+  ```text
+  Sent: YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)
+  ```
+- Local time is first because the operator resumes by local wall clock. UTC stays second as the technical audit anchor. Reversing the order is not allowed.
+- Agents with shell access must verify time before writing it, for example:
+  ```sh
+  date -u '+%Y-%m-%d %H:%M UTC'
+  TZ=Europe/Madrid date '+%Y-%m-%d %H:%M %Z'
+  ```
+- Projects can override the local zone with `.dockit-config.yml`:
+  ```yaml
+  trace_protocol:
+    local_timezone: Europe/Madrid
+  ```
+- Agents without clock access must not fabricate UTC. They should write:
+  ```text
+  Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>
+  ```
+- Do NOT change HANDOFF Trace Anchor commit-time handling. That timestamp comes from git and remains UTC.
+- Do NOT change HISTORY Trace footer. It has no `Sent` field.
+
+Implementation hints:
+
+- `LLM_START_HERE.md`: update the Trace Protocol section with the dual-time `Sent` shape, mandatory order, verification commands, config override, and unverified fallback.
+- `scripts/dockit-bootstrap-context.sh`: keep the hook payload compact but include the same local-first/UTC-second rule. Read `trace_protocol.local_timezone` with the existing flat parser; default to `Europe/Madrid` for this operator scaffold. Optional config reads must tolerate missing `.dockit-config.yml` under `set -e`; absence of config must not suppress the SessionStart payload.
+- `scripts/dockit-init-project.sh`: include `trace_protocol.local_timezone: Europe/Madrid` in new `.dockit-config.yml` stubs.
+- `docs/llm/DECISIONS.md`: add a D-008 v1.2 refinement explaining why this is chat-side only.
+- No validator change required; chat headers are not repo artifacts.
+
+Mitigation in source project: shipped in v4.9.3. Downstream projects receive the new chat-side convention through `dockit-sync` section-merge of `LLM_START_HERE.md` and copy propagation of `scripts/dockit-bootstrap-context.sh`; new scaffolds also get the local timezone config by default.

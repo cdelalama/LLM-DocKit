@@ -113,6 +113,7 @@ fi
 #
 #   trace_protocol:
 #     enabled: false
+#     local_timezone: Europe/Madrid
 #
 # The durable validator half still requires explicit trace_protocol.enabled:
 # true plus trace_protocol.since in .dockit-config.yml, so existing adopters do
@@ -142,11 +143,20 @@ read_trace_value() {
 }
 
 trace_chat_enabled() {
-    _enabled=$(read_trace_value enabled)
+    _enabled=$(read_trace_value enabled || true)
     case "$_enabled" in
         false|no|0) return 1 ;;
         *) return 0 ;;
     esac
+}
+
+trace_local_timezone() {
+    _timezone=$(read_trace_value local_timezone || true)
+    if [ -n "$_timezone" ]; then
+        echo "$_timezone"
+    else
+        echo "Europe/Madrid"
+    fi
 }
 
 # -- Extract recommended reading order from LLM_START_HERE.md --------------
@@ -235,12 +245,16 @@ Trace Protocol:
     verdicts with a compact Trace header:
       Trace
       Role: executor|auditor
-      Sent: YYYY-MM-DD HH:MM UTC
+      Sent: YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)
       Subject: current task or commit hash/title being implemented/audited
       Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
       Repo state: local branch vs origin and worktree status verified now
       Validation: checks run and result
       Next gate: who/what should act next
+  - Sent order is mandatory: local time first, UTC second in parentheses.
+    Verify it before writing; do not infer it. Local timezone for this project:
+    $(trace_local_timezone). If the clock cannot be verified, write
+    'Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>'.
   - The Trace header is only the orientation header. After it, write normal
     prose that explains what happened, why it matters, and any remaining risk.
   - If this project has trace_protocol.enabled: true, durable HANDOFF/HISTORY

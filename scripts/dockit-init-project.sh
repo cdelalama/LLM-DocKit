@@ -290,6 +290,7 @@ adoption_mode: full
 trace_protocol:
   enabled: true
   since: $TODAY
+  local_timezone: Europe/Madrid
 EOF
 
 echo "  reset CHANGELOG and docs/llm/{HANDOFF,HISTORY,DECISIONS}.md"

@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.2 -->
+<!-- doc-version: 4.9.3 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -127,12 +127,25 @@ prose. The header is for orientation; it does not replace the message.
 
 Required chat header fields:
 - `Role`: `executor` or `auditor`
-- `Sent`: `YYYY-MM-DD HH:MM UTC`
+- `Sent`: `YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)`. The order is mandatory:
+  local time first, UTC second in parentheses.
 - `Subject`: current task, or commit hash/title being implemented or audited
 - `Resulting state`: what this message leaves true after it is sent
 - `Repo state`: local branch vs origin and worktree status verified now
 - `Validation`: checks run and result
 - `Next gate`: who/what should act next
+
+Time verification:
+- Verify `Sent` before writing it; do not infer or mentally convert the time.
+- If shell access is available, run both:
+  ```sh
+  date -u '+%Y-%m-%d %H:%M UTC'
+  TZ=Europe/Madrid date '+%Y-%m-%d %H:%M %Z'
+  ```
+- Replace `Europe/Madrid` with `trace_protocol.local_timezone` from
+  `.dockit-config.yml` when the project sets one.
+- If the agent cannot verify the clock, write:
+  `Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>`.
 
 Recommended `Resulting state` shape:
 
@@ -159,6 +172,13 @@ half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
 - `docs/llm/HISTORY.md` entries dated on or after `trace_protocol.since` that
   reference backtick-quoted commit hashes must end with an inline footer:
   `Trace: role=executor|auditor; commits=hash1,hash2; state=...; validation=...; next=...`
+
+Projects can set the local timezone used in `Sent` with:
+
+```yaml
+trace_protocol:
+  local_timezone: Europe/Madrid
+```
 
 Projects that do not use executor/auditor windows can disable the chat-side
 convention with:
