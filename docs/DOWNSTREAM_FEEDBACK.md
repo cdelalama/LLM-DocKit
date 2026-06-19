@@ -1590,3 +1590,51 @@ Protocol implication:
 - Insert new sections before the downstream `footer` template section when present; otherwise append at EOF. Record the new section hash in sync state so future local/template conflicts are tracked normally.
 
 Mitigation in source project: shipped in v4.9.4. Dry-runs that previously failed for `devenv`, `plaud-mirror`, and `nas-backup` now complete with `LLM_START_HERE.md UPDATED sections merged` and zero errors.
+
+## DF-044 — Trace Sent needs seconds and receivers must reverify stale reports
+
+- Source: LLM-DocKit/youtube2text parallel executor/auditor sessions
+- Date observed: 2026-06-18/19
+- Category: usability / auditability
+- Status: implemented (4.9.5) — Trace Protocol v1.3 requires seconds in chat `Sent` and adds stale-read re-verification guidance to `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh`.
+- Related: DF-040, DF-041, DF-042, DF-024
+
+Observation: Trace v1.2 still allowed two real ordering failures.
+
+First, minute-level `Sent` precision is insufficient. Two executor/auditor
+messages can land in the same minute. If they also discuss the same commit,
+gate, or repo state, `YYYY-MM-DD HH:MM` gives the operator no deterministic
+ordering cue.
+
+Second, a Trace report can be correct when written but stale when read. During
+the `youtube2text` audit, a message reported `HEAD=adb6664` and a large dirty
+worktree. By the time the auditor read and verified state, `youtube2text` had
+advanced to `47c4083` and the worktree had only one untracked file. `Sent` tells
+when a message was written; it does not make the embedded `Repo state`
+current at read time.
+
+Protocol implication:
+
+- Chat `Sent` must include seconds on both local and UTC sides:
+  ```text
+  Sent: YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)
+  ```
+- Agents with shell access must verify second-level time before writing:
+  ```sh
+  date -u '+%Y-%m-%d %H:%M:%S UTC'
+  TZ=Europe/Madrid date '+%Y-%m-%d %H:%M:%S %Z'
+  ```
+- Agents without clock access must not fabricate precision. They should write:
+  ```text
+  Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>
+  ```
+- Receivers must reverify before acting on stale reports. If a Trace block is
+  older than a few minutes, or if another LLM/operator may have acted since it
+  was written, run `git status`, `git log -1`, and current time checks before
+  treating its `Repo state` as current.
+- No durable validator change is appropriate. Chat messages are not repo
+  artifacts; the enforceable half remains HANDOFF/HISTORY Trace validation.
+
+Mitigation in source project: shipped in v4.9.5. Downstream projects receive
+the updated chat-side convention through `dockit-sync` section-merge of
+`LLM_START_HERE.md` and copy propagation of `scripts/dockit-bootstrap-context.sh`.

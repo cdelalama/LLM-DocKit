@@ -4,6 +4,34 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.5] - 2026-06-19
+
+### Added
+
+- Trace Protocol v1.3 (DF-044): chat Trace `Sent` now requires seconds on both
+  the local and UTC timestamps, e.g.
+  `YYYY-MM-DD HH:MM:SS Europe/Madrid (HH:MM:SS UTC)`.
+- Trace guidance now tells receivers to re-check `git status`, `git log -1`,
+  and the current clock before acting on an older Trace block's `Repo state`.
+
+### Changed
+
+- `LLM_START_HERE.md`: Trace guidance now uses second-level date commands and
+  the unverified fallback includes seconds.
+- `scripts/dockit-bootstrap-context.sh`: SessionStart payload now emits the
+  second-level `Sent` shape and stale-read re-verification rule.
+- `docs/llm/DECISIONS.md`: D-008 records the v1.3 refinement and why it remains
+  chat-side only.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-044 filed and closed as implemented in this
+  release.
+
+### Fixed
+
+- Fixed the remaining Trace ordering ambiguity where two executor/auditor
+  messages in the same minute could be indistinguishable by `Sent`.
+- Fixed stale-on-arrival ambiguity by making the receiver-side re-verification
+  expectation explicit in the loaded onboarding.
+
 ## [4.9.4] - 2026-06-18
 
 ### Changed

@@ -253,7 +253,7 @@ Default-on chat guidance matches the operator's normal workflow and makes the ne
 - A project that activates durable Trace validation must add a HANDOFF Trace Anchor immediately. There is no grace period; activation is an explicit migration step.
 - Remote ancestry checks use `origin/HEAD` when available, fall back to `origin/main`, and allow a project override with `trace_protocol.upstream_branch`.
 - HANDOFF Trace Anchor commit times may use either `YYYY-MM-DD HH:MM:SS UTC` or `YYYY-MM-DD HH:MM UTC`. The validator accepts both so adopters following MED D-020's minute-level convention do not fail.
-- Chat `Sent` uses local time first and UTC second: `YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)`. The local timezone is controlled by `trace_protocol.local_timezone` when set; this operator scaffold defaults to `Europe/Madrid`.
+- Chat `Sent` uses local time first and UTC second with seconds on both sides: `YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)`. The local timezone is controlled by `trace_protocol.local_timezone` when set; this operator scaffold defaults to `Europe/Madrid`.
 
 ### Follow-ups
 - MED can replace its local `scripts/check-trace-anchor.sh` with the integrated DocKit check after its next sync and explicit migration.
@@ -310,6 +310,42 @@ Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>
 ```
 
 This refinement is chat-side only. HANDOFF Trace Anchor commit times still come from git and stay UTC. HISTORY Trace footers still do not carry a `Sent` field.
+
+### v1.3 Refinement - Seconds and stale-read reverification
+v4.9.5 refines the chat `Sent` field again after two empirical failures on
+2026-06-18/19:
+
+1. Two Trace messages can share the same minute. When both discuss the same
+   commit or gate, minute-level precision is not enough to order them.
+2. A Trace block can be correct when written but stale when read. During the
+   `youtube2text` audit, a report that said `HEAD=adb6664` was later read after
+   the project had advanced to `47c4083`.
+
+The required `Sent` shape is now:
+
+```text
+Sent: YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)
+```
+
+Seconds are mandatory on both local and UTC sides. Agents with shell access
+must verify with second-level commands:
+
+```sh
+date -u '+%Y-%m-%d %H:%M:%S UTC'
+TZ=Europe/Madrid date '+%Y-%m-%d %H:%M:%S %Z'
+```
+
+Agents without clock access must write:
+
+```text
+Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>
+```
+
+This still does not make old chat messages authoritative. A receiver acting on
+an older Trace block must re-check `git status`, `git log -1`, and the current
+clock before trusting its `Repo state`. This is a chat-side discipline loaded
+by SessionStart; it is not validator-enforceable because chat history is not a
+repo artifact.
 
 ---
 

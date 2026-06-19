@@ -245,18 +245,21 @@ Trace Protocol:
     verdicts with a compact Trace header:
       Trace
       Role: executor|auditor
-      Sent: YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)
+      Sent: YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)
       Subject: current task or commit hash/title being implemented/audited
       Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
       Repo state: local branch vs origin and worktree status verified now
       Validation: checks run and result
       Next gate: who/what should act next
-  - Sent order is mandatory: local time first, UTC second in parentheses.
-    Verify it before writing; do not infer it. Local timezone for this project:
-    $(trace_local_timezone). If the clock cannot be verified, write
-    'Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>'.
+  - Sent order and precision are mandatory: local time first, UTC second in
+    parentheses, seconds included on both sides. Verify it before writing; do
+    not infer it. Local timezone for this project: $(trace_local_timezone). If
+    the clock cannot be verified, write
+    'Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>'.
   - The Trace header is only the orientation header. After it, write normal
     prose that explains what happened, why it matters, and any remaining risk.
+  - When reading an older Trace block, re-check git status, git log -1, and the
+    current clock before acting on its Repo state.
   - If this project has trace_protocol.enabled: true, durable HANDOFF/HISTORY
     trace fields are enforced by scripts/dockit-validate-session.sh."
 fi

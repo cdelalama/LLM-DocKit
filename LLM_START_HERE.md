@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.4 -->
+<!-- doc-version: 4.9.5 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -127,8 +127,9 @@ prose. The header is for orientation; it does not replace the message.
 
 Required chat header fields:
 - `Role`: `executor` or `auditor`
-- `Sent`: `YYYY-MM-DD HH:MM <local-tz> (HH:MM UTC)`. The order is mandatory:
-  local time first, UTC second in parentheses.
+- `Sent`: `YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)`. The order and
+  precision are mandatory: local time first, UTC second in parentheses, seconds
+  included on both sides.
 - `Subject`: current task, or commit hash/title being implemented or audited
 - `Resulting state`: what this message leaves true after it is sent
 - `Repo state`: local branch vs origin and worktree status verified now
@@ -139,13 +140,13 @@ Time verification:
 - Verify `Sent` before writing it; do not infer or mentally convert the time.
 - If shell access is available, run both:
   ```sh
-  date -u '+%Y-%m-%d %H:%M UTC'
-  TZ=Europe/Madrid date '+%Y-%m-%d %H:%M %Z'
+  date -u '+%Y-%m-%d %H:%M:%S UTC'
+  TZ=Europe/Madrid date '+%Y-%m-%d %H:%M:%S %Z'
   ```
 - Replace `Europe/Madrid` with `trace_protocol.local_timezone` from
   `.dockit-config.yml` when the project sets one.
 - If the agent cannot verify the clock, write:
-  `Sent: unverified client time YYYY-MM-DD HH:MM <claimed-tz>`.
+  `Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>`.
 
 Recommended `Resulting state` shape:
 
@@ -163,6 +164,11 @@ Resulting state: HEAD=unchanged (d6fc816); version=none; gate=blocked; requires 
 
 Use clear prose after the header. Explain what changed, why it matters, what
 was verified, and what risk remains.
+
+When reading an older Trace block, do not treat its `Repo state` as current
+without checking the tree again. If the `Sent` time is more than a few minutes
+old, or another LLM/operator may have acted since it was written, verify
+`git status`, `git log -1`, and the current clock before acting on the report.
 
 When `trace_protocol.enabled: true` is set in `.dockit-config.yml`, the durable
 half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
