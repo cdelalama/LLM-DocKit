@@ -4,6 +4,25 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.10.1] - 2026-06-19
+
+### Added
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-046 records the daily false-red surfaced by
+  MED when `handoff-date` / `history-entry` used wall-clock time for clean
+  committed repos.
+
+### Changed
+
+- `scripts/dockit-validate-session.sh`: `handoff-date` and `history-entry`
+  now validate against the last commit date when the tracked tree is clean, and
+  against today's date when tracked files are dirty.
+
+### Fixed
+
+- Closes DF-046: clean committed repos no longer go red the next day solely
+  because the wall clock advanced.
+
 ## [4.10.0] - 2026-06-19
 
 ### Added

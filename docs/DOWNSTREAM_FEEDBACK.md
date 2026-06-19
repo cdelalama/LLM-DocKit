@@ -1688,3 +1688,41 @@ D-019, but does not close D-019. Close it only after a later `youtube2text`
 session re-syncs from LLM-DocKit, verifies behavior against the real manifest
 and HISTORY style, and removes or explicitly supersedes its local forked script
 behavior.
+
+## DF-046 — Wall-clock bookkeeping makes clean committed repos go red every day
+
+- Source: `med` rollover after `3b98425` (`chore: adopt LLM-DocKit 4.9.4 sync`)
+- Date observed: 2026-06-19
+- Category: validator / process ergonomics
+- Status: implemented (4.10.1)
+- Related: DF-024, DF-039, DF-040
+
+Observation: MED was clean and content-valid after `a42f8ec` / `3b98425`, but
+on 2026-06-19 `dockit-validate-session.sh` went red because `handoff-date` and
+`history-entry` compared `HANDOFF.md` / `HISTORY.md` against the wall-clock
+date rather than the last committed work date. The result was pure rollover
+hygiene pressure: each new calendar day with no content change required another
+HANDOFF/HISTORY edit just to make the hook green.
+
+This is distinct from DF-039's read-only-session skip. DF-039 lets a zero-diff
+Stop hook opt out with `DOCKIT_ALLOW_READ_ONLY_SKIP=1`; it does not solve CI,
+manual validation, clean clones, or sessions where the hook is run without that
+environment flag. The bug is the reference date itself: clean committed repos
+should be judged against the date of the commit being validated, not against
+"today".
+
+Protocol implication:
+
+- When the tracked tree is clean, `handoff-date` and `history-entry` should use
+  the `HEAD` commit date as the expected date.
+- When tracked files are dirty or staged, the expected date should remain the
+  wall-clock date. A write session still needs current HANDOFF/HISTORY
+  bookkeeping.
+- Untracked scratch files should not force a rollover requirement; they are not
+  part of the committed state being validated.
+
+Mitigation in source project: shipped in v4.10.1. The validator now derives a
+reference date from `HEAD` for clean tracked trees and falls back to `TODAY`
+when tracked files are dirty. `scripts/test-validator.sh` includes regression
+coverage for a clean repo with an old commit date passing without rollover
+edits, and for the same repo failing once a tracked file is dirtied.

@@ -151,6 +151,23 @@ is_zero_diff_read_only_session() {
         && git diff --cached --quiet 2>/dev/null)
 }
 
+is_clean_tracked_tree() {
+    (cd "$PROJECT_ROOT" \
+        && git diff HEAD --quiet 2>/dev/null \
+        && git diff --cached --quiet 2>/dev/null)
+}
+
+validation_reference_date() {
+    if is_clean_tracked_tree; then
+        _head_date=$(cd "$PROJECT_ROOT" && git show -s --format=%cd --date=format:%Y-%m-%d HEAD 2>/dev/null || true)
+        if [ -n "$_head_date" ]; then
+            echo "$_head_date|last commit date"
+            return
+        fi
+    fi
+    echo "$TODAY|today"
+}
+
 # Minimal top-level .dockit-config.yml reader. This intentionally handles only
 # simple scalar keys at indentation 0; nested feature parsers stay separate.
 _read_top_level_value() {
@@ -209,15 +226,19 @@ check_handoff_date() {
         return
     fi
 
+    _reference=$(validation_reference_date)
+    _expected_date=$(printf '%s\n' "$_reference" | cut -d'|' -f1)
+    _expected_label=$(printf '%s\n' "$_reference" | cut -d'|' -f2)
+
     # Look for "Last Updated: YYYY-MM-DD" pattern
     handoff_date=$(grep -E '^\s*-?\s*Last Updated:' "$HANDOFF" 2>/dev/null | head -1 | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1 || true)
 
     if [ -z "$handoff_date" ]; then
         add_result "handoff-date" "FAIL" "No 'Last Updated' date found in HANDOFF.md"
-    elif [ "$handoff_date" != "$TODAY" ]; then
-        add_result "handoff-date" "FAIL" "Last Updated is $handoff_date, expected $TODAY"
+    elif [ "$handoff_date" != "$_expected_date" ]; then
+        add_result "handoff-date" "FAIL" "Last Updated is $handoff_date, expected $_expected_date ($_expected_label)"
     else
-        add_result "handoff-date" "PASS" "HANDOFF.md has today's date ($TODAY)"
+        add_result "handoff-date" "PASS" "HANDOFF.md has expected date ($_expected_date, $_expected_label)"
     fi
 }
 
@@ -253,8 +274,12 @@ check_history_entry() {
     _first_date=$(printf '%s\n' "$_first" | cut -d'|' -f1)
     _first_format=$(printf '%s\n' "$_first" | cut -d'|' -f2)
 
-    if [ "$_first_date" != "$TODAY" ]; then
-        add_result "history-entry" "FAIL" "First dated HISTORY.md entry is $_first_date, expected $TODAY"
+    _reference=$(validation_reference_date)
+    _expected_date=$(printf '%s\n' "$_reference" | cut -d'|' -f1)
+    _expected_label=$(printf '%s\n' "$_reference" | cut -d'|' -f2)
+
+    if [ "$_first_date" != "$_expected_date" ]; then
+        add_result "history-entry" "FAIL" "First dated HISTORY.md entry is $_first_date, expected $_expected_date ($_expected_label)"
         return
     fi
 
@@ -291,7 +316,7 @@ check_history_entry() {
     elif [ -n "$_order_error" ]; then
         add_result "history-entry" "FAIL" "$_order_error"
     else
-        add_result "history-entry" "PASS" "HISTORY.md first dated entry is $TODAY; format $_first_format accepted by history_format=$_history_format; dated entries are newest-first"
+        add_result "history-entry" "PASS" "HISTORY.md first dated entry is $_expected_date ($_expected_label); format $_first_format accepted by history_format=$_history_format; dated entries are newest-first"
     fi
 }
 

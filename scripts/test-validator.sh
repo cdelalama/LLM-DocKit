@@ -118,6 +118,40 @@ EOF
     git -C "$_repo" commit -qm initial
 }
 
+init_reference_date_repo() {
+    _repo="$1"
+    _date="$2"
+    mkdir -p "$_repo/docs/llm" "$_repo/scripts"
+
+    cat >"$_repo/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+- Last Updated: $_date
+EOF
+
+    cat >"$_repo/docs/llm/HISTORY.md" <<EOF
+# History
+
+- $_date - Smoke - Commit-date entry. - Files: [docs/llm/HANDOFF.md, docs/llm/HISTORY.md] - Version impact: no
+EOF
+
+    cat >"$_repo/docs/llm/DECISIONS.md" <<'EOF'
+# Decisions
+EOF
+
+    cat >"$_repo/scripts/foo.sh" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+    chmod +x "$_repo/scripts/foo.sh"
+
+    git -C "$_repo" init -q
+    git -C "$_repo" config user.email smoke@example.invalid
+    git -C "$_repo" config user.name Smoke
+    git -C "$_repo" add .
+    GIT_AUTHOR_DATE="${_date}T12:00:00Z" GIT_COMMITTER_DATE="${_date}T12:00:00Z" \
+        git -C "$_repo" commit -qm initial
+}
+
 write_version_files() {
     _repo="$1"
     _version="$2"
@@ -181,6 +215,15 @@ expect_pass "env + clean stale handoff/history skips" \
 
 expect_fail "no env + clean stale handoff/history fails normally" \
     "$VALIDATOR" --project "$REPO" --quiet --check handoff-date --check history-entry
+
+REFERENCE_DATE_REPO="$TMP_ROOT/reference-date"
+init_reference_date_repo "$REFERENCE_DATE_REPO" "2001-02-03"
+expect_pass "clean tree validates HANDOFF/HISTORY against last commit date, not wall clock" \
+    "$VALIDATOR" --project "$REFERENCE_DATE_REPO" --quiet --check handoff-date --check history-entry
+
+printf '\n# dirty\n' >>"$REFERENCE_DATE_REPO/scripts/foo.sh"
+expect_fail "dirty tree validates HANDOFF/HISTORY against wall clock" \
+    "$VALIDATOR" --project "$REFERENCE_DATE_REPO" --quiet --check handoff-date --check history-entry
 
 printf '\nchange\n' >>"$REPO/docs/llm/HANDOFF.md"
 expect_fail "env + modified HANDOFF does not skip" \
