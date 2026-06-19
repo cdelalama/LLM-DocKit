@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.5 -->
+<!-- doc-version: 4.9.6 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -26,7 +26,7 @@ Recommended reading order:
 ### Documentation Update Rules
 - Update docs/llm/HANDOFF.md every time you make a change.
 - Append an entry to docs/llm/HISTORY.md in every session.
-- HISTORY format: YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: [yes/no + details]
+- HISTORY format defaults to `any`: either `- YYYY-MM-DD - <LLM_NAME> - ...` or `YYYY-MM-DD - <LLM_NAME> - ...` is accepted. Set top-level `history_format: dash` or `history_format: no-dash` in `.dockit-config.yml` when a project wants strict enforcement.
 - Put long-form rationale in docs/llm/DECISIONS.md and link to it from HANDOFF.
 - Prefer ASCII-only in docs/llm/* to avoid Windows encoding issues.
 <!-- DOCKIT-TEMPLATE:END doc-update-rules -->
@@ -57,6 +57,7 @@ Recommended reading order:
 - Every commit that changes code/config files MUST include a version bump. The pre-commit hook enforces this.
 - For version bumps, run `scripts/bump-version.sh <new_version>`; do not edit version strings manually.
 - The bump script reads `docs/version-sync-manifest.yml` to update all tracked files atomically.
+- Supported manifest marker types are `version-file`, `changelog`, `html-comment`, `json-version`, `yaml-info-version`, and `package-lock-version`.
 - Validate sync with `scripts/check-version-sync.sh` (also available as pre-commit hook).
 - Do not bump versions without consulting docs/VERSIONING_RULES.md for impact level (patch/minor/major).
 - Do NOT batch multiple code commits without versioning. No exceptions.

@@ -2,11 +2,15 @@
 # Read by scripts/bump-version.sh and scripts/check-version-sync.sh
 #
 # Marker types:
-#   version-file  -> plain X.Y.Z (first line of file)
-#   changelog     -> ## [X.Y.Z] section header
-#   html-comment  -> <!-- doc-version: X.Y.Z --> on first line of file
+#   version-file          -> plain X.Y.Z (first line of file)
+#   changelog             -> ## [X.Y.Z] section header
+#   html-comment          -> <!-- doc-version: X.Y.Z --> on first line of file
+#   json-version          -> JSON top-level "version"
+#   yaml-info-version     -> YAML info.version
+#   package-lock-version  -> package-lock top-level version + packages[""].version
 #
-# Downstream projects: add your own files below the template entries.
+# Unknown marker types are errors. Downstream projects: add your own files
+# below the template entries.
 
 targets:
 - path: VERSION                    marker: version-file

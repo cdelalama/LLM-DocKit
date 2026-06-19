@@ -4,6 +4,34 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.9.6] - 2026-06-19
+
+### Added
+
+- Version sync marker support for `json-version`, `yaml-info-version`, and
+  `package-lock-version` in both `scripts/check-version-sync.sh` and
+  `scripts/bump-version.sh`.
+- Validator smoke coverage for configurable HISTORY formats, no-dash Trace
+  HISTORY footers, new version markers, package-lock dual-field drift, and
+  unknown marker types.
+
+### Changed
+
+- `history-entry` validation now defaults to `history_format: any`, accepting
+  both `- YYYY-MM-DD - ...` and `YYYY-MM-DD - ...` dated entries. Projects can
+  enforce `dash` or `no-dash` with a top-level `.dockit-config.yml` key.
+- Durable Trace HISTORY scanning now recognizes both dash and no-dash dated
+  entries when `trace_protocol.enabled: true`.
+- `docs/version-sync-manifest.yml` and `docs/VERSIONING_RULES.md` document the
+  expanded marker contract.
+
+### Fixed
+
+- Unknown version marker types now fail in both check and bump paths instead of
+  warning/skipping, preventing silent false-green manifest entries.
+- `package-lock-version` validates and updates both top-level `version` and
+  `packages[""].version`.
+
 ## [4.9.5] - 2026-06-19
 
 ### Added

@@ -151,6 +151,49 @@ is_zero_diff_read_only_session() {
         && git diff --cached --quiet 2>/dev/null)
 }
 
+# Minimal top-level .dockit-config.yml reader. This intentionally handles only
+# simple scalar keys at indentation 0; nested feature parsers stay separate.
+_read_top_level_value() {
+    _key="$1"
+    [ -f "$CONFIG_FILE" ] || return
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        case "$_line" in ""|\#*) continue ;; esac
+        _s=$(echo "$_line" | sed 's/^ *//')
+        _i=$(( ${#_line} - ${#_s} ))
+        [ "$_i" -eq 0 ] || continue
+        case "$_s" in
+            "$_key":*)
+                echo "$_s" | sed "s/^$_key: *//; s/^\"//; s/\"$//; s/^'//; s/'$//"
+                return
+                ;;
+        esac
+    done < "$CONFIG_FILE"
+}
+
+_read_history_format() {
+    _format=$(_read_top_level_value history_format || true)
+    if [ -n "$_format" ]; then
+        echo "$_format"
+    else
+        echo "any"
+    fi
+}
+
+_history_dated_entries() {
+    awk '
+        /^```/ { in_fence = !in_fence; next }
+        in_fence { next }
+        /^- [0-9]{4}-[0-9]{2}-[0-9]{2} - / {
+            print substr($0, 3, 10) "|dash|" NR
+            next
+        }
+        /^[0-9]{4}-[0-9]{2}-[0-9]{2} - / {
+            print substr($0, 1, 10) "|no-dash|" NR
+            next
+        }
+    ' "$HISTORY"
+}
+
 # ── Check functions ─────────────────────────────────────────────────────────
 
 check_handoff_date() {
@@ -191,11 +234,64 @@ check_history_entry() {
         return
     fi
 
-    # Look for today's date anywhere in the history entries (not in header/format lines)
-    if grep -q "^- $TODAY" "$HISTORY" 2>/dev/null; then
-        add_result "history-entry" "PASS" "HISTORY.md has entry for $TODAY"
+    _history_format=$(_read_history_format)
+    case "$_history_format" in
+        any|dash|no-dash) ;;
+        *)
+            add_result "history-entry" "FAIL" "Invalid history_format '$_history_format' in .dockit-config.yml (expected any, dash, or no-dash)"
+            return
+            ;;
+    esac
+
+    _entries=$(_history_dated_entries)
+    if [ -z "$_entries" ]; then
+        add_result "history-entry" "FAIL" "No dated HISTORY.md entries found"
+        return
+    fi
+
+    _first=$(printf '%s\n' "$_entries" | head -1)
+    _first_date=$(printf '%s\n' "$_first" | cut -d'|' -f1)
+    _first_format=$(printf '%s\n' "$_first" | cut -d'|' -f2)
+
+    if [ "$_first_date" != "$TODAY" ]; then
+        add_result "history-entry" "FAIL" "First dated HISTORY.md entry is $_first_date, expected $TODAY"
+        return
+    fi
+
+    _format_error=""
+    _order_error=""
+    _prev_date=""
+    _old_ifs="$IFS"
+    IFS='
+'
+    for _entry in $_entries; do
+        _date=$(printf '%s\n' "$_entry" | cut -d'|' -f1)
+        _format=$(printf '%s\n' "$_entry" | cut -d'|' -f2)
+        _line=$(printf '%s\n' "$_entry" | cut -d'|' -f3)
+
+        if [ "$_history_format" = "dash" ] && [ "$_format" != "dash" ]; then
+            _format_error="line $_line uses no-dash format but history_format=dash"
+            break
+        fi
+        if [ "$_history_format" = "no-dash" ] && [ "$_format" != "no-dash" ]; then
+            _format_error="line $_line uses dash format but history_format=no-dash"
+            break
+        fi
+
+        if [ -n "$_prev_date" ] && awk -v prev="$_prev_date" -v curr="$_date" 'BEGIN { exit (curr > prev) ? 0 : 1 }'; then
+            _order_error="line $_line has date $_date after newer entry $_prev_date; HISTORY.md must be newest-first"
+            break
+        fi
+        _prev_date="$_date"
+    done
+    IFS="$_old_ifs"
+
+    if [ -n "$_format_error" ]; then
+        add_result "history-entry" "FAIL" "$_format_error"
+    elif [ -n "$_order_error" ]; then
+        add_result "history-entry" "FAIL" "$_order_error"
     else
-        add_result "history-entry" "FAIL" "No HISTORY.md entry for $TODAY"
+        add_result "history-entry" "PASS" "HISTORY.md first dated entry is $TODAY; format $_first_format accepted by history_format=$_history_format; dated entries are newest-first"
     fi
 }
 
@@ -777,21 +873,27 @@ check_trace_protocol() {
         _trace_append_error "HISTORY.md not found"
     else
         _history_entries=$(awk -v since="$_trace_since" '
-            /^- [0-9]{4}-[0-9]{2}-[0-9]{2}/ {
+            /^- [0-9]{4}-[0-9]{2}-[0-9]{2} - / {
                 d = substr($0, 3, 10)
-                if (d >= since) print
+                if (d >= since) print d "|" $0
+                next
+            }
+            /^[0-9]{4}-[0-9]{2}-[0-9]{2} - / {
+                d = substr($0, 1, 10)
+                if (d >= since) print d "|" $0
             }
         ' "$HISTORY")
 
         _old_ifs="$IFS"
         IFS='
 '
-        for _entry in $_history_entries; do
+        for _history_record in $_history_entries; do
+            _date=$(printf '%s\n' "$_history_record" | cut -d'|' -f1)
+            _entry=$(printf '%s\n' "$_history_record" | cut -d'|' -f2-)
             _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
             [ -z "$_entry_hashes" ] && continue
 
             if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor); commits=[^;]+; state=[^;]+; validation=[^;]+; next=.+'; then
-                _date=$(printf '%s\n' "$_entry" | cut -c3-12)
                 _trace_append_error "HISTORY entry $_date references backticked commit hash(es) but lacks inline Trace footer"
                 continue
             fi

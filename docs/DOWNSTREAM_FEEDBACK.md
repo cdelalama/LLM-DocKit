@@ -1638,3 +1638,53 @@ Protocol implication:
 Mitigation in source project: shipped in v4.9.5. Downstream projects receive
 the updated chat-side convention through `dockit-sync` section-merge of
 `LLM_START_HERE.md` and copy propagation of `scripts/dockit-bootstrap-context.sh`.
+
+## DF-045 — Local version/HISTORY guardrails should not stay forked downstream
+
+- Source: `youtube2text` D-019
+- Date observed: 2026-06-19
+- Category: sync tooling / validator configurability
+- Status: implemented (4.9.6) — upstreamed additive JSON/YAML/package-lock
+  version marker handlers and configurable HISTORY format validation.
+- Related: DF-024, DF-039, DF-040
+
+Observation: `youtube2text` carried local edits to DocKit scripts because
+`dockit-sync` clobbered them twice:
+
+- `scripts/check-version-sync.sh` and `scripts/bump-version.sh` had local marker
+  support for JSON/YAML/package-lock manifests.
+- `scripts/dockit-validate-session.sh` had local no-dash/newest-first HISTORY
+  enforcement.
+
+Those are not really product-specific concerns. They are scaffold guardrails
+that other projects can need too. But promoting the exact `youtube2text` rule
+would break part of the fleet: some adopters use dash HISTORY entries
+(`plaud-mirror`, `msgvault-lab`, `forumvault-lab`), while others use no-dash
+entries (`cortex`, `youtube2text`).
+
+Protocol implication:
+
+- HISTORY validation must be configurable, not hardcoded to one punctuation
+  style. Default should be fleet-safe (`any`), with strict `dash` or `no-dash`
+  available through `.dockit-config.yml`.
+- HISTORY parsing should detect only real dated entries:
+  `YYYY-MM-DD - ...` and `- YYYY-MM-DD - ...`. Literal template/example
+  `YYYY-MM-DD` lines are not entries.
+- New version marker types must be supported symmetrically by check and bump.
+  A manifest marker that check cannot understand is not validation; it must
+  fail instead of warning/skipping.
+- `package-lock-version` must inspect both top-level `version` and
+  `packages[""].version`, because npm lockfiles carry both.
+
+Mitigation in source project: shipped in v4.9.6. `history-entry` defaults to
+`history_format: any` and supports strict `dash` / `no-dash` through
+`.dockit-config.yml`. Durable Trace HISTORY scanning now handles both dated
+entry shapes. `json-version`, `yaml-info-version`, and
+`package-lock-version` are implemented in both version scripts with regression
+coverage in `scripts/test-validator.sh`; unknown marker types now fail.
+
+Downstream status note: this reduces local fork pressure for `youtube2text`
+D-019, but does not close D-019. Close it only after a later `youtube2text`
+session re-syncs from LLM-DocKit, verifies behavior against the real manifest
+and HISTORY style, and removes or explicitly supersedes its local forked script
+behavior.

@@ -415,3 +415,86 @@ Option 3 is chosen.
 - If a future DocKit validator feature is inspired by these archives, file a new
   DF that names the archive as prior context and states why the cure belongs in
   the scaffold layer rather than ForgeOS.
+
+---
+
+## D-010 - HISTORY format is fleet-lenient by default and strict by config
+
+**Status:** accepted
+
+### Decision
+`dockit-validate-session.sh --check history-entry` accepts both dated HISTORY
+entry shapes by default:
+
+```text
+- YYYY-MM-DD - <LLM_NAME> - ...
+YYYY-MM-DD - <LLM_NAME> - ...
+```
+
+Projects that want a single enforced style can set a top-level
+`.dockit-config.yml` key:
+
+```yaml
+history_format: dash
+```
+
+or:
+
+```yaml
+history_format: no-dash
+```
+
+The default is `history_format: any`. All modes still enforce that the first
+real dated entry is today's date and that dated entries are newest-first.
+Template/example lines containing literal `YYYY-MM-DD` are not dated entries.
+
+Version marker support follows the same fleet-safe rule: marker handlers are
+additive, and projects use them only when their `docs/version-sync-manifest.yml`
+declares the marker type. `json-version`, `yaml-info-version`, and
+`package-lock-version` are now supported by both `check-version-sync.sh` and
+`bump-version.sh`. Unknown marker types fail instead of warning/skipping.
+
+### Context
+`youtube2text` carried local DocKit script forks recorded as D-019 because
+`dockit-sync` had clobbered its project-specific guardrails more than once:
+version markers for JSON/YAML/package-lock manifests and no-dash HISTORY
+validation. The same hardcoded HISTORY rule could not be promoted directly,
+because the current fleet is mixed: projects such as `plaud-mirror`,
+`msgvault-lab`, and `forumvault-lab` use dash entries, while `cortex` and
+`youtube2text` use no-dash entries.
+
+### Options Considered
+1. Make dash the only valid HISTORY shape. This preserves older DocKit projects
+   but breaks no-dash adopters.
+2. Make no-dash the only valid HISTORY shape. This matches the newer local
+   guardrail in `youtube2text` but breaks dash adopters.
+3. Default to accepting both shapes, with strict mode by config.
+
+### Rationale
+Option 3 chosen. LLM-DocKit is a fleet substrate; default sync behavior must not
+break valid existing adopters merely because they chose different one-line
+HISTORY punctuation. Strictness is still valuable, but it belongs at the
+project layer where the project can declare its local convention explicitly.
+
+The version-marker part follows the same principle. Adding handlers upstream is
+safe because no project uses them until its manifest opts in. Treating unknown
+marker types as errors is stricter, but correct: a manifest entry that the
+scripts do not understand is not being validated.
+
+### Implications
+- Existing dash-format adopters keep passing under the default `any` mode.
+- No-dash adopters can opt into `history_format: no-dash` without maintaining a
+  local validator fork.
+- Durable Trace HISTORY footer validation scans both dated entry shapes.
+- `package-lock-version` checks and updates both the root package-lock
+  `version` and `packages[""].version`; either field drifting fails validation.
+- This reduces downstream forks such as `youtube2text` D-019, but it does not
+  close that downstream decision. `youtube2text` D-019 closes only after a later
+  `youtube2text` re-sync proves the upstream behavior matches and the local
+  fork is removed or explicitly superseded.
+
+### Follow-ups
+- Roll this out cautiously: verify one dash-format repo and one no-dash-format
+  repo before treating the change as fleet-safe.
+- If another marker shape is needed, add support to both version scripts and to
+  the smoke tests in the same commit.

@@ -7,7 +7,7 @@
 #
 # This script:
 # - Updates VERSION file
-# - Updates <!-- doc-version: X.Y.Z --> markers in tracked docs
+# - Updates all marker types declared in docs/version-sync-manifest.yml
 # - Adds a new ## [X.Y.Z] section to CHANGELOG.md
 # - Runs check-version-sync.sh as self-test
 #
@@ -43,6 +43,105 @@ OLD_VERSION=$(head -1 "$VERSION_FILE" 2>/dev/null | tr -d '[:space:]' || echo "u
 
 echo "Bumping version: $OLD_VERSION -> $NEW_VERSION"
 echo ""
+
+json_write_version() {
+    _file="$1"
+    _new="$2"
+    if command -v node >/dev/null 2>&1; then
+        node - "$_file" "$_new" <<'NODE'
+const fs = require('fs');
+const file = process.argv[2];
+const version = process.argv[3];
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+if (!Object.prototype.hasOwnProperty.call(data, 'version')) process.exit(3);
+data.version = version;
+fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+NODE
+    elif command -v python3 >/dev/null 2>&1; then
+        python3 - "$_file" "$_new" <<'PY'
+import json
+import sys
+file, version = sys.argv[1], sys.argv[2]
+with open(file, encoding="utf-8") as f:
+    data = json.load(f)
+if "version" not in data:
+    sys.exit(3)
+data["version"] = version
+with open(file, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+    else
+        return 127
+    fi
+}
+
+package_lock_write_versions() {
+    _file="$1"
+    _new="$2"
+    if command -v node >/dev/null 2>&1; then
+        node - "$_file" "$_new" <<'NODE'
+const fs = require('fs');
+const file = process.argv[2];
+const version = process.argv[3];
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+if (!Object.prototype.hasOwnProperty.call(data, 'version')) process.exit(3);
+if (!data.packages || !data.packages[''] || !Object.prototype.hasOwnProperty.call(data.packages[''], 'version')) process.exit(3);
+data.version = version;
+data.packages[''].version = version;
+fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+NODE
+    elif command -v python3 >/dev/null 2>&1; then
+        python3 - "$_file" "$_new" <<'PY'
+import json
+import sys
+file, version = sys.argv[1], sys.argv[2]
+with open(file, encoding="utf-8") as f:
+    data = json.load(f)
+if "version" not in data:
+    sys.exit(3)
+root = data.get("packages", {}).get("")
+if not isinstance(root, dict) or "version" not in root:
+    sys.exit(3)
+data["version"] = version
+root["version"] = version
+with open(file, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+    else
+        return 127
+    fi
+}
+
+yaml_info_write_version() {
+    _file="$1"
+    _new="$2"
+    _tmp_yaml=$(mktemp)
+    if awk -v ver="$_new" '
+        /^[[:space:]]*info:[[:space:]]*$/ {
+            in_info = 1
+            print
+            next
+        }
+        in_info && /^[^[:space:]][^:]*:/ {
+            in_info = 0
+        }
+        in_info && /^[[:space:]]+version:[[:space:]]*/ && !done {
+            match($0, /^[[:space:]]*/)
+            print substr($0, 1, RLENGTH) "version: " ver
+            done = 1
+            next
+        }
+        { print }
+        END { if (!done) exit 1 }
+    ' "$_file" > "$_tmp_yaml"; then
+        mv "$_tmp_yaml" "$_file"
+    else
+        rm -f "$_tmp_yaml"
+        return 1
+    fi
+}
 
 # Parse manifest targets to temp file
 TMPFILE=$(mktemp)
@@ -109,8 +208,36 @@ while read -r filepath markertype; do
                 UPDATED=$((UPDATED + 1))
             fi
             ;;
+        json-version)
+            if json_write_version "$filepath" "$NEW_VERSION"; then
+                printf "  %-40s OK (json-version)\n" "$filepath"
+                UPDATED=$((UPDATED + 1))
+            else
+                printf "  %-40s FAIL (missing readable top-level version)\n" "$filepath"
+                FAILED=$((FAILED + 1))
+            fi
+            ;;
+        yaml-info-version)
+            if yaml_info_write_version "$filepath" "$NEW_VERSION"; then
+                printf "  %-40s OK (yaml-info-version)\n" "$filepath"
+                UPDATED=$((UPDATED + 1))
+            else
+                printf "  %-40s FAIL (missing readable info.version)\n" "$filepath"
+                FAILED=$((FAILED + 1))
+            fi
+            ;;
+        package-lock-version)
+            if package_lock_write_versions "$filepath" "$NEW_VERSION"; then
+                printf "  %-40s OK (package-lock-version)\n" "$filepath"
+                UPDATED=$((UPDATED + 1))
+            else
+                printf "  %-40s FAIL (missing readable top-level version or packages[\"\"].version)\n" "$filepath"
+                FAILED=$((FAILED + 1))
+            fi
+            ;;
         *)
-            printf "  %-40s SKIP (unknown type: %s)\n" "$filepath" "$markertype"
+            printf "  %-40s FAIL (unknown type: %s)\n" "$filepath" "$markertype"
+            FAILED=$((FAILED + 1))
             ;;
     esac
 done < "$TMPFILE"

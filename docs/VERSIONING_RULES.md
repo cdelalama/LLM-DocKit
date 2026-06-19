@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.5 -->
+<!-- doc-version: 4.9.6 -->
 # Versioning Rules
 
 ## Version Format
@@ -50,6 +50,9 @@ The script reads the manifest and updates:
 - `VERSION` file (plain version string)
 - `<!-- doc-version: X.Y.Z -->` HTML comment markers in documentation files
 - `CHANGELOG.md` section header (adds `## [X.Y.Z]` placeholder)
+- JSON top-level `version` fields (`json-version`)
+- OpenAPI-style YAML `info.version` fields (`yaml-info-version`)
+- `package-lock.json` top-level `version` and `packages[""].version` fields (`package-lock-version`)
 
 ### Validation
 Run the check script to detect version drift:
@@ -72,8 +75,19 @@ The hook:
 ### Adding New Files to Version Tracking
 To track a new file:
 1. Add an entry to `docs/version-sync-manifest.yml`.
-2. Insert `<!-- doc-version: X.Y.Z -->` (matching current VERSION) on line 1 of the file.
-3. Run `scripts/check-version-sync.sh` to verify.
+2. Choose the marker type that matches the file:
+   - `version-file`: plain `X.Y.Z` on the first line.
+   - `changelog`: `## [X.Y.Z]` section header.
+   - `html-comment`: `<!-- doc-version: X.Y.Z -->`.
+   - `json-version`: JSON top-level `"version": "X.Y.Z"`.
+   - `yaml-info-version`: YAML `info.version`.
+   - `package-lock-version`: both package-lock top-level `version` and `packages[""].version`.
+3. Insert the marker/value matching current `VERSION`.
+4. Run `scripts/check-version-sync.sh` to verify.
+
+Unknown marker types are errors. If a project needs a new marker shape, add
+matching support to both `scripts/check-version-sync.sh` and
+`scripts/bump-version.sh` before using it in the manifest.
 
 ## Update Process
 1. Determine the impact level (patch, minor, major).
