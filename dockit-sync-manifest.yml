@@ -28,6 +28,7 @@ files:
 - path: scripts/test-validator.sh       strategy: copy
 - path: scripts/dockit-trace-status.sh  strategy: copy
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
+- path: scripts/dockit-install-codex-hook.sh strategy: copy
 
 # --- Claude Code hooks (copy: needed by .claude/settings.json hooks) ---
 - path: .claude/settings.json             strategy: copy
@@ -42,6 +43,9 @@ files:
 
 # --- Hybrid: yaml-merge (identity key = path in targets) ---
 - path: docs/version-sync-manifest.yml    strategy: yaml-merge
+
+# --- Docs integrations (copy: shared operator/tool guidance) ---
+- path: docs/integrations/CODEX.md        strategy: copy
 
 # --- Skip: project-specific content ---
 - path: VERSION                           strategy: skip
@@ -62,6 +66,7 @@ files:
 
 # --- LLM-DocKit only (not relevant to downstream) ---
 - path: HOW_TO_USE.md                     strategy: skip
+- path: docs/ROADMAP.md                   strategy: skip
 - path: LICENSE                           strategy: skip
 - path: .gitignore                        strategy: skip
 - path: dockit-sync-manifest.yml          strategy: skip

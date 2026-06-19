@@ -136,7 +136,7 @@ and reminds the author to review them. Non-blocking.
 - Source: plaud-mirror (pattern across v0.1.0 → v0.4.13)
 - Date observed: 2026-04-24
 - Category: gap
-- Status: open
+- Status: implemented (4.12.0)
 - Related: DF-001, DF-002
 
 Observation: strongly-validated docs (HANDOFF, LLM_START_HERE, CHANGELOG,
@@ -1349,14 +1349,17 @@ Protocol implication:
 - The docstring of `dockit-bootstrap-context.sh` already says this; promote it from inline comment to a visible integration document so operators editing `~/.codex/config.toml` pick the right flag.
 - Long-term resolution lives in DF-038 (a real installer script), but the flag-choice rule must be discoverable independently of the installer.
 
-Mitigation in source project: edit `~/.codex/config.toml` to replace `--json` with `--human`. Trivial, no script changes.
+Mitigation in source project: implemented in LLM-DocKit 4.12.0. Added
+`docs/integrations/CODEX.md`, added the installer
+`scripts/dockit-install-codex-hook.sh`, and used it to replace the operator's
+old `--json` hook with a managed `--human` hook.
 
 ## DF-037 — Codex CLI re-emits onboarding marker on every turn (suspected per-turn SessionStart firing)
 
 - Source: operator homelab Codex CLI; observed from a `hermes-lab` session on 2026-05-17
 - Date observed: 2026-05-17
 - Category: gap
-- Status: open (requires verification after DF-036 mitigation)
+- Status: open (requires fresh Codex CLI verification after DF-036 mitigation)
 - Related: DF-033, DF-036
 
 Observation: Operator reports that Codex CLI prepends "Onboarding loaded." to every reply within a single session, not only to the first substantive reply as the DF-033 protocol specifies. Claude Code, running the same script via its SessionStart hook, only emits the marker once per session. The divergence implicates either Codex CLI hook lifecycle semantics or the way Codex CLI handles the SessionStart output. Hypothesised causes:
@@ -1374,14 +1377,17 @@ Protocol implication:
 - LLM-DocKit should publish a short table of supported LLMs vs hook lifecycle behaviour (Claude Code, Codex CLI, Cursor, etc.) in `docs/integrations/`, so future protocol additions know the cross-LLM contract.
 - This DF is gated on DF-036 being applied first — without the `--human` fix, the diagnosis can't isolate whether the per-turn behaviour is the script's JSON output being misparsed every turn or genuinely Codex semantics.
 
-Mitigation in source project: pending DF-036 fix + empirical verification.
+Mitigation in source project: DF-036 is fixed in 4.12.0. The remaining work is
+empirical: open a fresh Codex CLI session after the installer has run and
+observe whether `Onboarding loaded.` still appears after turn 1. If it does,
+file the observed lifecycle behavior before adding a stateful `--codex` mode.
 
 ## DF-038 — No installer script registers the Codex CLI integration of the DF-033 onboarding hook
 
 - Source: operator homelab; observed from a `hermes-lab` session on 2026-05-17
 - Date observed: 2026-05-17
 - Category: process
-- Status: open
+- Status: implemented (4.12.0)
 - Related: DF-033, DF-036
 
 Observation: A grep across `~/src/LLM-DocKit/`, `~/src/forgeos/`, `~/src/home-infra/`, `~/src/devenv-bootstrap/` for any script that touches `~/.codex/config.toml` or installs the Codex SessionStart hook returns no matches. The hook stanza in `~/.codex/config.toml` was installed manually or by a script that has since been removed. Consequences:
@@ -1395,7 +1401,11 @@ Protocol implication:
 - ForgeOS `bootstrap-operator.sh` should call this installer during operator bootstrap, parallel to the Claude Code hook install, so a new machine gets DF-033 coverage across both LLMs in a single `bootstrap-operator.sh` invocation.
 - The two installer scripts together (Claude Code via ForgeOS, Codex CLI via LLM-DocKit) constitute the canonical operator-side installation surface for DF-033. Document the division explicitly in LLM-DocKit's README so downstream consumers know where each piece lives.
 
-Mitigation in source project: none yet; operator maintains `~/.codex/config.toml` by hand. After DF-036 mitigation lands, until DF-038 ships the installer, document the manual TOML stanza in `docs/integrations/CODEX.md`.
+Mitigation in source project: implemented in 4.12.0. LLM-DocKit now ships
+`scripts/dockit-install-codex-hook.sh`, documents Codex CLI setup in
+`docs/integrations/CODEX.md`, and records D-013 as the durable tool-mode
+decision. ForgeOS can call the installer from operator bootstrap; LLM-DocKit
+does not own the broader operator runtime.
 
 ## DF-039 — Validator forces bookkeeping mini-update on read-only sessions, and the cure becomes the next session's cause
 

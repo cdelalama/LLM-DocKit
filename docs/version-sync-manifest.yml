@@ -20,4 +20,5 @@ targets:
 - path: docs/PROJECT_CONTEXT.md    marker: html-comment
 - path: docs/ARCHITECTURE.md       marker: html-comment
 - path: docs/VERSIONING_RULES.md   marker: html-comment
+- path: docs/integrations/CODEX.md marker: html-comment
 - path: docs/llm/HANDOFF.md        marker: html-comment

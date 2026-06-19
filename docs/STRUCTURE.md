@@ -20,6 +20,8 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- STRUCTURE.md                (this file)
 |  +- VERSIONING_RULES.md
 |  +- version-sync-manifest.yml  (lists files tracked for version sync)
+|  +- ROADMAP.md                  (LLM-DocKit source roadmap; not synced downstream)
+|  +- integrations/               (LLM tool integration notes)
 |  +- llm/                       (LLM working memory)
 |  +- operations/                 (runbooks)
 +- scripts/
@@ -31,6 +33,7 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- dockit-validate-session.sh (validates LLM documentation state)
 |  +- test-validator.sh          (smoke-tests validator edge cases)
 |  +- dockit-generate-external-context.sh (generates External Context section)
+|  +- dockit-install-codex-hook.sh (installs Codex CLI SessionStart onboarding hook)
 +- .claude/
 |  +- settings.json              (Claude Code hook configuration)
 |  +- rules/
@@ -53,6 +56,8 @@ Document the repository structure here. Replace this paragraph and the example t
 | docs/ | Central documentation, policies, and runbooks | Required |
 | docs/llm/ | Handoff and history for LLM contributors | Required |
 | docs/operations/ | Runbooks and operational procedures | Recommended |
+| docs/integrations/ | Operator/tool integration notes, such as Codex CLI setup | Template + downstream |
+| docs/ROADMAP.md | LLM-DocKit source roadmap | Source only; not synced downstream |
 | docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
 | dockit-sync-manifest.yml | Sync strategy per file (copy/skip/section-merge/yaml-merge) | Template only |
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |
@@ -63,6 +68,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
+| scripts/dockit-install-codex-hook.sh | Installs the Codex CLI SessionStart onboarding hook | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
 | .dockit-config.yml | Human-managed sync/config file (adoption_mode, exclude_sections, external_context, trace_protocol) | Downstream + new scaffolds |
 | .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |

@@ -4,6 +4,38 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.12.0] - 2026-06-19
+
+### Added
+
+- `scripts/dockit-install-codex-hook.sh`: idempotent installer for the Codex
+  CLI SessionStart hook. It writes a managed `~/.codex/config.toml` block that
+  invokes `dockit-bootstrap-context.sh --human`, with a timestamped backup.
+- `docs/integrations/CODEX.md`: operator-facing Codex CLI integration guide
+  documenting the Claude Code `--json` vs Codex CLI `--human` split.
+- `docs/ROADMAP.md`: source-only roadmap that keeps semantic-check candidates
+  and consensus/runtime boundaries out of transient chat.
+- `scripts/test-validator.sh`: smoke coverage for replacing the old `--json`
+  Codex hook and for installer idempotence.
+
+### Changed
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-036 and DF-038 are implemented; DF-037 is
+  narrowed to a fresh Codex CLI lifecycle verification after the `--human`
+  hook is installed.
+- `docs/llm/DECISIONS.md`: D-013 records Codex CLI onboarding ownership and the
+  tool-mode split.
+- `dockit-sync-manifest.yml`: Codex installer and integration docs propagate to
+  downstream adopters; `docs/ROADMAP.md` stays source-only.
+- `scripts/dockit-init-project.sh`: new scaffolds now remove
+  `docs/ROADMAP.md` because that file tracks LLM-DocKit's own roadmap, not a
+  downstream project's plan.
+
+### Fixed
+
+- Closes the documented Codex CLI flag mismatch where the operator config used
+  Claude Code's JSON envelope for Codex CLI onboarding.
+
 ## [4.11.1] - 2026-06-19
 
 ### Added

@@ -14,6 +14,7 @@ CHECK_VERSION="$PROJECT_ROOT/scripts/check-version-sync.sh"
 BUMP_VERSION="$PROJECT_ROOT/scripts/bump-version.sh"
 SYNC_TOOL="$PROJECT_ROOT/scripts/dockit-sync.sh"
 TRACE_STATUS="$PROJECT_ROOT/scripts/dockit-trace-status.sh"
+CODEX_INSTALLER="$PROJECT_ROOT/scripts/dockit-install-codex-hook.sh"
 
 TMP_ROOT=${TMPDIR:-/tmp}/dockit-validator-smoke.$$
 OUT="$TMP_ROOT/out.txt"
@@ -705,6 +706,70 @@ else
     fi
 fi
 
+if [ ! -x "$CODEX_INSTALLER" ]; then
+    note_pass "codex hook installer smoke skipped when installer is absent"
+else
+    CODEX_CONFIG="$TMP_ROOT/codex-config.toml"
+    cat >"$CODEX_CONFIG" <<'EOF'
+personality = "pragmatic"
+
+# --- LLM-DocKit DF-033 / D-007: SessionStart enforcement (added 2026-05-03) ---
+# Old unmarked managed block with the wrong Claude-Code JSON mode.
+
+[features]
+hooks = true
+
+[[hooks.SessionStart]]
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "sh -lc 'root=$(git rev-parse --show-toplevel 2>/dev/null || pwd); script=/tmp/dockit-bootstrap-context.sh; if [ -x \"$script\" ]; then \"$script\" --json --project \"$root\"; fi'"
+timeout = 5
+
+[hooks.state]
+
+[hooks.state."/tmp/codex-config.toml:session_start:0:0"]
+enabled = true
+trusted_hash = "sha256:old"
+EOF
+
+    if "$CODEX_INSTALLER" --config "$CODEX_CONFIG" --script "$PROJECT_ROOT/scripts/dockit-bootstrap-context.sh" >"$OUT" 2>&1 \
+        && grep -q -- '--human' "$CODEX_CONFIG" \
+        && ! grep -q -- '--json' "$CODEX_CONFIG" \
+        && grep -q 'LLM-DocKit Codex SessionStart hook: BEGIN' "$CODEX_CONFIG"; then
+        note_pass "codex hook installer replaces old json hook with human mode"
+    else
+        {
+            echo "installer did not replace old json hook with managed human hook"
+            sed -n '1,180p' "$CODEX_CONFIG"
+            [ -f "$OUT" ] && sed -n '1,120p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "codex hook installer replaces old json hook with human mode"
+    fi
+
+    CODEX_CONFIG_BEFORE="$TMP_ROOT/codex-config-before-second-install.toml"
+    cp "$CODEX_CONFIG" "$CODEX_CONFIG_BEFORE"
+    BEFORE_COUNT=$(grep -c 'dockit-bootstrap-context.sh' "$CODEX_CONFIG" || true)
+    if "$CODEX_INSTALLER" --config "$CODEX_CONFIG" --script "$PROJECT_ROOT/scripts/dockit-bootstrap-context.sh" >"$OUT" 2>&1; then
+        AFTER_COUNT=$(grep -c 'dockit-bootstrap-context.sh' "$CODEX_CONFIG" || true)
+        if [ "$BEFORE_COUNT" = "$AFTER_COUNT" ] && [ "$AFTER_COUNT" -eq 1 ] \
+            && cmp -s "$CODEX_CONFIG_BEFORE" "$CODEX_CONFIG"; then
+            note_pass "codex hook installer is idempotent"
+        else
+            {
+                echo "installer changed config on second run"
+                echo "before=$BEFORE_COUNT after=$AFTER_COUNT"
+                diff -u "$CODEX_CONFIG_BEFORE" "$CODEX_CONFIG" || true
+                sed -n '1,220p' "$CODEX_CONFIG"
+            } >"$OUT"
+            note_fail "codex hook installer is idempotent"
+        fi
+    else
+        note_fail "codex hook installer is idempotent"
+    fi
+fi
+
 if [ ! -x "$PROJECT_ROOT/scripts/dockit-init-project.sh" ]; then
     note_pass "dockit-init scaffold smoke skipped when init script is absent"
 else
@@ -725,6 +790,7 @@ else
     SCAFFOLD_REPO="$SCAFFOLD_PARENT/residue-smoke"
     if "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
         && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
+        && [ ! -f "$SCAFFOLD_REPO/docs/ROADMAP.md" ] \
         && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
         && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
         && ! grep -Eq 'path: docs/ARCHITECTURE\.md[[:space:]]+marker: html-comment' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \

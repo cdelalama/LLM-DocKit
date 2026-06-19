@@ -606,3 +606,57 @@ would create false reds in projects that never opted into that structure.
   LLM-DocKit 4.11.0 and adding the `orientation_drift` config.
 - If another adopter uses a different roadmap grammar, add config for parser
   shape only after a real example exists.
+
+---
+
+## D-013 - Codex CLI onboarding uses the human payload and an installer
+
+**Status:** accepted
+
+### Decision
+Codex CLI SessionStart onboarding must invoke
+`scripts/dockit-bootstrap-context.sh --human`, not `--json`.
+
+LLM-DocKit ships `scripts/dockit-install-codex-hook.sh` as the canonical
+installer for the Codex CLI hook. The installer edits `~/.codex/config.toml`,
+enables Codex hooks, backs up the prior file, and installs a managed
+SessionStart block that calls the bootstrap script in `--human` mode.
+
+Claude Code remains the owner of the `--json` hook envelope. Codex CLI receives
+plain onboarding text.
+
+### Context
+DF-033 established session-start onboarding as a mechanical rule, not a prose
+reminder. The original Codex CLI operator config copied the Claude Code shape
+and called the bootstrap script with `--json`. That produces
+`hookSpecificOutput.additionalContext`, which Claude Code parses but Codex CLI
+does not. In practice, this made the Codex prompt carry the wrong envelope and
+contributed to repeated `Onboarding loaded.` markers.
+
+DF-036 identified the immediate flag mismatch. DF-038 identified the deeper
+process gap: the Codex hook lived only in a hand-edited operator config, so a
+new machine could not reproduce it and a changed recommendation could not be
+propagated by re-running an installer.
+
+### Rationale
+There are three layers:
+
+1. The payload generator (`dockit-bootstrap-context.sh`) stays shared.
+2. Each LLM tool gets the output mode it actually consumes.
+3. Operator-machine setup is installed by a script, not by remembered TOML.
+
+That keeps LLM-DocKit as substrate. ForgeOS may call the installer from its
+operator bootstrap, but ForgeOS still owns the broader operator runtime and
+LMConsole surface.
+
+### Implications
+- `docs/integrations/CODEX.md` documents the Codex CLI setup and the
+  Claude-vs-Codex mode split.
+- `scripts/dockit-install-codex-hook.sh` replaces the old unmanaged
+  LLM-DocKit block when present and writes a managed hook block.
+- DF-037 is not closed by the installer alone. After installing `--human`, open
+  a fresh Codex CLI session and observe whether the onboarding marker still
+  repeats on later turns. If it does, add a Codex-specific stateful mode based
+  on observed hook lifecycle behavior.
+- Home Infra should not maintain an independent Codex hook. It can rely on the
+  LLM-DocKit installer directly or through ForgeOS bootstrap.

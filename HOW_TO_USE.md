@@ -16,7 +16,8 @@ This single command does the equivalent of every step in *Quick Start
 (manual)* below: it copies the scaffold (tracked files only, via
 `git archive`, so no untracked drafts leak), strips DocKit-internal
 meta files (`HOW_TO_USE.md`, `DOWNSTREAM_FEEDBACK.md`,
-`docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`, `dockit-sync-manifest.yml`,
+`docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md`, `docs/ROADMAP.md`,
+`dockit-sync-manifest.yml`,
 `scripts/dockit-sync*.sh`, `scripts/dockit-init-project.sh`), resets
 the live operational docs (CHANGELOG, HANDOFF, HISTORY, DECISIONS) to
 fresh stubs for the new project, substitutes placeholders

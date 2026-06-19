@@ -9,7 +9,7 @@
 #   1. Validate inputs (slug pattern, target directory does not exist).
 #   2. Copy LLM-DocKit content to the target directory.
 #   3. Strip .git and DocKit-internal meta files (HOW_TO_USE, DOWNSTREAM_FEEDBACK,
-#      dockit-sync*, dockit-init-project, dockit-sync-manifest.yml).
+#      ROADMAP, dockit-sync*, dockit-init-project, dockit-sync-manifest.yml).
 #   4. Demote optional template-only docs so they do not masquerade as live
 #      project documentation.
 #   5. Reset the live operational docs (CHANGELOG, HANDOFF, HISTORY, DECISIONS)
@@ -160,6 +160,7 @@ echo "  copied scaffold (tracked files only, via git archive)"
 # projects:
 #   - HOW_TO_USE.md          -- LLM-DocKit's own user guide
 #   - DOWNSTREAM_FEEDBACK.md -- LLM-DocKit's adopter-feedback log
+#   - ROADMAP.md             -- LLM-DocKit source roadmap, not project roadmap
 #   - dockit-sync-manifest.yml -- template-propagation manifest
 #   - scripts/dockit-sync.sh, dockit-sync-check.sh -- template propagation
 #   - scripts/dockit-init-project.sh -- this script itself
@@ -170,6 +171,7 @@ echo "  copied scaffold (tracked files only, via git archive)"
 rm -f HOW_TO_USE.md
 rm -f docs/DOWNSTREAM_FEEDBACK.md
 rm -f docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md
+rm -f docs/ROADMAP.md
 rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh
 rm -f scripts/dockit-sync-check.sh

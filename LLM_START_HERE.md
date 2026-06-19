@@ -1,4 +1,4 @@
-<!-- doc-version: 4.11.1 -->
+<!-- doc-version: 4.12.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -105,6 +105,7 @@ Keep this section synchronized with the "Current Status" block in docs/llm/HANDO
 - Architecture: docs/ARCHITECTURE.md if present; otherwise docs/ARCHITECTURE.md.example
 - Version Rules: docs/VERSIONING_RULES.md
 - Version Sync Manifest: docs/version-sync-manifest.yml
+- Codex CLI Integration: docs/integrations/CODEX.md
 - LLM Docs Index: docs/llm/README.md
 - Current Work State: docs/llm/HANDOFF.md
 - Change History: docs/llm/HISTORY.md
