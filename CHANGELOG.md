@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.10.2] - 2026-06-19
+
+### Added
+
+### Changed
+
+### Fixed
+
+- `scripts/test-validator.sh`: the `dockit-init-project.sh` scaffold smoke now
+  skips with PASS when copied into downstream repos that do not ship the init
+  script. The smoke still runs in LLM-DocKit itself.
+
 ## [4.10.1] - 2026-06-19
 
 ### Added

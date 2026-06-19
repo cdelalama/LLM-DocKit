@@ -525,37 +525,41 @@ else
     note_fail "bump-version wrote package-lock top-level and root package versions"
 fi
 
-INIT_SOURCE="$TMP_ROOT/init-source"
-mkdir -p "$INIT_SOURCE"
-git -C "$PROJECT_ROOT" ls-files | while IFS= read -r _file; do
-    mkdir -p "$INIT_SOURCE/$(dirname "$_file")"
-    cp "$PROJECT_ROOT/$_file" "$INIT_SOURCE/$_file"
-done
-git -C "$INIT_SOURCE" init -q
-git -C "$INIT_SOURCE" config user.email smoke@example.invalid
-git -C "$INIT_SOURCE" config user.name Smoke
-git -C "$INIT_SOURCE" add .
-git -C "$INIT_SOURCE" commit -qm "snapshot current working tree"
-
-SCAFFOLD_PARENT="$TMP_ROOT/init"
-mkdir -p "$SCAFFOLD_PARENT"
-SCAFFOLD_REPO="$SCAFFOLD_PARENT/residue-smoke"
-if "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
-    && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
-    && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
-    && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
-    && ! grep -Eq 'path: docs/ARCHITECTURE\.md[[:space:]]+marker: html-comment' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
-    && "$SCAFFOLD_REPO/scripts/dockit-validate-session.sh" --project "$SCAFFOLD_REPO" --quiet --check orientation --check template-residue --check version-sync >"$OUT" 2>&1; then
-    note_pass "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
+if [ ! -x "$PROJECT_ROOT/scripts/dockit-init-project.sh" ]; then
+    note_pass "dockit-init scaffold smoke skipped when init script is absent"
 else
-    {
-        echo "scaffold did not demote architecture cleanly or failed validator"
-        [ -d "$SCAFFOLD_REPO" ] && find "$SCAFFOLD_REPO/docs" -maxdepth 2 -type f | sort
-        [ -f "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" ] && sed -n '1,80p' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml"
-        [ -f "$OUT" ] && sed -n '1,120p' "$OUT"
-    } >"$OUT.tmp"
-    mv "$OUT.tmp" "$OUT"
-    note_fail "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
+    INIT_SOURCE="$TMP_ROOT/init-source"
+    mkdir -p "$INIT_SOURCE"
+    git -C "$PROJECT_ROOT" ls-files | while IFS= read -r _file; do
+        mkdir -p "$INIT_SOURCE/$(dirname "$_file")"
+        cp "$PROJECT_ROOT/$_file" "$INIT_SOURCE/$_file"
+    done
+    git -C "$INIT_SOURCE" init -q
+    git -C "$INIT_SOURCE" config user.email smoke@example.invalid
+    git -C "$INIT_SOURCE" config user.name Smoke
+    git -C "$INIT_SOURCE" add .
+    git -C "$INIT_SOURCE" commit -qm "snapshot current working tree"
+
+    SCAFFOLD_PARENT="$TMP_ROOT/init"
+    mkdir -p "$SCAFFOLD_PARENT"
+    SCAFFOLD_REPO="$SCAFFOLD_PARENT/residue-smoke"
+    if "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
+        && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
+        && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
+        && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
+        && ! grep -Eq 'path: docs/ARCHITECTURE\.md[[:space:]]+marker: html-comment' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
+        && "$SCAFFOLD_REPO/scripts/dockit-validate-session.sh" --project "$SCAFFOLD_REPO" --quiet --check orientation --check template-residue --check version-sync >"$OUT" 2>&1; then
+        note_pass "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
+    else
+        {
+            echo "scaffold did not demote architecture cleanly or failed validator"
+            [ -d "$SCAFFOLD_REPO" ] && find "$SCAFFOLD_REPO/docs" -maxdepth 2 -type f | sort
+            [ -f "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" ] && sed -n '1,80p' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml"
+            [ -f "$OUT" ] && sed -n '1,120p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
+    fi
 fi
 
 printf '\nValidator smoke: %d passed, %d failed\n' "$pass_count" "$fail_count"
