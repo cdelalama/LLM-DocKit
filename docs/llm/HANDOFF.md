@@ -1,13 +1,15 @@
-<!-- doc-version: 4.9.6 -->
+<!-- doc-version: 4.10.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Open work — next concrete step
 
-**One primary candidate remains, operator chooses scope at next session open:**
+**Primary candidate closed in this session; operator chooses follow-up scope at next session open:**
 
-1. **DF-035 option (b)** — strip-at-scaffold-time inside `scripts/dockit-init-project.sh` so newly-scaffolded projects no longer ship the residue patterns DF-035 catalogues. Requires a design decision first: (b.i) delete docs/ARCHITECTURE.md from default scaffold (creates on-demand via a hypothetical add-architecture script) vs (b.ii) rename it to a .example suffix until the project replaces it. Both options eliminate the residue at scaffold time but differ in friction for downstream adopters who DO want an ARCHITECTURE.md. D-011 means LLM-DocKit no longer owns a consensus runtime; this decision should be made with ordinary proposer/critic/operator review and recorded in DocKit docs, not by reviving the archived Consensus proposal. Files-to-touch listed in `docs/DOWNSTREAM_FEEDBACK.md` DF-035 *Implementation hints* (option (b)). Likely future minor (scaffold behaviour change, non-breaking for existing projects).
+1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
+
+**Likely next LLM-DocKit follow-ups:** add a regression test for the v4.9.4 `scripts/dockit-sync.sh` missing-section insertion fix, then continue closing downstream dirty worktrees opportunistically when each adopter is opened. No consensus/runtime ownership work remains in LLM-DocKit after D-011.
 
 **Closed in this doc-only session:** D-011 clarifies the LLM-DocKit / ForgeOS / `llm-council` boundary. LLM-DocKit owns scaffold/documentation substrate only: HANDOFF/HISTORY/DECISIONS/REVIEWS, Trace, validators, hooks, sync, and init. ForgeOS owns the live runtime and operator-facing surface for LMConsole, ProtocolEngine, VisualWorkbench, WorkEpisode, AuthorityEngine, and orchestration. `llm-council` owns the curated deliberation archive/corpus under `raw/<topic>/`. `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` is now a stub pointing at `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`; `docs/llm/REVIEWS.md` remains a generic registry but no longer uses that archived proposal as normative source. No code changed and no version bump is expected.
 
@@ -31,7 +33,8 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-06-19 - Codex GPT-5
-- Session Focus: **Doc-only cleanup of the LLM-DocKit / ForgeOS / `llm-council` ownership boundary.** D-011 records that LLM-DocKit does not own consensus/runtime orchestration. `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` is now a stub and the full proposal lives under `docs/archive/` as lineage. `docs/llm/REVIEWS.md` remains a generic registry for reviews/audits/arbitrated decisions, but no longer depends on the archived proposal as its normative source. `docs/DOWNSTREAM_FEEDBACK.md` DF-029..DF-032 were adjusted so runtime/LMConsole/ProtocolEngine ownership points to a future ForgeOS ownership decision, while LLM-DocKit remains substrate only. No code changed; no version bump expected.
+- Session Focus: **Cut v4.10.0 closing DF-035 option (b.ii).** `scripts/dockit-init-project.sh` now strips known scaffold-author residue before the first downstream commit and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. The target manifest and README are rewritten to the `.example` path so `bump-version.sh` / `check-version-sync.sh` stay green. `scripts/test-validator.sh` now includes a real scaffold smoke asserting no live architecture file, a present `.example`, and PASS for orientation/template-residue/version-sync. This completes DF-035 options (a)+(b.ii); option (c) mandatory DECISIONS gate remains deferred.
+- Previous (2026-06-19): Archived the Consensus proposal as lineage and closed the LLM-DocKit / ForgeOS / `llm-council` ownership boundary from the DocKit side; pushed `85b2bad`.
 - Previous (2026-06-19): Cut v4.9.6 to upstream youtube2text local-decision-019-style guardrails without breaking the mixed HISTORY-format fleet; pushed `78462b4`.
 - Previous (2026-06-19): Cut v4.9.5 Trace v1.3 second-level `Sent` precision and stale-read re-verification; pushed `723afb4`, then recorded adopter rollout in `7d52340`.
 - Previous (2026-06-18): Archived four long-lived local drafts and documented the LLM-DocKit/ForgeOS scope boundary as D-009; pushed `7cdc219`.

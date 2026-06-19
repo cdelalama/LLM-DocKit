@@ -1,6 +1,6 @@
 # Repository Structure Guide
 
-Use this template to document how the repository is organized. Update the table below once your folders and files are in place.
+Document the repository structure here. Replace this paragraph and the example tree below with the project-specific layout once the tree stabilizes.
 
 ## Top-Level Layout
 ```
@@ -15,7 +15,8 @@ Use this template to document how the repository is organized. Update the table 
 +- .dockit-config.yml            (sync + trace config -- downstream/scaffold)
 +- docs/
 |  +- PROJECT_CONTEXT.md
-|  +- ARCHITECTURE.md            (optional)
+|  +- ARCHITECTURE.md            (optional live architecture)
+|  +- ARCHITECTURE.md.example    (optional starter template; copied to ARCHITECTURE.md when real)
 |  +- STRUCTURE.md                (this file)
 |  +- VERSIONING_RULES.md
 |  +- version-sync-manifest.yml  (lists files tracked for version sync)

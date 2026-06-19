@@ -1,4 +1,4 @@
-<!-- doc-version: 4.9.6 -->
+<!-- doc-version: 4.10.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -8,7 +8,7 @@ Welcome to <PROJECT_NAME>. Before you contribute, review and adapt the sections 
 Recommended reading order:
 1. This file (rules, workflows, and current expectations)
 2. docs/PROJECT_CONTEXT.md (vision, architecture, current state)
-3. docs/ARCHITECTURE.md (optional: architecture, contracts, roadmap)
+3. docs/ARCHITECTURE.md if present; otherwise docs/ARCHITECTURE.md.example as the optional starter template
 4. docs/VERSIONING_RULES.md (version management policy)
 5. docs/llm/README.md (LLM docs index)
 6. docs/llm/HANDOFF.md — current work state. Read the **Open work — next concrete step** section near the top first; it is the canonical declaration of "what to do next" and must name concrete file paths inside the repo. The static check `scripts/dockit-validate-session.sh --check orientation` enforces that contract.
@@ -101,7 +101,7 @@ Keep this section synchronized with the "Current Status" block in docs/llm/HANDO
 
 ## Quick Navigation
 - Project Overview: docs/PROJECT_CONTEXT.md
-- Architecture: docs/ARCHITECTURE.md
+- Architecture: docs/ARCHITECTURE.md if present; otherwise docs/ARCHITECTURE.md.example
 - Version Rules: docs/VERSIONING_RULES.md
 - Version Sync Manifest: docs/version-sync-manifest.yml
 - LLM Docs Index: docs/llm/README.md

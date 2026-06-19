@@ -10,13 +10,15 @@
 #   2. Copy LLM-DocKit content to the target directory.
 #   3. Strip .git and DocKit-internal meta files (HOW_TO_USE, DOWNSTREAM_FEEDBACK,
 #      dockit-sync*, dockit-init-project, dockit-sync-manifest.yml).
-#   4. Reset the live operational docs (CHANGELOG, HANDOFF, HISTORY, DECISIONS)
+#   4. Demote optional template-only docs so they do not masquerade as live
+#      project documentation.
+#   5. Reset the live operational docs (CHANGELOG, HANDOFF, HISTORY, DECISIONS)
 #      to fresh stubs for the new project.
-#   5. Substitute placeholders (<PROJECT_NAME>, <CONVERSATION_LANGUAGE>,
+#   6. Substitute placeholders (<PROJECT_NAME>, <CONVERSATION_LANGUAGE>,
 #      <YYYY-MM-DD>) in remaining markdown files.
-#   6. Run scripts/bump-version.sh 0.1.0 to set VERSION and sync doc-version
+#   7. Run scripts/bump-version.sh 0.1.0 to set VERSION and sync doc-version
 #      markers atomically.
-#   7. Initialize a fresh git repository with a single "Initial scaffold from
+#   8. Initialize a fresh git repository with a single "Initial scaffold from
 #      LLM-DocKit" commit.
 #
 # What it does NOT do:
@@ -175,7 +177,23 @@ rm -f scripts/dockit-init-project.sh
 
 echo "  pruned DocKit-internal meta files"
 
-# ── 3. Reset live operational docs ──────────────────────────────────────────
+# ── 3. Demote optional template-only docs ───────────────────────────────────
+#
+# `docs/ARCHITECTURE.md` in LLM-DocKit is an optional starter template. A fresh
+# downstream project should not receive it as if it were real architecture.
+# Keep the template available as `.example` until the project deliberately
+# materializes a live `docs/ARCHITECTURE.md`.
+
+if [ -f docs/ARCHITECTURE.md ]; then
+    mv docs/ARCHITECTURE.md docs/ARCHITECTURE.md.example
+    if [ -f docs/version-sync-manifest.yml ]; then
+        sed -i 's|path: docs/ARCHITECTURE\.md[[:space:]]*marker: html-comment|path: docs/ARCHITECTURE.md.example marker: html-comment|' \
+            docs/version-sync-manifest.yml
+    fi
+    echo "  demoted optional architecture template to docs/ARCHITECTURE.md.example"
+fi
+
+# ── 4. Reset live operational docs ──────────────────────────────────────────
 #
 # These files in the LLM-DocKit repo carry LLM-DocKit's own operational state
 # (its DF entries, its session history, its decisions about its own internals).
@@ -296,7 +314,7 @@ EOF
 echo "  reset CHANGELOG and docs/llm/{HANDOFF,HISTORY,DECISIONS}.md"
 echo "  enabled Trace Protocol in .dockit-config.yml"
 
-# ── 4. Substitute placeholders in remaining markdown ────────────────────────
+# ── 5. Substitute placeholders in remaining markdown ────────────────────────
 #
 # Files that ship as template skeletons (not LLM-DocKit's own content) carry
 # placeholders. Replace them in every .md, .yml, .json under the new project.
@@ -317,7 +335,41 @@ find . -type f \
 
 echo "  substituted placeholders"
 
-# ── 5. Set version 0.1.0 via the canonical bump script ──────────────────────
+# ── 6. Strip scaffold-author voice from starter docs ────────────────────────
+#
+# These lines are useful in LLM-DocKit itself but become misleading once the
+# project has already been scaffolded. Remove or rewrite them before the first
+# downstream commit so `template-residue` passes from day zero.
+
+if [ -f LLM_START_HERE.md ]; then
+    sed -i '/Replace angle-bracket placeholders/d' LLM_START_HERE.md
+    _tmp_start=$(mktemp)
+    awk '
+        /^## Customization Notes for Maintainers$/ { skip = 1; next }
+        skip && /^## Quick Navigation$/ { skip = 0 }
+        !skip { print }
+    ' LLM_START_HERE.md > "$_tmp_start"
+    mv "$_tmp_start" LLM_START_HERE.md
+fi
+
+if [ -f docs/STRUCTURE.md ]; then
+    sed -i \
+        -e 's|Use this template to document how the repository is organized. Update the table below once your folders and files are in place.|Document the repository structure here. Replace this paragraph and the example tree below with the project-specific layout once the tree stabilizes.|' \
+        -e "s|<PROJECT_ROOT>|$PROJECT_NAME|g" \
+        -e 's|+- ARCHITECTURE.md            (optional)|+- ARCHITECTURE.md.example    (optional starter; copy to ARCHITECTURE.md when real)|' \
+        docs/STRUCTURE.md
+fi
+
+if [ -f README.md ]; then
+    sed -i \
+        -e 's|\[docs/ARCHITECTURE.md\](docs/ARCHITECTURE.md)|[docs/ARCHITECTURE.md.example](docs/ARCHITECTURE.md.example)|' \
+        -e 's|Technical architecture details|Optional architecture starter example|' \
+        README.md
+fi
+
+echo "  stripped scaffold-author residue from starter docs"
+
+# ── 7. Set version 0.1.0 via the canonical bump script ──────────────────────
 
 if [ -x scripts/bump-version.sh ]; then
     scripts/bump-version.sh 0.1.0 > /dev/null 2>&1 || {
@@ -328,13 +380,13 @@ else
     echo "WARN: scripts/bump-version.sh missing or not executable" >&2
 fi
 
-# ── 6. Make scripts executable ──────────────────────────────────────────────
+# ── 8. Make scripts executable ──────────────────────────────────────────────
 
 if [ -d scripts ]; then
     find scripts -type f -name '*.sh' -exec chmod +x {} +
 fi
 
-# ── 7. Initialize fresh git repository ──────────────────────────────────────
+# ── 9. Initialize fresh git repository ──────────────────────────────────────
 #
 # Force the default branch to `main` regardless of the system's
 # init.defaultBranch setting. Using `git symbolic-ref` rather than
@@ -353,7 +405,7 @@ Project: $PROJECT_NAME."
 
 echo "  git repository initialized with first commit"
 
-# ── 8. Summary ──────────────────────────────────────────────────────────────
+# ── 10. Summary ─────────────────────────────────────────────────────────────
 
 echo ""
 echo "Project ready: $TARGET_ABS"

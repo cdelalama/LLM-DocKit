@@ -4,6 +4,33 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.10.0] - 2026-06-19
+
+### Added
+
+- `scripts/test-validator.sh`: real `dockit-init-project.sh` scaffold smoke for
+  DF-035 option (b.ii). The smoke creates a throwaway project and asserts that
+  `docs/ARCHITECTURE.md` is absent, `docs/ARCHITECTURE.md.example` is present,
+  the target version manifest tracks the example file, and orientation /
+  template-residue / version-sync validation passes.
+
+### Changed
+
+- `scripts/dockit-init-project.sh`: freshly-scaffolded projects now demote the
+  optional architecture starter to `docs/ARCHITECTURE.md.example` instead of
+  shipping it as live `docs/ARCHITECTURE.md`.
+- New scaffolds now rewrite their version manifest and README architecture link
+  to the `.example` file, remove LLM_START_HERE scaffold-author customization
+  prose, and rewrite the STRUCTURE starter sentence into project voice.
+- `LLM_START_HERE.md` now tells agents to read `docs/ARCHITECTURE.md` only when
+  a project has materialized it; otherwise `docs/ARCHITECTURE.md.example` is a
+  starter template.
+
+### Fixed
+
+- Closes DF-035 option (b.ii): template-residue no longer survives initial
+  project creation merely because the optional architecture template exists.
+
 ## [4.9.6] - 2026-06-19
 
 ### Added
