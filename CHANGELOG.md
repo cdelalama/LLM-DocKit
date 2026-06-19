@@ -4,9 +4,22 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.10.3] - 2026-06-19
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [4.10.2] - 2026-06-19
 
 ### Added
+
+- `scripts/test-validator.sh`: regression smoke for DF-043. It creates
+  throwaway full adopters missing template sections and verifies
+  `scripts/dockit-sync.sh --apply` inserts those sections before the footer
+  marker when present, or appends them when no footer marker exists.
 
 ### Changed
 

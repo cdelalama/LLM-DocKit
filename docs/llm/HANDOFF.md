@@ -1,4 +1,4 @@
-<!-- doc-version: 4.10.2 -->
+<!-- doc-version: 4.10.3 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
@@ -7,11 +7,11 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 **Primary candidate closed in this session; operator chooses follow-up scope at next session open:**
 
-1. **Closed: v4.10.2 adopter-smoke fix** — `scripts/test-validator.sh` now skips the `scripts/dockit-init-project.sh` scaffold smoke with PASS when copied into downstream repos that do not ship the init script. This was caught while syncing MED after v4.10.1; the source repo still runs the scaffold smoke.
+1. **Closed: v4.10.2 smoke hardening** — `scripts/test-validator.sh` now skips the `scripts/dockit-init-project.sh` scaffold smoke with PASS when copied into downstream repos that do not ship the init script. This was caught while syncing MED after v4.10.1; the source repo still runs the scaffold smoke. The same file now also covers DF-043 with a real `scripts/dockit-sync.sh --apply` regression: full adopters missing template sections get those sections inserted before the footer marker when present, or appended when no footer marker exists.
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Likely next LLM-DocKit follow-ups:** add a regression test for the v4.9.4 `scripts/dockit-sync.sh` missing-section insertion fix, then continue closing downstream dirty worktrees opportunistically when each adopter is opened. No consensus/runtime ownership work remains in LLM-DocKit after D-011.
+**Likely next LLM-DocKit follow-ups:** continue closing downstream dirty worktrees opportunistically when each adopter is opened. The next candidate design discussion is the MED-originated validator freshness refinement and related secondary candidates, but no consensus/runtime ownership work remains in LLM-DocKit after D-011.
 
 **Closed in this doc-only session:** D-011 clarifies the LLM-DocKit / ForgeOS / `llm-council` boundary. LLM-DocKit owns scaffold/documentation substrate only: HANDOFF/HISTORY/DECISIONS/REVIEWS, Trace, validators, hooks, sync, and init. ForgeOS owns the live runtime and operator-facing surface for LMConsole, ProtocolEngine, VisualWorkbench, WorkEpisode, AuthorityEngine, and orchestration. `llm-council` owns the curated deliberation archive/corpus under `raw/<topic>/`. `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` is now a stub pointing at `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`; `docs/llm/REVIEWS.md` remains a generic registry but no longer uses that archived proposal as normative source. No code changed and no version bump is expected.
 
@@ -35,7 +35,7 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-06-19 - Codex GPT-5
-- Session Focus: **Cut v4.10.2 after the MED sync caught a copied-smoke failure.** `scripts/test-validator.sh` now skips the `scripts/dockit-init-project.sh` scaffold smoke with PASS in downstream repos that do not ship the init script, while LLM-DocKit itself still runs the smoke. v4.10.1 remains the DF-046 validator-date fix.
+- Session Focus: **Cut v4.10.2 after the MED sync caught a copied-smoke failure and to close the DF-043 regression-test gap.** `scripts/test-validator.sh` now skips the `scripts/dockit-init-project.sh` scaffold smoke with PASS in downstream repos that do not ship the init script, while LLM-DocKit itself still runs the smoke. It also creates synthetic full adopters to verify `scripts/dockit-sync.sh` inserts missing template sections before a footer marker or appends them when no footer exists. v4.10.1 remains the DF-046 validator-date fix.
 - Previous (2026-06-19): Cut v4.10.1 closing DF-046 after MED exposed the daily false-red in `handoff-date` / `history-entry`; pushed `f109afb`.
 - Previous (2026-06-19): Cut v4.10.0 closing DF-035 option (b.ii); pushed `2d12579`.
 - Previous (2026-06-19): Archived the Consensus proposal as lineage and closed the LLM-DocKit / ForgeOS / `llm-council` ownership boundary from the DocKit side; pushed `85b2bad`.

@@ -1589,7 +1589,7 @@ Protocol implication:
 - For `adoption_mode: partial`, keep the previous behavior: missing sections warn and skip, because partial adopters intentionally opt into only the sections they carry.
 - Insert new sections before the downstream `footer` template section when present; otherwise append at EOF. Record the new section hash in sync state so future local/template conflicts are tracked normally.
 
-Mitigation in source project: shipped in v4.9.4. Dry-runs that previously failed for `devenv`, `plaud-mirror`, and `nas-backup` now complete with `LLM_START_HERE.md UPDATED sections merged` and zero errors.
+Mitigation in source project: shipped in v4.9.4. Dry-runs that previously failed for `devenv`, `plaud-mirror`, and `nas-backup` now complete with `LLM_START_HERE.md UPDATED sections merged` and zero errors. Regression coverage added in v4.10.2: `scripts/test-validator.sh` creates synthetic full adopters and verifies missing sections insert before the footer marker when present, or append when no footer marker exists.
 
 ## DF-044 — Trace Sent needs seconds and receivers must reverify stale reports
 

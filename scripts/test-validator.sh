@@ -12,6 +12,7 @@ PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 VALIDATOR="$PROJECT_ROOT/scripts/dockit-validate-session.sh"
 CHECK_VERSION="$PROJECT_ROOT/scripts/check-version-sync.sh"
 BUMP_VERSION="$PROJECT_ROOT/scripts/bump-version.sh"
+SYNC_TOOL="$PROJECT_ROOT/scripts/dockit-sync.sh"
 
 TMP_ROOT=${TMPDIR:-/tmp}/dockit-validator-smoke.$$
 OUT="$TMP_ROOT/out.txt"
@@ -203,6 +204,45 @@ targets:
 - path: package-lock.json  marker: package-lock-version
 EOF
     write_version_files "$_repo" "1.2.3"
+}
+
+init_sync_section_repo() {
+    _repo="$1"
+    _footer_mode="$2"
+    mkdir -p "$_repo"
+
+    cat >"$_repo/.dockit-enabled" <<'EOF'
+enabled: true
+EOF
+
+    cat >"$_repo/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+EOF
+
+    if [ "$_footer_mode" = "with-footer" ]; then
+        cat >"$_repo/LLM_START_HERE.md" <<'EOF'
+# Old adopter start guide
+
+Local project prose stays above synced template sections.
+
+<!-- DOCKIT-TEMPLATE:START footer -->
+---
+Old footer text.
+<!-- DOCKIT-TEMPLATE:END footer -->
+EOF
+    else
+        cat >"$_repo/LLM_START_HERE.md" <<'EOF'
+# Old adopter start guide
+
+Local project prose with no footer marker.
+EOF
+    fi
+
+    git -C "$_repo" init -q
+    git -C "$_repo" config user.email smoke@example.invalid
+    git -C "$_repo" config user.name Smoke
+    git -C "$_repo" add .
+    git -C "$_repo" commit -qm initial
 }
 
 mkdir -p "$TMP_ROOT"
@@ -523,6 +563,49 @@ else
         sed -n '1,80p' "$VERSION_REPO/package-lock.json"
     } >"$OUT"
     note_fail "bump-version wrote package-lock top-level and root package versions"
+fi
+
+if [ ! -x "$SYNC_TOOL" ]; then
+    note_pass "dockit-sync missing-section smoke skipped when sync tool is absent"
+else
+    SYNC_FOOTER_REPO="$TMP_ROOT/sync-footer"
+    init_sync_section_repo "$SYNC_FOOTER_REPO" "with-footer"
+    if "$SYNC_TOOL" --init-state --project "$SYNC_FOOTER_REPO" >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --apply --project "$SYNC_FOOTER_REPO" >"$OUT" 2>&1 \
+        && awk '
+            /<!-- DOCKIT-TEMPLATE:START trace-protocol -->/ { trace = NR }
+            /<!-- DOCKIT-TEMPLATE:START footer -->/ { footer = NR }
+            END { exit !(trace > 0 && footer > 0 && trace < footer) }
+        ' "$SYNC_FOOTER_REPO/LLM_START_HERE.md" \
+        && ! grep -q 'CONFLICT\|ERROR' "$OUT"; then
+        note_pass "dockit-sync inserts missing full-adopter sections before footer"
+    else
+        {
+            echo "dockit-sync did not insert missing section before footer"
+            [ -f "$SYNC_FOOTER_REPO/LLM_START_HERE.md" ] && sed -n '1,220p' "$SYNC_FOOTER_REPO/LLM_START_HERE.md"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync inserts missing full-adopter sections before footer"
+    fi
+
+    SYNC_APPEND_REPO="$TMP_ROOT/sync-append"
+    init_sync_section_repo "$SYNC_APPEND_REPO" "without-footer"
+    if "$SYNC_TOOL" --init-state --project "$SYNC_APPEND_REPO" >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --apply --project "$SYNC_APPEND_REPO" >"$OUT" 2>&1 \
+        && grep -q '<!-- DOCKIT-TEMPLATE:START trace-protocol -->' "$SYNC_APPEND_REPO/LLM_START_HERE.md" \
+        && grep -q '<!-- DOCKIT-TEMPLATE:START footer -->' "$SYNC_APPEND_REPO/LLM_START_HERE.md" \
+        && ! grep -q 'CONFLICT\|ERROR' "$OUT"; then
+        note_pass "dockit-sync appends missing full-adopter sections without footer"
+    else
+        {
+            echo "dockit-sync did not append missing sections without footer"
+            [ -f "$SYNC_APPEND_REPO/LLM_START_HERE.md" ] && sed -n '1,220p' "$SYNC_APPEND_REPO/LLM_START_HERE.md"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync appends missing full-adopter sections without footer"
+    fi
 fi
 
 if [ ! -x "$PROJECT_ROOT/scripts/dockit-init-project.sh" ]; then
