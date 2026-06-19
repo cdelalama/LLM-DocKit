@@ -984,9 +984,9 @@ The link uses the SHA of the v0.5.4 release commit, not `HEAD` — the script wi
 - Source: `infra-portal` v0.8.0 in repo / v0.7.2 in production + `tomatic` v0.1.5 audit, 2026-05-02 → 2026-05-03
 - Date observed: 2026-05-03
 - Category: gap
-- Status: accepted (process side, via `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`); validator side (`--check deployed-version`) is a separate future patch tracked in HANDOFF *Pending work*. (Status follows the file's own legend: `accepted` = listed in a `*_PROPOSAL.md` and committed to the roadmap; `partially implemented` would require an actual implementation in a release, which has not happened yet.)
+- Status: open (validator side only; the earlier DocKit-owned consensus/process path was superseded by D-011 on 2026-06-19)
 - Related: DF-016, DF-021, DF-024
-- Resolution path: a Consensus Protocol run on 2026-05-03 produced two sibling proposals: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (this repo) formalising the deliberation primitive; `~/src/home-infra-protocol/docs/DEPLOYMENT_EVIDENCE_PROPOSAL.md` formalising the deployment evidence contract. Together they address the pattern at the LLM-DocKit level (a recorded protocol that names the rule "no `deployed` claim without evidence") and at the infrastructure protocol level (a typed vocabulary + schema block that lets a consumer measure drift). The optional `--check deployed-version` validator check is the remaining work and is not part of either proposal; it is the natural next patch once an adopter project asks for it. The deliberation is recorded in `docs/llm/REVIEWS.md` 2026-05-03.
+- Resolution path: the 2026-05-03 deliberation produced a historical DocKit proposal that is now archived as lineage by D-011. The remaining LLM-DocKit work is narrower: an optional `--check deployed-version` validator surface if an adopter asks for it. Runtime/process orchestration belongs to a future ForgeOS ownership decision, while `llm-council` remains curated corpus.
 
 ### Observation
 
@@ -1039,36 +1039,36 @@ This DF has a sibling in `home-infra-protocol/docs/DOWNSTREAM_FEEDBACK.md` (`DF-
 - Source: 2026-05-03 audit cycle around `tomatic` 0.1.5 + `home-infra-protocol` 0.2.2/0.2.3 + LLM-DocKit `1784318`/`b3de32e`/`3cbd37f`. Three audit passes by GPT-5 over the same week's deliberation.
 - Date observed: 2026-05-03
 - Category: process
-- Status: open (deliberately captured here without a Consensus run; this entry is **not** intended to trigger another audit pass — it is a forward-pointer for the next session that touches the protocol)
+- Status: rejected (not LLM-DocKit scope after D-011; retained as lineage input for a future ForgeOS ownership decision)
 - Related: DF-005 (HANDOFF↔LLM_START_HERE drift, the original mirror-pair pattern), DF-015 (policy replicated across docs drifts independently), DF-029 (deployment lag invisibility).
 
 ### Observation
 
-The first sustained self-application of the Consensus Protocol — a session producing two cross-repo proposals + REVIEWS entries + multiple audit passes — surfaced five distinct refinement lessons that the proposal itself does not name. The lessons are real, repeatable, and structurally interesting; capturing them here so a future session that returns to the Consensus Protocol can incorporate them.
+The first sustained self-application of the now-archived Consensus Protocol proposal — a session producing two cross-repo proposals + REVIEWS entries + multiple audit passes — surfaced five distinct refinement lessons that the proposal itself did not name. The lessons are real, repeatable, and structurally interesting; capturing them here preserves lineage for the future ForgeOS runtime ownership decision and for `llm-council` corpus curation.
 
 The lessons are listed in increasing structural cost. Each is implementable as a small additive change to the existing protocol artefacts; none require redesign.
 
-**1. The auditor is a fourth role the protocol does not name.** The proposer/critic/arbiter triangle handles deliberation but has a structural blind spot: every participant is engaged with the artefact under construction, none reads the closed artefact holistically from outside. Three audit passes over this week's commits found drifts none of the original deliberation participants noticed. The auditor role is post-closure (operates on already-closed artefacts), produces findings (not decisions), and dispatches to either fix-forward (if drift is mechanical) or to a new Consensus run (if structural). Where to land: a new section in `CONSENSUS_PROTOCOL_PROPOSAL.md` titled "Auditor role (post-closure)".
+**1. The auditor is a fourth role the archived protocol did not name.** The proposer/critic/arbiter triangle handles deliberation but has a structural blind spot: every participant is engaged with the artefact under construction, none reads the closed artefact holistically from outside. Three audit passes over this week's commits found drifts none of the original deliberation participants noticed. The auditor role is post-closure (operates on already-closed artefacts), produces findings (not decisions), and dispatches to either fix-forward (if drift is mechanical) or to a new runtime protocol step (if structural). Where to land after D-011: future ForgeOS ownership decision / ProtocolEngine design, not LLM-DocKit.
 
-**2. Drift findings must be classified mechanical vs structural before responding.** Not every audit finding warrants a new Consensus run. Mechanical drifts — typos, status strings outside legend, missing HISTORY entries, legend-template misalignment — are resolved deterministically by the existing rules; the response is a micro-commit, not new deliberation. Structural drifts — an example contradicting its own ontology, a contract conflicting with another contract — may require deliberation if the resolution is non-obvious. The two responses share form (a fix-forward commit) but differ in process (the latter passes through a Consensus run, the former does not). The protocol does not articulate this distinction today and risks treating every drift as either trivial (noise) or major (paralysing). Where to land: sub-section "Fix-forward classification" of the proposal.
+**2. Drift findings must be classified mechanical vs structural before responding.** Not every audit finding warrants a new deliberation run. Mechanical drifts — typos, status strings outside legend, missing HISTORY entries, legend-template misalignment — are resolved deterministically by the existing rules; the response is a micro-commit, not new deliberation. Structural drifts — an example contradicting its own ontology, a contract conflicting with another contract — may require deliberation if the resolution is non-obvious. The two responses share form (a fix-forward commit) but differ in process. The archived proposal did not articulate this distinction and risked treating every drift as either trivial (noise) or major (paralysing). Where to land after D-011: future ForgeOS runtime ownership decision / ProtocolEngine design, not LLM-DocKit.
 
-**3. Audit cycles need an explicit termination criterion.** Each audit pass tends to find something. Without a stop rule, "another audit, another fix" can compound into ceremony. A workable termination rule: *"a session is considered closed when two consecutive audit passes by distinct roles produce no new findings, or when the human arbiter explicitly declares 'ship as is, residual drift accepted'."* Without this, the audit-fatigue dynamic erodes the practice the proposal is trying to install. Where to land: "Termination criteria for audit cycles" sub-section, or a paragraph in the Failure modes section.
+**3. Audit cycles need an explicit termination criterion.** Each audit pass tends to find something. Without a stop rule, "another audit, another fix" can compound into ceremony. A workable termination rule: *"a session is considered closed when two consecutive audit passes by distinct roles produce no new findings, or when the human arbiter explicitly declares 'ship as is, residual drift accepted'."* Without this, the audit-fatigue dynamic erodes the practice the archived proposal was trying to install. Where to land after D-011: future ForgeOS runtime ownership decision / ProtocolEngine design, not LLM-DocKit.
 
 **4. Legend ↔ template drift is generalisable beyond DF-005.** This week's audit caught the DF-NNN status template (line 43) lagging the legend (line 17) — exactly the family that `DF-005 — HANDOFF ↔ LLM_START_HERE Current Focus drift` already names but solves only for that specific pair. The generalised pattern: any document that contains both a definition (legend, rule, schema) and a usage example (template, instance, reference) needs a sync check that diffs the two and warns on divergence. Today the validator solves this for one mirror pair (HANDOFF ↔ LLM_START_HERE); generalising it would catch DF-030's own surface plus, say, schema↔example pairs in `home-infra-protocol`. Where to land: dedicated DF? Or a candidate work item for a future PROPOSAL that extends the validator with a `mirror-pairs` configurable check (akin to how `external_context.update_triggers` works today). Lean toward the latter — keeps the catch generic.
 
-**5. The audit primitive is non-trivially relevant to ForgeOS' consensus subsystem design.** Stated explicitly: ForgeOS' planned consensus subsystem should *not* clone the three-role protocol. It should clone the four-role protocol, with the auditor as a first-class automatable role (a residual agent reading closed artefacts on a schedule and emitting findings). Without an automatable auditor, ForgeOS inherits the same blind spot the original three-role protocol had — and that is exactly the kind of architectural sin a precedent should avoid. Where to land: a one-line addendum to the "Future consumer / precedent" section of `CONSENSUS_PROTOCOL_PROPOSAL.md`, pointing here.
+**5. The audit primitive is non-trivially relevant to ForgeOS' consensus subsystem design.** Stated explicitly: ForgeOS' planned runtime should *not* clone the three-role historical proposal. It should include the auditor as a first-class automatable role (a residual agent reading closed artefacts on a schedule and emitting findings). Without an automatable auditor, ForgeOS inherits the same blind spot the original three-role protocol had. Where to land after D-011: future ForgeOS ownership decision.
 
 ### Protocol implication summary
 
-Lessons 1, 2, 3 are additive refinements to `CONSENSUS_PROTOCOL_PROPOSAL.md` — total cost ~30-45 minutes of writing for a future session that returns to the proposal.
+Lessons 1, 2, and 3 are no longer LLM-DocKit roadmap items. They are lineage input for the future ForgeOS runtime ownership decision and for any `llm-council` corpus curation notes.
 
 Lesson 4 is its own work item: extending the validator with a generalised mirror-pair check. Cost is moderate (~50-100 lines POSIX shell + per-project config). Filed as a candidate PROPOSAL trigger, not a separate DF, because it is a clear specialisation of an already-named family (DF-005 + DF-015).
 
-Lesson 5 is one line in a future ForgeOS design document. Today it lives only here.
+Lesson 5 belongs in a future ForgeOS design/decision document. Today it lives here only as historical evidence.
 
 ### Why this entry exists without an accompanying Consensus run
 
-This DF is captured as a forward-pointer, not as a triggered work item. The audit cycle that produced these lessons has reached the operator-declared "ship as is" terminus per Lesson 3 above (avant la lettre). Subsequent audit passes on this entry should *not* spawn new commits in this session; they belong to the future session that picks up Lessons 1-3 as a Consensus Protocol refinement.
+This DF is captured as a forward-pointer, not as a triggered work item. The audit cycle that produced these lessons has reached the operator-declared "ship as is" terminus per Lesson 3 above (avant la lettre). Subsequent audit passes on this entry should *not* spawn new commits in this session; Lessons 1-3 belong to the future ForgeOS ownership decision and any `llm-council` corpus curation that follows it.
 
 The five lessons are observable empirically, formally, and consistently across the three audit passes. They are not speculative. They are the protocol's first round of dogfooding feedback on itself — exactly the kind of input the protocol claims to consume but had not yet been tested with at this scope.
 
@@ -1081,12 +1081,12 @@ None — these are protocol-level lessons, not adopter-symptom drifts. The mitig
 - Source: 2026-05-04 — operator audit during the Consensus Protocol self-application session caught that `LLM-DocKit/docs/CONSENSUS_PROTOCOL_PROPOSAL.md` (created 2026-05-03) substantially duplicated `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` (created 2026-03-01). Same scope, same empirical motivation, two months apart, by the same operator. Three LLM rounds did not catch the duplication; the operator did, by remembering the prior project.
 - Date observed: 2026-05-04
 - Category: process
-- Status: open (placeholder — full content to be expanded in Session 4 of the ecosystem reconciliation roadmap, see `~/src/home-infra/docs/SESSION_HANDOFF_2026-05-04_ECOSYSTEM_RECONCILIATION.md`)
+- Status: open (prior-art search remains useful; consensus/runtime ownership moved out of LLM-DocKit by D-011)
 - Related: DF-030 (audit role surfaces structural drift), DF-018 (LLM personal auto-memory and `docs/llm/` drift as parallel stores)
 
 ### Observation
 
-When a session proposes work of high blast radius (per Consensus Protocol thresholds — contract changes, multi-repo spans, security/persistence implications, multi-week reversibility, precedent-setting decisions), it should first search the ecosystem for prior art. Today there is no canonical, machine-readable list of ecosystem projects with their scopes, so the search is manual, optional, and easily skipped. The gap surfaced visibly in the 2026-05-03 / 2026-05-04 deliberation: `CONSENSUS_PROTOCOL_PROPOSAL.md` re-discovered substantial portions of `llm-council` two months after the latter had been formalised. None of the LLMs involved (Claude proposer, GPT-5 critic) brought up `llm-council` until the operator did during a post-closure audit.
+When a session proposes work of high blast radius (contract changes, multi-repo spans, security/persistence implications, multi-week reversibility, precedent-setting decisions), it should first search the ecosystem for prior art. Today there is no canonical, machine-readable list of ecosystem projects with their scopes, so the search is manual, optional, and easily skipped. The gap surfaced visibly in the 2026-05-03 / 2026-05-04 deliberation: the now-archived DocKit Consensus proposal re-discovered substantial portions of `llm-council` two months after the latter had been formalised. None of the LLMs involved (Claude proposer, GPT-5 critic) brought up `llm-council` until the operator did during a post-closure audit.
 
 ### Protocol implication
 
@@ -1098,7 +1098,7 @@ Three layers, low to high cost:
 
 (c) **Validator check `--check ecosystem-prior-art` (future)**: scan the new proposal's title and first section for keywords matching any registered protocol's prior-art keywords; warn if overlap above a threshold. Cheap to implement once (b) exists.
 
-The recommended sequence: ship (b) in Session 4, ship (a) in Session 5, defer (c) until volume justifies.
+After D-011, the runtime side of this sequence belongs to the future ForgeOS ownership decision. A future DocKit-only cure should be limited to substrate support, such as a prior-art note in proposal templates or a validator warning if an ecosystem map exists.
 
 ### Cross-protocol relationship
 
@@ -1106,19 +1106,19 @@ This DF complements DF-030: where DF-030 names auditing as a role for *artefacts
 
 ### Mitigation in source projects
 
-The 2026-05-04 ecosystem reconciliation roadmap (Session 4) addresses the symptom by producing the Ecosystem Map. The protocol-level cure (validator check) is deferred. The convention in `LLM_START_HERE.md` will land via Session 5's merge implementation.
+The old 2026-05-04 Session 4 / Session 5 path is superseded on the LLM-DocKit side by D-011. If ForgeOS needs an ecosystem map, prior-art gate, or runtime convention, implement it there; LLM-DocKit can later consume only substrate-level outputs such as links, registry entries, or validator hooks if a future decision asks for them.
 
 ## DF-032 — Cross-LLM deliberation logs are not automatically captured into `llm-council/raw/`
 
-- Source: 2026-05-04 — the very session that surfaced DF-031 (and produced two PROPOSALs + multiple REVIEWS entries + audit cycles) has no automatic mechanism to deposit its log into `~/src/llm-council/raw/`. The protocol's empirical foundation (8500 lines in `raw/` from manual exports done in March 2026) has not received a new session log automatically since. The aspiration in `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` §3.6 (a session file format under `~/.llm-council/sessions/<session-id>/`) is unimplemented.
+- Source: 2026-05-04 — the very session that surfaced DF-031 (and produced two PROPOSALs + multiple REVIEWS entries + audit cycles) has no automatic mechanism to deposit its log into `~/src/llm-council/raw/`. The deliberation corpus (8500 lines in `raw/` from manual exports done in March 2026) has not received a new session log automatically since. The aspiration in `~/src/llm-council/docs/PROTOCOL_PROPOSAL.md` §3.6 (a session file format under `~/.llm-council/sessions/<session-id>/`) is unimplemented.
 - Date observed: 2026-05-04
 - Category: gap
-- Status: open (placeholder — full content to be expanded in Session 4 of the ecosystem reconciliation roadmap)
+- Status: rejected (not LLM-DocKit scope after D-011; retained as lineage input for ForgeOS / `llm-council`)
 - Related: DF-018 (auto-memory vs `docs/llm/` drift), DF-030 (auditor role)
 
 ### Observation
 
-The Consensus Protocol's empirical base depends on `~/src/llm-council/raw/`. That directory has six logs (~8500 lines) from sessions exported manually by the operator in March 2026. Since then, multiple deliberations have happened (the entire 2026-05-03 / 2026-05-04 work, plus other operator sessions) without depositing new logs. Two consequences:
+The deliberation corpus depends on `~/src/llm-council/raw/`. That directory has six logs (~8500 lines) from sessions exported manually by the operator in March 2026. Since then, multiple deliberations have happened (the entire 2026-05-03 / 2026-05-04 work, plus other operator sessions) without depositing new logs. Two consequences:
 
 1. The protocol's empirical base ages — its analysis of "what patterns emerge" is anchored to two-month-old data.
 2. New deliberations (this very session is the most recent example) only survive in scattered form: the digest is in REVIEWS, the rationale is in DFs, the implementation is in commits, the conversational flow is in chat scrollback (volatile). No single artefact captures the full session for analysis.
@@ -1127,21 +1127,21 @@ The session that surfaced this DF had to **manually** export a digest to `~/src/
 
 ### Protocol implication
 
-(a) **A small CLI / skill that exports a session** — Claude Code transcript + manually-pasted GPT replies + operator arbitration — into a normalised log under `llm-council/raw/session-<id>/`. Probably a `dockit-export-session.sh` style script, or a Claude Code skill that reads the current session's transcript and produces `summary.md` + `sources.yml` + (optionally) raw transcript.
+(a) **A ForgeOS/llm-council export or curation path** — Claude Code transcript + manually-pasted GPT replies + operator arbitration — into a normalised log under `llm-council/raw/session-<id>/`. It could be a ForgeOS workflow, a dedicated `llm-council` tool, or a Claude Code skill that reads the current session's transcript and produces `summary.md` + `sources.yml` + (optionally) raw transcript.
 
-(b) **A convention** in `LLM_START_HERE.md` for projects scaffolded with the Consensus Protocol integration: "When closing a consensus run, export the session digest to `~/src/llm-council/raw/session-<id>/` so the protocol's empirical foundation grows."
+(b) **A ForgeOS workflow convention** once the live runtime exists: "When closing a deliberation run, export or curate the session digest to `~/src/llm-council/raw/session-<id>/` so the corpus grows." This no longer belongs in the generic LLM-DocKit template after D-011.
 
 (c) **A periodic check**: scan `llm-council/raw/` for last-modified date; warn if no new session log in N days while other ecosystem repos show activity that should have produced sessions.
 
-The minimum viable starting point is (a). (b) follows naturally once (a) exists. (c) is bonus.
+The minimum viable starting point is (a), outside LLM-DocKit. (b) follows naturally once (a) exists. (c) is bonus.
 
 ### Cross-protocol relationship
 
-DF-032 sits at the intersection of `llm-council` (which owns the destination format) and LLM-DocKit (which owns scaffold-level conventions). The export tool itself is more naturally a llm-council artefact (it knows the session file format); the convention to invoke it is more naturally a LLM-DocKit template addition. Session 4 should decide ownership cleanly.
+DF-032 sits at the intersection of ForgeOS (which owns live runtime/orchestration) and `llm-council` (which owns the curated archive/corpus). LLM-DocKit may host links or registry entries produced by those systems, but it does not own the export runtime or the generic convention after D-011.
 
 ### Mitigation in source projects
 
-The 2026-05-04 session deposits its digest manually at `~/src/llm-council/raw/session-2026-05-04-consensus-self-application/`. That is the proof-of-concept input format and the empirical evidence that the manual step adds friction. Future sessions should not need to do this manually.
+The 2026-05-04 session deposits its digest manually at `~/src/llm-council/raw/session-2026-05-04-consensus-self-application/`. That is the proof-of-concept input format and the empirical evidence that the manual step adds friction. Future ForgeOS/llm-council sessions should not need to do this manually.
 
 ## DF-033 — Passive onboarding instructions in repo docs do not enforce session-start context loading
 

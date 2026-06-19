@@ -498,3 +498,61 @@ scripts do not understand is not being validated.
   repo before treating the change as fleet-safe.
 - If another marker shape is needed, add support to both version scripts and to
   the smoke tests in the same commit.
+
+---
+
+## D-011 - Consensus/runtime orchestration is not owned by LLM-DocKit
+
+**Status:** accepted
+
+### Decision
+LLM-DocKit does not own consensus/runtime orchestration.
+
+LLM-DocKit remains the scaffold/documentation substrate: `HANDOFF.md`,
+`HISTORY.md`, `DECISIONS.md`, `REVIEWS.md`, Trace, validators, hooks,
+`dockit-sync`, and project initialization.
+
+ForgeOS owns the live runtime and operator-facing surface: LMConsole,
+ProtocolEngine, VisualWorkbench, WorkEpisode, AuthorityEngine, and the
+orchestration of multi-LLM work.
+
+`llm-council` owns the curated deliberation archive/corpus under `raw/<topic>/`:
+synthesized deliberations, fixtures, lessons, and examples. It is not the live
+runtime engine for new orchestration work unless a future ForgeOS ownership
+decision explicitly says otherwise.
+
+### Context
+`docs/CONSENSUS_PROTOCOL_PROPOSAL.md` was added on 2026-05-03 as a DocKit-side
+proposal for a structured consensus primitive. The proposal was valuable
+lineage, but it duplicated older prior art in `~/src/llm-council` and later
+overlapped with ForgeOS, which is now implementing the live orchestration
+substrate through v5 concepts such as WorkEpisode, AuthorityEngine,
+VisualWorkbench, CaptureLog, ArtifactBus, and future ProtocolEngine/LMConsole
+surfaces.
+
+D-009 already established that LLM-DocKit stays the scaffold substrate while
+ForgeOS owns umbrella control-plane and protocol-runtime concerns. This
+decision makes that boundary explicit for consensus/runtime work and removes
+the old DocKit proposal from the active roadmap.
+
+### Implications
+- `docs/CONSENSUS_PROTOCOL_PROPOSAL.md` is kept as a stub and the full body is
+  archived under `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`.
+- `docs/llm/REVIEWS.md` stays in LLM-DocKit as a generic registry for reviews,
+  audits, and arbitrated decisions. Its format is no longer normatively defined
+  by the archived Consensus proposal.
+- LLM-DocKit may provide durable artifacts consumed by ForgeOS or
+  `llm-council`, but it does not define LMConsole, ProtocolEngine, routing,
+  role assignment, message brokering, or consensus runtime behavior.
+- A future ForgeOS ownership decision should decide how ForgeOS relates to
+  `llm-council` as curated corpus and how the live consensus/orchestration
+  runtime is named and exposed.
+- Any future DocKit work in this area must be phrased as substrate support
+  only: registry shape, links, validators, Trace, hooks, or sync behavior.
+
+### Follow-ups
+- In ForgeOS, record the matching ownership decision without touching
+  LLM-DocKit from that session.
+- In `llm-council`, decide separately whether the repository remains a curated
+  corpus/archive only or gains another explicit role. Do not infer that role
+  from this DocKit cleanup.

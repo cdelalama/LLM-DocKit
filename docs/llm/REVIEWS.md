@@ -1,18 +1,23 @@
 # Reviews
 
-Audit trail of consensus runs that produced load-bearing artefacts in this
-repo. Each entry captures the **causal reasoning** that produced a decision,
-not the transcript of the deliberation. The format is normative — see
-`docs/CONSENSUS_PROTOCOL_PROPOSAL.md` *Recording mechanism*.
+Audit trail of substantive reviews, audits, and arbitrated decisions in this
+repo. Each entry should capture the **causal reasoning** that produced a
+decision or verdict, not the transcript of the deliberation.
 
-A consensus run is invoked when a decision crosses one of the thresholds
-named in the Consensus Protocol Proposal (contract changes, multi-repo
-spans, security/persistence, multi-week reversibility, precedent-setting).
-Routine work does not produce REVIEWS entries.
+LLM-DocKit provides this file as a durable registry artifact. It no longer owns
+the consensus/runtime protocol that may produce entries here; ForgeOS owns the
+live orchestration runtime and `llm-council` owns the curated deliberation
+archive/corpus. Historical entries may still reference the archived
+`docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`, but that proposal is lineage, not
+the active normative source for new work.
 
 ---
 
 ## 2026-05-03 — Consensus Protocol as a named primitive of LLM-DocKit
+
+> Historical entry. D-011 supersedes the ownership claim: the full proposal now
+> lives in `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`, and LLM-DocKit keeps
+> only the registry/substrate role.
 
 - **Decision**: Adopt the propose / critique / arbitrate pattern as a
   named primitive of LLM-DocKit, with explicit invocation thresholds, a
@@ -20,7 +25,8 @@ Routine work does not produce REVIEWS entries.
   explicit relationship with the existing `DOWNSTREAM_FEEDBACK.md` + 
   `*_PROPOSAL.md` channels. Implementation is scoped to documentation —
   no code changes in this round. The full proposal lives at
-  `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`.
+  `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`; the original path is now a
+  stub.
 - **Proposer**: Claude Opus 4.7 (1M context)
 - **Critic**: GPT-5
 - **Arbiter**: Carlos
@@ -52,7 +58,8 @@ Routine work does not produce REVIEWS entries.
     overtones, conflict-resolution overtones); the proposal hedges
     by stating up-front that "consensus does not certify correctness;
     it certifies that the decision was deliberated".
-  - **Implementing artefact**: `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`.
+  - **Implementing artefact**: `docs/archive/CONSENSUS_PROTOCOL_PROPOSAL.md`
+    (archived by D-011; originally `docs/CONSENSUS_PROTOCOL_PROPOSAL.md`).
 
 - **Densidad sobre brevedad**: REVIEWS entries preserve causal
   reasoning, not bullet summaries. A future reader six months out
@@ -70,8 +77,8 @@ Routine work does not produce REVIEWS entries.
   - **Why this resolution**: an audit trail without causal reasoning
     is shallow; a future session reading "rejected: prometer no
     volverá a pasar" without knowing the rationale cannot extend the
-    lesson to a new context. The Consensus Protocol Proposal codifies
-    the structured format that satisfies both objectives:
+    lesson to a new context. The now-archived Consensus Protocol
+    Proposal codified the structured format that satisfied both objectives:
     causality-rich without verbatim transcript.
   - **Risk accepted**: REVIEWS entries grow longer than other LLM-DocKit
     artefacts; the trade is intentional.
@@ -207,11 +214,10 @@ Routine work does not produce REVIEWS entries.
 
 ## Format reference
 
-This file uses the structured entry format from
-`docs/CONSENSUS_PROTOCOL_PROPOSAL.md`. The format is normative for
-audit-trail entries; informal review notes (one-off LLM critiques,
-operator notes) may use the looser legacy format below if they do not
-correspond to a closed consensus run.
+Use the structured format above for decisions or audits whose reasoning needs
+to remain recoverable. Informal review notes (one-off LLM critiques, operator
+notes) may use the looser legacy format below when they do not correspond to a
+closed arbitrated decision.
 
 ### Legacy informal format (kept for backward compatibility)
 
