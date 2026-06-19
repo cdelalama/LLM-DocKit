@@ -4,6 +4,32 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.11.0] - 2026-06-19
+
+### Added
+
+- `scripts/dockit-validate-session.sh`: new opt-in `orientation-drift` check.
+  Projects can set `orientation_drift.enabled: true` in `.dockit-config.yml`
+  to fail when entry docs describe a completed roadmap phase as "next".
+- `scripts/test-validator.sh`: smoke coverage for `orientation-drift` skip,
+  pass, and fail cases, plus exact `--check` token matching so
+  `orientation-drift` no longer also runs `orientation`.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-047 records the MED-originated
+  orientation-drift pattern.
+- `docs/llm/DECISIONS.md`: D-012 records that semantic roadmap checks are
+  opt-in and project-configured, not fleet-default.
+
+### Changed
+
+- `scripts/dockit-validate-session.sh --help`: lists `orientation-drift` as a
+  first-class check.
+
+### Fixed
+
+- `scripts/dockit-validate-session.sh`: `--check` filtering now compares exact
+  check names instead of substring matches. This prevents `--check
+  orientation-drift` from also running `orientation`.
+
 ## [4.10.3] - 2026-06-19
 
 ### Added

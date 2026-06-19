@@ -556,3 +556,53 @@ the old DocKit proposal from the active roadmap.
 - In `llm-council`, decide separately whether the repository remains a curated
   corpus/archive only or gains another explicit role. Do not infer that role
   from this DocKit cleanup.
+
+---
+
+## D-012 - Semantic roadmap drift checks are opt-in and project-configured
+
+**Status:** accepted
+
+### Decision
+LLM-DocKit supports semantic roadmap-orientation validation, but it is opt-in.
+
+Projects that maintain a phase-based roadmap can enable
+`orientation_drift.enabled: true` in `.dockit-config.yml`. When enabled,
+`scripts/dockit-validate-session.sh --check orientation-drift` parses completed
+phases from the configured roadmap and fails if configured entry docs still
+describe any completed phase as "next".
+
+The check is not enabled by default across the fleet.
+
+### Context
+MED built `scripts/check-orientation-drift.sh` after repeated audits found that
+entry docs continued to orient agents toward a phase that the roadmap had
+already marked complete. This is a semantic drift class: version markers,
+Handoff dates, and path-orientation checks can all pass while the onboarding
+text still points to old work.
+
+Unlike `orientation`, this check depends on project-specific roadmap grammar.
+Some DocKit adopters do not have a roadmap at all, and others do not use
+`## Phase N` / `Status: complete` semantics. Making the check fleet-default
+would create false reds in projects that never opted into that structure.
+
+### Implications
+- The check is available everywhere through normal `dockit-sync` because the
+  validator script uses strategy `copy`.
+- Existing projects without `.dockit-config.yml` or without
+  `orientation_drift.enabled: true` get a skipped PASS, not a new failure.
+- Projects that opt in must keep their roadmap grammar stable enough for the
+  parser: a completed phase is declared by `## Phase <id>` followed by
+  `Status: complete`.
+- Configured docs that are missing fail. Default docs that are absent are
+  skipped so optional files such as `docs/ARCHITECTURE.md` do not break an
+  opt-in project after DF-035(b.ii).
+- This complements DF-034 path orientation. `orientation` checks whether
+  HANDOFF names concrete existing paths; `orientation-drift` checks whether
+  entry docs name stale roadmap phases.
+
+### Follow-ups
+- MED can replace its local `scripts/check-orientation-drift.sh` after syncing
+  LLM-DocKit 4.11.0 and adding the `orientation_drift` config.
+- If another adopter uses a different roadmap grammar, add config for parser
+  shape only after a real example exists.

@@ -1,4 +1,4 @@
-<!-- doc-version: 4.10.3 -->
+<!-- doc-version: 4.11.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -27,6 +27,7 @@ Recommended reading order:
 - Update docs/llm/HANDOFF.md every time you make a change.
 - Append an entry to docs/llm/HISTORY.md in every session.
 - HISTORY format defaults to `any`: either `- YYYY-MM-DD - <LLM_NAME> - ...` or `YYYY-MM-DD - <LLM_NAME> - ...` is accepted. Set top-level `history_format: dash` or `history_format: no-dash` in `.dockit-config.yml` when a project wants strict enforcement.
+- Projects with a phase-based roadmap can opt into semantic phase drift checks with `.dockit-config.yml` `orientation_drift.enabled: true`; this fails when entry docs describe a completed roadmap phase as "next".
 - Put long-form rationale in docs/llm/DECISIONS.md and link to it from HANDOFF.
 - Prefer ASCII-only in docs/llm/* to avoid Windows encoding issues.
 <!-- DOCKIT-TEMPLATE:END doc-update-rules -->

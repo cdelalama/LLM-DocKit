@@ -1726,3 +1726,51 @@ reference date from `HEAD` for clean tracked trees and falls back to `TODAY`
 when tracked files are dirty. `scripts/test-validator.sh` includes regression
 coverage for a clean repo with an old commit date passing without rollover
 edits, and for the same repo failing once a tracked file is dirtied.
+
+## DF-047 — Entry docs can point at completed roadmap phases
+
+- Source: `med` local `scripts/check-orientation-drift.sh`
+- Date observed: 2026-06-19
+- Category: semantic drift / validator opt-in
+- Status: implemented (4.11.0)
+- Related: DF-024, DF-034, DF-035, D-012
+
+Observation: MED built a local `scripts/check-orientation-drift.sh` because
+audits repeatedly found that entry docs could still describe a completed
+roadmap phase as "next". Version markers, date checks, and path-orientation
+checks all pass in that state: the file is present, current, and syntactically
+valid, but it sends the next LLM toward old work.
+
+The MED script parses `docs/ROADMAP.md` for completed phases and scans entry
+docs such as `LLM_START_HERE.md`, README, PROJECT_CONTEXT, ARCHITECTURE, and
+HANDOFF for prose like "next phase 1" after Phase 1 is complete.
+
+Protocol implication:
+
+- This is real semantic drift and should be enforceable by code where a project
+  has a phase-based roadmap.
+- It should not be fleet-default. Not every DocKit adopter has a roadmap, and
+  not every roadmap uses `## Phase N` plus `Status: complete`.
+- The right upstream shape is an opt-in validator check controlled by
+  `.dockit-config.yml`.
+
+Mitigation in source project: shipped in v4.11.0 as
+`scripts/dockit-validate-session.sh --check orientation-drift`. Projects enable
+it with:
+
+```yaml
+orientation_drift:
+  enabled: true
+  roadmap: docs/ROADMAP.md
+  docs:
+    - LLM_START_HERE.md
+    - README.md
+    - docs/PROJECT_CONTEXT.md
+    - docs/ARCHITECTURE.md
+    - docs/llm/HANDOFF.md
+```
+
+The check parses completed phases from the roadmap and fails when configured
+docs describe a completed phase as next. `scripts/test-validator.sh` covers
+skip, pass, and fail cases. MED can remove its local script after syncing and
+enabling the upstream check.

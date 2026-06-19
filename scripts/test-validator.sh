@@ -245,6 +245,51 @@ EOF
     git -C "$_repo" commit -qm initial
 }
 
+init_orientation_drift_repo() {
+    _repo="$1"
+    _mode="$2"
+    mkdir -p "$_repo/docs/llm" "$_repo/docs"
+
+    cat >"$_repo/.dockit-config.yml" <<'EOF'
+orientation_drift:
+  enabled: true
+  roadmap: docs/ROADMAP.md
+  docs:
+    - LLM_START_HERE.md
+    - docs/llm/HANDOFF.md
+EOF
+
+    cat >"$_repo/docs/ROADMAP.md" <<'EOF'
+# Roadmap
+
+## Phase 1
+Status: complete
+
+## Phase 2
+Status: planned
+EOF
+
+    if [ "$_mode" = "drift" ]; then
+        cat >"$_repo/LLM_START_HERE.md" <<'EOF'
+# Start
+
+Next work: Phase 1 cleanup.
+EOF
+    else
+        cat >"$_repo/LLM_START_HERE.md" <<'EOF'
+# Start
+
+Next work: Phase 2 implementation.
+EOF
+    fi
+
+    cat >"$_repo/docs/llm/HANDOFF.md" <<'EOF'
+# Handoff
+
+Next work: Phase 2 implementation.
+EOF
+}
+
 mkdir -p "$TMP_ROOT"
 
 REPO="$TMP_ROOT/main"
@@ -288,6 +333,19 @@ git -C "$REPO" reset -q --hard HEAD
 
 expect_pass "orientation ignores glob-shaped backtick strings" \
     "$VALIDATOR" --project "$REPO" --quiet --check orientation
+
+expect_pass "orientation-drift skips without config" \
+    "$VALIDATOR" --project "$REPO" --quiet --check orientation-drift
+
+ORIENTATION_OK="$TMP_ROOT/orientation-ok"
+init_orientation_drift_repo "$ORIENTATION_OK" "clean"
+expect_pass "orientation-drift accepts current docs after completed roadmap phase" \
+    "$VALIDATOR" --project "$ORIENTATION_OK" --quiet --check orientation-drift
+
+ORIENTATION_DRIFT="$TMP_ROOT/orientation-drift"
+init_orientation_drift_repo "$ORIENTATION_DRIFT" "drift"
+expect_fail "orientation-drift rejects docs that call a completed phase next" \
+    "$VALIDATOR" --project "$ORIENTATION_DRIFT" --quiet --check orientation-drift
 
 MISSING_HANDOFF="$TMP_ROOT/missing-handoff"
 init_malformed_repo "$MISSING_HANDOFF" handoff
