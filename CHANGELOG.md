@@ -4,6 +4,30 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.11.1] - 2026-06-19
+
+### Added
+
+- `scripts/dockit-trace-status.sh`: helper that prints a Trace header scaffold
+  from current git/date state (HEAD, upstream, cleanliness, VERSION, local and
+  UTC timestamps) so agents do not manually copy stale close-out state.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-048 records the MED-originated stale Trace
+  Anchor / stale chat Trace pattern.
+
+### Changed
+
+- `LLM_START_HERE.md`: Trace guidance now recommends generating close-out
+  fields with `scripts/dockit-trace-status.sh`.
+
+### Fixed
+
+- `scripts/dockit-validate-session.sh`: projects can set
+  `trace_protocol.reject_current_anchor_label: true` to reject HANDOFF Trace
+  Anchor labels (`Current target:` / `Current audit target:`) that imply live
+  HEAD currency for a committed repo-side anchor.
+- `scripts/test-validator.sh`: smoke coverage for stale-anchor rejection,
+  HEAD-anchor acceptance, and trace-status output.
+
 ## [4.11.0] - 2026-06-19
 
 ### Added

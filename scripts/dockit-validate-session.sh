@@ -480,6 +480,14 @@ _trace_enabled_for_validation() {
     esac
 }
 
+_trace_reject_current_anchor_label() {
+    _enabled=$(_read_trace_value reject_current_anchor_label)
+    case "$_enabled" in
+        true|yes|1) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 _infer_trace_since() {
     [ -f "$CONFIG_FILE" ] || return
     _commits=$(cd "$PROJECT_ROOT" && git log --reverse --format=%H -- .dockit-config.yml 2>/dev/null || true)
@@ -1025,8 +1033,8 @@ check_trace_protocol() {
             if ! printf '%s\n' "$_anchor" | grep -qE 'Role:[[:space:]]*(executor|auditor)'; then
                 _trace_append_error "Trace Anchor missing Role: executor|auditor"
             fi
-            if ! printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target|Subject):'; then
-                _trace_append_error "Trace Anchor missing Current target/Subject"
+            if ! printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target|Trace target|Subject):'; then
+                _trace_append_error "Trace Anchor missing Trace target/Subject"
             fi
             if ! printf '%s\n' "$_anchor" | grep -qE '(State verified|Repo state):'; then
                 _trace_append_error "Trace Anchor missing State verified/Repo state"
@@ -1042,6 +1050,11 @@ check_trace_protocol() {
             for _hash in $_anchor_hashes; do
                 _trace_validate_commit "$_hash" "HANDOFF Trace Anchor" "$_anchor" true "$_trace_upstream"
             done
+
+            if _trace_reject_current_anchor_label \
+                && printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target):'; then
+                _trace_append_error "trace_protocol.reject_current_anchor_label=true disallows HANDOFF Trace Anchor labels that imply currency; use Subject: or Trace target: instead"
+            fi
         fi
     fi
 

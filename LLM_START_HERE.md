@@ -1,4 +1,4 @@
-<!-- doc-version: 4.11.0 -->
+<!-- doc-version: 4.11.1 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -149,6 +149,13 @@ Time verification:
   `.dockit-config.yml` when the project sets one.
 - If the agent cannot verify the clock, write:
   `Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>`.
+- Prefer generating the close-out scaffold immediately before sending it:
+  ```sh
+  scripts/dockit-trace-status.sh --role executor --subject "<commit/task>" \
+    --validation "<checks>" --next "<next gate>"
+  ```
+  This prints current HEAD, local/upstream state, worktree cleanliness, version,
+  and verified local/UTC time from git/date instead of relying on memory.
 
 Recommended `Resulting state` shape:
 
@@ -177,6 +184,11 @@ half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
 - `docs/llm/HANDOFF.md` must contain a `## Trace Anchor` section.
 - HANDOFF Trace Anchor commit times may use `YYYY-MM-DD HH:MM:SS UTC` or
   `YYYY-MM-DD HH:MM UTC`.
+- A committed HANDOFF Trace Anchor is a durable repo-side anchor, not a
+  guaranteed live HEAD pointer. Prefer neutral labels such as `Subject:` or
+  `Trace target:`. Projects can set
+  `trace_protocol.reject_current_anchor_label: true` to fail anchors labelled
+  `Current target:` or `Current audit target:`.
 - `docs/llm/HISTORY.md` entries dated on or after `trace_protocol.since` that
   reference backtick-quoted commit hashes must end with an inline footer:
   `Trace: role=executor|auditor; commits=hash1,hash2; state=...; validation=...; next=...`

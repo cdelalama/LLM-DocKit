@@ -1774,3 +1774,43 @@ The check parses completed phases from the roadmap and fails when configured
 docs describe a completed phase as next. `scripts/test-validator.sh` covers
 skip, pass, and fail cases. MED can remove its local script after syncing and
 enabling the upstream check.
+
+## DF-048 — Trace Anchor can be valid but stale, and chat Trace can reuse old repo state
+
+- Source: `med` D-020 Trace Anchor and GPT/Claude executor-auditor loop
+- Date observed: 2026-06-19
+- Category: traceability / stale state
+- Status: implemented (4.11.1)
+- Related: DF-040, DF-041, DF-042, DF-044, DF-046
+
+Observation: MED's local `scripts/check-trace-anchor.sh` correctly verified
+that the HANDOFF Trace Anchor named a real commit with matching subject/time
+and remote ancestry, but it did not verify that a label like "Current audit
+target" was current. After several approved commits, the anchor still pointed
+at an older commit while passing validation.
+
+The same session exposed the chat-side equivalent: an executor close-out Trace
+can be assembled from an earlier mental state and report `HEAD` as a previous
+commit even when the prose below names the newer commit.
+
+Protocol implication:
+
+- Commit integrity and commit currency are different checks.
+- Currency must be opt-in. Some projects intentionally anchor a historical
+  audit target, while MED uses the anchor as "current audit target".
+- Chat Trace cannot be validated after the fact by the repository, but agents
+  should have a mechanical way to generate the close-out fields from git/date
+  immediately before sending.
+
+Mitigation in source project: shipped in v4.11.1.
+
+- `trace_protocol.reject_current_anchor_label: true` makes durable Trace
+  validation fail when the HANDOFF Trace Anchor uses labels such as
+  `Current target:` or `Current audit target:`. A committed anchor cannot
+  generally contain its own commit hash, so projects that want honest durable
+  traceability should use neutral labels such as `Subject:` or `Trace target:`
+  and reserve "current" for the chat Trace generated at send time.
+- `scripts/dockit-trace-status.sh` prints a compact Trace scaffold using the
+  current git HEAD, upstream ref, worktree cleanliness, VERSION, configured
+  local timezone, and UTC clock. It does not prove the eventual chat message
+  used the scaffold, but it removes the need to manually copy volatile state.

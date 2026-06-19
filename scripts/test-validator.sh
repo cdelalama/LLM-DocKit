@@ -13,6 +13,7 @@ VALIDATOR="$PROJECT_ROOT/scripts/dockit-validate-session.sh"
 CHECK_VERSION="$PROJECT_ROOT/scripts/check-version-sync.sh"
 BUMP_VERSION="$PROJECT_ROOT/scripts/bump-version.sh"
 SYNC_TOOL="$PROJECT_ROOT/scripts/dockit-sync.sh"
+TRACE_STATUS="$PROJECT_ROOT/scripts/dockit-trace-status.sh"
 
 TMP_ROOT=${TMPDIR:-/tmp}/dockit-validator-smoke.$$
 OUT="$TMP_ROOT/out.txt"
@@ -491,6 +492,44 @@ EOF
 
 expect_pass "trace-protocol accepts commit time without seconds" \
     "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+
+trace_protocol:
+  enabled: true
+  since: 2000-01-01
+  reject_current_anchor_label: true
+EOF
+
+expect_fail "trace-protocol can reject current-labelled anchors" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Subject: \`$TRACE_HASH\` $TRACE_SUBJECT
+- Commit time: $TRACE_TIME
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+
+expect_pass "trace-protocol accepts neutral Subject anchor label" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+TRACE_STATUS_REPO="$TMP_ROOT/trace-status"
+init_repo "$TRACE_STATUS_REPO"
+TRACE_STATUS_HASH=$(git -C "$TRACE_STATUS_REPO" rev-parse --short=7 HEAD)
+expect_pass "trace-status emits current HEAD and clean repo state" \
+    sh -c "'$TRACE_STATUS' --project '$TRACE_STATUS_REPO' --role executor --subject smoke --validation smoke-pass --next operator >'$OUT' && grep -q 'HEAD=$TRACE_STATUS_HASH' '$OUT' && grep -q 'Repo state: .*clean' '$OUT'"
 
 cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
 # History
