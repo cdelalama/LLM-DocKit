@@ -1824,3 +1824,38 @@ Mitigation in source project: shipped in v4.11.1.
   current git HEAD, upstream ref, worktree cleanliness, VERSION, configured
   local timezone, and UTC clock. It does not prove the eventual chat message
   used the scaffold, but it removes the need to manually copy volatile state.
+
+## DF-049 - Copied versioned docs can arrive with the template version
+
+- Source: `med` and `forgeos` v4.12.0 adopter sync attempts
+- Date observed: 2026-06-20
+- Category: sync tooling / version normalization
+- Status: implemented (4.12.1)
+- Related: DF-038, DF-043, DF-045, D-014
+
+Observation: v4.12.0 introduced `docs/integrations/CODEX.md` as a new
+copy-strategy file with `<!-- doc-version: 4.12.0 -->`, because it is a
+version-tracked file in LLM-DocKit itself. When `dockit-sync` copied that file
+into downstream projects such as MED and ForgeOS, their post-sync
+`scripts/check-version-sync.sh` expected the downstream project version
+(`0.8.0`, `0.21.x`, etc.), not the template version. The sync then rolled back
+before the adopter could normalize the marker.
+
+Protocol implication:
+
+- A copied template file's content comes from LLM-DocKit, but its
+  `doc-version` marker belongs to the downstream project once copied.
+- The sync tool must normalize HTML doc-version markers before running
+  downstream post-sync validation. Requiring each adopter to apply, manually
+  edit the marker, and then validate defeats the purpose of an atomic sync
+  tool and recreates bespoke rollout prompts.
+- This must happen only for project version markers, not for the
+  `.git/.dockit/state.yml` `template_version`, which correctly remains the
+  LLM-DocKit version used for sync status.
+
+Mitigation in source project: shipped in v4.12.1. `scripts/dockit-sync.sh`
+normalizes `<!-- doc-version: X.Y.Z -->` in copy-strategy files to the
+downstream `VERSION` immediately after copying and before post-sync validation.
+`scripts/test-validator.sh` now reproduces the failure with a synthetic
+versioned adopter and asserts that the copied `docs/integrations/CODEX.md`
+marker is rewritten to the adopter's version.

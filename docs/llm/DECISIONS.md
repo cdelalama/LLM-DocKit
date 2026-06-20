@@ -660,3 +660,45 @@ LMConsole surface.
   on observed hook lifecycle behavior.
 - Home Infra should not maintain an independent Codex hook. It can rely on the
   LLM-DocKit installer directly or through ForgeOS bootstrap.
+
+---
+
+## D-014 - Copied doc-version markers are downstream-owned
+
+**Status:** accepted
+
+### Decision
+When `dockit-sync` copies a template file into a downstream project, any
+`<!-- doc-version: X.Y.Z -->` marker in that copied file is normalized to the
+downstream project's `VERSION` before post-sync validation runs.
+
+The sync state `template_version` remains the LLM-DocKit version. Only document
+version markers inside downstream files are project-owned.
+
+### Context
+LLM-DocKit 4.12.0 added `docs/integrations/CODEX.md` as a new version-tracked
+copy-strategy file. In LLM-DocKit the file correctly carried
+`doc-version: 4.12.0`. During rollout, MED and ForgeOS received that file, then
+their own `scripts/check-version-sync.sh` expected the project version
+(`0.8.0`, `0.21.x`, etc.) and rejected the copied template marker. `dockit-sync`
+rolled back before the adopter could normalize the file.
+
+### Rationale
+Doc-version markers represent the version of the repository that owns the
+file, not the upstream template release that supplied the content. Once a file
+is copied into an adopter, the adopter owns that file's version marker and its
+own `docs/version-sync-manifest.yml` should validate it against the adopter's
+`VERSION`.
+
+The upstream template version is still recorded separately in
+`.git/.dockit/state.yml`. That state is what `dockit-sync-check.sh` compares to
+tell whether a project is CURRENT or OUTDATED.
+
+### Implications
+- New doc-versioned copy files can be added to the sync manifest without
+  forcing manual marker edits in every adopter.
+- Post-sync validation remains strict: if a copied file cannot be normalized or
+  another target drifts, validation still fails and rolls back.
+- This rule applies to HTML doc-version markers only. It does not rewrite
+  project-specific semantic version fields such as `package.json` unless those
+  files are also explicitly managed by the project's version tooling.

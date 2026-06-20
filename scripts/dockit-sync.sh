@@ -492,6 +492,30 @@ print_summary() {
 # Sync strategies
 # ============================================================================
 
+normalize_project_doc_version() {
+    _project_root="$1"
+    _relpath="$2"
+    _target_file="$_project_root/$_relpath"
+    _version_file="$_project_root/VERSION"
+
+    [ -f "$_target_file" ] || return 0
+    [ -f "$_version_file" ] || return 0
+    grep -q '<!-- doc-version:' "$_target_file" 2>/dev/null || return 0
+
+    _project_version=$(head -1 "$_version_file" | tr -d '[:space:]')
+    echo "$_project_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || return 0
+
+    _tmp_normalized=$(mktemp)
+    sed "s/<!-- doc-version: [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]* -->/<!-- doc-version: $_project_version -->/" \
+        "$_target_file" > "$_tmp_normalized"
+    if cmp -s "$_target_file" "$_tmp_normalized"; then
+        rm -f "$_tmp_normalized"
+    else
+        cat "$_tmp_normalized" > "$_target_file"
+        rm -f "$_tmp_normalized"
+    fi
+}
+
 # Copy strategy: overwrite downstream with template version
 sync_copy() {
     _project_root="$1"
@@ -510,6 +534,7 @@ sync_copy() {
             backup_file "$_project_root" "$_relpath"
             mkdir -p "$(dirname "$_downstream_file")"
             cp -p "$_template_file" "$_downstream_file"
+            normalize_project_doc_version "$_project_root" "$_relpath"
         fi
         report_entry "$_relpath" "NEW" "will be created from template"
         return
@@ -528,6 +553,7 @@ sync_copy() {
     if [ "$MODE" = "apply" ]; then
         backup_file "$_project_root" "$_relpath"
         cp -p "$_template_file" "$_downstream_file"
+        normalize_project_doc_version "$_project_root" "$_relpath"
     fi
     report_entry "$_relpath" "UPDATED" "template changed"
 }

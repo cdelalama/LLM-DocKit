@@ -4,6 +4,30 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.12.1] - 2026-06-20
+
+### Added
+
+- `scripts/test-validator.sh`: regression smoke for copying a new
+  doc-versioned template file into a downstream project whose `VERSION` differs
+  from LLM-DocKit's template version.
+
+### Changed
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-049 records the MED/ForgeOS rollout
+  failure where `docs/integrations/CODEX.md` arrived with the template version
+  marker and triggered post-sync rollback.
+- `docs/llm/DECISIONS.md`: D-014 records that copied doc-version markers are
+  normalized to the downstream project version during sync.
+
+### Fixed
+
+- `scripts/dockit-sync.sh`: copy-strategy files that contain
+  `<!-- doc-version: X.Y.Z -->` are normalized to the downstream project's
+  `VERSION` before post-sync validation. This prevents new version-tracked docs
+  such as `docs/integrations/CODEX.md` from causing immediate rollback in
+  adopters with their own SemVer line.
+
 ## [4.12.0] - 2026-06-19
 
 ### Added

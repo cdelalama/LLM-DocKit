@@ -247,6 +247,42 @@ EOF
     git -C "$_repo" commit -qm initial
 }
 
+init_sync_versioned_doc_repo() {
+    _repo="$1"
+    mkdir -p "$_repo/docs" "$_repo/scripts"
+
+    printf '0.1.0\n' >"$_repo/VERSION"
+    cat >"$_repo/LLM_START_HERE.md" <<'EOF'
+<!-- doc-version: 0.1.0 -->
+# Versioned adopter start guide
+
+<!-- DOCKIT-TEMPLATE:START footer -->
+---
+Old footer text.
+<!-- DOCKIT-TEMPLATE:END footer -->
+EOF
+
+    cat >"$_repo/.dockit-enabled" <<'EOF'
+enabled: true
+EOF
+
+    cat >"$_repo/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+EOF
+
+    cat >"$_repo/docs/version-sync-manifest.yml" <<'EOF'
+targets:
+- path: VERSION           marker: version-file
+- path: LLM_START_HERE.md marker: html-comment
+EOF
+
+    git -C "$_repo" init -q
+    git -C "$_repo" config user.email smoke@example.invalid
+    git -C "$_repo" config user.name Smoke
+    git -C "$_repo" add .
+    git -C "$_repo" commit -qm initial
+}
+
 init_orientation_drift_repo() {
     _repo="$1"
     _mode="$2"
@@ -703,6 +739,24 @@ else
         } >"$OUT.tmp"
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-sync appends missing full-adopter sections without footer"
+    fi
+
+    SYNC_VERSIONED_REPO="$TMP_ROOT/sync-versioned-doc"
+    init_sync_versioned_doc_repo "$SYNC_VERSIONED_REPO"
+    if "$SYNC_TOOL" --init-state --project "$SYNC_VERSIONED_REPO" >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --apply --project "$SYNC_VERSIONED_REPO" >"$OUT" 2>&1 \
+        && grep -q '<!-- doc-version: 0.1.0 -->' "$SYNC_VERSIONED_REPO/docs/integrations/CODEX.md" \
+        && sh -c "cd '$SYNC_VERSIONED_REPO' && scripts/check-version-sync.sh" >"$OUT" 2>&1; then
+        note_pass "dockit-sync normalizes copied doc-version markers to project version"
+    else
+        {
+            echo "dockit-sync did not normalize copied doc-version markers"
+            [ -f "$SYNC_VERSIONED_REPO/docs/integrations/CODEX.md" ] && sed -n '1,40p' "$SYNC_VERSIONED_REPO/docs/integrations/CODEX.md"
+            [ -f "$SYNC_VERSIONED_REPO/docs/version-sync-manifest.yml" ] && sed -n '1,80p' "$SYNC_VERSIONED_REPO/docs/version-sync-manifest.yml"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync normalizes copied doc-version markers to project version"
     fi
 fi
 
