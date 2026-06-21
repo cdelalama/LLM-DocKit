@@ -1,4 +1,4 @@
-<!-- doc-version: 4.12.1 -->
+<!-- doc-version: 4.12.2 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
@@ -7,6 +7,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 **Primary candidate closed in this session; operator chooses follow-up scope at next session open:**
 
+1. **Closed: DF-050 / v4.12.2 session-start onboarding wording** — `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` now state that the mandatory full reading order is session-start scoped, not per-turn. Later turns use stale-read re-verification instead: current clock before writing Trace, `git status`, current HEAD, and files directly relevant to the new request. D-015 records the rule. The D-007 mid-session escape remains: when scope widens or onboarding files change, reload onboarding and declare `Onboarding loaded (mid-session).`
 1. **Closed: DF-049 / v4.12.1 copied doc-version normalization** — `scripts/dockit-sync.sh` now normalizes `<!-- doc-version: X.Y.Z -->` markers in copy-strategy files to the downstream project's `VERSION` immediately after copying and before post-sync validation. MED and ForgeOS surfaced the bug during v4.12.0 rollout when new `docs/integrations/CODEX.md` arrived with LLM-DocKit's `4.12.0` marker and triggered downstream `check-version-sync` rollback. D-014 records the rule: copied doc markers are downstream-owned, while sync state `template_version` remains the upstream template version. `scripts/test-validator.sh` now has a regression smoke for this exact case.
 1. **Closed: DF-037 / Codex CLI lifecycle verification** — a fresh Codex CLI two-turn observation on 2026-06-21 verified that the v4.12.0 `--human` hook fires once at SessionStart and does not re-emit the onboarding marker per turn. DF-037 is rejected as empirically not reproduced after the implemented fix; the original repeated-marker symptom came from the old `--json` misconfiguration that DF-036 cured. The Codex CLI axis is now closed: DF-036 and DF-038 implemented, DF-037 rejected after observation.
 1. **Closed: v4.12.0 Codex CLI integration axis** — `scripts/dockit-install-codex-hook.sh` installs a managed Codex CLI SessionStart hook that calls `scripts/dockit-bootstrap-context.sh --human` instead of Claude Code's `--json` envelope. `docs/integrations/CODEX.md` documents the tool-mode split, `docs/ROADMAP.md` records the remaining semantic-check and out-of-scope runtime boundaries, and D-013 captures the durable decision. Smoke coverage verifies replacing the old `--json` block and installer idempotence.
@@ -41,7 +42,8 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-06-21 - Codex GPT-5
-- Session Focus: **Closed DF-037 after empirical Codex CLI verification.** A fresh two-turn Codex CLI session after the v4.12.0 `--human` installer fix showed SessionStart onboarding is emitted once per session and then only remains in conversation history. DF-037 is rejected as not reproduced after the implemented fix; DF-036/DF-038 stay implemented, so the Codex CLI integration axis is complete.
+- Session Focus: **Cut v4.12.2 clarifying session-start onboarding scope.** DF-050 records the ForgeOS over-compliance case where an LLM reread full onboarding on a later turn despite no new SessionStart hook payload. D-015 now states that full onboarding is mandatory once per session; later turns re-check volatile state and relevant files, and only widened scope uses `Onboarding loaded (mid-session).`
+- Previous (2026-06-21): Closed DF-037 after empirical Codex CLI verification; pushed `715e358`.
 - Previous (2026-06-20): Cut v4.12.1 closing DF-049 after MED/ForgeOS exposed copied doc-version rollback during v4.12.0 rollout; pushed `283f9f0`.
 - Previous (2026-06-19): Cut v4.12.0 closing the Codex CLI integration axis from DF-036/DF-038; pushed `17c2f50`.
 - Previous (2026-06-19): Cut v4.11.1 closing DF-048 from MED Trace feedback; pushed `70e8528`.

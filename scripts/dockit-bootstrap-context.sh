@@ -225,8 +225,15 @@ Protocol:
       'Onboarding skipped: <reason>' for trivial edits / syntax questions
         that do not depend on architectural context.
   - 'Onboarding skipped' without a reason is not acceptable.
-  - If the user's request later widens scope, read the onboarding then
-    and switch to 'Onboarding loaded (mid-session).'
+  - This reading order is mandatory once at session start, not on every turn.
+  - If you already loaded it in this same conversation and no relevant
+    onboarding file changed, do not re-read the full list on later turns.
+  - On later turns, follow the stale-read re-verification rule: re-check the
+    current clock before writing Trace, git status, current HEAD, and files
+    directly relevant to the new request.
+  - If the user's request later widens scope or repo state/doc changes make the
+    prior onboarding stale, read the onboarding then and switch to
+    'Onboarding loaded (mid-session).'
 
 This message is emitted by scripts/dockit-bootstrap-context.sh. To change
 the reading order, edit LLM_START_HERE.md (the script reads it dynamically)."

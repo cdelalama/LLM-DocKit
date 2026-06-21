@@ -702,3 +702,53 @@ tell whether a project is CURRENT or OUTDATED.
 - This rule applies to HTML doc-version markers only. It does not rewrite
   project-specific semantic version fields such as `package.json` unless those
   files are also explicitly managed by the project's version tooling.
+
+---
+
+## D-015 - Mandatory onboarding is session-start, not per-turn
+
+**Status:** accepted
+
+### Decision
+The mandatory `LLM_START_HERE.md` reading order is a session-start
+requirement. An agent that has already loaded the onboarding in the same
+conversation must not re-read the full onboarding list on every later turn
+unless the operator widens scope or a relevant onboarding file changed.
+
+Later turns use targeted stale-read re-verification instead: re-check the
+current clock before writing Trace, `git status`, current HEAD, and any files
+directly relevant to the new request.
+
+### Context
+D-007 and DF-033 made onboarding mechanical through SessionStart hooks. D-013
+and DF-036/DF-038 then added the Codex CLI installer and fixed the Codex output
+mode to use `--human`.
+
+DF-037 was empirically rejected on 2026-06-21: a fresh Codex CLI two-turn
+session showed the SessionStart payload firing once, with no per-turn
+re-emission. The payload persists in conversation history naturally.
+
+A later ForgeOS session showed the remaining problem: an LLM reread the full
+onboarding on a later turn by interpreting "MUST read" as "MUST read every
+turn", even though no new hook lifecycle event had been verified. That is a
+wording failure, not a hook lifecycle failure.
+
+### Rationale
+Full onboarding rereads on every turn waste operator time and obscure the real
+per-turn discipline DocKit needs: stale-read re-verification of volatile state.
+DF-044 already established that older Trace reports and remembered repo state
+must be rechecked before acting. This decision names the boundary between the
+two protocols:
+
+- session start: load the full onboarding order;
+- later turns: re-check volatile state and directly relevant files;
+- widened scope: reload onboarding and declare `Onboarding loaded
+  (mid-session).`
+
+### Implications
+- `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` must state this
+  session-start boundary explicitly.
+- No validator or hook lifecycle change is required.
+- Downstream adopters receive the wording through normal `dockit-sync`.
+- Future onboarding refinements should preserve the distinction between full
+  session-start context loading and targeted per-turn re-verification.

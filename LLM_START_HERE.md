@@ -1,4 +1,4 @@
-<!-- doc-version: 4.12.1 -->
+<!-- doc-version: 4.12.2 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -13,6 +13,12 @@ Recommended reading order:
 5. docs/llm/README.md (LLM docs index)
 6. docs/llm/HANDOFF.md — current work state. Read the **Open work — next concrete step** section near the top first; it is the canonical declaration of "what to do next" and must name concrete file paths inside the repo. The static check `scripts/dockit-validate-session.sh --check orientation` enforces that contract.
 7. docs/llm/DECISIONS.md (stable rationale; link from HANDOFF)
+
+Session-start scope:
+- This reading order is mandatory once at session start, not on every turn.
+- If you already loaded it in this same conversation and no relevant onboarding file changed, do not re-read the full list on later turns.
+- For later turns, follow the stale-read re-verification rule: re-check the current clock before writing Trace, `git status`, current HEAD, and any files directly relevant to the new request.
+- Re-read the full onboarding only when the operator explicitly widens scope or when repo state/doc changes make the prior onboarding stale. In that case begin with `Onboarding loaded (mid-session).`
 
 ## Critical Rules (Non-Negotiable)
 

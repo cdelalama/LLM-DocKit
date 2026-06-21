@@ -4,6 +4,30 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.12.2] - 2026-06-21
+
+### Added
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-050 records the ForgeOS-originated
+  over-compliance case where an LLM reread full onboarding on a later turn even
+  though no new SessionStart hook payload fired.
+- `docs/llm/DECISIONS.md`: D-015 records that mandatory onboarding is
+  session-start scoped, while later turns use targeted stale-read
+  re-verification.
+
+### Changed
+
+- `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh`: clarify that
+  the full reading order is mandatory once per session, not per turn. Later
+  turns should re-check volatile state and directly relevant files instead of
+  rereading every onboarding document.
+
+### Fixed
+
+- Reduced onboarding over-compliance in LLM tools that interpreted "MUST read"
+  as "read every turn" after the hook payload had already loaded for the
+  session.
+
 ## [4.12.1] - 2026-06-20
 
 ### Added

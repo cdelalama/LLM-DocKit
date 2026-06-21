@@ -1868,3 +1868,41 @@ downstream `VERSION` immediately after copying and before post-sync validation.
 `scripts/test-validator.sh` now reproduces the failure with a synthetic
 versioned adopter and asserts that the copied `docs/integrations/CODEX.md`
 marker is rewritten to the adopter's version.
+
+## DF-050 - Mandatory onboarding wording can be over-applied per turn
+
+- Source: ForgeOS LLM session, cross-validated by LLM-DocKit Codex CLI
+  lifecycle verification
+- Date observed: 2026-06-21
+- Category: protocol wording / usability
+- Status: implemented (4.12.2)
+- Related: DF-033, DF-037, DF-044, D-007, D-013, D-015
+
+Observation: The SessionStart payload and `LLM_START_HERE.md` require LLMs to
+read the onboarding order at session start. A ForgeOS session showed an LLM
+interpreting that "MUST read" rule as a per-turn obligation and rereading the
+full onboarding list on a later turn, even though no new hook lifecycle event
+or new `SESSION-START ONBOARDING` block had been verified.
+
+This happened after DF-037 had already shown the opposite lifecycle fact in a
+fresh Codex CLI session: with the v4.12.0 `--human` fix, SessionStart onboarding
+fires once per session and then remains only in conversation history. The
+remaining fault is wording. The protocol did not explicitly distinguish
+session-start mandatory reading from later-turn stale-read re-verification.
+
+Protocol implication:
+
+- `LLM_START_HERE.md` and the bootstrap payload must state explicitly that the
+  full reading order is mandatory once at session start, not on every turn.
+- Later turns should follow the stale-read re-verification rule from DF-044:
+  re-check current clock before writing Trace, `git status`, current HEAD, and
+  files directly relevant to the new request.
+- The D-007 mid-session escape remains valid: if the operator widens scope or a
+  relevant onboarding file changes, re-read the onboarding and declare
+  `Onboarding loaded (mid-session).`
+- No validator or hook lifecycle change is needed.
+
+Mitigation in source project: shipped in v4.12.2. `LLM_START_HERE.md` and
+`scripts/dockit-bootstrap-context.sh` now describe the session-start boundary
+and the later-turn re-verification rule explicitly. Downstream adopters receive
+the wording on the next `dockit-sync`.
