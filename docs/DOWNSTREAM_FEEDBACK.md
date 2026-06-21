@@ -1331,7 +1331,7 @@ Note on protocol-recognition: this DF aggregates four concurrent findings into o
 - Source: operator homelab (`~/.codex/config.toml`); observed from a `hermes-lab` session on 2026-05-17
 - Date observed: 2026-05-17
 - Category: usability
-- Status: open
+- Status: implemented (4.12.0)
 - Related: DF-033, DF-037, DF-038
 
 Observation: `~/.codex/config.toml` registers the SessionStart hook with the command:
@@ -1359,7 +1359,7 @@ old `--json` hook with a managed `--human` hook.
 - Source: operator homelab Codex CLI; observed from a `hermes-lab` session on 2026-05-17
 - Date observed: 2026-05-17
 - Category: gap
-- Status: open (requires fresh Codex CLI verification after DF-036 mitigation)
+- Status: rejected (empirically not reproduced after v4.12.0 `--human` fix; verified 2026-06-21 in a fresh Codex CLI two-turn session)
 - Related: DF-033, DF-036
 
 Observation: Operator reports that Codex CLI prepends "Onboarding loaded." to every reply within a single session, not only to the first substantive reply as the DF-033 protocol specifies. Claude Code, running the same script via its SessionStart hook, only emits the marker once per session. The divergence implicates either Codex CLI hook lifecycle semantics or the way Codex CLI handles the SessionStart output. Hypothesised causes:
@@ -1370,17 +1370,26 @@ Observation: Operator reports that Codex CLI prepends "Onboarding loaded." to ev
 
 The `[hooks.state]` section of `~/.codex/config.toml` only tracks `enabled` and `trusted_hash`. No per-session firing tracker exists in the config, so the config alone cannot disambiguate.
 
-Empirical test required: apply the DF-036 mitigation (`--json` → `--human`), open a fresh Codex CLI session, observe whether the marker still appears in turn 2+. If yes, the cause is upstream Codex behaviour, not the flag choice.
+Empirical test result: after applying the DF-036 mitigation (`--json` →
+`--human`), a fresh two-turn Codex CLI session on 2026-06-21 did not re-emit
+the marker on turn 2. The cause was the old flag choice, not upstream Codex
+per-turn SessionStart behaviour.
 
 Protocol implication:
 - If verified that Codex re-fires or re-injects per turn, `dockit-bootstrap-context.sh` should grow a Codex-specific output mode that short-circuits subsequent invocations within a single session via a marker file (e.g., `/tmp/dockit-onboarding-marker-${session_id}` or equivalent). The script already has the structure to support multiple output modes; add `--codex` as a third mode tracking state via filesystem.
 - LLM-DocKit should publish a short table of supported LLMs vs hook lifecycle behaviour (Claude Code, Codex CLI, Cursor, etc.) in `docs/integrations/`, so future protocol additions know the cross-LLM contract.
 - This DF is gated on DF-036 being applied first — without the `--human` fix, the diagnosis can't isolate whether the per-turn behaviour is the script's JSON output being misparsed every turn or genuinely Codex semantics.
 
-Mitigation in source project: DF-036 is fixed in 4.12.0. The remaining work is
-empirical: open a fresh Codex CLI session after the installer has run and
-observe whether `Onboarding loaded.` still appears after turn 1. If it does,
-file the observed lifecycle behavior before adding a stateful `--codex` mode.
+Mitigation in source project: rejected after the required empirical test.
+DF-036 was fixed in 4.12.0 by switching the Codex CLI hook to `--human`. A
+fresh Codex CLI session on 2026-06-21 showed the SessionStart payload firing
+once at session start and persisting only as conversation history. On the
+second turn the observer reported: "No. En este segundo turno no veo un nuevo
+bloque SESSION-START ONBOARDING (...)." HEAD verification in that same response
+matched `283f9f09ea2a66e9aa5ff0daf4078d8f0b04ca73`, so the observation was a
+real repo-oriented answer, not boilerplate. No stateful `--codex` mode is
+needed. DF-036, DF-037, and DF-038 now close the Codex CLI integration axis:
+two implemented, one empirically not reproduced after the implemented fix.
 
 ## DF-038 — No installer script registers the Codex CLI integration of the DF-033 onboarding hook
 

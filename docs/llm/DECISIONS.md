@@ -654,10 +654,10 @@ LMConsole surface.
   Claude-vs-Codex mode split.
 - `scripts/dockit-install-codex-hook.sh` replaces the old unmanaged
   LLM-DocKit block when present and writes a managed hook block.
-- DF-037 is not closed by the installer alone. After installing `--human`, open
-  a fresh Codex CLI session and observe whether the onboarding marker still
-  repeats on later turns. If it does, add a Codex-specific stateful mode based
-  on observed hook lifecycle behavior.
+- DF-037 was empirically rejected on 2026-06-21 after the `--human` installer
+  fix: a fresh Codex CLI two-turn session showed SessionStart firing once, with
+  no per-turn re-emission. The repeated marker symptom was caused by the old
+  `--json` misconfiguration, so no Codex-specific stateful mode is needed.
 - Home Infra should not maintain an independent Codex hook. It can rely on the
   LLM-DocKit installer directly or through ForgeOS bootstrap.
 
