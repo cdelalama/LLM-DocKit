@@ -109,7 +109,7 @@ fi
 # -- Trace Protocol config -------------------------------------------------
 #
 # Chat-side Trace is default-on because the operator's normal workflow uses
-# executor/auditor LLM windows. Projects that do not want the ceremony can set:
+# parallel LLM windows. Projects that do not want the ceremony can set:
 #
 #   trace_protocol:
 #     enabled: false
@@ -248,12 +248,19 @@ if trace_chat_enabled; then
     MESSAGE="$MESSAGE
 
 Trace Protocol:
-  - For executor/auditor work, begin substantive execution reports and audit
-    verdicts with a compact Trace header:
+  - Every substantive assistant turn in a DocKit-governed session must begin
+    with a compact Trace header. This includes execution, audit, design
+    opinions, recommendations, brainstorming, clarifying questions, status
+    reports, and go/no-go calls.
+  - A turn is substantive if the operator might need to find it when returning
+    to a multi-window workflow: it contains a decision, opinion,
+    recommendation, status, audit, action, or clarifying question.
+    Non-substantive turns such as a pure acknowledgement under 50 characters do
+    not require Trace, but emitting Trace is always safe.
       Trace
-      Role: executor|auditor
+      Role: executor|auditor|advisor
       Sent: YYYY-MM-DD HH:MM:SS <local-tz> (HH:MM:SS UTC)
-      Subject: current task or commit hash/title being implemented/audited
+      Subject: current task, question, recommendation, or commit hash/title being implemented/audited
       Resulting state: HEAD=<hash|unchanged (hash)>; version=<version|none>; gate=<opened|cleared|blocked|superseded|next-slice>; <short note>
       Repo state: local branch vs origin and worktree status verified now
       Validation: checks run and result

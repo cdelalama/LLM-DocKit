@@ -23,7 +23,7 @@ while [ $# -gt 0 ]; do
             ;;
         --role)
             ROLE="${2:-}"
-            [ -n "$ROLE" ] || { echo "ERROR: --role requires executor|auditor" >&2; exit 2; }
+            [ -n "$ROLE" ] || { echo "ERROR: --role requires executor|auditor|advisor" >&2; exit 2; }
             shift 2
             ;;
         --subject)
@@ -56,7 +56,7 @@ Usage: scripts/dockit-trace-status.sh [options]
 
 Options:
   --project PATH       Project root (default: git top-level or cwd)
-  --role ROLE          executor|auditor (default: executor)
+  --role ROLE          executor|auditor|advisor (default: executor)
   --subject TEXT       Subject line for the Trace header
   --validation TEXT    Validation summary
   --next TEXT          Next gate text
@@ -73,8 +73,8 @@ EOF
 done
 
 case "$ROLE" in
-    executor|auditor) ;;
-    *) echo "ERROR: --role must be executor or auditor" >&2; exit 2 ;;
+    executor|auditor|advisor) ;;
+    *) echo "ERROR: --role must be executor, auditor, or advisor" >&2; exit 2 ;;
 esac
 
 if [ -z "$PROJECT_ROOT" ]; then

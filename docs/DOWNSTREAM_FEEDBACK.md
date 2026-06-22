@@ -1906,3 +1906,48 @@ Mitigation in source project: shipped in v4.12.2. `LLM_START_HERE.md` and
 `scripts/dockit-bootstrap-context.sh` now describe the session-start boundary
 and the later-turn re-verification rule explicitly. Downstream adopters receive
 the wording on the next `dockit-sync`.
+
+## DF-051 - Trace scope "executor/auditor only" permits skip-rationalization
+
+- Source: cross-LLM observation across LLM-DocKit, ForgeOS, and home-infra
+  sessions
+- Date observed: 2026-06-22
+- Category: protocol wording / multi-window orientation
+- Status: implemented (4.12.3)
+- Related: DF-040, DF-044, DF-050, D-008, D-016
+
+Observation: Trace Protocol v1.0-v1.3 said to begin "execution reports" and
+"audit verdicts" with Trace. That wording let agents rationalize skipping Trace
+when the message was "only" a design opinion, recommendation, brainstorming
+turn, status update, or clarifying question.
+
+The operator's actual need is broader: when returning to several LLM windows,
+they need every meaningful assistant message to say what role it played, when
+it was sent, what state it leaves true, and what should happen next. A design
+recommendation that produces no commit can still be the latest operational
+state in the human workflow. Durable HANDOFF/HISTORY Trace cannot cover those
+no-commit turns.
+
+Protocol implication:
+
+- Chat-side Trace scope should be "every substantive assistant turn in a
+  DocKit-governed session", not only executor/auditor reports.
+- A turn is substantive if the operator might need to find it when returning to
+  a multi-window workflow: it contains a decision, opinion, recommendation,
+  status, audit, action, or clarifying question.
+- Non-substantive turns such as pure acknowledgements under 50 characters do
+  not require Trace, but emitting Trace is always safe.
+- The controlled role vocabulary should be `executor|auditor|advisor`. `advisor`
+  covers design opinions, recommendations, brainstorming, status, go/no-go
+  calls, and clarifying questions.
+- No new validator enforcement is possible for chat output today. The cure is
+  to close the wording loophole in `LLM_START_HERE.md` and the SessionStart
+  payload.
+- The generated Trace helper must also accept `advisor`, otherwise the new
+  vocabulary would be documented but not tool-supported.
+
+Mitigation in source project: shipped in v4.12.3. `LLM_START_HERE.md`,
+`scripts/dockit-bootstrap-context.sh`, `scripts/dockit-trace-status.sh`,
+`scripts/dockit-validate-session.sh`, D-008, and D-016 now define Trace
+Protocol v1.4: every substantive assistant turn starts with Trace, with
+`advisor` as the non-acting role.

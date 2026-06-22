@@ -990,7 +990,7 @@ check_template_residue() {
 #     remote ancestry is checked when origin refs are available.
 #   - HISTORY.md entries dated >= trace_protocol.since that reference backticked
 #     hashes include an inline Trace footer:
-#       Trace: role=executor|auditor; commits=...; state=...; validation=...; next=...
+#       Trace: role=executor|auditor|advisor; commits=...; state=...; validation=...; next=...
 
 check_trace_protocol() {
     if ! should_run "trace-protocol"; then return; fi
@@ -1030,8 +1030,8 @@ check_trace_protocol() {
         if [ -z "$_anchor" ]; then
             _trace_append_error "HANDOFF.md is missing required ## Trace Anchor section"
         else
-            if ! printf '%s\n' "$_anchor" | grep -qE 'Role:[[:space:]]*(executor|auditor)'; then
-                _trace_append_error "Trace Anchor missing Role: executor|auditor"
+            if ! printf '%s\n' "$_anchor" | grep -qE 'Role:[[:space:]]*(executor|auditor|advisor)'; then
+                _trace_append_error "Trace Anchor missing Role: executor|auditor|advisor"
             fi
             if ! printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target|Trace target|Subject):'; then
                 _trace_append_error "Trace Anchor missing Trace target/Subject"
@@ -1082,7 +1082,7 @@ check_trace_protocol() {
             _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
             [ -z "$_entry_hashes" ] && continue
 
-            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor); commits=[^;]+; state=[^;]+; validation=[^;]+; next=.+'; then
+            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor|advisor); commits=[^;]+; state=[^;]+; validation=[^;]+; next=.+'; then
                 _trace_append_error "HISTORY entry $_date references backticked commit hash(es) but lacks inline Trace footer"
                 continue
             fi

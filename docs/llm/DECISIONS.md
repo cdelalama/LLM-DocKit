@@ -224,9 +224,9 @@ This decision is the **inverse counterpart of D-005** (which established that se
 **Status:** accepted
 
 ### Decision
-LLM-DocKit ships a Trace Protocol for multi-LLM executor/auditor workflows. It has two halves:
+LLM-DocKit ships a Trace Protocol for multi-LLM workflows. It has two halves:
 
-1. **Chat orientation**: substantive execution reports and audit verdicts begin with a compact `Trace` header (role, timestamp, subject, resulting state, repo state, validation, next gate), followed by normal prose. This is default-on in SessionStart onboarding and can be disabled with `trace_protocol.enabled: false`.
+1. **Chat orientation**: every substantive assistant turn in a DocKit-governed session begins with a compact `Trace` header (role, timestamp, subject, resulting state, repo state, validation, next gate), followed by normal prose. This is default-on in SessionStart onboarding and can be disabled with `trace_protocol.enabled: false`.
 2. **Durable validation**: when a project explicitly sets `trace_protocol.enabled: true` and `trace_protocol.since: YYYY-MM-DD` in `.dockit-config.yml`, `dockit-validate-session.sh --check trace-protocol` enforces a `## Trace Anchor` in HANDOFF and inline `Trace:` footers in qualifying HISTORY entries.
 
 The HISTORY footer intentionally uses a compact one-line field set (`role`, `commits`, `state`, `validation`, `next`) instead of copying the full chat header. HISTORY is an append-only one-line log by DocKit contract; multiline trace blocks would make entries harder to scan and more fragile to parse.
@@ -346,6 +346,27 @@ an older Trace block must re-check `git status`, `git log -1`, and the current
 clock before trusting its `Repo state`. This is a chat-side discipline loaded
 by SessionStart; it is not validator-enforceable because chat history is not a
 repo artifact.
+
+### v1.4 Refinement - Every substantive turn
+v4.12.3 expands the chat-side scope after repeated empirical failures where
+agents omitted Trace by reasoning that a message was "only" opinion, design, or
+recommendation rather than an execution report or audit verdict.
+
+The refined rule is:
+
+```text
+Every substantive assistant turn in a DocKit-governed session begins with Trace.
+```
+
+A turn is substantive if the operator might need to find it when returning to
+a multi-window workflow: it contains a decision, opinion, recommendation,
+status, audit, action, or clarifying question. Non-substantive turns such as a
+pure acknowledgement under 50 characters do not require Trace, but emitting
+Trace is always safe.
+
+The role vocabulary is controlled: `executor`, `auditor`, or `advisor`.
+`advisor` is the catch-all for design, recommendation, brainstorming, status,
+and clarifying-question turns that do not produce commits.
 
 ---
 
@@ -752,3 +773,55 @@ two protocols:
 - Downstream adopters receive the wording through normal `dockit-sync`.
 - Future onboarding refinements should preserve the distinction between full
   session-start context loading and targeted per-turn re-verification.
+
+---
+
+## D-016 - Trace applies to every substantive turn, not only executor/auditor reports
+
+**Status:** accepted
+
+### Decision
+Trace Protocol v1.4 expands chat-side scope. Every substantive assistant turn
+in a DocKit-governed session must start with Trace, including design opinions,
+recommendations, brainstorming, clarifying questions, status reports, and
+go/no-go calls. It is not limited to execution reports and audit verdicts.
+
+The controlled role vocabulary is:
+
+- `executor`: touches files, runs commands, implements, commits, or pushes.
+- `auditor`: verifies, audits, reproduces, or ratifies a claim or cut.
+- `advisor`: gives design opinions, recommendations, brainstorming, status,
+  go/no-go calls, or clarifying questions without acting on files.
+
+### Context
+The original v1 wording focused on "execution reports" and "audit verdicts".
+That allowed a recurring rationalization: an agent could classify a message as
+"only opinion", "only recommendation", or "only brainstorming" and omit Trace.
+
+The operator's actual coordination problem is broader. In multi-window work,
+they need to return later and identify which message was latest, which role it
+played, what state it left true, and what should happen next. Brainstorming and
+design turns can be just as important to that orientation as commit-producing
+turns.
+
+### Rationale
+Durable Trace in HANDOFF/HISTORY protects repo-side auditability, but it only
+exists when a session changes artifacts. Chat Trace is the operational compass
+for live multi-window workflows, including sessions that produce no commit.
+
+LLM-DocKit cannot currently enforce chat headers mechanically after the
+assistant message is written. The best available cure is to remove the
+interpretive loophole from the SessionStart contract and make the intended
+scope explicit.
+
+### Implications
+- `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` must define
+  substantive turns and the three-role vocabulary.
+- `scripts/dockit-trace-status.sh` must accept all three chat roles so agents
+  can generate verified Trace scaffolds for advisory turns as well as
+  executor/auditor turns.
+- Durable Trace remains governed by `trace_protocol.enabled: true`, but its
+  role parser accepts the same three-role vocabulary to avoid a chat/durable
+  mismatch.
+- Future role proliferation belongs in ForgeOS/LMConsole or `llm-council`, not
+  in DocKit's substrate vocabulary.

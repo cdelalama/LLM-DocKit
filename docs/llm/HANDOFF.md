@@ -1,4 +1,4 @@
-<!-- doc-version: 4.12.2 -->
+<!-- doc-version: 4.12.3 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
@@ -7,6 +7,7 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 **Primary candidate closed in this session; operator chooses follow-up scope at next session open:**
 
+1. **Closed: DF-051 / v4.12.3 Trace v1.4 substantive-turn scope** — `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` now require Trace for every substantive assistant turn in a DocKit-governed session, not only execution reports or audit verdicts. A substantive turn is any turn the operator might need to find when returning to a multi-window workflow: decision, opinion, recommendation, status, audit, action, or clarifying question. Role vocabulary is now `executor|auditor|advisor`; `scripts/dockit-trace-status.sh` and durable Trace validation accept all three roles, with smoke coverage for `advisor`. D-016 records the durable rule.
 1. **Closed: DF-050 / v4.12.2 session-start onboarding wording** — `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` now state that the mandatory full reading order is session-start scoped, not per-turn. Later turns use stale-read re-verification instead: current clock before writing Trace, `git status`, current HEAD, and files directly relevant to the new request. D-015 records the rule. The D-007 mid-session escape remains: when scope widens or onboarding files change, reload onboarding and declare `Onboarding loaded (mid-session).`
 1. **Closed: DF-049 / v4.12.1 copied doc-version normalization** — `scripts/dockit-sync.sh` now normalizes `<!-- doc-version: X.Y.Z -->` markers in copy-strategy files to the downstream project's `VERSION` immediately after copying and before post-sync validation. MED and ForgeOS surfaced the bug during v4.12.0 rollout when new `docs/integrations/CODEX.md` arrived with LLM-DocKit's `4.12.0` marker and triggered downstream `check-version-sync` rollback. D-014 records the rule: copied doc markers are downstream-owned, while sync state `template_version` remains the upstream template version. `scripts/test-validator.sh` now has a regression smoke for this exact case.
 1. **Closed: DF-037 / Codex CLI lifecycle verification** — a fresh Codex CLI two-turn observation on 2026-06-21 verified that the v4.12.0 `--human` hook fires once at SessionStart and does not re-emit the onboarding marker per turn. DF-037 is rejected as empirically not reproduced after the implemented fix; the original repeated-marker symptom came from the old `--json` misconfiguration that DF-036 cured. The Codex CLI axis is now closed: DF-036 and DF-038 implemented, DF-037 rejected after observation.
@@ -41,8 +42,9 @@ A multi-day deliberation on 2026-05-02→04 produced cross-repo proposals and su
 DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`. They remain useful evidence for the pending ForgeOS ownership decision and for `llm-council` corpus/curation work, but they no longer drive a DocKit consensus runtime.
 
 ## Current Status
-- Last Updated: 2026-06-21 - Codex GPT-5
-- Session Focus: **Cut v4.12.2 clarifying session-start onboarding scope.** DF-050 records the ForgeOS over-compliance case where an LLM reread full onboarding on a later turn despite no new SessionStart hook payload. D-015 now states that full onboarding is mandatory once per session; later turns re-check volatile state and relevant files, and only widened scope uses `Onboarding loaded (mid-session).`
+- Last Updated: 2026-06-22 - Codex GPT-5
+- Session Focus: **Cut v4.12.3 clarifying Trace scope for every substantive turn.** DF-051 records the repeated skip-rationalization where agents omitted Trace from opinion/design/recommendation turns because the old wording named only execution reports and audit verdicts. Trace Protocol v1.4 now defines substantive turns and the `executor|auditor|advisor` role vocabulary.
+- Previous (2026-06-21): Cut v4.12.2 clarifying session-start onboarding scope; pushed `e303118`.
 - Previous (2026-06-21): Closed DF-037 after empirical Codex CLI verification; pushed `715e358`.
 - Previous (2026-06-20): Cut v4.12.1 closing DF-049 after MED/ForgeOS exposed copied doc-version rollback during v4.12.0 rollout; pushed `283f9f0`.
 - Previous (2026-06-19): Cut v4.12.0 closing the Codex CLI integration axis from DF-036/DF-038; pushed `17c2f50`.

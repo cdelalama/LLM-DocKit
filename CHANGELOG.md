@@ -4,6 +4,34 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.12.3] - 2026-06-22
+
+### Added
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-051 records the Trace scope gap where
+  agents could rationalize skipping chat Trace for opinions, recommendations,
+  brainstorming, or clarifying questions.
+- `docs/llm/DECISIONS.md`: D-016 records Trace Protocol v1.4: every
+  substantive assistant turn in a DocKit-governed session starts with Trace,
+  and the chat role vocabulary is `executor|auditor|advisor`.
+
+### Changed
+
+- `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh`: expand Trace
+  chat-side scope from executor/auditor reports to every substantive turn, with
+  a concrete definition of `substantive` for multi-window operator workflows.
+- `scripts/dockit-trace-status.sh`: accept the new `advisor` role so the
+  generated Trace scaffold matches Trace Protocol v1.4.
+- `scripts/dockit-validate-session.sh`: durable Trace role validation now
+  accepts the same `executor|auditor|advisor` vocabulary.
+
+### Fixed
+
+- Closed the wording loophole that let agents skip Trace by classifying a
+  message as "only opinion", "only design", or "only recommendation".
+- `scripts/test-validator.sh`: adds smoke coverage that both durable Trace and
+  `dockit-trace-status.sh --role advisor` accept the new role.
+
 ## [4.12.2] - 2026-06-21
 
 ### Added
