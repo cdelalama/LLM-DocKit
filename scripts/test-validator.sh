@@ -10,6 +10,7 @@ set -eu
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 VALIDATOR="$PROJECT_ROOT/scripts/dockit-validate-session.sh"
+SESSION_GATE="$PROJECT_ROOT/scripts/dockit-session-gate.sh"
 CHECK_VERSION="$PROJECT_ROOT/scripts/check-version-sync.sh"
 BUMP_VERSION="$PROJECT_ROOT/scripts/bump-version.sh"
 SYNC_TOOL="$PROJECT_ROOT/scripts/dockit-sync.sh"
@@ -152,6 +153,57 @@ EOF
     git -C "$_repo" config user.name Smoke
     git -C "$_repo" add .
     GIT_AUTHOR_DATE="${_date}T12:00:00Z" GIT_COMMITTER_DATE="${_date}T12:00:00Z" \
+        git -C "$_repo" commit -qm initial
+}
+
+init_gate_repo() {
+    _repo="$1"
+    mkdir -p "$_repo/docs/llm" "$_repo/docs" "$_repo/scripts"
+
+    cp "$VALIDATOR" "$_repo/scripts/dockit-validate-session.sh"
+    cp "$SESSION_GATE" "$_repo/scripts/dockit-session-gate.sh"
+    cp "$CHECK_VERSION" "$_repo/scripts/check-version-sync.sh"
+    chmod +x "$_repo/scripts/dockit-validate-session.sh" \
+        "$_repo/scripts/dockit-session-gate.sh" \
+        "$_repo/scripts/check-version-sync.sh"
+
+    cat >"$_repo/docs/llm/HANDOFF.md" <<'EOF'
+# Handoff
+
+## Open work -- next concrete step
+
+Touch `scripts/foo.sh`.
+
+- Last Updated: 2000-01-01
+EOF
+
+    cat >"$_repo/docs/llm/HISTORY.md" <<'EOF'
+# History
+
+- 2000-01-01 - Smoke - Initial entry. - Files: [scripts/foo.sh] - Version impact: no
+EOF
+
+    cat >"$_repo/docs/llm/DECISIONS.md" <<'EOF'
+# Decisions
+EOF
+
+    cat >"$_repo/scripts/foo.sh" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+    chmod +x "$_repo/scripts/foo.sh"
+
+    printf '0.1.0\n' >"$_repo/VERSION"
+    cat >"$_repo/docs/version-sync-manifest.yml" <<'EOF'
+targets:
+- path: VERSION marker: version-file
+EOF
+
+    git -C "$_repo" init -q
+    git -C "$_repo" config user.email smoke@example.invalid
+    git -C "$_repo" config user.name Smoke
+    git -C "$_repo" add .
+    GIT_AUTHOR_DATE="2000-01-01T12:00:00Z" GIT_COMMITTER_DATE="2000-01-01T12:00:00Z" \
         git -C "$_repo" commit -qm initial
 }
 
@@ -347,6 +399,105 @@ expect_pass "clean tree validates HANDOFF/HISTORY against last commit date, not 
 printf '\n# dirty\n' >>"$REFERENCE_DATE_REPO/scripts/foo.sh"
 expect_fail "dirty tree validates HANDOFF/HISTORY against wall clock" \
     "$VALIDATOR" --project "$REFERENCE_DATE_REPO" --quiet --check handoff-date --check history-entry
+
+if [ ! -x "$SESSION_GATE" ]; then
+    note_pass "session gate smokes skipped when gate script is absent"
+else
+    GATE_REPO="$TMP_ROOT/session-gate"
+    init_gate_repo "$GATE_REPO"
+    printf '\n# inherited dirty state\n' >>"$GATE_REPO/scripts/foo.sh"
+
+    printf '%s\n' '{"session_id":"unchanged","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    if printf '%s\n' '{"session_id":"unchanged","stop_hook_active":false}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && [ ! -s "$OUT" ] \
+        && [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/unchanged" ]; then
+        note_pass "session baseline lets inherited dirty read-only session stop"
+    else
+        note_fail "session baseline lets inherited dirty read-only session stop"
+    fi
+
+    printf '%s\n' '{"session_id":"changed-same-path","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    printf '\n# changed during session\n' >>"$GATE_REPO/scripts/foo.sh"
+    if printf '%s\n' '{"session_id":"changed-same-path","stop_hook_active":false}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && grep -q '"decision":"block"' "$OUT" \
+        && grep -q 'handoff-date' "$OUT" \
+        && grep -q 'Last Updated is 2000-01-01' "$OUT"; then
+        note_pass "session gate detects changes to an already-dirty path and reports real failures"
+    else
+        note_fail "session gate detects changes to an already-dirty path and reports real failures"
+    fi
+
+    if printf '%s\n' '{"session_id":"changed-same-path","stop_hook_active":true}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && [ ! -s "$OUT" ] \
+        && [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/changed-same-path" ]; then
+        note_pass "active Stop hook yields after one block and cleans its baseline"
+    else
+        note_fail "active Stop hook yields after one block and cleans its baseline"
+    fi
+
+    printf '%s\n' '{"session_id":"stable-on-compact","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    cp "$GATE_REPO/.git/.dockit/session-baselines/stable-on-compact/state" "$OUT.baseline"
+    printf '\n# post-baseline change\n' >>"$GATE_REPO/scripts/foo.sh"
+    printf '%s\n' '{"session_id":"stable-on-compact","source":"compact"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    printf '%s\n' '{"session_id":"stable-on-compact","source":"resume"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    if cmp -s "$OUT.baseline" "$GATE_REPO/.git/.dockit/session-baselines/stable-on-compact/state"; then
+        note_pass "compact and resume do not overwrite an existing baseline"
+    else
+        note_fail "compact and resume do not overwrite an existing baseline"
+    fi
+
+    printf '%s\n' '{"session_id":"parallel-a","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    printf '%s\n' '{"session_id":"parallel-b","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    if [ -f "$GATE_REPO/.git/.dockit/session-baselines/parallel-a/state" ] \
+        && [ -f "$GATE_REPO/.git/.dockit/session-baselines/parallel-b/state" ]; then
+        note_pass "parallel sessions keep isolated baselines"
+    else
+        note_fail "parallel sessions keep isolated baselines"
+    fi
+
+    printf '%s\n' '{"session_id":"untracked-only","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    printf 'draft\n' >"$GATE_REPO/untracked-draft.txt"
+    if printf '%s\n' '{"session_id":"untracked-only","stop_hook_active":false}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && [ ! -s "$OUT" ]; then
+        note_pass "session baseline explicitly excludes untracked files"
+    else
+        note_fail "session baseline explicitly excludes untracked files"
+    fi
+    rm -f "$GATE_REPO/untracked-draft.txt"
+
+    printf '%s\n' '{"session_id":"invalid-baseline","source":"startup"}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    printf 'invalid\n' >"$GATE_REPO/.git/.dockit/session-baselines/invalid-baseline/state"
+    if printf '%s\n' '{"session_id":"invalid-baseline","stop_hook_active":false}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && grep -q '"decision":"block"' "$OUT"; then
+        note_pass "invalid session baseline fails closed"
+    else
+        note_fail "invalid session baseline fails closed"
+    fi
+
+    mkdir -p "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline"
+    touch -t 200001010000 "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline"
+    printf '%s\n' '{"session_id":"prune-trigger","source":"startup"}' \
+        | DOCKIT_BASELINE_MAX_AGE_DAYS=7 "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    if [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline" ]; then
+        note_pass "session baseline writer prunes entries older than seven days"
+    else
+        note_fail "session baseline writer prunes entries older than seven days"
+    fi
+fi
 
 printf '\nchange\n' >>"$REPO/docs/llm/HANDOFF.md"
 expect_fail "env + modified HANDOFF does not skip" \
@@ -740,6 +891,7 @@ else
             /<!-- DOCKIT-TEMPLATE:START footer -->/ { footer = NR }
             END { exit !(trace > 0 && footer > 0 && trace < footer) }
         ' "$SYNC_FOOTER_REPO/LLM_START_HERE.md" \
+        && grep -q 'WARN: Sync applied successfully' "$OUT" \
         && ! grep -q 'CONFLICT\|ERROR' "$OUT"; then
         note_pass "dockit-sync inserts missing full-adopter sections before footer"
     else

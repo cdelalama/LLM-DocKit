@@ -1421,7 +1421,7 @@ does not own the broader operator runtime.
 - Source: LLM-DocKit itself (v4.8.0); observed across three `/brief` sessions on 2026-05-08, 2026-05-13, 2026-05-17
 - Date observed: 2026-05-17
 - Category: usability
-- Status: implemented (4.8.1; hardened in 4.8.2) — option (a) shipped in `scripts/dockit-validate-session.sh` plus `.claude/settings.json` Stop hook wiring. `check_handoff_date` and `check_history_entry` early-PASS only when BOTH gates are true: caller opts in via `DOCKIT_ALLOW_READ_ONLY_SKIP=1` and the repo has no staged or unstaged tracked-file diff (`git diff HEAD --quiet` and `git diff --cached --quiet`). Claude Code Stop hook opts in; CI and pre-commit do not. 4.8.2 moves the skip after target-file existence checks so clean malformed repos without HANDOFF/HISTORY still fail, and adds `scripts/test-validator.sh` to make the smoke matrix reproducible. Closes Case B (clean-start read-only session). Case C remains operator commit discipline.
+- Status: partially implemented — Case B closed in 4.8.1 and hardened in 4.8.2; Case C superseded by DF-052 and closed in 4.13.0. Option (a) shipped in `scripts/dockit-validate-session.sh` plus `.claude/settings.json` Stop hook wiring. `check_handoff_date` and `check_history_entry` early-PASS only when BOTH gates are true: caller opts in via `DOCKIT_ALLOW_READ_ONLY_SKIP=1` and the repo has no staged or unstaged tracked-file diff (`git diff HEAD --quiet` and `git diff --cached --quiet`). Claude Code Stop opts in; CI and pre-commit do not. 4.8.2 moved the skip after target-file existence checks and added `scripts/test-validator.sh`. This remains the correct cure for Case B; DF-052 replaces the discipline-only conclusion for inherited dirty state.
 - Related: DF-024, DF-034
 
 Observation: `scripts/dockit-validate-session.sh` enforces `check_handoff_date` (HANDOFF `Last Updated` matches today) and `check_history_entry` (HISTORY has an entry dated today) at Stop. These checks fire regardless of whether the session produced any tracked-file diff. The `/brief` skill is explicitly read-only on the project's docs (see `~/.claude/skills/brief/SKILL.md` *What NOT to do*: "Do not write update-HANDOFF-style bookkeeping just because this skill ran"), but the Stop hook does not know that. Result: a read-only `/brief` session is forced into a bookkeeping mini-update — refresh HANDOFF `Last Updated` to today and append a HISTORY entry that itself documents that this mini-update exists only to satisfy the validator.
@@ -1440,7 +1440,11 @@ Cross-LLM review of the original DF-039 (commit `ca264eb`, 2026-05-17) flagged t
 
 The two cases interact: if Case B is solved cleanly (escape fires, no mini-update generated, no diff at session close, no commit needed), Case C never materialises in subsequent sessions. The chain breaks at B. Case C only persists if either (i) the escape is not implemented and the bookkeeping is generated, OR (ii) the escape IS implemented but the operator runs a session that legitimately produces a HANDOFF/HISTORY edit and then exits without committing (covered by the operator-side push policy in `~/.claude/CLAUDE.md` *Push Policy* — commits go up immediately).
 
-Case C therefore does NOT need a separate validator-side fix; it needs commit discipline, which exists as a global rule. Documenting it explicitly in this DF avoids the trap of designing a more invasive fix for a symptom that disappears when the upstream case is closed.
+The original conclusion was that Case C did not need a separate validator-side
+fix and could rely on commit discipline. Home-infra later refuted that narrow
+conclusion after a successful sync left inherited tracked dirt for 17 days.
+DF-052 supersedes this paragraph with per-session state attribution; the Case B
+analysis and zero-diff cure remain valid.
 
 Protocol implication:
 
@@ -1474,9 +1478,11 @@ Implementation hints:
   4. **Modified unrelated file (e.g., `scripts/foo.sh`) + stale date + env var set** → FAIL (real work exists, must be documented).
   5. **Only untracked files (do-not-touch drafts) + stale date + env var set** → PASS (`git diff` ignores untracked).
   6. **Staged changes + stale date + env var set** → FAIL (`git diff --cached --quiet` fails).
-- CHANGELOG entry under `### Changed`: "Validator: `check_handoff_date` and `check_history_entry` skip on opt-in (`DOCKIT_ALLOW_READ_ONLY_SKIP=1`) zero-diff sessions. Claude Code Stop hook opts in; CI and pre-commit do not. Closes DF-039 Case B; Case C remains operator commit discipline."
+- Historical CHANGELOG entry under `### Changed`: "Validator: `check_handoff_date` and `check_history_entry` skip on opt-in (`DOCKIT_ALLOW_READ_ONLY_SKIP=1`) zero-diff sessions. Claude Code Stop hook opts in; CI and pre-commit do not. Closes DF-039 Case B." Case C is now superseded by DF-052.
 
-Mitigation in source project: none yet. Operator currently absorbs the bookkeeping cost on every read-only `/brief` session. The 2026-05-13 and 2026-05-17 HISTORY entries are themselves evidence of the cost (verbose self-referential entries that exist only to satisfy the validator). Until option (a) ships, the operator-side mitigation for Case C specifically is to always commit + push the mini-update before closing the session (already enforced by `~/.claude/CLAUDE.md` *Push Policy*); the 2026-05-13 case violated that and produced the 2026-05-17 recurrence.
+Mitigation in source project: Case B shipped in 4.8.1 and was hardened in
+4.8.2. Case C shipped in 4.13.0 through DF-052's per-session baseline and
+one-block Stop gate.
 
 ## DF-040 — Multi-LLM executor/auditor sessions need a Trace Protocol
 
@@ -1951,3 +1957,50 @@ Mitigation in source project: shipped in v4.12.3. `LLM_START_HERE.md`,
 `scripts/dockit-validate-session.sh`, D-008, and D-016 now define Trace
 Protocol v1.4: every substantive assistant turn starts with Trace, with
 `advisor` as the non-acting role.
+
+## DF-052 - Stop hook cannot attribute inherited dirt and ignores its anti-loop input
+
+- Source: home-infra after a successful LLM-DocKit sync left tracked changes uncommitted
+- Date observed: 2026-07-10
+- Category: hook lifecycle / validator attribution
+- Status: implemented (4.13.0)
+- Related: DF-027, DF-039, DF-046, D-002, D-005, D-017
+
+Observation: home-infra inherited tracked changes from a prior
+`dockit-sync --apply`. A later read-only session could not use DF-039's
+zero-diff escape, so `handoff-date` and `history-entry` validated against the
+wall clock and failed. The Stop hook then discarded validator output and
+always claimed HANDOFF/HISTORY were the problem. It also ignored Claude Code's
+stdin, including `stop_hook_active`, so repeated Stop invocations returned the
+same block until the harness intervened. Modern Claude Code documents a
+consecutive-block fuse (currently eight); relying on that fuse is not valid
+hook design.
+
+This refutes only DF-039 Case C's discipline-only closure. Case B's clean-start
+zero-diff escape remains correct and deployed.
+
+Protocol implication:
+
+- SessionStart records a baseline under
+  `.git/.dockit/session-baselines/<session_id>/state` containing HEAD and a
+  hash of the complete tracked diff.
+- Stop compares current HEAD and tracked diff with that baseline. An unchanged
+  baseline may skip only `handoff-date` and `history-entry`; all other checks
+  still run and report their real failure messages.
+- Baselines are isolated by sanitized `session_id`. `resume` and `compact` do
+  not overwrite existing state, invalid state fails closed, and entries older
+  than seven days are pruned on a later SessionStart.
+- Untracked files remain excluded, matching DF-039. This is explicit scope,
+  not accidental coverage; DF-027 remains the separate untracked-file risk.
+- Stop honors `stop_hook_active`: one actionable block is allowed, then the
+  interactive gate yields. Pre-commit and CI remain strict.
+- `dockit-sync --apply` emits a loud post-success warning to review and commit
+  the resulting changes. It does not stage or commit automatically because a
+  target repo may already contain unrelated work.
+
+Mitigation in source project: v4.13.0 adds
+`scripts/dockit-session-gate.sh`, wires it into `.claude/settings.json`, adds
+it to `dockit-sync-manifest.yml`, extends validator baseline semantics, and
+ships regression coverage for inherited dirt, same-path edits, repeated Stop,
+compact/resume, concurrent sessions, untracked exclusion, fail-closed state,
+seven-day pruning, and the sync warning.

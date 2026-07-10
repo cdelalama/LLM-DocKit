@@ -4,6 +4,46 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.13.0] - 2026-07-10
+
+### Added
+
+- `scripts/dockit-session-gate.sh`: POSIX SessionStart/Stop driver that reads
+  Claude Code hook JSON, stores per-`session_id` tracked-state baselines under
+  `.git/.dockit/session-baselines/`, reports real validator failures, and
+  honors `stop_hook_active`.
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-052 records the home-infra inherited-dirty
+  incident and supersedes only DF-039 Case C's discipline-only closure.
+- `docs/llm/DECISIONS.md`: D-017 records the deliberate one-block Stop
+  semantics and the remaining pre-commit/CI enforcement boundary.
+
+### Changed
+
+- `.claude/settings.json`: SessionStart records a session baseline and Stop
+  delegates to the testable session gate instead of an inline shell command.
+- `scripts/dockit-validate-session.sh`: the opt-in read-only escape accepts an
+  unchanged HEAD plus tracked-diff baseline, while retaining the existing
+  zero-tracked-diff fallback. Untracked files remain excluded by design.
+- `dockit-sync-manifest.yml`: propagates the session gate to adopters via the
+  existing `copy` strategy.
+- `docs/STRUCTURE.md` and `HOW_TO_USE.md`: identify the session gate as a
+  required Claude Code enforcement script that adopters must retain.
+- `scripts/test-validator.sh`: expands the smoke matrix to 56 cases, including
+  inherited dirt, same-path edits, one-block yielding, compact/resume,
+  parallel sessions, fail-closed handling, untracked exclusion, seven-day
+  pruning, and the post-sync warning.
+
+### Fixed
+
+- Claude Code Stop no longer repeats the same opaque block when
+  `stop_hook_active` is true; modern harnesses can stop after one actionable
+  validation message.
+- Read-only sessions can inherit tracked dirt without being blamed for it;
+  any change to HEAD or the tracked diff still keeps date checks strict.
+- `scripts/dockit-sync.sh --apply` now warns operators to review and commit
+  successful sync changes before opening unrelated sessions. It does not
+  auto-commit or stage files.
+
 ## [4.12.3] - 2026-06-22
 
 ### Added

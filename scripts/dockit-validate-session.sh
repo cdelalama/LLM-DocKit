@@ -146,11 +146,40 @@ should_run() {
     return 1
 }
 
+tracked_diff_hash() {
+    git -C "$PROJECT_ROOT" diff HEAD --binary --no-ext-diff 2>/dev/null \
+        | git -C "$PROJECT_ROOT" hash-object --stdin 2>/dev/null
+}
+
 is_zero_diff_read_only_session() {
     [ "${DOCKIT_ALLOW_READ_ONLY_SKIP:-0}" = "1" ] || return 1
+
+    _baseline_file=${DOCKIT_SESSION_BASELINE_FILE:-}
+    if [ -n "$_baseline_file" ]; then
+        [ -f "$_baseline_file" ] || return 1
+        _baseline_head=$(sed -n 's/^head=//p' "$_baseline_file" | head -1)
+        _baseline_diff=$(sed -n 's/^diff=//p' "$_baseline_file" | head -1)
+        case "$_baseline_head" in
+            ""|*[!0-9a-f]*) return 1 ;;
+        esac
+        case "$_baseline_diff" in
+            ""|*[!0-9a-f]*) return 1 ;;
+        esac
+        _current_head=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null || true)
+        _current_diff=$(tracked_diff_hash || true)
+        if [ "$_baseline_head" = "$_current_head" ] \
+            && [ "$_baseline_diff" = "$_current_diff" ]; then
+            READ_ONLY_SKIP_REASON="session baseline unchanged; untracked files excluded"
+            return 0
+        fi
+        return 1
+    fi
+
     (cd "$PROJECT_ROOT" \
         && git diff HEAD --quiet 2>/dev/null \
-        && git diff --cached --quiet 2>/dev/null)
+        && git diff --cached --quiet 2>/dev/null) || return 1
+    READ_ONLY_SKIP_REASON="zero tracked diff"
+    return 0
 }
 
 is_clean_tracked_tree() {
@@ -224,7 +253,7 @@ check_handoff_date() {
     fi
 
     if is_zero_diff_read_only_session; then
-        add_result "handoff-date" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, zero-diff session)"
+        add_result "handoff-date" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, $READ_ONLY_SKIP_REASON)"
         return
     fi
 
@@ -253,7 +282,7 @@ check_history_entry() {
     fi
 
     if is_zero_diff_read_only_session; then
-        add_result "history-entry" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, zero-diff session)"
+        add_result "history-entry" "PASS" "Skipped (DOCKIT_ALLOW_READ_ONLY_SKIP=1, $READ_ONLY_SKIP_REASON)"
         return
     fi
 

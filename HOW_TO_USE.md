@@ -156,7 +156,7 @@ Choose what you need:
 **For a web application:**
 ```bash
 # Keep: src/, tests/, .github/
-# Remove project-specific scripts (keep dockit-validate-session.sh)
+# Remove project-specific scripts (keep dockit-validate-session.sh and dockit-session-gate.sh)
 rm -f scripts/bump-version.sh scripts/check-version-sync.sh \
       scripts/dockit-sync.sh scripts/dockit-sync-check.sh \
       scripts/dockit-generate-external-context.sh scripts/pre-commit-hook.sh
@@ -172,7 +172,7 @@ rm -rf src/
 **For a library/package:**
 ```bash
 # Keep: src/, tests/, .github/
-# Remove project-specific scripts (keep dockit-validate-session.sh)
+# Remove project-specific scripts (keep dockit-validate-session.sh and dockit-session-gate.sh)
 rm -f scripts/bump-version.sh scripts/check-version-sync.sh \
       scripts/dockit-sync.sh scripts/dockit-sync-check.sh \
       scripts/dockit-generate-external-context.sh scripts/pre-commit-hook.sh
@@ -186,7 +186,7 @@ mv src/ cli/
 ```
 
 **Important**:
-- **Do NOT delete `scripts/dockit-validate-session.sh`** — it is required by the Claude Code hooks in `.claude/settings.json`. Deleting it will cause the Stop hook to block every response.
+- **Do NOT delete `scripts/dockit-validate-session.sh` or `scripts/dockit-session-gate.sh`** — both are required by the Claude Code hooks in `.claude/settings.json`. The gate records SessionStart baselines and delegates Stop validation to the validator.
 - After removing unnecessary files, review and customize [.gitignore](.gitignore) for your tech stack. The default includes patterns for Node.js, Python, Ruby, Go, and Rust. Remove or add sections as needed, and uncomment lock file ignores if desired.
 
 ### 5. Start Your First LLM Session

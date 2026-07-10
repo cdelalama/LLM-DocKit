@@ -825,3 +825,54 @@ scope explicit.
   mismatch.
 - Future role proliferation belongs in ForgeOS/LMConsole or `llm-council`, not
   in DocKit's substrate vocabulary.
+
+---
+
+## D-017 - Stop blocks once per stop attempt, then yields to pre-commit and CI
+
+**Status:** accepted
+
+### Decision
+The Claude Code Stop gate must read hook stdin and honor
+`stop_hook_active`. On the first failing Stop invocation it returns one
+actionable `decision: "block"` containing the validator's real failed checks.
+When Claude Code invokes Stop again with `stop_hook_active: true`, the gate
+allows the turn to end and removes that session's baseline.
+
+This deliberately changes Stop from "block until every check passes" to
+"block once per stop attempt, then yield". Durable enforcement remains at
+pre-commit and CI, which do not opt into this one-block escape.
+
+### Context
+The v4.8.1 DF-039 fix correctly handled clean-start read-only sessions, but
+home-infra later inherited tracked changes left by `dockit-sync --apply`.
+Because the old Stop hook ignored stdin, it could not distinguish a repeated
+invocation and kept returning the same generic block. Modern Claude Code has a
+consecutive-block cap, but DocKit must not rely on a harness fuse for correct
+termination.
+
+### Rationale
+Stop is an interactive feedback point, not the final integrity boundary. One
+precise block gives the agent a chance to repair documentation without trapping
+the operator in a repeated response loop. Pre-commit and CI remain strict and
+continue to catch unresolved drift before publication.
+
+Session attribution uses a baseline keyed by sanitized `session_id`, stored in
+`.git/.dockit/session-baselines/`. The baseline contains HEAD plus a hash of
+the full tracked diff. `resume` and `compact` never overwrite it, concurrent
+sessions cannot collide, malformed or missing state fails closed, and entries
+older than seven days are pruned when a new baseline is written. Untracked
+files are intentionally excluded, matching DF-039's existing semantics.
+
+### Implications
+- `.claude/settings.json` delegates SessionStart and Stop state handling to
+  `scripts/dockit-session-gate.sh`.
+- Only `handoff-date` and `history-entry` may skip when the session baseline is
+  unchanged. All other validator checks continue to run.
+- A changed HEAD or tracked-diff hash proves the session's repository state
+  changed and keeps date checks strict, including same-path edits on inherited
+  dirty files.
+- The sync manifest must propagate the gate script before the settings file is
+  useful downstream.
+- Future proposals to restore indefinite Stop blocking must explicitly
+  supersede this decision and explain why pre-commit/CI are insufficient.

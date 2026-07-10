@@ -31,6 +31,7 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- dockit-sync.sh             (sync template to downstream -- template only)
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
 |  +- dockit-validate-session.sh (validates LLM documentation state)
+|  +- dockit-session-gate.sh    (session-aware Claude Code Stop gate)
 |  +- test-validator.sh          (smoke-tests validator edge cases)
 |  +- dockit-generate-external-context.sh (generates External Context section)
 |  +- dockit-install-codex-hook.sh (installs Codex CLI SessionStart onboarding hook)
@@ -64,6 +65,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
 | scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
 | scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
+| scripts/dockit-session-gate.sh | Records session baselines and drives Claude Code Stop validation | Required for Claude Code enforcement |
 | scripts/test-validator.sh | Smoke-tests validator edge cases in throwaway repos | Recommended before validator changes |
 | scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
@@ -71,10 +73,10 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/dockit-install-codex-hook.sh | Installs the Codex CLI SessionStart onboarding hook | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
 | .dockit-config.yml | Human-managed sync/config file (adoption_mode, exclude_sections, external_context, trace_protocol) | Downstream + new scaffolds |
-| .git/.dockit/ | Auto-generated sync runtime (state, lock, backups) | Downstream only, inside .git/ |
+| .git/.dockit/ | Auto-generated sync/hook runtime (state, lock, backups, session baselines) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
-| .claude/settings.json | Claude Code hook configuration (Stop, PostToolUse, PreCompact) | Claude Code only |
+| .claude/settings.json | Claude Code hook configuration (SessionStart, Stop, PostToolUse, PreCompact) | Claude Code only |
 | .claude/rules/ | Path-triggered rules for Claude Code | Claude Code only |
 | .claude/skills/ | Custom slash commands for Claude Code | Claude Code only |
 | .github/workflows/doc-validation.yml | CI validation for PRs | Recommended |

@@ -1097,6 +1097,11 @@ sync_project() {
     # Print summary
     print_summary
 
+    if [ "$MODE" = "apply" ] && ! $_project_failed \
+        && { [ "$COUNT_UPDATED" -gt 0 ] || [ "$COUNT_NEW" -gt 0 ]; }; then
+        warn "Sync applied successfully. Review and commit the resulting changes before opening unrelated sessions."
+    fi
+
     # Release lock
     release_lock
 

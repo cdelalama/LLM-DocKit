@@ -28,6 +28,7 @@ files:
 - path: scripts/test-validator.sh       strategy: copy
 - path: scripts/dockit-trace-status.sh  strategy: copy
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
+- path: scripts/dockit-session-gate.sh strategy: copy
 - path: scripts/dockit-install-codex-hook.sh strategy: copy
 
 # --- Claude Code hooks (copy: needed by .claude/settings.json hooks) ---
