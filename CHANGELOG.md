@@ -4,6 +4,29 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.13.1] - 2026-07-16
+
+### Added
+
+- `docs/DOWNSTREAM_FEEDBACK.md`: DF-053 records the Codex SessionStart timeout
+  incident and the destructive managed-marker reinstall path.
+- `docs/llm/DECISIONS.md`: D-018 limits installer ownership to the exact
+  LLM-DocKit hook tables, never adjacent operator configuration.
+
+### Changed
+
+- `scripts/dockit-install-codex-hook.sh`: generated SessionStart commands use
+  `sh -c` instead of a login shell and allow 15 seconds instead of five.
+- `docs/integrations/CODEX.md`: documents non-login execution, bounded timeout,
+  config preservation, and the required `/hooks` trust review after updates.
+
+### Fixed
+
+- Re-running the installer no longer removes `[hooks.state]`, MCP servers, or
+  other TOML tables that Codex inserted before the managed END marker.
+- `scripts/test-validator.sh`: the 57-case matrix now covers the command,
+  timeout, legacy migration, idempotence, and interleaved config preservation.
+
 ## [4.13.0] - 2026-07-10
 
 ### Added

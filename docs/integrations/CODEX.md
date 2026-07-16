@@ -1,4 +1,4 @@
-<!-- doc-version: 4.13.0 -->
+<!-- doc-version: 4.13.1 -->
 # Codex CLI Integration
 
 LLM-DocKit's session-start onboarding uses `scripts/dockit-bootstrap-context.sh`.
@@ -27,6 +27,10 @@ The installer:
 - enables `[features] hooks = true`;
 - installs a managed `[[hooks.SessionStart]]` block that calls
   `dockit-bootstrap-context.sh --human`;
+- uses a non-login `sh -c` command with a bounded 15-second timeout, so shell
+  profile initialization is not part of SessionStart latency;
+- preserves `[hooks.state]`, MCP servers, and other operator-owned TOML tables
+  even if Codex placed them before the managed END marker;
 - creates a timestamped backup before changing the file;
 - replaces the older unmarked LLM-DocKit block that used `--json`.
 
@@ -40,6 +44,11 @@ scripts/dockit-install-codex-hook.sh \
 
 ## Verify
 
+Changing the command or timeout changes the hook definition hash. After
+re-running the installer, open `/hooks`, review the changed SessionStart hook,
+and trust its new hash before expecting it to run. Codex skips changed
+non-managed hooks until they are trusted.
+
 Open a fresh Codex CLI session in a repo that has `LLM_START_HERE.md`. The
 first substantive answer should begin with:
 
@@ -51,6 +60,10 @@ It should not repeat that marker on every later answer. If it still repeats
 after the `--human` hook is installed, the likely cause is Codex CLI hook
 lifecycle behavior rather than the old JSON-envelope mismatch. File that as the
 DF-037 follow-up before adding a stateful `--codex` mode.
+
+The release process does not reinstall the operator hook automatically. Treat
+installation as a separate operator action: inspect the backup and resulting
+config diff, complete `/hooks` review, then start a fresh verification session.
 
 ## Ownership
 

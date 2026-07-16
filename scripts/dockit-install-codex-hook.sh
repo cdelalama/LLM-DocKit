@@ -72,14 +72,72 @@ TMP_TRIMMED=$(mktemp)
 TMP_FINAL=$(mktemp)
 trap 'rm -f "$TMP_BASE" "$TMP_FEATURES" "$TMP_TRIMMED" "$TMP_FINAL"' EXIT HUP INT TERM
 
-# Remove blocks installed by previous LLM-DocKit versions. The old 2026-05-03
-# block was appended at EOF without an END marker and used --json; removing it
-# before appending the managed block prevents duplicate SessionStart hooks.
+# Remove only the hook tables installed by previous LLM-DocKit versions.
+# Codex can append trust state or other config tables before the trailing END
+# marker, so unrelated TOML tables inside a managed region must be preserved.
 awk '
-    /^# --- LLM-DocKit Codex SessionStart hook: BEGIN ---$/ { skip = 1; next }
-    skip && /^# --- LLM-DocKit Codex SessionStart hook: END ---$/ { skip = 0; next }
-    /^# --- LLM-DocKit DF-033 \/ D-007: SessionStart enforcement/ { skip = 1; next }
-    skip { next }
+    function is_table(line) {
+        return line ~ /^\[[^]]+\]$/ || line ~ /^\[\[[^]]+\]\]$/
+    }
+
+    /^# --- LLM-DocKit Codex SessionStart hook: BEGIN ---$/ {
+        managed = 1
+        managed_parent = 0
+        managed_handler = 0
+        preserve_managed_tail = 0
+        next
+    }
+    managed && /^# --- LLM-DocKit Codex SessionStart hook: END ---$/ {
+        managed = 0
+        preserve_managed_tail = 0
+        next
+    }
+    managed {
+        if (preserve_managed_tail) {
+            print
+            next
+        }
+        if ($0 == "[[hooks.SessionStart]]" && !managed_parent) {
+            managed_parent = 1
+            next
+        }
+        if ($0 == "[[hooks.SessionStart.hooks]]" && managed_parent && !managed_handler) {
+            managed_handler = 1
+            next
+        }
+        if (is_table($0)) {
+            preserve_managed_tail = 1
+            print
+        }
+        next
+    }
+
+    /^# --- LLM-DocKit DF-033 \/ D-007: SessionStart enforcement/ {
+        legacy = 1
+        legacy_hook = 0
+        legacy_started = 0
+        next
+    }
+    legacy {
+        if (!legacy_started && ($0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*#/)) next
+        legacy_started = 1
+        if (!legacy_hook && $0 == "[[hooks.SessionStart]]") {
+            legacy_hook = 1
+            next
+        }
+        if (legacy_hook) {
+            if ($0 == "[[hooks.SessionStart.hooks]]") next
+            if (is_table($0)) {
+                legacy = 0
+                legacy_hook = 0
+                print
+            }
+            next
+        }
+        print
+        next
+    }
+
     { print }
 ' "$CONFIG_FILE" > "$TMP_BASE"
 
@@ -119,7 +177,7 @@ awk '
     }
 ' "$TMP_BASE" > "$TMP_FEATURES"
 
-COMMAND="sh -lc 'root=\$(git rev-parse --show-toplevel 2>/dev/null || pwd); script=$BOOTSTRAP_SCRIPT; if [ -x \\\"\$script\\\" ]; then \\\"\$script\\\" --human --project \\\"\$root\\\"; fi'"
+COMMAND="sh -c 'root=\$(git rev-parse --show-toplevel 2>/dev/null || pwd); script=$BOOTSTRAP_SCRIPT; if [ -x \\\"\$script\\\" ]; then \\\"\$script\\\" --human --project \\\"\$root\\\"; fi'"
 
 awk '
     { lines[NR] = $0 }
@@ -141,7 +199,7 @@ cat >> "$TMP_FINAL" <<EOF
 [[hooks.SessionStart.hooks]]
 type = "command"
 command = "$COMMAND"
-timeout = 5
+timeout = 15
 # --- LLM-DocKit Codex SessionStart hook: END ---
 EOF
 

@@ -2004,3 +2004,47 @@ it to `dockit-sync-manifest.yml`, extends validator baseline semantics, and
 ships regression coverage for inherited dirt, same-path edits, repeated Stop,
 compact/resume, concurrent sessions, untracked exclusion, fail-closed state,
 seven-day pruning, and the sync warning.
+
+## DF-053 - Codex SessionStart timeout and managed markers make reinstall unsafe
+
+- Source: operator `~/.codex/config.toml` and a failed Codex SessionStart
+- Date observed: 2026-07-16
+- Category: hook reliability / installer safety
+- Status: implemented (4.13.1); operator reinstall remains separately gated
+- Related: DF-033, DF-036, DF-038, D-013, D-018
+
+Observation: the v4.12.0 Codex installer generated a SessionStart command with
+`sh -lc` and a five-second timeout. On the operator machine, the login shell
+loads `.profile` and NVM before running the small bootstrap. Repeated
+measurements put login-shell startup near three seconds while `sh -c` remained
+near zero; bootstrap variance consumed more of the remaining budget. Under
+startup load, the command exceeded five seconds and Codex continued without
+the mandatory onboarding context.
+
+The proposed reinstall exposed a second, higher-risk defect. Codex had written
+`[hooks.state]` and MCP server tables between LLM-DocKit's managed BEGIN and END
+comments. The installer treated that complete textual interval as owned and
+would delete those unrelated tables before appending a replacement hook. A
+dry-run against an exact temporary copy reproduced removal of the trust state
+and both configured MCP servers.
+
+Protocol implication:
+
+- SessionStart must use `sh -c`; profile initialization is unrelated to a
+  repository-local POSIX bootstrap and must not consume the hook budget.
+- The explicit timeout is 15 seconds: enough startup headroom while retaining
+  a bounded failure instead of the documented 600-second default.
+- Managed markers identify LLM-DocKit's hook definition, not ownership of
+  arbitrary TOML tables that another Codex command may place before END.
+- Installer regression coverage must preserve interleaved `[hooks.state]` and
+  MCP tables, migrate the legacy `--json` hook, assert the exact command and
+  timeout, and prove idempotence.
+- Publishing the source patch and installing it into the operator config are
+  separate gates. Reinstall requires config diff review and `/hooks` trust of
+  the changed definition hash.
+
+Mitigation in source project: v4.13.1 hardens
+`scripts/dockit-install-codex-hook.sh`, switches to `sh -c` with a 15-second
+timeout, expands `scripts/test-validator.sh` to 57 cases, and documents the
+operator-controlled reinstall sequence. The release does not modify
+`~/.codex/config.toml`.

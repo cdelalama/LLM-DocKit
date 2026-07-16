@@ -971,16 +971,21 @@ EOF
     if "$CODEX_INSTALLER" --config "$CODEX_CONFIG" --script "$PROJECT_ROOT/scripts/dockit-bootstrap-context.sh" >"$OUT" 2>&1 \
         && grep -q -- '--human' "$CODEX_CONFIG" \
         && ! grep -q -- '--json' "$CODEX_CONFIG" \
+        && grep -Fq 'command = "sh -c ' "$CODEX_CONFIG" \
+        && ! grep -Fq 'command = "sh -lc ' "$CODEX_CONFIG" \
+        && grep -q '^timeout = 15$' "$CODEX_CONFIG" \
+        && grep -q 'trusted_hash = "sha256:old"' "$CODEX_CONFIG" \
+        && ! grep -q 'Old unmarked managed block' "$CODEX_CONFIG" \
         && grep -q 'LLM-DocKit Codex SessionStart hook: BEGIN' "$CODEX_CONFIG"; then
-        note_pass "codex hook installer replaces old json hook with human mode"
+        note_pass "codex hook installer replaces legacy hook without login shell"
     else
         {
-            echo "installer did not replace old json hook with managed human hook"
+            echo "installer did not replace legacy hook with the bounded non-login hook"
             sed -n '1,180p' "$CODEX_CONFIG"
             [ -f "$OUT" ] && sed -n '1,120p' "$OUT"
         } >"$OUT.tmp"
         mv "$OUT.tmp" "$OUT"
-        note_fail "codex hook installer replaces old json hook with human mode"
+        note_fail "codex hook installer replaces legacy hook without login shell"
     fi
 
     CODEX_CONFIG_BEFORE="$TMP_ROOT/codex-config-before-second-install.toml"
@@ -1002,6 +1007,50 @@ EOF
         fi
     else
         note_fail "codex hook installer is idempotent"
+    fi
+
+    CODEX_INTERLEAVED_CONFIG="$TMP_ROOT/codex-interleaved-config.toml"
+    cat >"$CODEX_INTERLEAVED_CONFIG" <<'EOF'
+personality = "pragmatic"
+
+[features]
+hooks = true
+
+# --- LLM-DocKit Codex SessionStart hook: BEGIN ---
+# Managed by scripts/dockit-install-codex-hook.sh.
+[[hooks.SessionStart]]
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "sh -lc 'old command'"
+timeout = 5
+
+[hooks.state]
+
+[hooks.state."/tmp/codex-config.toml:session_start:0:0"]
+trusted_hash = "sha256:preserve-me"
+enabled = true
+
+[mcp_servers.preserve-me]
+url = "https://example.invalid/mcp"
+# --- LLM-DocKit Codex SessionStart hook: END ---
+EOF
+
+    if "$CODEX_INSTALLER" --config "$CODEX_INTERLEAVED_CONFIG" --script "$PROJECT_ROOT/scripts/dockit-bootstrap-context.sh" >"$OUT" 2>&1 \
+        && grep -q 'trusted_hash = "sha256:preserve-me"' "$CODEX_INTERLEAVED_CONFIG" \
+        && grep -q '^\[mcp_servers\.preserve-me\]$' "$CODEX_INTERLEAVED_CONFIG" \
+        && grep -q 'url = "https://example.invalid/mcp"' "$CODEX_INTERLEAVED_CONFIG" \
+        && [ "$(grep -c 'dockit-bootstrap-context.sh' "$CODEX_INTERLEAVED_CONFIG")" -eq 1 ] \
+        && [ "$(grep -c 'LLM-DocKit Codex SessionStart hook: END' "$CODEX_INTERLEAVED_CONFIG")" -eq 1 ]; then
+        note_pass "codex hook installer preserves interleaved trust and MCP tables"
+    else
+        {
+            echo "installer removed or duplicated config outside its hook tables"
+            sed -n '1,220p' "$CODEX_INTERLEAVED_CONFIG"
+            [ -f "$OUT" ] && sed -n '1,120p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "codex hook installer preserves interleaved trust and MCP tables"
     fi
 fi
 

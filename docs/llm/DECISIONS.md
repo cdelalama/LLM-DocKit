@@ -876,3 +876,50 @@ files are intentionally excluded, matching DF-039's existing semantics.
   useful downstream.
 - Future proposals to restore indefinite Stop blocking must explicitly
   supersede this decision and explain why pre-commit/CI are insufficient.
+
+---
+
+## D-018 - The Codex hook installer owns hook tables, not adjacent config
+
+**Status:** accepted
+
+### Decision
+`scripts/dockit-install-codex-hook.sh` may replace only the LLM-DocKit
+SessionStart parent and command-handler tables. It must preserve every unrelated
+TOML table, including `[hooks.state]`, MCP server definitions, and later Codex
+configuration, even when another Codex command inserted those tables between
+the installer's managed BEGIN and END comments.
+
+Publishing an installer update never authorizes an immediate write to the
+operator's real `~/.codex/config.toml`. Installation is a separate gate with a
+timestamped backup, exact diff review, `/hooks` review of the changed hash, and
+a fresh-session smoke test.
+
+### Context
+DF-053 found two coupled SessionStart failures. The generated command used
+`sh -lc`, causing `.profile` and NVM startup to consume most of a five-second
+timeout. While preparing the obvious command/timeout fix, a dry-run showed that
+Codex had placed trust state and MCP tables inside the trailing managed marker.
+The old interval-deletion parser would have removed all of them during
+reinstallation.
+
+### Rationale
+Comment placement is not a reliable ownership boundary in a configuration file
+that Codex itself rewrites. LLM-DocKit owns the hook it generates; it does not
+own neighboring operator state. Data preservation therefore takes precedence
+over textual marker simplicity.
+
+The hook uses `sh -c` because it needs the inherited environment plus standard
+POSIX tools, not login-shell initialization. A 15-second timeout provides
+headroom while keeping a real bootstrap regression bounded.
+
+### Implications
+- The installer parser preserves the first unrelated TOML table encountered
+  inside a managed region and all content after it, while removing the old
+  LLM-DocKit hook tables and marker lines.
+- Legacy unmarked `--json` hooks still migrate to the `--human` command without
+  deleting following trust state.
+- Tests must cover real interleaving behavior, not only a pristine installer
+  output followed immediately by an idempotent second run.
+- Any future installer that edits shared user configuration must define and
+  test its ownership boundary before it is used on the operator's real file.
