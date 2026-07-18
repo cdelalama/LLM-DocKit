@@ -830,14 +830,16 @@ scope explicit.
 
 ## D-017 - Stop blocks once per stop attempt, then yields to pre-commit and CI
 
-**Status:** accepted
+**Status:** accepted; baseline-retention correction pending v4.13.2
 
 ### Decision
 The Claude Code Stop gate must read hook stdin and honor
 `stop_hook_active`. On the first failing Stop invocation it returns one
 actionable `decision: "block"` containing the validator's real failed checks.
 When Claude Code invokes Stop again with `stop_hook_active: true`, the gate
-allows the turn to end and removes that session's baseline.
+allows the turn to end without another block. It must retain that session's
+baseline because Stop runs at turn scope and later turns still need inherited
+state attribution.
 
 This deliberately changes Stop from "block until every check passes" to
 "block once per stop attempt, then yield". Durable enforcement remains at
@@ -851,6 +853,12 @@ invocation and kept returning the same generic block. Modern Claude Code has a
 consecutive-block cap, but DocKit must not rely on a harness fuse for correct
 termination.
 
+A post-ship audit on 2026-07-16 exposed a lifecycle error in the first
+implementation: both successful validation and `stop_hook_active: true`
+deleted the baseline. The first read-only turn worked, while the second turn in
+the same session lost attribution and blocked on inherited dirt. DF-054 tracks
+the authorized v4.13.2 correction.
+
 ### Rationale
 Stop is an interactive feedback point, not the final integrity boundary. One
 precise block gives the agent a chance to repair documentation without trapping
@@ -863,6 +871,8 @@ the full tracked diff. `resume` and `compact` never overwrite it, concurrent
 sessions cannot collide, malformed or missing state fails closed, and entries
 older than seven days are pruned when a new baseline is written. Untracked
 files are intentionally excluded, matching DF-039's existing semantics.
+Successful and active Stop events retain the baseline; cleanup is age-based,
+not inferred from a per-turn hook event.
 
 ### Implications
 - `.claude/settings.json` delegates SessionStart and Stop state handling to
@@ -872,6 +882,11 @@ files are intentionally excluded, matching DF-039's existing semantics.
 - A changed HEAD or tracked-diff hash proves the session's repository state
   changed and keeps date checks strict, including same-path edits on inherited
   dirty files.
+- `scripts/dockit-session-gate.sh` must not delete a baseline from Stop. Each
+  Stop should refresh the slot mtime, and SessionStart pruning remains the
+  eventual cleanup path.
+- `scripts/test-validator.sh` must cover two successful Stops in the same
+  inherited-dirty session and baseline retention after `stop_hook_active`.
 - The sync manifest must propagate the gate script before the settings file is
   useful downstream.
 - Future proposals to restore indefinite Stop blocking must explicitly

@@ -1963,8 +1963,9 @@ Protocol v1.4: every substantive assistant turn starts with Trace, with
 - Source: home-infra after a successful LLM-DocKit sync left tracked changes uncommitted
 - Date observed: 2026-07-10
 - Category: hook lifecycle / validator attribution
-- Status: implemented (4.13.0)
-- Related: DF-027, DF-039, DF-046, D-002, D-005, D-017
+- Status: implemented (4.13.0); post-ship baseline lifetime regression tracked
+  separately by DF-054 and pending v4.13.2
+- Related: DF-027, DF-039, DF-046, DF-054, D-002, D-005, D-017
 
 Observation: home-infra inherited tracked changes from a prior
 `dockit-sync --apply`. A later read-only session could not use DF-039's
@@ -2003,7 +2004,9 @@ Mitigation in source project: v4.13.0 adds
 it to `dockit-sync-manifest.yml`, extends validator baseline semantics, and
 ships regression coverage for inherited dirt, same-path edits, repeated Stop,
 compact/resume, concurrent sessions, untracked exclusion, fail-closed state,
-seven-day pruning, and the sync warning.
+seven-day pruning, and the sync warning. DF-054 records the later finding that
+successful per-turn Stop deletes the baseline too early; that follow-up blocks
+rollout until v4.13.2.
 
 ## DF-053 - Codex SessionStart timeout and managed markers make reinstall unsafe
 
@@ -2048,3 +2051,51 @@ Mitigation in source project: v4.13.1 hardens
 timeout, expands `scripts/test-validator.sh` to 57 cases, and documents the
 operator-controlled reinstall sequence. The release does not modify
 `~/.codex/config.toml`.
+
+## DF-054 - Successful per-turn Stop deletes the session baseline too early
+
+- Source: post-ship Claude audit of v4.13.0, recovered from the
+  `dev_claude_LLM-DocKit` tmux pane before VM shutdown
+- Date observed: 2026-07-16; persisted in Git on 2026-07-18
+- Category: hook lifecycle / regression
+- Status: accepted; implementation explicitly authorized, pending v4.13.2
+- Related: DF-039, DF-052, D-017
+
+Observation: Claude Code runs Stop at turn scope, not only when a conversation
+session is permanently closed. The v4.13.0 gate calls `cleanup_baseline` both
+when `stop_hook_active` is true and after a successful validation. The first
+successful read-only turn therefore deletes the session baseline that
+attributes inherited tracked dirt. On the next read-only turn in the same
+session, the baseline is absent, the validator falls back to the global
+zero-diff rule, inherited dirt prevents that skip, and the date checks block
+again.
+
+The auditor reproduced this sequence in an isolated dirty-inherited fixture:
+the first Stop passed silently and removed the baseline; the second Stop failed
+with stale HANDOFF/HISTORY dates. Existing smokes miss the regression because
+they do not execute two successful Stop events for one `session_id`.
+
+The operator replied `corrige tu v4.13.1 con el fix del baseline`, explicitly
+authorizing the correction. No implementation occurred in that tmux pane. A
+different v4.13.1 patch was later used for DF-053, so this correction must now
+ship as v4.13.2.
+
+Protocol implication:
+
+- A per-session baseline must survive every successful and active Stop event
+  for that session. Stop must not call `cleanup_baseline`.
+- The seven-day SessionStart pruning policy remains the cleanup mechanism for
+  abandoned session slots.
+- Each Stop should refresh the slot mtime so another SessionStart cannot prune
+  a still-active session older than seven days.
+- Regression coverage must run two successful read-only Stops with inherited
+  dirt under the same `session_id`, assert no block on either turn, and assert
+  that the baseline remains after both. It must also assert that
+  `stop_hook_active: true` yields without deleting the baseline.
+- The home-infra rollout remains blocked until this patch is implemented,
+  validated, committed, and pushed.
+
+Mitigation in source project: pending v4.13.2. Required implementation files
+are `scripts/dockit-session-gate.sh` and `scripts/test-validator.sh`, followed
+by the normal release updates to `CHANGELOG.md`, `docs/llm/HANDOFF.md`,
+`docs/llm/HISTORY.md`, and this DF status.

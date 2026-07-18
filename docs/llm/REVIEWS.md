@@ -13,6 +13,50 @@ the active normative source for new work.
 
 ---
 
+## 2026-07-16 - Post-ship audit of the v4.13.0 session-aware Stop gate
+
+- **Auditor**: Claude
+- **Audit target**: `b718d23` (`feat(hooks): cut v4.13.0 session-aware Stop gate`)
+- **Outcome**: blocked; one lifecycle regression reproduced
+- **Recovered**: 2026-07-18 from the `dev_claude_LLM-DocKit` tmux pane before
+  VM/NAS shutdown
+- **Operator decision**: correction explicitly authorized in the pane; no code
+  changes were made there
+
+### Finding
+
+Claude Code Stop runs after turns. The implementation treated successful Stop
+as permanent session termination and called `cleanup_baseline` after both a
+normal PASS and `stop_hook_active: true`. In an inherited-dirty read-only
+fixture, turn one passed and deleted the baseline; turn two in the same session
+then failed stale date checks because attribution state no longer existed.
+
+This is blocking for home-infra, the adopter that originally demonstrated the
+dirty-inherited case. The 56-case v4.13.0 matrix did not include two successful
+Stop events under one `session_id`, so it could not expose the regression.
+
+### Accepted correction
+
+- Remove baseline cleanup from every Stop path.
+- Keep seven-day pruning as eventual cleanup for abandoned sessions.
+- Refresh the baseline slot mtime on Stop so long-lived active sessions are not
+  pruned by another SessionStart.
+- Add a multi-turn regression proving two successful inherited-dirty Stops and
+  an active Stop all retain the same baseline.
+- Cut the fix as v4.13.2 because v4.13.1 was subsequently assigned to the
+  separate DF-053 Codex installer safety patch.
+
+### Scope that remains valid
+
+The audit accepted the rest of v4.13.0: per-`session_id` isolation, HEAD plus
+tracked-diff fingerprinting, resume/compact no-overwrite, fail-closed state,
+real validator reasons, limited date-check skip, untracked exclusion,
+`stop_hook_active` one-block semantics, and the post-sync warning without
+auto-commit. DF-054 isolates the baseline lifetime regression; it does not
+reopen those accepted parts of DF-052 or D-017.
+
+---
+
 ## 2026-05-03 — Consensus Protocol as a named primitive of LLM-DocKit
 
 > Historical entry. D-011 supersedes the ownership claim: the full proposal now
