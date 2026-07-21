@@ -409,13 +409,27 @@ else
 
     printf '%s\n' '{"session_id":"unchanged","source":"startup"}' \
         | "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
+    UNCHANGED_SLOT="$GATE_REPO/.git/.dockit/session-baselines/unchanged"
+    touch -t 200001010000 "$UNCHANGED_SLOT"
     if printf '%s\n' '{"session_id":"unchanged","stop_hook_active":false}' \
         | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
         && [ ! -s "$OUT" ] \
-        && [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/unchanged" ]; then
-        note_pass "session baseline lets inherited dirty read-only session stop"
+        && [ -f "$UNCHANGED_SLOT/state" ] \
+        && find "$UNCHANGED_SLOT" -prune -mtime 0 -print 2>/dev/null | grep -q .; then
+        FIRST_STOP_OK=1
     else
-        note_fail "session baseline lets inherited dirty read-only session stop"
+        FIRST_STOP_OK=0
+    fi
+    touch -t 200001010000 "$UNCHANGED_SLOT" 2>/dev/null || true
+    if printf '%s\n' '{"session_id":"unchanged","stop_hook_active":false}' \
+        | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
+        && [ ! -s "$OUT" ] \
+        && [ -f "$UNCHANGED_SLOT/state" ] \
+        && find "$UNCHANGED_SLOT" -prune -mtime 0 -print 2>/dev/null | grep -q . \
+        && [ "$FIRST_STOP_OK" -eq 1 ]; then
+        note_pass "inherited dirty session retains and refreshes its baseline across two read-only Stops"
+    else
+        note_fail "inherited dirty session retains and refreshes its baseline across two read-only Stops"
     fi
 
     printf '%s\n' '{"session_id":"changed-same-path","source":"startup"}' \
@@ -431,13 +445,16 @@ else
         note_fail "session gate detects changes to an already-dirty path and reports real failures"
     fi
 
+    CHANGED_SLOT="$GATE_REPO/.git/.dockit/session-baselines/changed-same-path"
+    touch -t 200001010000 "$CHANGED_SLOT"
     if printf '%s\n' '{"session_id":"changed-same-path","stop_hook_active":true}' \
         | "$GATE_REPO/scripts/dockit-session-gate.sh" --stop --project "$GATE_REPO" >"$OUT" 2>&1 \
         && [ ! -s "$OUT" ] \
-        && [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/changed-same-path" ]; then
-        note_pass "active Stop hook yields after one block and cleans its baseline"
+        && [ -f "$CHANGED_SLOT/state" ] \
+        && find "$CHANGED_SLOT" -prune -mtime 0 -print 2>/dev/null | grep -q .; then
+        note_pass "active Stop hook yields and retains and refreshes its baseline"
     else
-        note_fail "active Stop hook yields after one block and cleans its baseline"
+        note_fail "active Stop hook yields and retains and refreshes its baseline"
     fi
 
     printf '%s\n' '{"session_id":"stable-on-compact","source":"startup"}' \

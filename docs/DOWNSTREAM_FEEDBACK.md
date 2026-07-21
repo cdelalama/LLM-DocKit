@@ -2058,7 +2058,7 @@ operator-controlled reinstall sequence. The release does not modify
   `dev_claude_LLM-DocKit` tmux pane before VM shutdown
 - Date observed: 2026-07-16; persisted in Git on 2026-07-18
 - Category: hook lifecycle / regression
-- Status: accepted; implementation explicitly authorized, pending v4.13.2
+- Status: implemented (4.13.2)
 - Related: DF-039, DF-052, D-017
 
 Observation: Claude Code runs Stop at turn scope, not only when a conversation
@@ -2092,10 +2092,16 @@ Protocol implication:
   dirt under the same `session_id`, assert no block on either turn, and assert
   that the baseline remains after both. It must also assert that
   `stop_hook_active: true` yields without deleting the baseline.
-- The home-infra rollout remains blocked until this patch is implemented,
-  validated, committed, and pushed.
+- The home-infra rollout remains a separate adopter session after this source
+  release is published; no adopter is modified by the v4.13.2 cut itself.
 
-Mitigation in source project: pending v4.13.2. Required implementation files
-are `scripts/dockit-session-gate.sh` and `scripts/test-validator.sh`, followed
-by the normal release updates to `CHANGELOG.md`, `docs/llm/HANDOFF.md`,
-`docs/llm/HISTORY.md`, and this DF status.
+Mitigation in source project: v4.13.2 removes both Stop-side baseline cleanup
+paths from `scripts/dockit-session-gate.sh` and refreshes an existing session
+slot on every Stop. SessionStart still creates baselines, preserves them across
+resume/compact, and prunes slots older than seven days. The regression in
+`scripts/test-validator.sh` runs two successful inherited-dirty read-only Stops
+under one `session_id`, retains the baseline after both, and verifies that
+`stop_hook_active: true` yields while retaining and refreshing the slot. The
+new tests failed against the old cleanup behavior with 55 passes and two
+targeted failures, then passed with the correction as part of the 57/57 suite.
+No global Codex configuration or downstream adopter was modified.

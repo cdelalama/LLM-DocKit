@@ -1,13 +1,13 @@
-<!-- doc-version: 4.13.1 -->
+<!-- doc-version: 4.13.2 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Open work — next concrete step
 
-**P0 is authorized but not implemented. Resume this before any rollout:**
+**DF-054 is closed in v4.13.2. The next actions are separate operator gates:**
 
-1. **Open and operator-authorized: DF-054 / v4.13.2 baseline lifetime correction** - A recovered Claude audit of `b718d23` proved that `scripts/dockit-session-gate.sh` deletes the session baseline after the first successful Stop and when `stop_hook_active` is true. Because Stop runs per turn, the second inherited-dirty read-only turn loses attribution and blocks again. Remove both Stop-side cleanup paths, refresh the slot mtime on Stop, and extend `scripts/test-validator.sh` with two successful Stops under one `session_id` plus active-Stop retention. Update `CHANGELOG.md`, DF-054, HANDOFF, and HISTORY; bump with `scripts/bump-version.sh 4.13.2`; run the full validator stack; commit and push. The operator already authorized this correction in the recovered tmux pane. Do not sync home-infra before it lands.
+1. **Closed: DF-054 / v4.13.2 baseline lifetime correction** - `scripts/dockit-session-gate.sh` no longer deletes session baselines from Stop and refreshes an existing slot on every Stop; SessionStart creation plus seven-day pruning remain unchanged. `scripts/test-validator.sh` proves that two inherited-dirty read-only Stops under one `session_id` both pass and retain the baseline, and that `stop_hook_active: true` yields while retaining and refreshing it. The corrected tests failed against the old implementation with only the two DF-054 cases red (55/57), then passed 57/57 after the patch.
 1. **Closed: DF-053 / v4.13.1 Codex SessionStart reliability and installer safety** — `scripts/dockit-install-codex-hook.sh` now generates `sh -c` with a bounded 15-second timeout and preserves `[hooks.state]`, MCP servers, and all other TOML tables that Codex may insert before the managed END marker. `scripts/test-validator.sh` reproduces the real interleaving and verifies legacy migration, exact command/timeout, preservation, and idempotence. D-018 limits installer ownership to its hook tables. Publishing this patch does not authorize installation: the real `~/.codex/config.toml` remains unchanged until a separate operator gate reviews the backup/diff, trusts the new hash in `/hooks`, and runs a fresh-session smoke.
 1. **Closed: DF-052 / v4.13.0 session-aware Stop gate** — `scripts/dockit-session-gate.sh` now reads Claude Code hook stdin, records per-`session_id` HEAD plus tracked-diff baselines under `.git/.dockit/session-baselines/`, reports the validator's real failed checks, and honors `stop_hook_active` so Stop blocks once and then yields. `.claude/settings.json` delegates SessionStart/Stop to the script, `scripts/dockit-validate-session.sh` lets only `handoff-date` and `history-entry` skip when the baseline is unchanged, and `scripts/test-validator.sh` covers inherited dirt, same-path edits, compact/resume, concurrent windows, untracked exclusion, fail-closed state, seven-day pruning, and post-sync warning. D-017 records the deliberate enforcement boundary; DF-039 remains correct for Case B and is superseded only for Case C.
 1. **Closed: DF-051 / v4.12.3 Trace v1.4 substantive-turn scope** — `LLM_START_HERE.md` and `scripts/dockit-bootstrap-context.sh` now require Trace for every substantive assistant turn in a DocKit-governed session, not only execution reports or audit verdicts. A substantive turn is any turn the operator might need to find when returning to a multi-window workflow: decision, opinion, recommendation, status, audit, action, or clarifying question. Role vocabulary is now `executor|auditor|advisor`; `scripts/dockit-trace-status.sh` and durable Trace validation accept all three roles, with smoke coverage for `advisor`. D-016 records the durable rule.
@@ -22,13 +22,14 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Likely next LLM-DocKit follow-ups:** first cut the already-authorized DF-054 fix as v4.13.2. The separate operator-controlled gate for the global Codex hook reinstall remains unopened: inspect the timestamped backup and exact `~/.codex/config.toml` diff, approve the changed hash in `/hooks`, and verify a fresh SessionStart. Only after v4.13.2 is published should home-infra receive the Stop-gate rollout as the reproducing adopter. Then continue the adopter wave with dedicated sessions for `llm-council` or `plaud-mirror`; both need semantic resolution of local `LLM_START_HERE.md` sections instead of batch sync. ForgeOS needs its own WIP-aware session before sync. DF-020 graduated validator modes remains the likely next source minor after the hook rollout.
+**Likely next LLM-DocKit follow-ups:** the separate operator-controlled gate for the global Codex hook reinstall remains unopened: inspect the timestamped backup and exact `~/.codex/config.toml` diff, approve the changed hash in `/hooks`, and verify a fresh SessionStart. The v4.13.2 source release also unblocks a dedicated home-infra Stop-gate rollout, but that must happen in its own adopter session. Continue the adopter wave later with dedicated sessions for `llm-council` or `plaud-mirror`; both need semantic resolution of local `LLM_START_HERE.md` sections instead of batch sync. ForgeOS needs its own WIP-aware session before sync. DF-020 graduated validator modes remains the likely next source minor after the hook rollout.
 
-## Restart checkpoint after VM/NAS outage
+## Completed restart checkpoint after VM/NAS outage
 
 Recorded on 2026-07-18 specifically so all tmux sessions can be discarded.
-Treat this section and the Open work item above as the source of truth; do not
-depend on terminal scrollback after restart.
+The fresh 2026-07-21 session recovered from this section, verified the expected
+`ab48bd1` starting state, and completed the authorized v4.13.2 source patch.
+The pre-shutdown evidence remains below as historical recovery context.
 
 ### Durable state before shutdown
 
@@ -48,23 +49,18 @@ depend on terminal scrollback after restart.
   `sh -lc` command and `timeout = 5`. Source v4.13.1 is fixed, but the real hook
   has deliberately not been reinstalled or re-trusted.
 
-### First fresh session after power and network return
+### Restart execution status
 
-1. Read `LLM_START_HERE.md`, this HANDOFF, and `docs/llm/DECISIONS.md` through
-   the normal onboarding flow.
-2. Verify volatile state instead of trusting the pre-shutdown hash:
-   `git fetch --prune origin`, `git status --short --branch`,
-   `git rev-parse HEAD`, `git rev-parse origin/main`, and `cat VERSION`.
-3. Run `scripts/dockit-validate-session.sh --human`,
-   `scripts/check-version-sync.sh`, and `scripts/test-validator.sh`.
-4. Implement the authorized DF-054 correction in
-   `scripts/dockit-session-gate.sh` and `scripts/test-validator.sh`; cut and
-   push v4.13.2. Do not start with home-infra sync.
-5. Keep `/home/cdelalama/.codex/config.toml` unchanged until the operator opens
-   the separate D-018 reinstall gate. That gate requires backup, exact diff,
-   `/hooks` trust review, and a fresh SessionStart smoke.
-6. After v4.13.2 and only when NAS/network services are confirmed available,
-   sync home-infra first, then the remaining adopters in dedicated sessions.
+1. Mandatory onboarding and volatile-state verification completed on
+   2026-07-21; local `main`, `origin/main`, HEAD `ab48bd1`, VERSION 4.13.1, and
+   a clean worktree matched the checkpoint before editing.
+2. DF-054 was implemented only in `scripts/dockit-session-gate.sh` and
+   `scripts/test-validator.sh`, then bumped atomically to v4.13.2.
+3. `/home/cdelalama/.codex/config.toml` remains unchanged. The separate D-018
+   reinstall gate still requires backup, exact diff, `/hooks` trust review,
+   and a fresh SessionStart smoke.
+4. No adopter was synced. Home-infra is now eligible for a dedicated rollout
+   session after this release; other adopters remain separate work.
 
 ### External boundaries
 
@@ -97,8 +93,9 @@ A multi-day deliberation on 2026-05-02→04 produced cross-repo proposals and su
 DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`. They remain useful evidence for the pending ForgeOS ownership decision and for `llm-council` corpus/curation work, but they no longer drive a DocKit consensus runtime.
 
 ## Current Status
-- Last Updated: 2026-07-18 - Codex GPT-5
-- Session Focus: **Persist complete restart state before VM/NAS/network shutdown.** Repo source remains v4.13.1 at `b15b78f` before this doc-only checkpoint. The recovered Claude audit is now DF-054: baseline cleanup after successful per-turn Stop makes the second inherited-dirty read-only turn block. The operator already authorized the correction; v4.13.2 is the first task after restart. The real global Codex hook remains deliberately unmodified and separately gated.
+- Last Updated: 2026-07-21 - Codex GPT-5
+- Session Focus: **Cut v4.13.2 closing DF-054.** Stop now retains the per-session baseline across successful and active Stop events and refreshes the slot mtime, so repeated inherited-dirty read-only turns keep their attribution. The regression was demonstrated against the old behavior (55/57 with only the two new cases failing) and passes after correction (57/57). No adopter or global Codex configuration was modified. The next gates are the separate D-018 global hook reinstall and a dedicated home-infra rollout session.
+- Previous (2026-07-18): Persisted the complete shutdown/restart checkpoint and recovered the authorized DF-054 audit from tmux; pushed `ab48bd1`.
 - Previous (2026-07-16): Cut v4.13.1 fixing Codex SessionStart latency and preserving operator TOML during reinstall; pushed `b15b78f`.
 - Previous (2026-07-10): Cut v4.13.0 closing DF-052 with a session-aware Stop gate; pushed `b718d23`.
 - Previous (2026-06-22): Cut v4.12.3 expanding Trace Protocol to every substantive turn; pushed `7577a3a`.

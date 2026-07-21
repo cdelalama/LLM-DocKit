@@ -4,6 +4,27 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.13.2] - 2026-07-21
+
+### Added
+
+- `scripts/test-validator.sh`: regression coverage now runs two successful
+  inherited-dirty read-only Stops under one `session_id` and verifies active
+  Stop retention plus slot-mtime refresh.
+
+### Changed
+
+- `scripts/dockit-session-gate.sh`: every Stop refreshes an existing session
+  slot, while SessionStart's seven-day pruning remains the only baseline
+  cleanup path.
+
+### Fixed
+
+- Successful and `stop_hook_active: true` Stop events no longer delete the
+  per-session baseline needed by later turns in the same Claude Code session.
+- A second inherited-dirty read-only turn now receives the same attribution as
+  the first instead of blocking on stale HANDOFF/HISTORY dates.
+
 ## [4.13.1] - 2026-07-16
 
 ### Added

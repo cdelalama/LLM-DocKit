@@ -134,9 +134,9 @@ write_baseline() {
     mv "$_tmp_state" "$BASELINE_FILE"
 }
 
-cleanup_baseline() {
-    [ -n "$BASELINE_SLOT" ] || return 0
-    rm -rf "$BASELINE_SLOT"
+refresh_baseline() {
+    [ -n "$BASELINE_SLOT" ] && [ -d "$BASELINE_SLOT" ] || return 0
+    touch "$BASELINE_SLOT"
 }
 
 json_escape() {
@@ -152,8 +152,9 @@ if [ "$MODE" = "start" ]; then
     exit 0
 fi
 
+refresh_baseline
+
 if json_boolean_true stop_hook_active; then
-    cleanup_baseline
     exit 0
 fi
 
@@ -169,7 +170,6 @@ if [ -n "$BASELINE_FILE" ] && [ -f "$BASELINE_FILE" ]; then
 fi
 
 if _validation=$(DOCKIT_ALLOW_READ_ONLY_SKIP=1 "$VALIDATOR" --project "$PROJECT_ROOT" --json --quiet 2>&1); then
-    cleanup_baseline
     exit 0
 fi
 
