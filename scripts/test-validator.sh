@@ -672,6 +672,30 @@ expect_pass "trace-protocol valid anchor and HISTORY footer pass" \
 cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
 # History
 
+- 2000-01-02 - Smoke - Audited local \`$TRACE_HASH\` against ForgeOS \`deadbee\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_HASH; external=forgeos@deadbee; state=local-main-no-origin; validation=smoke-pass; next=operator
+EOF
+expect_pass "trace-protocol accepts explicitly namespaced external commits" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 2000-01-02 - Smoke - Audited local \`$TRACE_HASH\` against ForgeOS \`deadbee\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_HASH; state=local-main-no-origin; validation=smoke-pass; next=operator
+EOF
+expect_fail "trace-protocol rejects undeclared external-looking commits" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 2000-01-02 - Smoke - Audited local \`$TRACE_HASH\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_HASH; external=forgeos-deadbee; state=local-main-no-origin; validation=smoke-pass; next=operator
+EOF
+expect_fail "trace-protocol rejects malformed external commit references" \
+    "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
 2000-01-02 - Smoke - Audited \`$TRACE_HASH\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_HASH; state=local-main-no-origin; validation=smoke-pass; next=operator
 EOF
 expect_pass "trace-protocol accepts no-dash HISTORY footer" \

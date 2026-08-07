@@ -1,11 +1,17 @@
-<!-- doc-version: 4.13.2 -->
+<!-- doc-version: 4.13.3 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Open work — next concrete step
 
-**DF-054 is closed in v4.13.2. The next actions are separate operator gates:**
+**DF-055 is closed in v4.13.3. The next actions are separate operator gates:**
+
+1. **Closed: DF-055 / v4.13.3 external Trace revision ownership** - HISTORY
+   footers can now classify exact cross-repository hashes with
+   `external=repo@hash` while `commits=` remains local and fail-closed. Three
+   new regression cases cover valid namespacing, missing classification, and
+   malformed external references. D-019 records the ownership rule.
 
 1. **Closed: DF-054 / v4.13.2 baseline lifetime correction** - `scripts/dockit-session-gate.sh` no longer deletes session baselines from Stop and refreshes an existing slot on every Stop; SessionStart creation plus seven-day pruning remain unchanged. `scripts/test-validator.sh` proves that two inherited-dirty read-only Stops under one `session_id` both pass and retain the baseline, and that `stop_hook_active: true` yields while retaining and refreshing it. The corrected tests failed against the old implementation with only the two DF-054 cases red (55/57), then passed 57/57 after the patch.
 1. **Closed: DF-053 / v4.13.1 Codex SessionStart reliability and installer safety** — `scripts/dockit-install-codex-hook.sh` now generates `sh -c` with a bounded 15-second timeout and preserves `[hooks.state]`, MCP servers, and all other TOML tables that Codex may insert before the managed END marker. `scripts/test-validator.sh` reproduces the real interleaving and verifies legacy migration, exact command/timeout, preservation, and idempotence. D-018 limits installer ownership to its hook tables. Publishing this patch does not authorize installation: the real `~/.codex/config.toml` remains unchanged until a separate operator gate reviews the backup/diff, trusts the new hash in `/hooks`, and runs a fresh-session smoke.
@@ -93,8 +99,9 @@ A multi-day deliberation on 2026-05-02→04 produced cross-repo proposals and su
 DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`. They remain useful evidence for the pending ForgeOS ownership decision and for `llm-council` corpus/curation work, but they no longer drive a DocKit consensus runtime.
 
 ## Current Status
-- Last Updated: 2026-07-21 - Codex GPT-5
-- Session Focus: **Cut v4.13.2 closing DF-054.** Stop now retains the per-session baseline across successful and active Stop events and refreshes the slot mtime, so repeated inherited-dirty read-only turns keep their attribution. The regression was demonstrated against the old behavior (55/57 with only the two new cases failing) and passes after correction (57/57). No adopter or global Codex configuration was modified. The next gates are the separate D-018 global hook reinstall and a dedicated home-infra rollout session.
+- Last Updated: 2026-08-07 - Codex GPT-5
+- Session Focus: **Cut v4.13.3 closing DF-055.** Trace HISTORY now distinguishes local `commits=` from explicitly namespaced `external=repo@hash` provenance. The change preserves strict local commit resolution and adds three targeted regressions. No adopter or global Codex configuration was modified; rollout remains an operator-controlled sync.
+- Previous (2026-07-21): Cut v4.13.2 closing DF-054 baseline-lifetime regression; pushed `7447dc6`.
 - Previous (2026-07-18): Persisted the complete shutdown/restart checkpoint and recovered the authorized DF-054 audit from tmux; pushed `ab48bd1`.
 - Previous (2026-07-16): Cut v4.13.1 fixing Codex SessionStart latency and preserving operator TOML during reinstall; pushed `b15b78f`.
 - Previous (2026-07-10): Cut v4.13.0 closing DF-052 with a session-aware Stop gate; pushed `b718d23`.

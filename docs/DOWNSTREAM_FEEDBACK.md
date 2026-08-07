@@ -2105,3 +2105,37 @@ under one `session_id`, retains the baseline after both, and verifies that
 new tests failed against the old cleanup behavior with 55 passes and two
 targeted failures, then passed with the correction as part of the 57/57 suite.
 No global Codex configuration or downstream adopter was modified.
+
+## DF-055 - Trace confuses external repository revisions with local commits
+
+- Source: Home Infra closeout for a newly delivered homelab application
+- Date observed: 2026-08-07
+- Category: Trace Protocol / cross-repository provenance
+- Status: implemented (4.13.3)
+- Related: DF-040, DF-048, D-008, D-019
+
+Observation: a Home Infra HISTORY entry included a backtick-quoted ForgeOS
+revision as causal provenance. The durable Trace validator treated every
+backtick-quoted hexadecimal revision as a commit from the current repository,
+then failed because that ForgeOS object could not resolve in Home Infra. The
+only available workaround was to remove Markdown commit quoting, which made the
+entry pass by making the external revision invisible to Trace.
+
+Protocol implication:
+
+- `commits=` remains strictly local to the repository being validated.
+- An optional `external=repo@hash[,repo@hash]` field, placed after `commits=`,
+  classifies exact backtick-quoted revisions that belong to other repositories.
+- External revisions are not resolved through the current repository's object
+  database. They must be explicitly namespaced and exactly match a hash quoted
+  in the HISTORY entry.
+- A quoted hash absent from both local `commits=` and `external=` still fails.
+  The validator must not silently reinterpret an unresolvable local hash as an
+  external one.
+- HANDOFF Trace Anchors remain local-repository anchors and do not gain an
+  external field.
+
+Mitigation in source project: v4.13.3 extends the HISTORY footer grammar and
+validator with explicit external revision classification, adds pass/fail
+regressions for namespaced, undeclared, and malformed external references, and
+updates the scaffold guidance. D-019 records the fail-closed ownership rule.

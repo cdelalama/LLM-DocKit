@@ -4,6 +4,23 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.13.3] - 2026-08-07
+
+### Added
+
+- Durable Trace HISTORY footers can classify cross-repository revisions with
+  optional `external=repo@hash[,repo@hash]` after local-only `commits=`.
+- `scripts/test-validator.sh` covers valid namespaced external revisions plus
+  undeclared and malformed failure cases.
+- DF-055 and D-019 record the observed failure and fail-closed ownership rule.
+
+### Fixed
+
+- A backtick-quoted revision from another repository no longer has to resolve
+  in the current repository when it is explicitly classified as external.
+- Unresolvable local hashes still fail instead of being silently treated as
+  external provenance.
+
 ## [4.13.2] - 2026-07-21
 
 ### Added

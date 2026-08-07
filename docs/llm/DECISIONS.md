@@ -249,6 +249,11 @@ Default-on chat guidance matches the operator's normal workflow and makes the ne
 ### Implications
 - `trace_protocol.fields` is not configurable in v1. The v1 field sets are frozen until real pilot data shows a need to extend them.
 - HISTORY hash detection is intentionally limited to backtick-quoted 7-40 character hex hashes. This avoids false positives from prose, filenames, or unrelated digest strings.
+- `commits=` is scoped to the current repository. A backtick-quoted revision
+  from another repository must be classified explicitly with the optional
+  `external=repo@hash[,repo@hash]` field immediately after `commits=`. External
+  hashes are matched exactly but are not resolved in the current repository;
+  unclassified hashes still fail closed.
 - `trace_protocol.since` protects legacy history. Entries before that date are ignored by the HISTORY footer check.
 - A project that activates durable Trace validation must add a HANDOFF Trace Anchor immediately. There is no grace period; activation is an explicit migration step.
 - Remote ancestry checks use `origin/HEAD` when available, fall back to `origin/main`, and allow a project override with `trace_protocol.upstream_branch`.
@@ -938,3 +943,53 @@ headroom while keeping a real bootstrap regression bounded.
   output followed immediately by an idempotent second run.
 - Any future installer that edits shared user configuration must define and
   test its ownership boundary before it is used on the operator's real file.
+
+## D-019 - Trace external revisions require explicit repository ownership
+
+**Status:** accepted
+
+### Decision
+
+The durable HISTORY Trace footer treats `commits=` as local to the repository
+being validated. A HISTORY entry that backtick-quotes a revision from another
+repository must classify it with the optional field
+`external=repo@hash[,repo@hash]` immediately after `commits=`.
+
+The external hash must exactly match a backtick-quoted hash in the same entry.
+The validator checks the namespace and syntax but does not try to resolve that
+object through the current repository. Unclassified hashes continue to fail
+closed. HANDOFF Trace Anchors remain local-only.
+
+### Context
+
+DF-055 was observed during a multi-repository Home Infra application closeout.
+A causal ForgeOS revision was quoted in Home Infra HISTORY, and the validator
+correctly detected a hash but incorrectly assumed local object ownership. The
+workaround removed backticks, suppressing validation rather than expressing the
+real relationship.
+
+### Options considered
+
+1. Ignore any hash that does not resolve locally. This would also hide typos,
+   stale local references, and invented commits.
+2. Stop detecting backtick-quoted hashes in prose. This would discard the
+   durable enforcement introduced by D-008.
+3. Add explicit repository ownership to the footer while keeping local
+   validation strict.
+
+### Rationale
+
+Option 3 preserves the existing failure behavior for local mistakes and makes
+cross-repository provenance machine-readable. A repository name plus exact hash
+is sufficient classification without teaching a generic scaffold where every
+possible peer checkout or remote lives.
+
+### Implications
+
+- The canonical optional order is `commits=...; external=...; state=...`.
+- Every `external=` token uses `repo@hash`; repository names may contain
+  letters, digits, dots, underscores, slashes, and hyphens.
+- An external declaration that has no matching backtick-quoted hash fails.
+- A hash declared as both local and external fails.
+- Verifying the external repository actually contains that object remains the
+  responsibility of the cross-repository operator workflow.

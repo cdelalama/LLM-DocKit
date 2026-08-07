@@ -1018,8 +1018,9 @@ check_template_residue() {
 #     canonical short hash / subject / commit time appear in the anchor, and
 #     remote ancestry is checked when origin refs are available.
 #   - HISTORY.md entries dated >= trace_protocol.since that reference backticked
-#     hashes include an inline Trace footer:
-#       Trace: role=executor|auditor|advisor; commits=...; state=...; validation=...; next=...
+#     hashes include an inline Trace footer. Local hashes belong in commits=;
+#     optional cross-repository hashes use external=repo@hash:
+#       Trace: role=executor|auditor|advisor; commits=...; [external=...;] state=...; validation=...; next=...
 
 check_trace_protocol() {
     if ! should_run "trace-protocol"; then return; fi
@@ -1111,14 +1112,44 @@ check_trace_protocol() {
             _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
             [ -z "$_entry_hashes" ] && continue
 
-            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor|advisor); commits=[^;]+; state=[^;]+; validation=[^;]+; next=.+'; then
+            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor|advisor); commits=[^;]+;( external=[^;]+;)? state=[^;]+; validation=[^;]+; next=.+'; then
                 _trace_append_error "HISTORY entry $_date references backticked commit hash(es) but lacks inline Trace footer"
                 continue
             fi
 
             _commits_field=$(printf '%s\n' "$_entry" | sed 's/.*Trace: role=[^;]*; commits=\([^;]*\); state=.*/\1/')
+            case "$_commits_field" in
+                *'; external='*) _commits_field=$(printf '%s\n' "$_entry" | sed 's/.*Trace: role=[^;]*; commits=\([^;]*\); external=.*/\1/') ;;
+            esac
             _commits_csv=",$(printf '%s' "$_commits_field" | tr -d ' '),"
+
+            _external_field=$(printf '%s\n' "$_entry" | sed -n 's/.*; external=\([^;]*\); state=.*/\1/p')
+            _external_hashes=""
+            if [ -n "$_external_field" ]; then
+                _saved_ifs="$IFS"
+                IFS=','
+                for _external_ref in $_external_field; do
+                    _external_ref=$(printf '%s' "$_external_ref" | tr -d ' ')
+                    if ! printf '%s\n' "$_external_ref" | grep -qE '^[A-Za-z0-9._/-]+@[0-9A-Fa-f]{7,40}$'; then
+                        _trace_append_error "HISTORY entry $_date has invalid external= reference $_external_ref (expected repo@hash)"
+                        continue
+                    fi
+                    _external_hash=$(printf '%s' "${_external_ref##*@}" | tr 'A-F' 'a-f')
+                    if ! printf '%s\n' "$_entry_hashes" | grep -qxF "$_external_hash"; then
+                        _trace_append_error "HISTORY entry $_date external= declares $_external_ref but the exact hash is not backtick-quoted in the entry"
+                    fi
+                    _external_hashes="$_external_hashes $_external_hash"
+                done
+                IFS="$_saved_ifs"
+            fi
+
             for _hash in $_entry_hashes; do
+                if printf '%s\n' "$_external_hashes" | tr ' ' '\n' | grep -qxF "$_hash"; then
+                    case "$_commits_csv" in
+                        *,"$_hash",*) _trace_append_error "HISTORY entry $_date declares $_hash as both local commits= and external=" ;;
+                    esac
+                    continue
+                fi
                 _short=$(cd "$PROJECT_ROOT" && git rev-parse --short=7 "$_hash" 2>/dev/null || printf '%s' "$_hash")
                 case "$_commits_csv" in
                     *,"$_hash",*|*,"$_short",*) ;;

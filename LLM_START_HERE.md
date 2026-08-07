@@ -1,4 +1,4 @@
-<!-- doc-version: 4.13.2 -->
+<!-- doc-version: 4.13.3 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -207,6 +207,11 @@ half is enforced by `scripts/dockit-validate-session.sh --check trace-protocol`:
 - `docs/llm/HISTORY.md` entries dated on or after `trace_protocol.since` that
   reference backtick-quoted commit hashes must end with an inline footer:
   `Trace: role=executor|auditor|advisor; commits=hash1,hash2; state=...; validation=...; next=...`
+- `commits=` contains only commits from the current repository. When the same
+  HISTORY entry names a backtick-quoted commit from another repository, insert
+  `external=repo@hash[,repo@hash];` immediately after `commits=...;`. The exact
+  external hash must also appear in backticks in the entry. Example:
+  `Trace: role=executor; commits=abc1234; external=forgeos@def5678; state=...; validation=...; next=...`
 
 Projects can set the local timezone used in `Sent` with:
 

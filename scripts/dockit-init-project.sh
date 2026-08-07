@@ -281,7 +281,7 @@ Append-only record of meaningful LLM-assisted work on this project.
 
 ## Format
 
-YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: <yes/no + details> - Trace: role=<executor|auditor>; commits=<hash|none>; state=<repo state>; validation=<checks>; next=<gate>
+YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list] - Version impact: <yes/no + details> - Trace: role=<executor|auditor|advisor>; commits=<local hash|none>; [external=<repo>@<hash>;] state=<repo state>; validation=<checks>; next=<gate>
 
 ## Entries
 
