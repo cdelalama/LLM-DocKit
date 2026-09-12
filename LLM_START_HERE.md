@@ -1,4 +1,4 @@
-<!-- doc-version: 4.14.0 -->
+<!-- doc-version: 4.14.1 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -82,7 +82,11 @@ the operator-wide default is:
    `claude-opus-5[1m]`, with high effort. Record the quota evidence, effective
    model, effort, command, candidate revision/tree, and validation packet in
    `docs/llm/REVIEWS.md` when it exists, otherwise in the audited revision's
-   HISTORY entry.
+   HISTORY entry. When durable Trace is enabled, keep non-commit object IDs such
+   as tree hashes as plain text in HISTORY and HANDOFF Trace Anchors:
+   backtick-quoted hashes are reserved for commit provenance and must resolve as
+   commits. Never remove backticks from a commit to bypass validation; classify
+   a cross-repository commit with the Trace `external=repo@hash` field instead.
 3. Never substitute Sonnet, Haiku, an ambiguous alias, or an unrecorded model.
    If neither allowed exact model is available, freeze the candidate and audit
    packet. Continue only work already authorized that does not depend on the

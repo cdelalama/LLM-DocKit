@@ -49,8 +49,39 @@ the active normative source for new work.
   shell syntax and `git diff --check` PASS, and a freshly repeated fleet
   dry-run with 21 eligible / 2 partial / 0 errors.
 - **Round 3 verdict**: `GO`; no BLOCKER, HIGH, or MEDIUM findings remained.
-  Opus identified two optional LOW hardening cases and two test/documentation
-  NOTES, which the executor chose to close before publication.
+  Opus identified two optional LOW hardening cases and four NOTES. The executor
+  closed both LOW items plus the stale-count and branch-test NOTES; the two
+  remaining NOTES were accepted as explicit reporting/deployment boundaries.
+- **Round 4 release target**: tree
+  `34915aa08174e217cb58c504ef04c44c9216c990`, binary diff SHA-256
+  `72bc3edf1619669e736a53819ece19372e7c5cb9711738601e8a5a3e5c0a1d4d`.
+- **Round 4 validation packet**: markers 9/9, DocKit 10/10, smoke 78/78,
+  shell syntax and `git diff --check` PASS, and real fleet dry-run 21 eligible /
+  2 partial / 0 errors.
+- **Round 4 verdict**: final `GO`; no BLOCKER, HIGH, MEDIUM, or LOW findings.
+  The audited tree matched the staged Git tree exactly and was published as
+  source commit `1d44785e3dbc60b71c475d125f436ba110959e5d`.
+- **Round 5 documentation target**: tree
+  `a0e2e230821f35e0139f8417dd01ca0a4804957c`, binary diff SHA-256
+  `b9445e19b980e72977d037e94934b2c6caf161e04e9b7d04d8753a11aec9ee25`,
+  limited to HANDOFF, HISTORY, and this review registry.
+- **Round 5 validation packet**: markers 9/9, DocKit 10/10, and
+  `git diff --check` PASS.
+- **Round 5 verdict**: `GO`; it confirmed the release identities and authority
+  boundary, then raised two NOTES that v4.14.1 closes before adopter rollout.
+- **Round 6 patch target**: tree
+  `80906357030fd225131cc7578c6941038cf823e6`, binary diff SHA-256
+  `1f2b1111aa8537345aa49ab8d6ea4e5ed2ccbc95b88a7e979c20872bfaa0b48d`,
+  VERSION 4.14.1 over published `1d44785`.
+- **Round 6 validation packet**: markers 9/9, DocKit 10/10, smoke 78/78,
+  `git diff --check` PASS, and fleet dry-run 21 eligible / 2 partial / 0 errors.
+- **Round 6 verdict**: `GO`; E1/E2 were closed. Opus raised three wording NOTES
+  distinguishing tree IDs from commits, extending the rule to HANDOFF Trace
+  Anchors, and documenting why this registry can retain formatted tree hashes.
+
+Tree and other non-commit candidate IDs may remain backtick-formatted in this
+review registry because durable Trace does not scan it. HISTORY and HANDOFF
+Trace Anchors follow D-020 instead; commit provenance follows D-019.
 
 ### Findings and executor reconciliation
 
@@ -124,6 +155,35 @@ the active normative source for new work.
 - **C5 NOTE - AGREED**: a real selective `--git-branch` collision regression
   now verifies that the timestamp fallback retains the `-selective` suffix.
 
+### Round 4 findings and executor reconciliation
+
+- **D1 NOTE - AGREED**: the round-3 summary now states two LOW findings and
+  four NOTES, distinguishing the four closures from two accepted boundaries.
+- **D2 NOTE - AGREED**: the round-4 release identity and final `GO` are recorded
+  by the immediate post-release documentation vehicle rather than by trying to
+  embed a self-referential tree hash in the audited tree.
+- **D3 NOTE - ACCEPTED**: the branch-collision case is regression lock-in, not
+  proof of a round-3-to-round-4 fix; the two other added cases discriminate.
+
+### Round 5 findings and executor reconciliation
+
+- **E1 NOTE - AGREED**: the missing round-4 reconciliation is now explicit
+  above instead of recoverable only from the summary verdict.
+- **E2 NOTE - AGREED**: D-020 and the managed policy now reserve backtick-quoted
+  HISTORY and HANDOFF Trace Anchor hashes for commits under durable Trace.
+  Candidate tree hashes go in this registry when it exists, otherwise remain
+  plain text on those surfaces; D-019 commit classification remains intact.
+
+### Round 6 findings and executor reconciliation
+
+- **F1 NOTE - AGREED**: D-019 and D-020 now cross-reference the object-type
+  boundary. Only non-commit IDs become plain text; commits remain backticked,
+  and cross-repository commits use `external=repo@hash`.
+- **F2 NOTE - AGREED**: the managed policy and D-020 apply the same rule to
+  HISTORY and HANDOFF Trace Anchors, the two surfaces durable Trace validates.
+- **F3 NOTE - AGREED**: this registry now states why candidate tree IDs can
+  remain formatted here without colliding with durable Trace.
+
 ### Corrected-candidate fleet preview
 
 The real read-only command `dockit-sync.sh --dry-run --all --json --only
@@ -132,12 +192,15 @@ array: 21 full adopters would insert the section, while `med` and
 `msgvault-lab` were explicitly reported as partial adopters without markers;
 there were no errors. No downstream file or state was changed.
 
-### Remaining gate
+### Release boundary
 
-The final 78-case replacement tree must be re-read in the same Opus session.
-A final GO may authorize only the LLM-DocKit source release; it cannot authorize
-downstream apply, commits in adopters, global configuration, or runtime and
-infrastructure changes.
+The final 78-case tree received exact same-session Opus `GO` and was published
+as `1d44785`. v4.14.1 narrows only the evidence-recording wording surfaced by
+the post-release documentation audit; it requires its own exact Opus review and
+publication before downstream use. Neither release authorizes downstream apply,
+commits in adopters, global configuration, runtime, or infrastructure changes.
+One reviewed full-adopter selective apply remains the next independent rollout
+gate after the patch.
 
 ## 2026-07-16 - Post-ship audit of the v4.13.0 session-aware Stop gate
 

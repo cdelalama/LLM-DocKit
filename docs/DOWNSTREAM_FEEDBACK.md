@@ -2145,7 +2145,7 @@ updates the scaffold guidance. D-019 records the fail-closed ownership rule.
 - Source: Irrigation Portal independent-auditor gate
 - Date observed: 2026-09-12
 - Category: process
-- Status: implemented (4.14.0)
+- Status: implemented (4.14.0; evidence clarification 4.14.1)
 - Related: DF-024, DF-043, D-020, D-021
 
 Observation: the operator accepted a reusable Fable-to-Opus fallback policy
@@ -2176,4 +2176,7 @@ fleet workflow, and adds regression coverage for scope isolation, state
 preservation, conflict protection, partial/excluded/preflight classification,
 malformed-state rollback, attributable fleet JSON including lock/rollback
 outcomes, and pre-mutation selector rejection. No adopter is modified by the
-source release itself.
+source release itself. v4.14.1 clarifies that non-commit candidate tree hashes
+stay as plain text when HISTORY or a HANDOFF Trace Anchor is the fallback
+evidence destination, avoiding a collision with durable Trace's backtick-quoted
+commit validation without weakening D-019 cross-repository commit provenance.

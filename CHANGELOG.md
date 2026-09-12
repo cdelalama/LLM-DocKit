@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.14.1] - 2026-09-12
+
+### Fixed
+
+- Independent-review evidence guidance now keeps non-commit tree hashes out of
+  backticks in HISTORY and HANDOFF Trace Anchors when durable Trace is enabled.
+  Backtick-quoted commit hashes remain validated provenance, including D-019
+  cross-repository classification; `docs/llm/REVIEWS.md` is preferred for
+  candidate tree identities and is outside durable Trace scanning.
+- The v4.14.0 exact-Opus release audit now has complete round-4 and round-5
+  reconciliation instead of only a summary verdict.
+
 ## [4.14.0] - 2026-09-12
 
 ### Added

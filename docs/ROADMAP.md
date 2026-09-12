@@ -7,7 +7,7 @@ lives in `docs/llm/DECISIONS.md`.
 
 ## Now
 
-Publish the independent-review fleet default and make its rollout selective.
+Close the v4.14.1 audit-evidence clarification before the first adopter pilot.
 
 - Prefer exact Fable `claude-fable-5-1` at high effort; permit exact Opus
   `claude-opus-5[1m]` at high effort only after direct Fable quota evidence.
@@ -15,6 +15,10 @@ Publish the independent-review fleet default and make its rollout selective.
   claiming that an adopter received the rest of the current template.
 - Preserve project-local stricter review contracts and partial-adopter gaps as
   explicit exceptions instead of forcing them away.
+- Keep candidate tree hashes in `docs/llm/REVIEWS.md`, or as plain HISTORY or
+  HANDOFF Trace Anchor text when no review registry exists, so durable Trace
+  continues to reserve backtick-quoted hashes for commits. Cross-repository
+  commits still use D-019's explicit `external=repo@hash` classification.
 
 ## Next
 

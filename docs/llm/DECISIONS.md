@@ -993,6 +993,10 @@ possible peer checkout or remote lives.
 - A hash declared as both local and external fails.
 - Verifying the external repository actually contains that object remains the
   responsibility of the cross-repository operator workflow.
+- D-020's plain-text rule applies only to non-commit object IDs such as candidate
+  tree hashes. It does not authorize removing backticks from a commit to evade
+  this validation; cross-repository commits remain backticked and explicitly
+  classified through `external=repo@hash`.
 
 ## D-020 - Independent review uses an exact recorded fallback, not model substitution
 
@@ -1050,6 +1054,13 @@ weakening a deliberately stricter project contract.
   the SessionStart bootstrap payload. The payload already instructs agents to
   read `LLM_START_HERE.md`; duplicating this model policy would create a second
   fleet value that could drift.
+- Candidate tree hashes belong in `docs/llm/REVIEWS.md` when available. If
+  HISTORY or a HANDOFF Trace Anchor is the fallback and durable Trace is enabled,
+  non-commit object IDs remain plain text: backtick-quoted hashes are commit
+  provenance and the Trace validator intentionally requires them to resolve as
+  commits. This does not weaken D-019: a local or cross-repository commit remains
+  backticked, and a cross-repository commit uses `external=repo@hash` rather than
+  hiding from validation.
 
 ## D-021 - Selective sync does not assert complete template currency
 
