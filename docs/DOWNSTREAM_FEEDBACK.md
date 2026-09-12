@@ -2222,3 +2222,8 @@ instants are two hours earlier. Before either project receives the corrected
 validator, repair its recorded UTC timestamp against Git evidence. Never revert
 the validator or preserve the false timestamp merely to keep a previous green
 result.
+
+The date-only lookups elsewhere in the validator intentionally implement
+DF-046's local-calendar bookkeeping rule and carry no UTC suffix. They are not
+missed instances of this defect; the UTC conversion requirement applies to
+timestamps explicitly labelled `UTC`.

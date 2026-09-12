@@ -283,6 +283,11 @@ an honest pre-registration sentinel from a later plain initialization and an
 evidenced template revision from accidental sentinel replacement, without
 changing normal re-baselining between evidenced template revisions.
 
+A reviewed full `--apply` is the normal way to graduate a pre-registration
+adopter to the current complete template identity. A selective apply preserves
+the sentinel by design. Do not use `--force` merely to make an adopter look
+current; reserve it for an intentional provenance replacement.
+
 Registration means "include this primary repository in fleet discovery." It
 does not mean the repository is current with every DocKit file, validated for
 deployment, or authorized for runtime changes. Preserve dirty worktrees; use a

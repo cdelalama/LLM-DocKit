@@ -33,6 +33,9 @@ This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 - Init-state refuses to cross between pre-registration and evidenced template
   identity unless explicit `--force` is supplied; its diagnostic names both
   identities without changing ordinary evidenced-version re-baselining.
+- Fourteen registered adopters currently carry pre-registration identity. A
+  reviewed full apply is their normal graduation path; selective apply preserves
+  the sentinel, and `--force` must not be used merely to report currency.
 
 ### Fixed
 

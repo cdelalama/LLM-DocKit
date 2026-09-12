@@ -1169,4 +1169,7 @@ delivery and complete template currency as three separate claims.
 - Dirty adopters are changed only additively or published from a clean
   dedicated worktree; no reset, stash or cleanup is implied.
 - A no-remote or third-party-upstream exception remains local and explicit.
+- Selective apply preserves pre-registration identity; a reviewed full apply
+  graduates it to an evidenced complete-template identity. `--force` is for an
+  intentional provenance replacement, not the normal graduation path.
 - Full DocKit upgrades and per-project runtime gates remain separate work.

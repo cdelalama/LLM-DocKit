@@ -108,10 +108,38 @@ the active normative source for new work.
   independently reproduced axes, findings and verdict.
 - **N3 NOTE - AGREED**: manifest column alignment is corrected.
 
+### Round 3 closure and publication
+
+- **Target and publication**: base
+  `1301ffc55b078693c790167e0ecae9f642dc67f1`, tree
+  `dc6659ba04143e0cb39db109c5623570398f584c`, binary diff SHA-256
+  `9faa58b4d3cc32d78577061b0d68835aea4d0916cc25358b39b839ec7327cb17`,
+  21 paths. The exact tree is published on `origin/main` as
+  `761a99de144f0d6ad51b9da77da57d295dd9680a`.
+- **Independent execution**: Opus reproduced the complete identity, 9/9
+  version sync, 10/10 DocKit, 85/85 smoke results under UTC, Europe/Madrid,
+  Pacific/Kiritimati and Pacific/Midway, 35/35 remote containment, exact
+  49/38/11 inventory, the DF-057 census and all seven identity-crossing cases.
+- **Closure**: B1-B4 and N3 are closed. The narrower pre-registration guard is
+  accurately documented and leaves ordinary evidenced-version re-baselining
+  unchanged. Round-1 A1-A11 and N1-N2 remain closed, with no disagreement.
+- **Verdict**: `GO` for commit and push of that source tree only.
+- **Identity integrity**: the executor reports that a pre-commit comparison
+  typo was confined to its local guard string. A narrow same-session check
+  independently confirmed the prompt digest, recomputed the tree and digest,
+  proved no candidate byte changed and returned `IDENTITY INTEGRITY: GO`.
+- **C1 LOW - IMPLEMENTED IN THIS FOLLOW-UP**: 14 registered adopters currently
+  carry pre-registration identity. CHANGELOG, HOW_TO_USE and D-022 state that a
+  reviewed full apply is the normal graduation path, selective apply preserves
+  the sentinel, and `--force` is not a shortcut to claimed currency.
+- **N4 NOTE - IMPLEMENTED IN THIS FOLLOW-UP**: DF-057 distinguishes intentional
+  local-calendar date-only lookups with no UTC label from the corrected
+  UTC-labelled timestamp path.
+
 The corrections add a sync capability and repair validator behavior, so the
 candidate moved from documentation-only 4.14.2 to backward-compatible minor
-4.15.0. Publication remains blocked until validation and same-session Opus
-follow-up close the replacement tree.
+4.15.0. The audited source tree is published; only this non-behavioral review
+record and the two recommended clarifications remain in the follow-up commit.
 
 ## 2026-09-12 - Exact Opus audit of the v4.14.0 selective-sync candidate
 

@@ -5,10 +5,11 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 ## Open work — next concrete step
 
-**The v4.15.0 fleet closeout and validator correction are in final validation.
-The policy rollout itself is complete; the next concrete work is exact-model
-re-review and publication of `docs/FLEET_ROLLOUT_2026-09-12.md`,
-`scripts/dockit-sync.sh`, and `scripts/dockit-validate-session.sh`:**
+**The exact v4.15.0 source tree is published. The policy rollout is complete;
+the next concrete work is the non-behavioral audit closeout in
+`docs/llm/REVIEWS.md`, `docs/llm/HISTORY.md`, `docs/llm/HANDOFF.md`,
+`docs/DOWNSTREAM_FEEDBACK.md`, `docs/llm/DECISIONS.md`, `HOW_TO_USE.md`, and
+`CHANGELOG.md`:**
 
 1. **Closed: all evidenced downstream adopters registered and updated** -
    The source-root inventory has 49 primary Git repositories and 38 registered
@@ -25,7 +26,7 @@ re-review and publication of `docs/FLEET_ROLLOUT_2026-09-12.md`,
    4.9.5 state; unknown legacy provenance uses the explicit pre-registration
    sentinels.
 
-1. **In progress: v4.15.0 audit remediation** - Exact Fable remained at its
+1. **Closed: v4.15.0 audit remediation and source publication** - Exact Fable remained at its
    documented quota limit, so exact `claude-opus-5[1m]` at high effort reviewed
    the first closeout candidate in read-only session
    `1c419dfc-06bd-4445-9101-0c9a1646734b`. It found two HIGH, five MEDIUM, four
@@ -38,13 +39,20 @@ re-review and publication of `docs/FLEET_ROLLOUT_2026-09-12.md`,
    incomplete. The code now adds `--untracked-existing-adoption`, corrects UTC
    conversion and tests both behaviors. Travel Ledger 0.9.14 separately fixes
    its real HISTORY footer omission and passes DocKit 10/10. Revalidation and
-   same-session Opus closure remain before publication. Round 2 independently
+   same-session Opus closure remained before publication. Round 2 independently
    reproduced the candidate identity, validation, fleet inventory and all 35
    remote-containment claims, then found host-timezone-dependent legacy tests,
    two existing adopter anchors requiring UTC repair, and non-durable legacy
-   identity. The replacement fixes both fixtures, refuses differing init-state
-   identity without explicit `--force`, documents the migration, and records
-   the changed auditor capability. A third same-session round is required.
+   identity. The replacement fixes both fixtures, refuses crossings of the
+   pre-registration boundary without explicit `--force`, documents the
+   migration, and records the changed auditor capability. Round 3 reproduced
+   85/85 tests under four timezones, all fleet evidence and all identity paths;
+   it closed B1-B4 without disagreement and returned `GO` for exact tree
+   `dc6659ba04143e0cb39db109c5623570398f584c`. A narrow identity-integrity
+   check printed the full tree and binary diff three times and returned GO.
+   The tree is published as
+   `761a99de144f0d6ad51b9da77da57d295dd9680a`. Its non-blocking C1/N4
+   clarifications are staged only in this separate audit-record follow-up.
 
 1. **Closed: v4.14.1 Trace-safe review evidence** -
    `LLM_START_HERE.md` and D-020 now require non-commit candidate tree hashes
@@ -118,8 +126,8 @@ re-review and publication of `docs/FLEET_ROLLOUT_2026-09-12.md`,
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Next gates:** validate and independently re-review the v4.15.0 candidate,
-then publish its exact commit. Future full-template upgrades must use
+**Next gates:** validate and same-session integrity-review the documentation-
+only audit record, then publish that exact follow-up. Future full-template upgrades must use
 per-project dry runs and remain separate from this already-complete policy
 rollout. `cambio-claro`, `juiced`, and `claude-quest` retain the explicit
 publication boundaries in `docs/FLEET_ROLLOUT_2026-09-12.md`. The global Codex
@@ -195,7 +203,7 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-09-12 - Codex GPT-5
-- Session Focus: **Prepared v4.15.0 as the durable closeout of the authorized
+- Session Focus: **Published v4.15.0 as the durable closeout of the authorized
   fleet rollout and the audited tooling corrections it exposed.**
   `docs/FLEET_ROLLOUT_2026-09-12.md` records 38 registered
   adopters, 35 published policy revisions, one local third-party overlay, two
@@ -207,7 +215,10 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
   Irrigation Portal 0.9.0 and PiHA-Deployer are registered and published;
   Travel Ledger 0.9.14 closes the real local governance failure.
   No runtime, deployment, secret, controller, Home Assistant, NAS, network or
-  Home Infra acceptance mutation occurred. Exact Opus re-review is pending.
+  Home Infra acceptance mutation occurred. Exact Opus returned GO on tree
+  `dc6659ba04143e0cb39db109c5623570398f584c`, published as `761a99d`;
+  only the review-record follow-up remains.
+- Previous (2026-09-12): Published exact Opus-GO v4.15.0 source tree `dc6659ba04143e0cb39db109c5623570398f584c` as `761a99d`.
 - Previous (2026-09-12): Closed the v4.14.1 audit record and pushed `1301ffc`.
 - Previous (2026-09-12): Cut v4.14.1 clarifying Trace-safe independent-review evidence; pushed `3d38025`.
 - Previous (2026-09-12): Cut v4.14.0 with selective fleet sync and the managed independent-review policy; pushed `1d44785`.
