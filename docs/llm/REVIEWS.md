@@ -78,6 +78,15 @@ the active normative source for new work.
 - **Round 6 verdict**: `GO`; E1/E2 were closed. Opus raised three wording NOTES
   distinguishing tree IDs from commits, extending the rule to HANDOFF Trace
   Anchors, and documenting why this registry can retain formatted tree hashes.
+- **Round 7 release target**: tree
+  `c8845704726f0572a67d5287102e0470814794b1`, binary diff SHA-256
+  `204c7fc0813f30872fe95146ecf4dc9b2bcf12f7b37c2f44ed711c9c4f67bdbf`,
+  VERSION 4.14.1 over published `1d44785`.
+- **Round 7 validation packet**: markers 9/9, DocKit 10/10, smoke 78/78,
+  `git diff --check` PASS, and fleet dry-run 21 eligible / 2 partial / 0 errors.
+- **Round 7 verdict**: final `GO`; F1/F2/F3 were closed with no
+  BLOCKER/HIGH/MEDIUM/LOW findings. The exact audited tree was committed and
+  pushed as `3d380250bdd88851cf26a74c3091ccc483810a42`.
 
 Tree and other non-commit candidate IDs may remain backtick-formatted in this
 review registry because durable Trace does not scan it. HISTORY and HANDOFF
@@ -184,6 +193,14 @@ Trace Anchors follow D-020 instead; commit provenance follows D-019.
 - **F3 NOTE - AGREED**: this registry now states why candidate tree IDs can
   remain formatted here without colliding with durable Trace.
 
+### Round 7 finding and executor reconciliation
+
+- **G1 NOTE - ACCEPTED**: the fleet policy references D-019's Trace
+  `external=repo@hash` field, while the separately excludable trace-protocol
+  section documents its syntax. The clause applies only when durable Trace is
+  enabled and is self-explanatory; no source change is required before the
+  single-adopter pilot.
+
 ### Corrected-candidate fleet preview
 
 The real read-only command `dockit-sync.sh --dry-run --all --json --only
@@ -194,13 +211,12 @@ there were no errors. No downstream file or state was changed.
 
 ### Release boundary
 
-The final 78-case tree received exact same-session Opus `GO` and was published
-as `1d44785`. v4.14.1 narrows only the evidence-recording wording surfaced by
-the post-release documentation audit; it requires its own exact Opus review and
-publication before downstream use. Neither release authorizes downstream apply,
-commits in adopters, global configuration, runtime, or infrastructure changes.
-One reviewed full-adopter selective apply remains the next independent rollout
-gate after the patch.
+The final 78-case implementation tree received exact same-session Opus `GO` and
+was published as `1d44785`. The v4.14.1 evidence correction then received final
+Opus `GO` on its exact tree and was published as `3d38025`. Neither release
+authorizes downstream apply, commits in adopters, global configuration, runtime,
+or infrastructure changes. One reviewed full-adopter selective apply remains
+the next independent rollout gate.
 
 ## 2026-07-16 - Post-ship audit of the v4.13.0 session-aware Stop gate
 

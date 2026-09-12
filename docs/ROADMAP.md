@@ -7,7 +7,7 @@ lives in `docs/llm/DECISIONS.md`.
 
 ## Now
 
-Close the v4.14.1 audit-evidence clarification before the first adopter pilot.
+Prepare one separately authorized full-adopter selective-apply pilot.
 
 - Prefer exact Fable `claude-fable-5-1` at high effort; permit exact Opus
   `claude-opus-5[1m]` at high effort only after direct Fable quota evidence.
@@ -19,10 +19,12 @@ Close the v4.14.1 audit-evidence clarification before the first adopter pilot.
   HANDOFF Trace Anchor text when no review registry exists, so durable Trace
   continues to reserve backtick-quoted hashes for commits. Cross-repository
   commits still use D-019's explicit `external=repo@hash` classification.
+- v4.14.1 published this clarification at `3d38025` after exact Opus `GO` on
+  the matching source tree; no adopter was changed by the release.
 
 ## Next
 
-Run the operator-controlled selective fleet preview and classify each adopter.
+Pilot the policy-only apply in one full adopter, then reassess fleet rollout.
 
 - The 2026-09-12 real dry-run scanned 23 registered adopters: 21 full adopters
   would insert only `LLM_START_HERE.md:independent-review-policy`; `med` and

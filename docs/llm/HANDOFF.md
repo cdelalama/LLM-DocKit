@@ -5,18 +5,21 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 ## Open work — next concrete step
 
-**v4.14.0 / DF-056 is published. The v4.14.1 evidence-clarification candidate
-must receive exact-Opus review and publication before a separately authorized
-single-adopter selective-apply pilot:**
+**v4.14.1 / DF-056 is published. The next concrete step is a separately
+authorized single-adopter selective-apply pilot before any fleet rollout:**
 
-1. **Candidate: v4.14.1 Trace-safe review evidence** -
+1. **Closed: v4.14.1 Trace-safe review evidence** -
    `LLM_START_HERE.md` and D-020 now require non-commit candidate tree hashes
    to remain plain text when HISTORY or a HANDOFF Trace Anchor is the fallback
    evidence destination and durable Trace is enabled. Backtick-quoted hashes
    remain commit provenance; cross-repository commits use D-019's explicit
    `external=repo@hash` classification. The patch records Opus rounds 4-6 and
-   explains why REVIEWS can retain formatted tree hashes; no sync behavior or
-   runtime changed.
+   explains why REVIEWS can retain formatted tree hashes. Round 7 returned
+   exact Opus `GO` with no BLOCKER/HIGH/MEDIUM/LOW findings on tree
+   `c8845704726f0572a67d5287102e0470814794b1`, binary diff SHA-256
+   `204c7fc0813f30872fe95146ecf4dc9b2bcf12f7b37c2f44ed711c9c4f67bdbf`.
+   The staged tree matched exactly and was published as `3d38025`; no sync
+   behavior or runtime changed.
 
 1. **Closed: DF-056 / v4.14.0 independent-review policy and selective
    sync** - `LLM_START_HERE.md` carries the Fable-preferred, exact-Opus fallback
@@ -77,8 +80,8 @@ single-adopter selective-apply pilot:**
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Next gates:** audit and publish v4.14.1, then choose one of the 21 eligible
-full adopters and run a reviewed single-project `dockit-sync.sh --apply --project <path> --only
+**Next gates:** choose one of the 21 eligible full adopters and run a reviewed
+single-project `dockit-sync.sh --apply --project <path> --only
 LLM_START_HERE.md:independent-review-policy` pilot. Verify the resulting policy,
 preserved full-template identity, selected-section baseline, project validator,
 and exact diff before committing that adopter. Only then consider an
@@ -157,14 +160,14 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-09-12 - Codex GPT-5
-- Session Focus: **Prepare the v4.14.1 Trace-safe evidence clarification after
-  publishing v4.14.0 at `1d44785`.** The fleet now has a
+- Session Focus: **Published the final v4.14.1 Trace-safe evidence clarification
+  at `3d38025`, after v4.14.0 at `1d44785`.** The fleet now has a
   synchronized Fable-preferred/exact-Opus fallback policy and a selective sync
   scope that leaves full template currency unchanged while merging delivered
   section baselines. Local smoke is 78/78;
   the 23-project selective dry-run is 21 eligible / 2 partial / 0 errors; exact
-  Opus returned final GO on the published 4.14.0 source tree; exact review and
-  publication of the 4.14.1 wording correction remain next. No adopter, global
+  Opus returned final GO on both published source trees; one separately
+  authorized full-adopter pilot remains next. No adopter, global
   configuration, or runtime was modified.
 - Previous (2026-08-07): Cut v4.13.3 closing DF-055 external Trace ownership; pushed `e51fc6f`.
 - Previous (2026-07-21): Cut v4.13.2 closing DF-054 baseline-lifetime regression; pushed `7447dc6`.
