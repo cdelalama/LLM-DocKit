@@ -1112,3 +1112,61 @@ managed sections match the current release.
   partial adopters without markers remain explicit warnings and require an
   intentional adoption or exclusion decision.
 - `--force` is not a substitute for reconciling a stricter local policy.
+
+## D-022 - Fleet registration is explicit and evidence-based
+
+**Status:** accepted
+
+### Decision
+
+A downstream fleet member is an immediate child of the configured source root
+with both a real `.git/` directory and an explicit `.dockit-enabled` marker.
+Linked worktrees are not separate adopters. The LLM-DocKit source repository is
+not its own downstream adopter.
+
+An established repository that lacks the marker may be registered only after
+its canonical DocKit documents or prior sync state prove actual adoption and
+its current Git state has been inspected. Registration preserves project-local
+rules and unrelated work. If no complete prior template revision is provable,
+initialize it with
+`dockit-sync.sh --init-state --untracked-existing-adoption --project <path>`.
+The tool derives complete conflict baselines from the adopter while recording
+`pre-registration` and
+`untracked-existing-adoption`; a selective section baseline must not fabricate
+full-template currency. The legacy-identity option is single-project and
+init-state only. Reinitialization that crosses between the sentinel and an
+evidenced identity fails closed; an operator must inspect provenance and supply
+`--force`, which reports both the old and replacement identities. Normal
+re-baselining between evidenced template revisions keeps its existing behavior.
+
+Stale `.git/.dockit` state without the canonical documents is not sufficient
+authority to recreate or enroll project content. A third-party checkout is not
+enrolled solely because it lives under the operator's source root.
+
+### Context
+
+The independent-review policy rollout initially found 23 marked adopters and
+multiple established but unmarked DocKit repositories. Irrigation Portal was
+one of them: its documentation and validators were mature, but central
+`--all` discovery could not see it because `.dockit-enabled` was absent. A
+second evidence sweep found the same omission in PiHA-Deployer through its
+canonical documents and preserved 4.9.5 sync state.
+
+### Rationale
+
+Inferring adoption from filenames alone can enroll vendored or abandoned
+repositories and overwrite project-specific policy. Requiring the marker makes
+authority explicit; permitting evidence-based registration repairs genuine
+legacy omissions without requiring the operator to explain the same rule one
+repository at a time. Honest state keeps registration, selected-policy
+delivery and complete template currency as three separate claims.
+
+### Implications
+
+- Fleet inventory reports count primary repositories, not temporary worktrees.
+- New scaffolds continue to opt in through their normal marker and state flow.
+- Existing clean adopters may publish the marker and selected policy together.
+- Dirty adopters are changed only additively or published from a clean
+  dedicated worktree; no reset, stash or cleanup is implied.
+- A no-remote or third-party-upstream exception remains local and explicit.
+- Full DocKit upgrades and per-project runtime gates remain separate work.

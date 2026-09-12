@@ -13,6 +13,106 @@ the active normative source for new work.
 
 ---
 
+## 2026-09-12 - Exact Opus audit of the fleet-rollout closeout
+
+- **Preferred auditor evidence**: exact `claude-fable-5-1` at high effort was
+  retried three times and returned HTTP 429 with `You've reached your Fable
+  limit.`; Claude `/status` showed the Fable weekly pool at 100% with reset on
+  2026-09-16 14:00 UTC.
+- **Effective auditor**: exact `claude-opus-5[1m]`, high effort, session
+  `1c419dfc-06bd-4445-9101-0c9a1646734b`. The command explicitly selected that
+  model and effort, prohibited edits and subagents, and limited the review to
+  read-only inspection.
+- **Auditor capability boundary**: no Bash/Git command tool materialized in
+  the audit session. Opus read repository files and Git reference files through
+  its read/glob tools; candidate tree, binary-diff digest, branch containment,
+  validation execution and fleet counts remained executor-supplied evidence.
+  The auditor cross-checked the documented ledger and reported no commit-string
+  typo, but did not independently execute those identity or validation claims.
+- **Round 1 target**: base
+  `1301ffc55b078693c790167e0ecae9f642dc67f1`, proposed version 4.14.2,
+  16 staged paths, tree `84c69f2d772bb6a4b5d9b7fa622376ea5b91989a`, binary diff SHA-256
+  `c68b3aa80116499dbb5e7c52a3681ab74cdc4e85be7707d9e247c112320d424a`.
+- **Round 1 verdict**: `GO WITH REQUIRED CHANGES`; two HIGH, five MEDIUM,
+  four LOW and two NOTE findings.
+
+### Round 1 reconciliation
+
+- **A1 HIGH - AGREED**: the new HISTORY entry omitted six staged paths. The
+  v4.15.0 entry now enumerates every final candidate path.
+- **A2 HIGH - AGREED**: the Travel Ledger timezone explanation was false, while
+  LLM-DocKit had a separate real UTC conversion defect. Travel Ledger 0.9.14
+  fixes its omitted HISTORY footer hash and passes DocKit 10/10. The central
+  validator now uses `TZ=UTC` plus Git `format-local`, with an offset regression;
+  DF-057 preserves both causes without conflation.
+- **A3 MEDIUM - AGREED**: MED's active worktree has neither the selected policy
+  section nor its marker pair. The ledger no longer calls it a partial policy
+  copy; it distinguishes that protected checkout from the published clean-
+  worktree commit.
+- **A4 MEDIUM - AGREED**: PiHA-Deployer retained its evidenced 4.9.5 /
+  `723afb4` state. Pre-registration sentinels apply only where the complete
+  prior template is unprovable.
+- **A5 MEDIUM - AGREED**: the protected primary `devenv`, `forgeos`, and
+  `devenv-entry` worktrees contain additive uncommitted policy edits; MED was
+  not locally edited with the policy. The receipt states both facts.
+- **A6 MEDIUM - AGREED**: manual pre-registration state was not reproducible.
+  `dockit-sync.sh --init-state --untracked-existing-adoption --project <path>`
+  now creates the honest identity and complete baselines under constrained,
+  tested option combinations.
+- **A7 MEDIUM - AGREED**: this review is now recorded here with exact model,
+  session, candidate and capability boundaries.
+- **A8 LOW - AGREED**: the `forgeos-convergence` revision is explicitly limited
+  to its unmerged feature branch.
+- **A9 LOW - AGREED**: no-bump rationales now cite ForgeOS convergence's
+  integration-line version assignment and House Thermal Monitor's explicit
+  documentation-only rule.
+- **A10 LOW - AGREED**: the receipt says selected-policy convergence and notes
+  that Irrigation Portal's commit also carries its independently authorized
+  0.9.0 feature release.
+- **A11 LOW - AGREED**: HANDOFF now includes v4.14.0, v4.14.1 and the final
+  `1301ffc` audit-record commit in its immediate release chain.
+- **N1 NOTE - AGREED**: all claims the auditor could not reproduce are labelled
+  executor evidence rather than independent execution.
+- **N2 NOTE - AGREED**: `.dockit-enabled` is documented as a presence marker;
+  empty and comment-only forms are both accepted instead of being represented
+  as one canonical byte shape.
+
+### Round 2 verification and findings
+
+- **Target**: tree `59c65c6fdfe3e80ac33c26b3b4f40d7755db7b94`, binary
+  diff SHA-256 `fd6fa0d7f5bbe4d2ed02f6877688a970ad0a9e51e4d82ec6de04d0a427e1c2e0`,
+  21 staged paths.
+- **Independent execution**: a Bash/Git surface was available in this round.
+  Opus independently reproduced tree and diff identity, 9/9 version sync,
+  10/10 DocKit, shell syntax, diff hygiene, all 35 remote-branch containment
+  checks, exact 49/38/11 inventory arithmetic, exact registration set equality,
+  37 current sections plus markerless MED, Home Infra ancestry, the unmerged
+  ForgeOS convergence branch and both no-bump rationales. It did not run the
+  nominal dry-run because that command acquires transient locks in adopter Git
+  directories; its read-only section-hash comparison reproduced the substance.
+- **Verdict**: `GO WITH REQUIRED CHANGES`; one HIGH, two MEDIUM, one LOW and
+  one NOTE, with no disagreement.
+- **B1 HIGH - AGREED**: two legacy smoke fixtures still built UTC-labelled
+  expectations with Git `format:`. They passed 82/82 under UTC but only 75/82
+  under Europe/Madrid. Both now use `TZ=UTC` plus `format-local`; both host
+  timezones are required in the replacement gate.
+- **B2 MEDIUM - AGREED**: DF-057 and ROADMAP now record the validator migration
+  census, name `buzz-lab` and `infra-portal` as the currently detected false-UTC
+  anchors, and require evidence repair rather than validator reversion.
+- **B3 MEDIUM - AGREED WITH STRONGER REMEDIATION**: instead of warning while
+  still overwriting, init-state now refuses to cross the pre-registration
+  boundary unless explicit `--force` is supplied. The error names both identities; tests
+  cover sentinel preservation, evidenced-provenance preservation, idempotence
+  and the forced escape.
+- **B4 LOW - AGREED**: this block records the changed tool capability,
+  independently reproduced axes, findings and verdict.
+- **N3 NOTE - AGREED**: manifest column alignment is corrected.
+
+The corrections add a sync capability and repair validator behavior, so the
+candidate moved from documentation-only 4.14.2 to backward-compatible minor
+4.15.0. Publication remains blocked until validation and same-session Opus
+follow-up close the replacement tree.
+
 ## 2026-09-12 - Exact Opus audit of the v4.14.0 selective-sync candidate
 
 - **Preferred auditor evidence**: three exact `claude-fable-5-1` high-effort

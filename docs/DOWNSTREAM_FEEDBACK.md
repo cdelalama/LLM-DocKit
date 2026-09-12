@@ -2180,3 +2180,45 @@ source release itself. v4.14.1 clarifies that non-commit candidate tree hashes
 stay as plain text when HISTORY or a HANDOFF Trace Anchor is the fallback
 evidence destination, avoiding a collision with durable Trace's backtick-quoted
 commit validation without weakening D-019 cross-repository commit provenance.
+
+## DF-057 - Trace commit times can retain the stored timezone while labelled UTC
+
+- Source: travel-ledger 0.9.13 fleet validation
+- Date observed: 2026-09-12
+- Category: correctness / Trace Protocol
+- Status: implemented (4.15.0)
+- Related: DF-040, DF-044, DF-048, D-008
+
+Observation: `dockit-validate-session.sh` rendered a referenced commit with
+Git's `--date=format:` mode and appended the literal `UTC` suffix. Git retained
+the commit's stored timezone, so a commit created at 08:43:29 +0200 was compared
+as `08:43:29 UTC` instead of the real instant `06:43:29 UTC`. The first fleet
+receipt then repeated the inverse explanation as if Travel Ledger's local
+validator failure proved this central bug. Direct rerun showed Travel Ledger
+had already corrected its copied validator; its actual failure was an omitted
+HISTORY Trace-footer hash, later corrected in Travel Ledger 0.9.14.
+
+Protocol implication:
+
+- UTC-labelled commit evidence must be converted to UTC, not merely reformatted.
+- Downstream failures must be rerun against the downstream's current validator
+  before being classified as an upstream defect.
+- A fleet receipt must distinguish the observed downstream failure from the
+  separate central defect even when both concern the same Trace surface.
+
+Mitigation in source project: v4.15.0 runs Git with `TZ=UTC` and
+`--date=format-local:` for both second- and minute-precision Trace comparisons.
+The validator smoke creates a commit with an explicit +0200 offset and requires
+its true UTC timestamp. Travel Ledger 0.9.14 separately repairs the missing
+footer hash and passes all ten local DocKit checks.
+
+Migration evidence: an independent read-only census found that 1 of the 38
+registered adopters already carries the corrected validator, 32 retain the
+pre-fix copy, and 5 do not carry that validator. Of the 12 adopters with durable
+Trace enabled, applying the corrected validator changes `buzz-lab` and
+`infra-portal` from green to red because their current HANDOFF anchors recorded
+stored +0200 wall time with a false UTC suffix. Their true referenced commit
+instants are two hours earlier. Before either project receives the corrected
+validator, repair its recorded UTC timestamp against Git evidence. Never revert
+the validator or preserve the false timestamp merely to keep a previous green
+result.

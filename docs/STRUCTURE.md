@@ -21,6 +21,7 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- VERSIONING_RULES.md
 |  +- version-sync-manifest.yml  (lists files tracked for version sync)
 |  +- ROADMAP.md                  (LLM-DocKit source roadmap; not synced downstream)
+|  +- FLEET_ROLLOUT_2026-09-12.md (verified policy rollout ledger; source only)
 |  +- integrations/               (LLM tool integration notes)
 |  +- llm/                       (LLM working memory)
 |  +- operations/                 (runbooks)
@@ -59,6 +60,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | docs/operations/ | Runbooks and operational procedures | Recommended |
 | docs/integrations/ | Operator/tool integration notes, such as Codex CLI setup | Template + downstream |
 | docs/ROADMAP.md | LLM-DocKit source roadmap | Source only; not synced downstream |
+| docs/FLEET_ROLLOUT_2026-09-12.md | Exact adopter registration, publication, and exception evidence for the 2026-09-12 policy rollout | Source only; not synced downstream |
 | docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
 | dockit-sync-manifest.yml | Sync strategy per file (copy/skip/section-merge/yaml-merge) | Template only |
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |

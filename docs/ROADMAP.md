@@ -7,35 +7,41 @@ lives in `docs/llm/DECISIONS.md`.
 
 ## Now
 
-Prepare one separately authorized full-adopter selective-apply pilot.
+Maintain the completed independent-review policy fleet convergence.
 
-- Prefer exact Fable `claude-fable-5-1` at high effort; permit exact Opus
-  `claude-opus-5[1m]` at high effort only after direct Fable quota evidence.
-- Use `dockit-sync.sh --only` to preview or apply this managed section without
-  claiming that an adopter received the rest of the current template.
-- Preserve project-local stricter review contracts and partial-adopter gaps as
-  explicit exceptions instead of forcing them away.
-- Keep candidate tree hashes in `docs/llm/REVIEWS.md`, or as plain HISTORY or
-  HANDOFF Trace Anchor text when no review registry exists, so durable Trace
-  continues to reserve backtick-quoted hashes for commits. Cross-repository
-  commits still use D-019's explicit `external=repo@hash` classification.
-- v4.14.1 published this clarification at `3d38025` after exact Opus `GO` on
-  the matching source tree; no adopter was changed by the release.
+- `docs/FLEET_ROLLOUT_2026-09-12.md` is the exact ledger for 49 primary Git
+  repositories, 38 registered adopters, 35 published policy revisions, one
+  committed third-party overlay, and two protected no-remote worktrees.
+- All evidenced existing DocKit adopters now have `.dockit-enabled`, including
+  Irrigation Portal and the late-discovered PiHA-Deployer omission.
+- Preserve the Fable-preferred, exact-Opus-on-recorded-quota policy and the
+  explicit exceptions; do not treat this selected-section convergence as full
+  template currency.
+- New registration uses D-022's evidence boundary. Stale sync state or a
+  directory name alone is not authority to enroll a repository.
+- v4.15.0 makes that legacy-registration path executable through
+  `--untracked-existing-adoption`, fixes UTC Trace comparison under DF-057,
+  and records Travel Ledger's corrected 0.9.14 governance evidence.
 
 ## Next
 
-Pilot the policy-only apply in one full adopter, then reassess fleet rollout.
+Plan full-template upgrades separately, based on each adopter's own state.
 
-- The 2026-09-12 real dry-run scanned 23 registered adopters: 21 full adopters
-  would insert only `LLM_START_HERE.md:independent-review-policy`; `med` and
-  `msgvault-lab` were classified as partial with no markers; zero errors.
-- Those 21 full adopters may receive only the selected section after a separate
-  apply authorization. The two partial adopters need an intentional
-  marker/adoption decision.
+- Use `dockit-sync-check.sh` and per-project dry runs to distinguish complete
+  template drift from the already-delivered policy section.
+- Before a full sync carries the DF-057 validator correction, repair the false
+  UTC Trace-anchor timestamps currently detected in `buzz-lab` and
+  `infra-portal`; a red gate must be fixed from Git evidence, never by reverting
+  the validator.
+- Keep `cambio-claro` and `juiced` local until their broader dirty worktrees and
+  lack of remotes have an independently valid publication path.
+- Keep `claude-quest` as a local governance overlay unless an operator-owned
+  fork or other legitimate publication target is established.
+- MED's active dirty checkout lacks the selected section and its marker pair;
+  that local exception remains explicit even though its separate authoritative
+  policy revision is published.
 - Repositories with a stricter local model rule keep it until the operator
   explicitly supersedes that rule in the project.
-- Full DocKit upgrades remain separate and should be performed when each
-  adopter's unrelated conflicts can be reviewed.
 
 ## Later
 

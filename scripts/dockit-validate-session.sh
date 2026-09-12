@@ -581,8 +581,8 @@ _trace_validate_commit() {
 
     if [ "$_require_subject_time" = true ]; then
         _subject=$(git -C "$PROJECT_ROOT" show -s --format=%s "$_hash" 2>/dev/null || true)
-        _commit_time_seconds=$(git -C "$PROJECT_ROOT" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
-        _commit_time_minutes=$(git -C "$PROJECT_ROOT" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M UTC' "$_hash" 2>/dev/null || true)
+        _commit_time_seconds=$(TZ=UTC git -C "$PROJECT_ROOT" show -s --format=%cd --date=format-local:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
+        _commit_time_minutes=$(TZ=UTC git -C "$PROJECT_ROOT" show -s --format=%cd --date=format-local:'%Y-%m-%d %H:%M UTC' "$_hash" 2>/dev/null || true)
         if [ -n "$_subject" ] && ! printf '%s\n' "$_text" | grep -qF "$_subject"; then
             _trace_append_error "$_context target $_short is missing commit subject: $_subject"
         fi

@@ -633,7 +633,8 @@ TRACE_REPO="$TMP_ROOT/trace"
 init_repo "$TRACE_REPO"
 TRACE_HASH=$(git -C "$TRACE_REPO" rev-parse --short=7 HEAD)
 TRACE_SUBJECT=$(git -C "$TRACE_REPO" show -s --format=%s HEAD)
-TRACE_TIME=$(git -C "$TRACE_REPO" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M:%S UTC' HEAD)
+TRACE_TIME=$(TZ=UTC git -C "$TRACE_REPO" show -s --format=%cd \
+    --date=format-local:'%Y-%m-%d %H:%M:%S UTC' HEAD)
 
 cat >"$TRACE_REPO/.dockit-config.yml" <<'EOF'
 adoption_mode: full
@@ -668,6 +669,46 @@ EOF
 
 expect_pass "trace-protocol valid anchor and HISTORY footer pass" \
     "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
+
+TRACE_OFFSET_REPO="$TMP_ROOT/trace-offset"
+init_repo "$TRACE_OFFSET_REPO"
+GIT_AUTHOR_DATE="2000-01-02T08:43:29+0200" \
+GIT_COMMITTER_DATE="2000-01-02T08:43:29+0200" \
+    git -C "$TRACE_OFFSET_REPO" commit --allow-empty -qm "offset commit"
+TRACE_OFFSET_HASH=$(git -C "$TRACE_OFFSET_REPO" rev-parse --short=7 HEAD)
+TRACE_OFFSET_SUBJECT=$(git -C "$TRACE_OFFSET_REPO" show -s --format=%s HEAD)
+TRACE_OFFSET_TIME=$(TZ=UTC git -C "$TRACE_OFFSET_REPO" show -s --format=%cd \
+    --date=format-local:'%Y-%m-%d %H:%M:%S UTC' HEAD)
+cat >"$TRACE_OFFSET_REPO/.dockit-config.yml" <<'EOF'
+adoption_mode: full
+
+trace_protocol:
+  enabled: true
+  since: 2000-01-01
+EOF
+cat >"$TRACE_OFFSET_REPO/docs/llm/HANDOFF.md" <<EOF
+# Handoff
+
+## Trace Anchor
+
+- Role: auditor
+- Subject: \`$TRACE_OFFSET_HASH\` $TRACE_OFFSET_SUBJECT
+- Commit time: $TRACE_OFFSET_TIME
+- State verified: local main, no origin remote in smoke repo
+- Validation: smoke=pass
+- Next gate: operator
+
+## Open work -- next concrete step
+
+Touch \`scripts/foo.sh\`.
+EOF
+cat >"$TRACE_OFFSET_REPO/docs/llm/HISTORY.md" <<EOF
+# History
+
+- 2000-01-03 - Smoke - Audited \`$TRACE_OFFSET_HASH\`. - Files: [scripts/foo.sh] - Version impact: no - Trace: role=auditor; commits=$TRACE_OFFSET_HASH; state=local-main-no-origin; validation=smoke-pass; next=operator
+EOF
+expect_pass "trace-protocol renders non-UTC commit offsets as UTC" \
+    "$VALIDATOR" --project "$TRACE_OFFSET_REPO" --quiet --check trace-protocol
 
 cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
 # History
@@ -727,7 +768,8 @@ EOF
 expect_pass "trace-protocol accepts advisor role" \
     "$VALIDATOR" --project "$TRACE_REPO" --quiet --check trace-protocol
 
-TRACE_TIME_MINUTES=$(git -C "$TRACE_REPO" show -s --format=%cd --date=format:'%Y-%m-%d %H:%M UTC' HEAD)
+TRACE_TIME_MINUTES=$(TZ=UTC git -C "$TRACE_REPO" show -s --format=%cd \
+    --date=format-local:'%Y-%m-%d %H:%M UTC' HEAD)
 cat >"$TRACE_REPO/docs/llm/HANDOFF.md" <<EOF
 # Handoff
 
@@ -1013,6 +1055,82 @@ else
         } >"$OUT.tmp"
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-sync selects one section without claiming full template currency"
+    fi
+
+    SYNC_PRE_REG_REPO="$TMP_ROOT/sync-pre-registration"
+    init_sync_section_repo "$SYNC_PRE_REG_REPO" "with-footer"
+    if "$SYNC_TOOL" --init-state --untracked-existing-adoption \
+            --project "$SYNC_PRE_REG_REPO" >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --init-state --untracked-existing-adoption \
+            --project "$SYNC_PRE_REG_REPO" >"$OUT" 2>&1 \
+        && grep -q '^template_version: "pre-registration"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && grep -q '^template_ref: "untracked-existing-adoption"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && grep -Eq '^    footer: "[0-9a-f]{64}"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && "$SYNC_TOOL" --apply --project "$SYNC_PRE_REG_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q '^template_version: "pre-registration"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && grep -q '^template_ref: "untracked-existing-adoption"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && grep -Eq '^    independent-review-policy: "[0-9a-f]{64}"$' \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml"; then
+        note_pass "dockit-sync creates honest pre-registration state and preserves it"
+    else
+        note_fail "dockit-sync creates honest pre-registration state and preserves it"
+    fi
+
+    cp "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" "$TMP_ROOT/pre-registration.state"
+    if ! "$SYNC_TOOL" --init-state --project "$SYNC_PRE_REG_REPO" >"$OUT" 2>&1 \
+        && cmp -s "$TMP_ROOT/pre-registration.state" \
+            "$SYNC_PRE_REG_REPO/.git/.dockit/state.yml" \
+        && grep -q 'Refusing to replace sync identity pre-registration / untracked-existing-adoption' "$OUT"; then
+        note_pass "dockit-sync protects pre-registration identity from plain reinitialization"
+    else
+        note_fail "dockit-sync protects pre-registration identity from plain reinitialization"
+    fi
+
+    SYNC_KNOWN_IDENTITY_REPO="$TMP_ROOT/sync-known-identity"
+    init_sync_section_repo "$SYNC_KNOWN_IDENTITY_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_KNOWN_IDENTITY_REPO" >"$OUT" 2>&1
+    cp "$SYNC_KNOWN_IDENTITY_REPO/.git/.dockit/state.yml" "$TMP_ROOT/known-identity.state"
+    if ! "$SYNC_TOOL" --init-state --untracked-existing-adoption \
+            --project "$SYNC_KNOWN_IDENTITY_REPO" >"$OUT" 2>&1 \
+        && cmp -s "$TMP_ROOT/known-identity.state" \
+            "$SYNC_KNOWN_IDENTITY_REPO/.git/.dockit/state.yml" \
+        && grep -q 'Refusing to replace sync identity' "$OUT" \
+        && grep -q -- '-> pre-registration / untracked-existing-adoption' "$OUT"; then
+        note_pass "dockit-sync protects evidenced identity from sentinel replacement"
+    else
+        note_fail "dockit-sync protects evidenced identity from sentinel replacement"
+    fi
+
+    if "$SYNC_TOOL" --init-state --untracked-existing-adoption --force \
+            --project "$SYNC_KNOWN_IDENTITY_REPO" >"$OUT" 2>&1 \
+        && grep -q '^template_version: "pre-registration"$' \
+            "$SYNC_KNOWN_IDENTITY_REPO/.git/.dockit/state.yml" \
+        && grep -q 'Replacing sync identity' "$OUT"; then
+        note_pass "dockit-sync requires explicit force for identity replacement"
+    else
+        note_fail "dockit-sync requires explicit force for identity replacement"
+    fi
+
+    if ! "$SYNC_TOOL" --dry-run --untracked-existing-adoption \
+            --project "$SYNC_PRE_REG_REPO" >"$OUT" 2>&1 \
+        && grep -q -- '--untracked-existing-adoption requires --init-state' "$OUT"; then
+        note_pass "dockit-sync rejects pre-registration identity outside init-state"
+    else
+        note_fail "dockit-sync rejects pre-registration identity outside init-state"
+    fi
+
+    if ! "$SYNC_TOOL" --init-state --untracked-existing-adoption \
+            --all --src-root "$TMP_ROOT" >"$OUT" 2>&1 \
+        && grep -q -- '--untracked-existing-adoption requires one --project, not --all' "$OUT"; then
+        note_pass "dockit-sync rejects fleet-wide pre-registration initialization"
+    else
+        note_fail "dockit-sync rejects fleet-wide pre-registration initialization"
     fi
 
     cp "$SYNC_ONLY_REPO/LLM_START_HERE.md" "$SYNC_ONLY_REPO/LLM_START_HERE.before-invalid"

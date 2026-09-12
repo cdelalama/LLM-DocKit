@@ -226,7 +226,8 @@ Content **between** markers gets updated by sync. Content **outside** markers (y
 
 ### Opting In a Project
 
-1. Create an empty `.dockit-enabled` file in the project root:
+1. Create `.dockit-enabled` in the project root. Empty and comment-only marker
+   files are both accepted; the file's presence is the opt-in signal:
    ```sh
    touch .dockit-enabled
    ```
@@ -247,6 +248,46 @@ Content **between** markers gets updated by sync. Content **outside** markers (y
    ```sh
    /path/to/LLM-DocKit/scripts/dockit-sync.sh --apply --project /path/to/your-project
    ```
+
+#### Registering an established adoption
+
+Do not infer registration from a directory name or from stale files under
+`.git/.dockit/`. Central `--all` discovery intentionally requires both an
+explicit `.dockit-enabled` marker and a real `.git/` directory in the primary
+project root. A linked worktree has a `.git` file and is not a second adopter.
+
+When an existing project already has the canonical DocKit entry documents but
+lacks the marker, inspect its Git status and instructions before registering
+it. Add the marker, preserve project-local rules, and establish a truthful
+baseline before selective sync. If the project cannot prove which complete
+template it previously received, use the dedicated initialization mode:
+
+```sh
+/path/to/LLM-DocKit/scripts/dockit-sync.sh --init-state \
+  --untracked-existing-adoption --project /path/to/your-project
+```
+
+That command computes the complete conflict-detection baseline from the
+adopter's current files while recording `template_version: "pre-registration"`
+and `template_ref: "untracked-existing-adoption"`. It does not claim the
+current full template. The option is accepted only with `--init-state` for one
+explicit `--project`; it cannot be combined with `--all`. A later selective
+policy apply may baseline only the delivered section while preserving this
+honest identity.
+
+Initialization is idempotent when the recorded and requested identities match.
+`--init-state` refuses to cross between a pre-registration sentinel and an
+evidenced template identity. Inspect the provenance before using `--force`; a
+forced replacement emits both the old and new identities. This protects both
+an honest pre-registration sentinel from a later plain initialization and an
+evidenced template revision from accidental sentinel replacement, without
+changing normal re-baselining between evidenced template revisions.
+
+Registration means "include this primary repository in fleet discovery." It
+does not mean the repository is current with every DocKit file, validated for
+deployment, or authorized for runtime changes. Preserve dirty worktrees; use a
+clean dedicated worktree for an authorized publication when necessary, and do
+not reset or stash unrelated work.
 
 ### Checking All Projects at Once
 
@@ -359,6 +400,8 @@ scripts/dockit-sync.sh [options]
   --dry-run          Show changes without applying (DEFAULT)
   --apply            Apply changes
   --init-state       Bootstrap: adopt current state as baseline
+  --untracked-existing-adoption
+                     With --init-state, record unknown legacy template identity
   --project PATH     Sync a single project
   --all              Sync all .dockit-enabled projects
   --src-root PATH    Root directory for projects (default: ~/src)

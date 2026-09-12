@@ -4,6 +4,52 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.15.0] - 2026-09-12
+
+### Added
+
+- `docs/FLEET_ROLLOUT_2026-09-12.md` records the complete selective
+  independent-review policy rollout, all published adopter revisions,
+  protected local exceptions, non-adopter exclusions, and verification scope.
+- D-022 defines explicit fleet registration: `.dockit-enabled` plus a primary
+  `.git/` directory, with evidence-based enrollment for established adopters
+  and honest pre-registration state.
+- `scripts/dockit-sync.sh --init-state --untracked-existing-adoption` creates
+  complete conflict baselines while recording explicit unknown prior-template
+  identity; the option is restricted to one project and init-state mode.
+
+### Changed
+
+- The rollout now covers all 38 evidenced downstream adopters under the source
+  root. Fifteen previously unmarked adopters, including Irrigation Portal and
+  PiHA-Deployer, are registered for central discovery.
+- `HOW_TO_USE.md` distinguishes registration from full-template currency and
+  explains why linked worktrees, stale runtime state, and unrelated third-party
+  repositories are not automatically enrolled.
+- The sync tool reports version 1.2.0. Validator smoke coverage now includes
+  honest pre-registration state creation/preservation, fleet-mode rejection,
+  identity-overwrite protection, and non-UTC commit times; the complete matrix
+  passes 85/85 under both UTC and Europe/Madrid.
+- Init-state refuses to cross between pre-registration and evidenced template
+  identity unless explicit `--force` is supplied; its diagnostic names both
+  identities without changing ordinary evidenced-version re-baselining.
+
+### Fixed
+
+- Trace commit-time validation now uses `TZ=UTC` with Git's `format-local`
+  rendering instead of labelling a commit's stored offset wall time as UTC;
+  DF-057 records the downstream discovery and separated causes.
+- The fleet receipt distinguishes MED's markerless active worktree from its
+  published policy revision and records additive edits in three protected
+  primary worktrees without implying they were untouched.
+
+### Notes
+
+- Thirty-five adopter revisions are published on intended remote branches;
+  `claude-quest` is a local-only third-party overlay, while `cambio-claro` and
+  `juiced` remain additive changes in protected dirty repositories with no
+  remote. No runtime or infrastructure was changed.
+
 ## [4.14.1] - 2026-09-12
 
 ### Fixed

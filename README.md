@@ -1,4 +1,4 @@
-<!-- doc-version: 4.14.1 -->
+<!-- doc-version: 4.15.0 -->
 # <PROJECT_NAME>
 
 <One-line description of what this project does.>
@@ -36,6 +36,7 @@
 | [docs/VERSIONING_RULES.md](docs/VERSIONING_RULES.md) | Version management policy |
 | [docs/llm/HANDOFF.md](docs/llm/HANDOFF.md) | Current work state |
 | [HOW_TO_USE.md](HOW_TO_USE.md) | Scaffold setup guide and sync tool docs |
+| [docs/FLEET_ROLLOUT_2026-09-12.md](docs/FLEET_ROLLOUT_2026-09-12.md) | Verified independent-review policy fleet rollout ledger |
 
 ## Contributing
 

@@ -1,12 +1,50 @@
-<!-- doc-version: 4.14.1 -->
+<!-- doc-version: 4.15.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Open work — next concrete step
 
-**v4.14.1 / DF-056 is published. The next concrete step is a separately
-authorized single-adopter selective-apply pilot before any fleet rollout:**
+**The v4.15.0 fleet closeout and validator correction are in final validation.
+The policy rollout itself is complete; the next concrete work is exact-model
+re-review and publication of `docs/FLEET_ROLLOUT_2026-09-12.md`,
+`scripts/dockit-sync.sh`, and `scripts/dockit-validate-session.sh`:**
+
+1. **Closed: all evidenced downstream adopters registered and updated** -
+   The source-root inventory has 49 primary Git repositories and 38 registered
+   adopters. All 38 carry `.dockit-enabled`. Thirty-seven active primary
+   worktrees report the selected policy current; MED's protected active
+   checkout lacks the section and its marker pair, while a separate policy
+   commit is published on `origin/main`. Thirty-five policy revisions are
+   published, `claude-quest`
+   is a local-only third-party overlay, and dirty no-remote `cambio-claro` plus
+   `juiced` retain additive local changes. Fifteen legacy adoptions were newly
+   registered, including Irrigation Portal and late-discovered PiHA-Deployer.
+   D-022 records the registration boundary. Full template versions were not
+   advanced by this selective rollout. PiHA-Deployer retained its evidenced
+   4.9.5 state; unknown legacy provenance uses the explicit pre-registration
+   sentinels.
+
+1. **In progress: v4.15.0 audit remediation** - Exact Fable remained at its
+   documented quota limit, so exact `claude-opus-5[1m]` at high effort reviewed
+   the first closeout candidate in read-only session
+   `1c419dfc-06bd-4445-9101-0c9a1646734b`. It found two HIGH, five MEDIUM, four
+   LOW and two NOTE issues. The executor agreed with every supported finding:
+   the receipt's Travel Ledger diagnosis was false; the central validator had
+   a separate UTC conversion bug; MED, PiHA-Deployer and protected-worktree
+   wording overstated the evidence; legacy registration lacked an executable
+   safe path; the audit itself was not recorded; two no-bump cases and an
+   unmerged branch needed rationale; and the history/current-status chain was
+   incomplete. The code now adds `--untracked-existing-adoption`, corrects UTC
+   conversion and tests both behaviors. Travel Ledger 0.9.14 separately fixes
+   its real HISTORY footer omission and passes DocKit 10/10. Revalidation and
+   same-session Opus closure remain before publication. Round 2 independently
+   reproduced the candidate identity, validation, fleet inventory and all 35
+   remote-containment claims, then found host-timezone-dependent legacy tests,
+   two existing adopter anchors requiring UTC repair, and non-durable legacy
+   identity. The replacement fixes both fixtures, refuses differing init-state
+   identity without explicit `--force`, documents the migration, and records
+   the changed auditor capability. A third same-session round is required.
 
 1. **Closed: v4.14.1 Trace-safe review evidence** -
    `LLM_START_HERE.md` and D-020 now require non-commit candidate tree hashes
@@ -80,15 +118,12 @@ authorized single-adopter selective-apply pilot before any fleet rollout:**
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Next gates:** choose one of the 21 eligible full adopters and run a reviewed
-single-project `dockit-sync.sh --apply --project <path> --only
-LLM_START_HERE.md:independent-review-policy` pilot. Verify the resulting policy,
-preserved full-template identity, selected-section baseline, project validator,
-and exact diff before committing that adopter. Only then consider an
-operator-authorized `--apply --all`; `med` and `msgvault-lab` remain intentional
-partial-adopter decisions, and `--force` must not erase stricter local policy.
-The global Codex hook reinstall and Home Infra Stop-gate rollout remain separate
-unrelated gates.
+**Next gates:** validate and independently re-review the v4.15.0 candidate,
+then publish its exact commit. Future full-template upgrades must use
+per-project dry runs and remain separate from this already-complete policy
+rollout. `cambio-claro`, `juiced`, and `claude-quest` retain the explicit
+publication boundaries in `docs/FLEET_ROLLOUT_2026-09-12.md`. The global Codex
+hook reinstall and Home Infra Stop-gate rollout remain separate unrelated gates.
 
 ## Completed restart checkpoint after VM/NAS outage
 
@@ -160,15 +195,22 @@ DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-
 
 ## Current Status
 - Last Updated: 2026-09-12 - Codex GPT-5
-- Session Focus: **Published the final v4.14.1 Trace-safe evidence clarification
-  at `3d38025`, after v4.14.0 at `1d44785`.** The fleet now has a
-  synchronized Fable-preferred/exact-Opus fallback policy and a selective sync
-  scope that leaves full template currency unchanged while merging delivered
-  section baselines. Local smoke is 78/78;
-  the 23-project selective dry-run is 21 eligible / 2 partial / 0 errors; exact
-  Opus returned final GO on both published source trees; one separately
-  authorized full-adopter pilot remains next. No adopter, global
-  configuration, or runtime was modified.
+- Session Focus: **Prepared v4.15.0 as the durable closeout of the authorized
+  fleet rollout and the audited tooling corrections it exposed.**
+  `docs/FLEET_ROLLOUT_2026-09-12.md` records 38 registered
+  adopters, 35 published policy revisions, one local third-party overlay, two
+  protected dirty no-remote exceptions, and 11 explicitly non-registered
+  primary repositories. D-022 and `HOW_TO_USE.md` make registration explicit
+  and distinguish it from selected-policy delivery and full-template currency;
+  the sync tool can now create that honest state directly. The Trace validator
+  converts offset commit times to UTC and the smoke suite covers both changes.
+  Irrigation Portal 0.9.0 and PiHA-Deployer are registered and published;
+  Travel Ledger 0.9.14 closes the real local governance failure.
+  No runtime, deployment, secret, controller, Home Assistant, NAS, network or
+  Home Infra acceptance mutation occurred. Exact Opus re-review is pending.
+- Previous (2026-09-12): Closed the v4.14.1 audit record and pushed `1301ffc`.
+- Previous (2026-09-12): Cut v4.14.1 clarifying Trace-safe independent-review evidence; pushed `3d38025`.
+- Previous (2026-09-12): Cut v4.14.0 with selective fleet sync and the managed independent-review policy; pushed `1d44785`.
 - Previous (2026-08-07): Cut v4.13.3 closing DF-055 external Trace ownership; pushed `e51fc6f`.
 - Previous (2026-07-21): Cut v4.13.2 closing DF-054 baseline-lifetime regression; pushed `7447dc6`.
 - Previous (2026-07-18): Persisted the complete shutdown/restart checkpoint and recovered the authorized DF-054 audit from tmux; pushed `ab48bd1`.
