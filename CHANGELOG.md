@@ -4,6 +4,39 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.14.0] - 2026-09-12
+
+### Added
+
+- `LLM_START_HERE.md` now carries a managed independent-review fleet policy:
+  exact Fable at high effort is preferred, and exact Opus 5 1M at high effort
+  is the only allowed fallback after direct Fable quota evidence.
+- `scripts/dockit-sync.sh --only path[:section]` provides repeatable selective
+  selectors for policy-only or file-only downstream updates.
+- `scripts/test-validator.sh` covers isolated and whole-file rollout, conflict
+  baselines, malformed state rollback, partial/excluded/current/preflight
+  classification, selector rejection, heterogeneous fleet JSON, and live-lock
+  continuation. The final 78-case matrix also covers empty baseline values,
+  selective branch-name collisions, and non-holder lock failures.
+- DF-056 and D-020/D-021 record the downstream need, model precedence, and
+  selective-state contract.
+
+### Changed
+
+- Selective apply retains the normal backup, conflict, rollback, exclusion,
+  and validation safeguards. It merges selected section baselines for future
+  conflict detection while preserving the adopter's prior full-template
+  `template_version` and `template_ref`.
+- Selective preflight classifies pre-existing version-validation failure before
+  mutation; text/JSON reports distinguish partial, excluded, current, failed,
+  and updated adopters, and fleet JSON is one attributable array.
+- A live adopter lock no longer aborts the full fleet report or gets removed by
+  the blocked process; rollback outcomes are explicit project error entries.
+- Lock-directory/write failures now retain an attributable diagnostic, and
+  selective state accepts only non-empty lowercase SHA-256 section baselines.
+- `HOW_TO_USE.md` documents one-command fleet preview/apply, full-versus-partial
+  adoption behavior, and precedence for stricter project-local policy.
+
 ## [4.13.3] - 2026-08-07
 
 ### Added

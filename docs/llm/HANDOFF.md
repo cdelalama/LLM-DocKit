@@ -1,11 +1,48 @@
-<!-- doc-version: 4.13.3 -->
+<!-- doc-version: 4.14.0 -->
 # LLM Work Handoff
 
 This file is the current operational snapshot. Long-form rationale lives in `docs/llm/DECISIONS.md`.
 
 ## Open work — next concrete step
 
-**DF-055 is closed in v4.13.3. The next actions are separate operator gates:**
+**The v4.14.0 DF-056 candidate is implemented and validated locally. The next
+concrete step is the final exact-Opus replacement-tree audit, followed by
+source publication:**
+
+1. **Candidate: DF-056 / v4.14.0 independent-review policy and selective
+   sync** - `LLM_START_HERE.md` carries the Fable-preferred, exact-Opus fallback
+   contract; `scripts/dockit-sync.sh --only path[:section]` can distribute one
+   rule without applying unrelated template drift or advancing the adopter's
+   full `template_version`/`template_ref`, while retaining selected section
+   baselines for future conflict detection. The local smoke suite passes 78/78.
+   D-020 and D-021 record model and sync-state precedence. No adopter has been
+   modified.
+
+   Fable fallback evidence: three exact `claude-fable-5-1` attempts returned
+   HTTP 429 with `You've reached your Fable limit.`; `/status` showed Fable week
+   100% with reset at 2026-09-16 14:00 UTC while the all-model pool retained
+   capacity. Round 1 used exact `claude-opus-5[1m]`, high effort, read-only,
+   against tree `dfd3627a0c1cac53889e8e30db73242e26690ebe`; it returned `GO WITH
+   REQUIRED CHANGES` for A1 baseline loss, A2 misleading partial/exclusion
+   reporting, and A3 test gaps. Round 2 audited replacement tree
+   `4dfb5923628a58f5340d0610c892e78a3305a214` with binary diff SHA-256
+   `74b69d3ee8d527e4847f4d55129f471fd2d46a822ed20730428d4399d827e529`
+   and returned `GO WITH REQUIRED CHANGES`: B1 found whole-file creation lacked
+   section baselines, and B3 found the round-1 diff hash was mistranscribed.
+   Both are corrected. The recommended B2/B4/B5 lock/report/parser risks are
+   also closed rather than deferred. Round 3 audited tree
+   `b6a3d02cb8899bba86d9e7b27a10ef8942ffbee5` with binary diff SHA-256
+   `280fbd418bb54511089cade6b6bf10074dab096905d9efe62fa1c7c47b2a5824`
+   and returned `GO`, with no remaining BLOCKER/HIGH/MEDIUM findings. Its LOW
+   lock-diagnostic and empty-hash observations are corrected, and its branch
+   collision NOTE now has a real regression. The same Opus session must audit
+   this final 78-case replacement tree before release.
+
+   Real selective fleet preview: `--dry-run --all --json --only
+   LLM_START_HERE.md:independent-review-policy` returned valid JSON for 23
+   registered adopters, with 21 `UPDATED / section inserted`, two `SKIPPED / no
+   markers (partial adopter)` (`med`, `msgvault-lab`), and zero errors. This is
+   read-only evidence, not downstream apply authorization.
 
 1. **Closed: DF-055 / v4.13.3 external Trace revision ownership** - HISTORY
    footers can now classify exact cross-repository hashes with
@@ -28,7 +65,15 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 1. **Closed: DF-046 / v4.10.1** — `scripts/dockit-validate-session.sh` no longer treats a clean committed repo as stale just because the calendar day changed. `handoff-date` and `history-entry` now use the last commit date when the tracked tree is clean, and use today's date only when tracked files are dirty. MED surfaced the bug during the 2026-06-18 -> 2026-06-19 rollover; the fix has smoke coverage for clean old commits and dirty trees.
 1. **Closed: DF-035 option (b.ii)** — `scripts/dockit-init-project.sh` now strips scaffold-author residue at init time and demotes optional `docs/ARCHITECTURE.md` to `docs/ARCHITECTURE.md.example` in freshly-scaffolded projects. New projects keep the architecture starter but do not receive it as a live architecture document. The init script also rewrites the target `docs/version-sync-manifest.yml` and README link to track the `.example` file, removes the LLM_START_HERE customization section, and rewrites the STRUCTURE opening into project voice. `scripts/test-validator.sh` now includes a real scaffold smoke asserting that a fresh project passes orientation/template-residue/version-sync.
 
-**Likely next LLM-DocKit follow-ups:** the separate operator-controlled gate for the global Codex hook reinstall remains unopened: inspect the timestamped backup and exact `~/.codex/config.toml` diff, approve the changed hash in `/hooks`, and verify a fresh SessionStart. The v4.13.2 source release also unblocks a dedicated home-infra Stop-gate rollout, but that must happen in its own adopter session. Continue the adopter wave later with dedicated sessions for `llm-council` or `plaud-mirror`; both need semantic resolution of local `LLM_START_HERE.md` sections instead of batch sync. ForgeOS needs its own WIP-aware session before sync. DF-020 graduated validator modes remains the likely next source minor after the hook rollout.
+**Next gates:** audit the final frozen v4.14.0 replacement tree with exact
+`claude-opus-5[1m]` at high effort under D-020, reconcile any findings, rerun
+the complete local checks, then commit and push LLM-DocKit. After publication,
+run `dockit-sync.sh --dry-run --all --only
+LLM_START_HERE.md:independent-review-policy` and classify full, partial,
+excluded, and failed adopters. Applying or committing changes in downstream
+repositories is a separate operator-controlled rollout; do not use `--force`
+to erase stricter local policy. The global Codex hook reinstall and Home Infra
+Stop-gate rollout remain separate unrelated gates.
 
 ## Completed restart checkpoint after VM/NAS outage
 
@@ -99,8 +144,15 @@ A multi-day deliberation on 2026-05-02→04 produced cross-repo proposals and su
 DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`. They remain useful evidence for the pending ForgeOS ownership decision and for `llm-council` corpus/curation work, but they no longer drive a DocKit consensus runtime.
 
 ## Current Status
-- Last Updated: 2026-08-07 - Codex GPT-5
-- Session Focus: **Cut v4.13.3 closing DF-055.** Trace HISTORY now distinguishes local `commits=` from explicitly namespaced `external=repo@hash` provenance. The change preserves strict local commit resolution and adds three targeted regressions. No adopter or global Codex configuration was modified; rollout remains an operator-controlled sync.
+- Last Updated: 2026-09-12 - Codex GPT-5
+- Session Focus: **Prepare v4.14.0 closing DF-056.** The fleet now has a
+  synchronized Fable-preferred/exact-Opus fallback policy and a selective sync
+  scope that leaves full template currency unchanged while merging delivered
+  section baselines. Local smoke is 78/78;
+  the 23-project selective dry-run is 21 eligible / 2 partial / 0 errors; exact
+  Opus final-tree audit and source publication remain next. No adopter, global
+  configuration, or runtime was modified.
+- Previous (2026-08-07): Cut v4.13.3 closing DF-055 external Trace ownership; pushed `e51fc6f`.
 - Previous (2026-07-21): Cut v4.13.2 closing DF-054 baseline-lifetime regression; pushed `7447dc6`.
 - Previous (2026-07-18): Persisted the complete shutdown/restart checkpoint and recovered the authorized DF-054 audit from tmux; pushed `ab48bd1`.
 - Previous (2026-07-16): Cut v4.13.1 fixing Codex SessionStart latency and preserving operator TOML during reinstall; pushed `b15b78f`.

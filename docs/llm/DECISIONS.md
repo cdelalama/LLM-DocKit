@@ -993,3 +993,111 @@ possible peer checkout or remote lives.
 - A hash declared as both local and external fails.
 - Verifying the external repository actually contains that object remains the
   responsibility of the cross-repository operator workflow.
+
+## D-020 - Independent review uses an exact recorded fallback, not model substitution
+
+**Status:** accepted
+
+### Decision
+
+The operator-wide independent-review default prefers exact Fable model
+`claude-fable-5-1` at high effort. When direct evidence shows that this exact
+model is unavailable because its quota is exhausted, exact Opus model
+`claude-opus-5[1m]` at high effort may complete the same review gate.
+
+The executor records the quota evidence, effective model, effort, command,
+candidate identity, and validation packet in `docs/llm/REVIEWS.md` when that
+registry exists, otherwise in the audited revision's HISTORY entry. Sonnet,
+Haiku, ambiguous aliases, and silent auditor-model substitution are
+prohibited. If neither allowed exact model is available, the candidate remains
+frozen; only previously authorized work that does not depend on the verdict may
+continue.
+
+An existing stricter project-local accepted rule has precedence until the
+operator explicitly supersedes it in that project.
+
+### Context
+
+Irrigation Portal selected Fable as its independent auditor, then reached the
+Fable-specific weekly limit while other Claude capacity remained available.
+Treating every lower model as equivalent would weaken the gate; blocking all
+unrelated work until quota reset would conflate auditor availability with
+execution authority. The operator explicitly accepted current Opus 5 with a
+one-million-token context as the only fallback sufficiently capable for this
+role and asked for the policy to apply across projects.
+
+### Rationale
+
+The policy names exact models and a verifiable activation condition. This
+keeps the preferred reviewer stable, makes degradation visible, and permits a
+high-capability fallback without turning quota pressure into an arbitrary
+model choice. Local precedence prevents a fleet template update from silently
+weakening a deliberately stricter project contract.
+
+### Implications
+
+- The auditor remains independent and read-only and must inspect primary
+  artifacts rather than rely only on an executor summary.
+- The executor verifies findings and preserves unresolved disagreement; a
+  model verdict is advisory and never expands lifecycle or runtime authority.
+- Model identifiers are policy data. Changing them requires an explicit
+  operator decision and a new DocKit update, not an alias that drifts silently.
+- Projects may exclude the managed policy section, but the local exception and
+  rationale must remain visible.
+- This local D-020 is unrelated to MED D-020, which is always qualified by its
+  repository name when cited here.
+- The policy stays in the mandatory source file rather than being duplicated in
+  the SessionStart bootstrap payload. The payload already instructs agents to
+  read `LLM_START_HERE.md`; duplicating this model policy would create a second
+  fleet value that could drift.
+
+## D-021 - Selective sync does not assert complete template currency
+
+**Status:** accepted
+
+### Decision
+
+`scripts/dockit-sync.sh` accepts repeatable `--only` selectors in either
+`path` or `path:section-id` form. A selective apply uses the normal backup,
+conflict, rollback, exclusion, and validation controls, but it does not update
+`.git/.dockit/state.yml` `template_version` or `template_ref`. It merges the
+template hashes of selected sections whose downstream content now equals the
+template, preserving all untouched section hashes so later local edits remain
+conflict-protected.
+
+Selectors are validated against the manifest and template before any adopter
+is touched. Section selectors apply only to `section-merge` entries and cannot
+create a missing downstream file.
+
+### Context
+
+The review fallback needed to reach many repositories, but most adopters were
+behind the current DocKit release and a full fleet dry-run exposed unrelated
+local conflicts. The old choice was either visit projects one by one or run a
+full upgrade whose scope was much wider than the policy change.
+
+### Rationale
+
+A narrow policy rollout is safer than coupling it to every accumulated
+template change. Leaving `template_version` untouched is essential: one
+received section is not proof that all copied scripts, YAML targets, and other
+managed sections match the current release.
+
+### Implications
+
+- `dockit-sync-check.sh` continues to report selectively updated but otherwise
+  old adopters as `OUTDATED`.
+- A later full sync incorporates already-equal selected sections and advances
+  state only after the complete operation succeeds.
+- A selective preflight classifies pre-existing version-validation failure and
+  leaves that adopter unchanged rather than attributing old drift to the sync.
+- Fleet JSON is a single array whose entries name their adopter; selected
+  section reports distinguish current, partial, excluded, and updated states.
+- Selective state parsing fails closed: malformed existing section hashes cause
+  file and state rollback instead of dropping untouched conflict baselines.
+- A live adopter lock is an attributable per-project error, never authority to
+  remove another process's lock or discard the rest of the fleet report.
+- Full adopters receive a newly introduced selected section automatically;
+  partial adopters without markers remain explicit warnings and require an
+  intentional adoption or exclusion decision.
+- `--force` is not a substitute for reconciling a stricter local policy.

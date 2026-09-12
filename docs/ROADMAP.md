@@ -7,27 +7,29 @@ lives in `docs/llm/DECISIONS.md`.
 
 ## Now
 
-Stabilize the v4.11.x line and close adopter sync work opportunistically when
-each adopter is opened.
+Publish the independent-review fleet default and make its rollout selective.
 
-- Keep MED as the reference adopter for `orientation-drift`, durable Trace, and
-  neutral Trace Anchor wording.
-- Avoid fleet-wide force-sync when adopters have active product work. Sync and
-  commit per adopter.
-- Prefer small regression tests in `scripts/test-validator.sh` for every
-  validator or sync behavior that previously failed in the fleet.
+- Prefer exact Fable `claude-fable-5-1` at high effort; permit exact Opus
+  `claude-opus-5[1m]` at high effort only after direct Fable quota evidence.
+- Use `dockit-sync.sh --only` to preview or apply this managed section without
+  claiming that an adopter received the rest of the current template.
+- Preserve project-local stricter review contracts and partial-adopter gaps as
+  explicit exceptions instead of forcing them away.
 
 ## Next
 
-Close the Codex CLI integration axis from DF-036, DF-037, and DF-038.
+Run the operator-controlled selective fleet preview and classify each adopter.
 
-- DF-036: Codex CLI must use `dockit-bootstrap-context.sh --human`, not
-  Claude Code's `--json` envelope.
-- DF-037: after DF-036 is installed, verify whether Codex still repeats
-  `Onboarding loaded.` on later turns. If yes, design a stateful Codex-specific
-  mode rather than guessing.
-- DF-038: keep the Codex hook installer in LLM-DocKit and let ForgeOS call it
-  from operator bootstrap when provisioning a machine.
+- The 2026-09-12 real dry-run scanned 23 registered adopters: 21 full adopters
+  would insert only `LLM_START_HERE.md:independent-review-policy`; `med` and
+  `msgvault-lab` were classified as partial with no markers; zero errors.
+- Those 21 full adopters may receive only the selected section after a separate
+  apply authorization. The two partial adopters need an intentional
+  marker/adoption decision.
+- Repositories with a stricter local model rule keep it until the operator
+  explicitly supersedes that rule in the project.
+- Full DocKit upgrades remain separate and should be performed when each
+  adopter's unrelated conflicts can be reviewed.
 
 ## Later
 

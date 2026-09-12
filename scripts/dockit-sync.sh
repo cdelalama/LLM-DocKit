@@ -11,6 +11,7 @@
 #   --project PATH     Sync a single project
 #   --all              Sync all .dockit-enabled projects
 #   --src-root PATH    Root directory for projects (default: ~/src)
+#   --only SELECTOR    Sync only a manifest path or path:section (repeatable)
 #   --force            Overwrite even with conflicts
 #   --git-branch       Create git branch before applying
 #   --json             Report in JSON format
@@ -24,7 +25,7 @@ set -e
 # Constants
 # ============================================================================
 
-SYNC_TOOL_VERSION="1.0.0"
+SYNC_TOOL_VERSION="1.1.0"
 SUPPORTED_SCHEMA_VERSION="1"
 DOCKIT_DIR_NAME=".dockit"
 
@@ -46,6 +47,7 @@ FORCE=false
 GIT_BRANCH=false
 JSON_OUTPUT=false
 RESTORE_TS=""
+ONLY_SELECTORS=""
 
 # Runtime
 TMPDIR=""
@@ -53,6 +55,8 @@ LOCK_PATH=""
 BACKUP_DIR=""
 BACKUP_MANIFEST=""
 HAS_CONFLICTS=false
+CURRENT_PROJECT=""
+LOCK_ERROR_DETAIL=""
 
 # Counters (per-project, reset in sync_project)
 COUNT_UPDATED=0
@@ -81,7 +85,109 @@ warn() {
 }
 
 info() {
-    echo "$*"
+    if ! $JSON_OUTPUT; then
+        echo "$*"
+    fi
+}
+
+json_escape() {
+    printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+
+append_only_selector() {
+    _selector="$1"
+    if [ -z "$ONLY_SELECTORS" ]; then
+        ONLY_SELECTORS="$_selector"
+    else
+        ONLY_SELECTORS="$ONLY_SELECTORS
+$_selector"
+    fi
+}
+
+# Return success when a manifest path is in the selected scope. A whole-file
+# selector and any path:section selector both select the manifest entry.
+entry_is_selected() {
+    _relpath="$1"
+    [ -z "$ONLY_SELECTORS" ] && return 0
+
+    while IFS= read -r _selector; do
+        [ "$_selector" = "$_relpath" ] && return 0
+        case "$_selector" in
+            "$_relpath":*) return 0 ;;
+        esac
+    done <<EOF
+$ONLY_SELECTORS
+EOF
+    return 1
+}
+
+# Return success only for an exact whole-file selector.
+path_is_selected_as_whole() {
+    _relpath="$1"
+    [ -z "$ONLY_SELECTORS" ] && return 0
+
+    while IFS= read -r _selector; do
+        [ "$_selector" = "$_relpath" ] && return 0
+    done <<EOF
+$ONLY_SELECTORS
+EOF
+    return 1
+}
+
+# Return success when a section is selected directly or through its whole file.
+section_is_selected() {
+    _relpath="$1"
+    _section_id="$2"
+    [ -z "$ONLY_SELECTORS" ] && return 0
+
+    while IFS= read -r _selector; do
+        [ "$_selector" = "$_relpath" ] && return 0
+        [ "$_selector" = "$_relpath:$_section_id" ] && return 0
+    done <<EOF
+$ONLY_SELECTORS
+EOF
+    return 1
+}
+
+# Validate every selector against the current manifest before touching any
+# downstream project. Section selectors are valid only for section-merge files.
+validate_only_selectors() {
+    [ -z "$ONLY_SELECTORS" ] && return 0
+
+    if [ "$MODE" = "init-state" ] || [ "$MODE" = "restore" ]; then
+        die "--only cannot be combined with --$MODE"
+    fi
+
+    _selector_entries="$TMPDIR/selector_entries.txt"
+    parse_manifest "$MANIFEST" "$_selector_entries"
+
+    while IFS= read -r _selector; do
+        [ -n "$_selector" ] || die "--only requires a non-empty selector"
+
+        case "$_selector" in
+            *:*)
+                _selector_path=${_selector%%:*}
+                _selector_section=${_selector#*:}
+                [ -n "$_selector_path" ] && [ -n "$_selector_section" ] || \
+                    die "Invalid --only selector: $_selector"
+                _selector_strategy=$(awk -v path="$_selector_path" '$1 == path { print $2; exit }' "$_selector_entries")
+                [ -n "$_selector_strategy" ] || die "Unknown --only path: $_selector_path"
+                [ "$_selector_strategy" = "section-merge" ] || \
+                    die "Section selector requires section-merge strategy: $_selector"
+                grep -qxF "<!-- DOCKIT-TEMPLATE:START $_selector_section -->" \
+                    "$DOCKIT_ROOT/$_selector_path" 2>/dev/null || \
+                    die "Unknown --only section: $_selector"
+                ;;
+            *)
+                _selector_strategy=$(awk -v path="$_selector" '$1 == path { print $2; exit }' "$_selector_entries")
+                [ -n "$_selector_strategy" ] || die "Unknown --only path: $_selector"
+                [ "$_selector_strategy" != "skip" ] || \
+                    die "--only cannot select a project-specific skip path: $_selector"
+                ;;
+        esac
+    done <<EOF
+$ONLY_SELECTORS
+EOF
 }
 
 # Detect hash command (sha256sum or shasum -a 256)
@@ -169,20 +275,30 @@ parse_manifest() {
 acquire_lock() {
     _project_root="$1"
     _dockit_dir="$_project_root/.git/$DOCKIT_DIR_NAME"
-    mkdir -p "$_dockit_dir"
-    LOCK_PATH="$_dockit_dir/sync.lock"
+    _candidate_lock="$_dockit_dir/sync.lock"
+    LOCK_ERROR_DETAIL=""
 
-    if [ -f "$LOCK_PATH" ]; then
-        _lock_pid=$(cat "$LOCK_PATH" 2>/dev/null || echo "")
+    if ! mkdir -p "$_dockit_dir"; then
+        LOCK_ERROR_DETAIL="cannot create lock directory: $_dockit_dir"
+        return 1
+    fi
+
+    if [ -f "$_candidate_lock" ]; then
+        _lock_pid=$(cat "$_candidate_lock" 2>/dev/null || echo "")
         if [ -n "$_lock_pid" ] && kill -0 "$_lock_pid" 2>/dev/null; then
-            die "Another sync is running (PID: $_lock_pid). Lock: $LOCK_PATH"
+            LOCK_ERROR_DETAIL="locked by active PID $_lock_pid"
+            return 1
         else
             warn "Stale lock found (PID: $_lock_pid not running). Removing."
-            rm -f "$LOCK_PATH"
+            rm -f "$_candidate_lock"
         fi
     fi
 
-    echo "$$" > "$LOCK_PATH"
+    if ! echo "$$" > "$_candidate_lock"; then
+        LOCK_ERROR_DETAIL="cannot write lock file: $_candidate_lock"
+        return 1
+    fi
+    LOCK_PATH="$_candidate_lock"
 }
 
 release_lock() {
@@ -271,7 +387,8 @@ restore_backup() {
     _backup_dir="$_project_root/.git/$DOCKIT_DIR_NAME/backups/$_timestamp"
 
     if [ ! -d "$_backup_dir" ]; then
-        die "Backup not found: $_backup_dir"
+        warn "Backup not found: $_backup_dir"
+        return 1
     fi
 
     rollback "$_project_root" "$_backup_dir"
@@ -306,6 +423,80 @@ read_state_version() {
         grep '^template_version:' "$_state_file" 2>/dev/null | head -1 | \
             sed 's/^template_version:[[:space:]]*//' | tr -d '"' | tr -d "'" | tr -d '[:space:]'
     fi
+}
+
+read_state_ref() {
+    _state_file="$1"
+    if [ -f "$_state_file" ]; then
+        grep '^template_ref:' "$_state_file" 2>/dev/null | head -1 | \
+            sed 's/^template_ref:[[:space:]]*//' | tr -d '"' | tr -d "'" | tr -d '[:space:]'
+    fi
+}
+
+flatten_state_hashes() {
+    _state_file="$1"
+    _flat_file="$2"
+
+    awk '
+        /^section_hashes:[[:space:]]*$/ { in_hashes=1; next }
+        in_hashes && /^  [^[:space:]][^:]*:[[:space:]]*$/ {
+            current_file=$0
+            sub(/^  /, "", current_file)
+            sub(/:[[:space:]]*$/, "", current_file)
+            next
+        }
+        in_hashes && /^    [^[:space:]][^:]*:[[:space:]]*/ {
+            line=$0
+            sub(/^    /, "", line)
+            section=line
+            sub(/:.*/, "", section)
+            hash=line
+            sub(/^[^:]*:[[:space:]]*/, "", hash)
+            gsub(/\042/, "", hash)
+            gsub(/\047/, "", hash)
+            if (current_file != "" && section != "" && hash != "") {
+                print current_file, section, hash
+            }
+        }
+    ' "$_state_file" > "$_flat_file"
+}
+
+state_hashes_format_valid() {
+    _state_file="$1"
+
+    awk '
+        /^[[:space:]]*section_hashes:/ {
+            if ($0 != "section_hashes:" || seen_hashes) bad=1
+            seen_hashes=1
+            in_hashes=1
+            next
+        }
+        in_hashes && /^  [^[:space:]][^:]*:[[:space:]]*$/ {
+            have_file=1
+            next
+        }
+        in_hashes && /^    [^[:space:]][^:]*:[[:space:]]*/ && have_file {
+            value=$0
+            sub(/^    [^:]*:[[:space:]]*/, "", value)
+            sub(/[[:space:]]*$/, "", value)
+            if (value ~ /^".*"$/) {
+                sub(/^"/, "", value)
+                sub(/"$/, "", value)
+            } else if (value ~ /^\047.*\047$/) {
+                sub(/^\047/, "", value)
+                sub(/\047$/, "", value)
+            }
+            if (length(value) != 64 || value ~ /[^0-9a-f]/) bad=1
+            else entries += 1
+            next
+        }
+        in_hashes && /^[[:space:]]*$/ { next }
+        in_hashes { bad=1 }
+        END {
+            if (seen_hashes && entries == 0) bad=1
+            exit bad
+        }
+    ' "$_state_file"
 }
 
 # Read a section hash from state.yml
@@ -381,6 +572,82 @@ STATEEOF
     cp "$_state_tmp" "$_state_file"
 }
 
+# Merge selected section baselines while preserving the adopter's full-template
+# identity. This prevents a narrow policy rollout from claiming full currency
+# without sacrificing future conflict detection for the section just applied.
+write_state_selective() {
+    _project_root="$1"
+    _selected_hashes_file="$2"
+    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+
+    if [ ! -f "$_state_file" ]; then
+        warn "Selective state merge requires an existing state file: $_state_file"
+        return 1
+    fi
+    [ -s "$_selected_hashes_file" ] || return 0
+
+    if ! state_hashes_format_valid "$_state_file"; then
+        warn "Selective state merge rejected malformed section_hashes in $_state_file"
+        return 1
+    fi
+
+    _preserved_version=$(read_state_version "$_state_file")
+    _preserved_ref=$(read_state_ref "$_state_file")
+    if [ -z "$_preserved_version" ] || [ -z "$_preserved_ref" ]; then
+        warn "Selective state merge requires template_version and template_ref in $_state_file"
+        return 1
+    fi
+
+    _existing_hashes="$TMPDIR/state_existing_hashes.txt"
+    _merged_hashes="$TMPDIR/state_merged_hashes.txt"
+    flatten_state_hashes "$_state_file" "$_existing_hashes"
+    cp "$_existing_hashes" "$_merged_hashes"
+
+    while IFS=' ' read -r _sf _sid _shash; do
+        _merge_tmp="$TMPDIR/state_hash_merge.tmp"
+        awk -v file="$_sf" -v section="$_sid" -v hash="$_shash" '
+            $1 == file && $2 == section {
+                print file, section, hash
+                replaced=1
+                next
+            }
+            { print }
+            END {
+                if (!replaced) print file, section, hash
+            }
+        ' "$_merged_hashes" > "$_merge_tmp"
+        mv "$_merge_tmp" "$_merged_hashes"
+    done < "$_selected_hashes_file"
+
+    LC_ALL=C sort -k1,1 -k2,2 "$_merged_hashes" > "$_merged_hashes.sorted"
+    mv "$_merged_hashes.sorted" "$_merged_hashes"
+
+    _now=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date +%Y-%m-%dT%H:%M:%SZ)
+    _state_tmp="$TMPDIR/state_selective_new.yml"
+    cat > "$_state_tmp" <<STATEEOF
+# .git/.dockit/state.yml -- auto-generated by dockit-sync.sh. Do not edit.
+template_version: "$_preserved_version"
+template_ref: "$_preserved_ref"
+last_sync_at: "$_now"
+last_sync_mode: "apply-selective"
+sync_tool_version: "$SYNC_TOOL_VERSION"
+STATEEOF
+
+    if [ -s "$_merged_hashes" ]; then
+        echo "section_hashes:" >> "$_state_tmp"
+        _current_file=""
+        while IFS=' ' read -r _sf _sid _shash; do
+            if [ "$_sf" != "$_current_file" ]; then
+                echo "  $_sf:" >> "$_state_tmp"
+                _current_file="$_sf"
+            fi
+            echo "    $_sid: \"$_shash\"" >> "$_state_tmp"
+        done < "$_merged_hashes"
+    fi
+
+    cp "$_state_tmp" "$_state_file"
+}
+
 # ============================================================================
 # Config reading (.dockit-config.yml)
 # ============================================================================
@@ -447,7 +714,11 @@ report_entry() {
     _detail="$3"
 
     if $JSON_OUTPUT; then
-        _json_line="{\"file\": \"$_file\", \"status\": \"$_status\", \"detail\": \"$_detail\"}"
+        _json_project=$(json_escape "$CURRENT_PROJECT")
+        _json_file=$(json_escape "$_file")
+        _json_status=$(json_escape "$_status")
+        _json_detail=$(json_escape "$_detail")
+        _json_line="{\"project\": \"$_json_project\", \"file\": \"$_json_file\", \"status\": \"$_json_status\", \"detail\": \"$_json_detail\"}"
         if [ -z "$JSON_ENTRIES" ]; then
             JSON_ENTRIES="$_json_line"
         else
@@ -468,24 +739,21 @@ $_json_line"
 }
 
 print_summary() {
-    if $JSON_OUTPUT; then
-        echo "["
-        _first=true
-        if [ -n "$JSON_ENTRIES" ]; then
-            echo "$JSON_ENTRIES" | while IFS= read -r _jline; do
-                if $_first; then
-                    _first=false
-                    echo "  $_jline"
-                else
-                    echo "  ,$_jline"
-                fi
-            done
-        fi
-        echo "]"
-    else
+    if ! $JSON_OUTPUT; then
         echo ""
         echo "Summary: $COUNT_UPDATED updated, $COUNT_NEW new, $COUNT_SKIPPED skipped, $COUNT_CONFLICT conflicts, $COUNT_ERROR errors"
     fi
+}
+
+print_json_report() {
+    echo "["
+    if [ -n "$JSON_ENTRIES" ]; then
+        printf '%s\n' "$JSON_ENTRIES" | awk '
+            NR == 1 { print "  " $0; next }
+            { print "  ," $0 }
+        '
+    fi
+    echo "]"
 }
 
 # ============================================================================
@@ -573,6 +841,10 @@ sync_section_merge() {
     fi
 
     if [ ! -f "$_downstream_file" ]; then
+        if [ -n "$ONLY_SELECTORS" ] && ! path_is_selected_as_whole "$_relpath"; then
+            report_entry "$_relpath" "ERROR" "cannot create a missing file from a section-only selector"
+            return
+        fi
         # No downstream file: copy entire template
         if [ "$MODE" = "apply" ]; then
             backup_file "$_project_root" "$_relpath"
@@ -580,6 +852,22 @@ sync_section_merge() {
             cp -p "$_template_file" "$_downstream_file"
         fi
         report_entry "$_relpath" "NEW" "will be created from template"
+
+        _new_sids="$TMPDIR/new_file_sections.txt"
+        grep '<!-- DOCKIT-TEMPLATE:START ' "$_template_file" 2>/dev/null | \
+            sed 's/.*<!-- DOCKIT-TEMPLATE:START //' | sed 's/ -->.*//' > "$_new_sids" || true
+        while IFS= read -r _sid; do
+            _start_marker="<!-- DOCKIT-TEMPLATE:START $_sid -->"
+            _end_marker="<!-- DOCKIT-TEMPLATE:END $_sid -->"
+            _new_content="$TMPDIR/new_file_${_sid}.txt"
+            awk -v start="$_start_marker" -v end="$_end_marker" '
+                $0 == start { capture=1; next }
+                $0 == end   { capture=0; next }
+                capture { print }
+            ' "$_template_file" > "$_new_content"
+            _new_hash=$(hash_file "$_new_content")
+            echo "$_relpath $_sid $_new_hash" >> "$TMPDIR/all_section_hashes.txt"
+        done < "$_new_sids"
         return
     fi
 
@@ -598,19 +886,21 @@ sync_section_merge() {
     grep '<!-- DOCKIT-TEMPLATE:START ' "$_downstream_file" 2>/dev/null | \
         sed 's/.*<!-- DOCKIT-TEMPLATE:START //' | sed 's/ -->.*//' > "$_down_sections" || true
 
-    while IFS= read -r _dsid; do
-        if ! grep -qx "$_dsid" "$_tmpl_sections"; then
-            if is_section_excluded "$_project_root" "$_relpath" "$_dsid"; then
-                continue
+    if [ -z "$ONLY_SELECTORS" ] || path_is_selected_as_whole "$_relpath"; then
+        while IFS= read -r _dsid; do
+            if ! grep -qx "$_dsid" "$_tmpl_sections"; then
+                if is_section_excluded "$_project_root" "$_relpath" "$_dsid"; then
+                    continue
+                fi
+                if [ "$_adoption_mode" = "full" ]; then
+                    report_entry "$_relpath" "ERROR" "unknown section in downstream: $_dsid"
+                    return
+                else
+                    warn "Unknown section in downstream $_relpath: $_dsid"
+                fi
             fi
-            if [ "$_adoption_mode" = "full" ]; then
-                report_entry "$_relpath" "ERROR" "unknown section in downstream: $_dsid"
-                return
-            else
-                warn "Unknown section in downstream $_relpath: $_dsid"
-            fi
-        fi
-    done < "$_down_sections"
+        done < "$_down_sections"
+    fi
 
     # Process each template section
     _file_changed=false
@@ -620,8 +910,15 @@ sync_section_merge() {
     : > "$_hashes_file"
 
     while IFS= read -r _sid; do
+        if ! section_is_selected "$_relpath" "$_sid"; then
+            continue
+        fi
+
         # Check exclusion
         if is_section_excluded "$_project_root" "$_relpath" "$_sid"; then
+            if [ -n "$ONLY_SELECTORS" ]; then
+                report_entry "$_relpath:$_sid" "SKIPPED" "excluded by .dockit-config.yml"
+            fi
             continue
         fi
 
@@ -677,6 +974,9 @@ sync_section_merge() {
                 cp "$_inserted" "$_working_file"
                 echo "$_relpath $_sid $_tmpl_hash" >> "$_hashes_file"
                 _file_changed=true
+                if [ -n "$ONLY_SELECTORS" ]; then
+                    report_entry "$_relpath:$_sid" "UPDATED" "section inserted"
+                fi
                 continue
             fi
 
@@ -684,7 +984,11 @@ sync_section_merge() {
                 report_entry "$_relpath" "ERROR" "malformed markers for section: $_sid"
                 return
             else
-                warn "Missing markers for section $_sid in $_relpath (partial mode: skipping)"
+                if [ -n "$ONLY_SELECTORS" ]; then
+                    report_entry "$_relpath:$_sid" "SKIPPED" "no markers (partial adopter)"
+                else
+                    warn "Missing markers for section $_sid in $_relpath (partial mode: skipping)"
+                fi
                 continue
             fi
         fi
@@ -710,6 +1014,9 @@ sync_section_merge() {
 
         # Already in sync?
         if [ "$_tmpl_hash" = "$_down_hash" ]; then
+            if [ -n "$ONLY_SELECTORS" ]; then
+                report_entry "$_relpath:$_sid" "SKIPPED" "section already current"
+            fi
             continue
         fi
 
@@ -738,6 +1045,9 @@ sync_section_merge() {
         ' "$_working_file" > "$_replaced"
         cp "$_replaced" "$_working_file"
         _file_changed=true
+        if [ -n "$ONLY_SELECTORS" ]; then
+            report_entry "$_relpath:$_sid" "UPDATED" "section merged"
+        fi
 
     done < "$_tmpl_sections"
 
@@ -747,9 +1057,13 @@ sync_section_merge() {
             backup_file "$_project_root" "$_relpath"
             cp "$_working_file" "$_downstream_file"
         fi
-        report_entry "$_relpath" "UPDATED" "sections merged"
+        if [ -z "$ONLY_SELECTORS" ]; then
+            report_entry "$_relpath" "UPDATED" "sections merged"
+        fi
     else
-        if [ "$COUNT_CONFLICT" -gt 0 ]; then
+        if [ -n "$ONLY_SELECTORS" ]; then
+            : # selected sections reported individually
+        elif [ "$COUNT_CONFLICT" -gt 0 ]; then
             : # conflicts already reported per-section
         else
             report_entry "$_relpath" "SKIPPED" "all sections up to date"
@@ -847,27 +1161,33 @@ sync_yaml_merge() {
 
 validate_project() {
     _project_root="$1"
+    _validation_phase=${2:-post-sync}
 
     # Gating: all 3 prerequisites must exist
     if [ ! -x "$_project_root/scripts/check-version-sync.sh" ]; then
-        warn "Skipping post-sync validation: scripts/check-version-sync.sh not found or not executable"
+        warn "Skipping $_validation_phase validation: scripts/check-version-sync.sh not found or not executable"
         return 0
     fi
     if [ ! -f "$_project_root/VERSION" ]; then
-        warn "Skipping post-sync validation: VERSION file not found"
+        warn "Skipping $_validation_phase validation: VERSION file not found"
         return 0
     fi
     if [ ! -f "$_project_root/docs/version-sync-manifest.yml" ]; then
-        warn "Skipping post-sync validation: docs/version-sync-manifest.yml not found"
+        warn "Skipping $_validation_phase validation: docs/version-sync-manifest.yml not found"
         return 0
     fi
 
-    info "Running post-sync validation..."
-    if (cd "$_project_root" && ./scripts/check-version-sync.sh); then
-        info "Post-sync validation passed."
+    _validation_output="$TMPDIR/validation_$(basename "$_project_root").txt"
+    info "Running $_validation_phase validation..."
+    if (cd "$_project_root" && ./scripts/check-version-sync.sh) >"$_validation_output" 2>&1; then
+        if ! $JSON_OUTPUT; then
+            cat "$_validation_output"
+        fi
+        info "$_validation_phase validation passed."
         return 0
     else
-        warn "Post-sync validation FAILED."
+        warn "$_validation_phase validation FAILED."
+        sed 's/^/  /' "$_validation_output" >&2
         return 1
     fi
 }
@@ -878,10 +1198,18 @@ validate_project() {
 
 create_git_branch() {
     _project_root="$1"
-    _branch_name="dockit-sync-$TEMPLATE_VERSION"
+    if [ -n "$ONLY_SELECTORS" ]; then
+        _branch_name="dockit-sync-$TEMPLATE_VERSION-selective"
+    else
+        _branch_name="dockit-sync-$TEMPLATE_VERSION"
+    fi
 
     if (cd "$_project_root" && git rev-parse --verify "$_branch_name" >/dev/null 2>&1); then
-        _branch_name="dockit-sync-${TEMPLATE_VERSION}-$(date +%Y%m%d%H%M%S)"
+        if [ -n "$ONLY_SELECTORS" ]; then
+            _branch_name="dockit-sync-${TEMPLATE_VERSION}-selective-$(date +%Y%m%d%H%M%S)"
+        else
+            _branch_name="dockit-sync-${TEMPLATE_VERSION}-$(date +%Y%m%d%H%M%S)"
+        fi
     fi
 
     info "Creating git branch: $_branch_name"
@@ -972,23 +1300,39 @@ do_init_state() {
 sync_project() {
     _project_root="$1"
     _project_name=$(basename "$_project_root")
+    CURRENT_PROJECT="$_project_name"
     _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
     _project_failed=false
+
+    COUNT_UPDATED=0
+    COUNT_NEW=0
+    COUNT_SKIPPED=0
+    COUNT_CONFLICT=0
+    COUNT_ERROR=0
+    HAS_CONFLICTS=false
 
     info ""
     info "=== Syncing: $_project_name ($MODE) ==="
 
     if [ ! -d "$_project_root/.git" ]; then
-        echo "ERROR: $_project_root is not a git repository" >&2
+        report_entry "__project__" "ERROR" "not a git repository"
         return 1
     fi
 
     # Acquire lock
-    acquire_lock "$_project_root"
+    if ! acquire_lock "$_project_root"; then
+        report_entry "__project__" "ERROR" \
+            "${LOCK_ERROR_DETAIL:-lock acquisition failed}"
+        return 1
+    fi
 
     # Handle --restore (before state check)
     if [ "$MODE" = "restore" ]; then
-        restore_backup "$_project_root" "$RESTORE_TS"
+        if ! restore_backup "$_project_root" "$RESTORE_TS"; then
+            report_entry "__project__" "ERROR" "backup not found: $RESTORE_TS"
+            release_lock
+            return 1
+        fi
         release_lock
         return
     fi
@@ -1002,14 +1346,25 @@ sync_project() {
 
     # Require state (unless init-state)
     if [ ! -f "$_state_file" ]; then
+        report_entry "__project__" "ERROR" "no sync state; run --init-state first"
         release_lock
-        echo "ERROR: No sync state found for $_project_name. Run with --init-state first to establish baseline." >&2
         return 1
     fi
 
     # Parse manifest entries
     _entries_file="$TMPDIR/entries.txt"
     parse_manifest "$MANIFEST" "$_entries_file"
+
+    # Selective rollout should not be blamed for validation drift that already
+    # existed. Classify and leave that adopter byte-identical.
+    if [ -n "$ONLY_SELECTORS" ]; then
+        if ! validate_project "$_project_root" "pre-sync"; then
+            report_entry "__project__" "SKIPPED" "pre-existing validation failure"
+            print_summary
+            release_lock
+            return 0
+        fi
+    fi
 
     # Create backup if applying
     if [ "$MODE" = "apply" ]; then
@@ -1018,22 +1373,22 @@ sync_project() {
 
     # Create git branch if requested
     if $GIT_BRANCH && [ "$MODE" = "apply" ]; then
-        create_git_branch "$_project_root"
+        if ! create_git_branch "$_project_root"; then
+            report_entry "__project__" "ERROR" "failed to create sync branch"
+            release_lock
+            return 1
+        fi
     fi
 
     # Initialize section hashes accumulator
     : > "$TMPDIR/all_section_hashes.txt"
 
-    # Reset counters for this project
-    COUNT_UPDATED=0
-    COUNT_NEW=0
-    COUNT_SKIPPED=0
-    COUNT_CONFLICT=0
-    COUNT_ERROR=0
-    HAS_CONFLICTS=false
-
     # Process each manifest entry
     while read -r _relpath _strategy; do
+        if ! entry_is_selected "$_relpath"; then
+            continue
+        fi
+
         case "$_strategy" in
             skip)
                 report_entry "$_relpath" "SKIPPED" "project-specific"
@@ -1058,35 +1413,59 @@ sync_project() {
         if [ "$MODE" = "apply" ] && [ -n "$BACKUP_DIR" ]; then
             warn "Conflicts detected without --force. Rolling back all changes."
             rollback "$_project_root" "$BACKUP_DIR"
+            _project_failed=true
+            report_entry "__project__" "ERROR" "rolled back: conflicts"
+        else
+            _project_failed=true
         fi
-        _project_failed=true
     fi
 
     # Rollback on errors in apply mode
-    if [ "$COUNT_ERROR" -gt 0 ] && [ "$MODE" = "apply" ] && [ -n "$BACKUP_DIR" ]; then
+    if [ "$COUNT_ERROR" -gt 0 ] && ! $_project_failed \
+        && [ "$MODE" = "apply" ] && [ -n "$BACKUP_DIR" ]; then
         warn "Errors detected. Rolling back all changes."
         rollback "$_project_root" "$BACKUP_DIR"
         _project_failed=true
+        report_entry "__project__" "ERROR" "rolled back: sync error"
     fi
 
     # Post-sync validation (only on apply, only if no errors/conflicts)
     if [ "$MODE" = "apply" ] && ! $_project_failed; then
-        if ! validate_project "$_project_root"; then
+        if ! validate_project "$_project_root" "post-sync"; then
             if [ -n "$BACKUP_DIR" ]; then
                 warn "Validation failed. Rolling back all changes."
                 rollback "$_project_root" "$BACKUP_DIR"
             fi
             _project_failed=true
+            report_entry "__project__" "ERROR" "rolled back: post-sync validation failure"
         fi
     fi
 
     # Write state only on full success (no errors, no conflicts, no validation failure)
-    if [ "$MODE" = "apply" ] && ! $_project_failed; then
+    if [ "$MODE" = "apply" ] && ! $_project_failed && [ -z "$ONLY_SELECTORS" ]; then
         _hashes_arg=""
         if [ -s "$TMPDIR/all_section_hashes.txt" ]; then
             _hashes_arg="$TMPDIR/all_section_hashes.txt"
         fi
         write_state "$_project_root" "apply" "$_hashes_arg"
+    elif [ "$MODE" = "apply" ] && ! $_project_failed; then
+        if [ -s "$TMPDIR/all_section_hashes.txt" ]; then
+            _state_before="$TMPDIR/state_before_selective.yml"
+            cp "$_state_file" "$_state_before"
+            if ! write_state_selective "$_project_root" "$TMPDIR/all_section_hashes.txt"; then
+                warn "Selective state merge failed. Rolling back all changes."
+                cp "$_state_before" "$_state_file"
+                if [ -n "$BACKUP_DIR" ]; then
+                    rollback "$_project_root" "$BACKUP_DIR"
+                fi
+                _project_failed=true
+                report_entry "__project__" "ERROR" "rolled back: selective state merge failure"
+            fi
+        fi
+        if ! $_project_failed \
+            && { [ "$COUNT_UPDATED" -gt 0 ] || [ "$COUNT_NEW" -gt 0 ]; }; then
+            warn "Selective sync updated selected baselines but preserved template_version/template_ref; run a full sync before claiming the adopter is current."
+        fi
     fi
 
     # Cleanup old backups
@@ -1153,6 +1532,13 @@ parse_args() {
                 fi
                 SRC_ROOT="$1"
                 ;;
+            --only)
+                shift
+                if [ -z "$1" ]; then
+                    die "--only requires a selector argument"
+                fi
+                append_only_selector "$1"
+                ;;
             --force)
                 FORCE=true
                 ;;
@@ -1163,7 +1549,7 @@ parse_args() {
                 JSON_OUTPUT=true
                 ;;
             -h|--help)
-                tail -n +2 "$0" | head -19 | grep '^#' | sed 's/^# \?//'
+                awk 'NR == 1 { next } /^# This script runs/ { exit } /^#/ { sub(/^# ?/, ""); print }' "$0"
                 exit 0
                 ;;
             *)
@@ -1213,10 +1599,19 @@ main() {
 
     # Parse arguments
     parse_args "$@"
+    validate_only_selectors
 
     info "LLM-DocKit Sync v$SYNC_TOOL_VERSION"
     info "Template: v$TEMPLATE_VERSION ($TEMPLATE_REF)"
     info "Mode: $MODE"
+    if [ -n "$ONLY_SELECTORS" ]; then
+        info "Scope: selective"
+        while IFS= read -r _selector; do
+            info "  - $_selector"
+        done <<EOF
+$ONLY_SELECTORS
+EOF
+    fi
     info ""
 
     # Build project list
@@ -1253,6 +1648,10 @@ main() {
             echo "" >&2
             echo "FAILED projects:$_failed_projects" >&2
         fi
+    fi
+
+    if $JSON_OUTPUT; then
+        print_json_report
     fi
 
     exit "$GLOBAL_EXIT"

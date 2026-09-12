@@ -980,6 +980,352 @@ else
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-sync normalizes copied doc-version markers to project version"
     fi
+
+    SYNC_ONLY_REPO="$TMP_ROOT/sync-only-section"
+    init_sync_section_repo "$SYNC_ONLY_REPO" "with-footer"
+    if "$SYNC_TOOL" --init-state --project "$SYNC_ONLY_REPO" >"$OUT" 2>&1; then
+        SYNC_ONLY_STATE="$SYNC_ONLY_REPO/.git/.dockit/state.yml"
+        sed 's/^template_version:.*/template_version: "3.9.9"/' \
+            "$SYNC_ONLY_STATE" >"$SYNC_ONLY_STATE.tmp"
+        mv "$SYNC_ONLY_STATE.tmp" "$SYNC_ONLY_STATE"
+    fi
+
+    if "$SYNC_TOOL" --apply --project "$SYNC_ONLY_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q '<!-- DOCKIT-TEMPLATE:START independent-review-policy -->' \
+            "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+        && grep -q 'Old footer text.' "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+        && ! grep -q '<!-- DOCKIT-TEMPLATE:START trace-protocol -->' \
+            "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+        && grep -q '^template_version: "3.9.9"$' "$SYNC_ONLY_STATE" \
+        && grep -Eq '^    independent-review-policy: "[0-9a-f]{64}"$' "$SYNC_ONLY_STATE" \
+        && grep -Eq '^    footer: "[0-9a-f]{64}"$' "$SYNC_ONLY_STATE" \
+        && grep -q '^last_sync_mode: "apply-selective"$' "$SYNC_ONLY_STATE" \
+        && grep -q 'preserved template_version/template_ref' "$OUT" \
+        && [ "$(git -C "$SYNC_ONLY_REPO" status --porcelain)" = " M LLM_START_HERE.md" ]; then
+        note_pass "dockit-sync selects one section without claiming full template currency"
+    else
+        {
+            echo "dockit-sync did not isolate the selected section or preserve state"
+            [ -f "$SYNC_ONLY_REPO/LLM_START_HERE.md" ] && sed -n '1,240p' "$SYNC_ONLY_REPO/LLM_START_HERE.md"
+            [ -f "$SYNC_ONLY_STATE" ] && sed -n '1,80p' "$SYNC_ONLY_STATE"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync selects one section without claiming full template currency"
+    fi
+
+    cp "$SYNC_ONLY_REPO/LLM_START_HERE.md" "$SYNC_ONLY_REPO/LLM_START_HERE.before-invalid"
+    if ! "$SYNC_TOOL" --apply --project "$SYNC_ONLY_REPO" \
+            --only LLM_START_HERE.md:not-a-template-section >"$OUT" 2>&1 \
+        && cmp -s "$SYNC_ONLY_REPO/LLM_START_HERE.before-invalid" \
+            "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+        && grep -q 'Unknown --only section' "$OUT"; then
+        note_pass "dockit-sync rejects invalid selectors before project mutation"
+    else
+        {
+            echo "dockit-sync accepted an invalid selector or mutated the project"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync rejects invalid selectors before project mutation"
+    fi
+
+    sed 's/Prefer Fable/Prefer exact Fable/' "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+        >"$SYNC_ONLY_REPO/LLM_START_HERE.local"
+    mv "$SYNC_ONLY_REPO/LLM_START_HERE.local" "$SYNC_ONLY_REPO/LLM_START_HERE.md"
+    cp "$SYNC_ONLY_REPO/LLM_START_HERE.md" "$SYNC_ONLY_REPO/LLM_START_HERE.before-conflict"
+    if ! "$SYNC_TOOL" --apply --project "$SYNC_ONLY_REPO" >"$OUT" 2>&1 \
+        && grep -q 'LLM_START_HERE.md:independent-review-policy.*CONFLICT' "$OUT" \
+        && cmp -s "$SYNC_ONLY_REPO/LLM_START_HERE.before-conflict" \
+            "$SYNC_ONLY_REPO/LLM_START_HERE.md"; then
+        note_pass "dockit-sync selective baseline protects a later local policy edit"
+    else
+        {
+            echo "full sync did not conflict and preserve the post-selective local edit"
+            [ -f "$OUT" ] && sed -n '1,200p' "$OUT"
+            diff -u "$SYNC_ONLY_REPO/LLM_START_HERE.before-conflict" \
+                "$SYNC_ONLY_REPO/LLM_START_HERE.md" || true
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync selective baseline protects a later local policy edit"
+    fi
+
+    SYNC_PARTIAL_REPO="$TMP_ROOT/sync-only-partial"
+    init_sync_section_repo "$SYNC_PARTIAL_REPO" "with-footer"
+    sed 's/adoption_mode: full/adoption_mode: partial/' \
+        "$SYNC_PARTIAL_REPO/.dockit-config.yml" >"$SYNC_PARTIAL_REPO/.dockit-config.yml.tmp"
+    mv "$SYNC_PARTIAL_REPO/.dockit-config.yml.tmp" "$SYNC_PARTIAL_REPO/.dockit-config.yml"
+    "$SYNC_TOOL" --init-state --project "$SYNC_PARTIAL_REPO" >"$OUT" 2>&1
+    cp "$SYNC_PARTIAL_REPO/LLM_START_HERE.md" "$SYNC_PARTIAL_REPO/LLM_START_HERE.before"
+    if "$SYNC_TOOL" --dry-run --project "$SYNC_PARTIAL_REPO" --json \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>"$OUT.err" \
+        && cmp -s "$SYNC_PARTIAL_REPO/LLM_START_HERE.before" \
+            "$SYNC_PARTIAL_REPO/LLM_START_HERE.md" \
+        && grep -q '"project": "sync-only-partial"' "$OUT" \
+        && grep -q '"detail": "no markers (partial adopter)"' "$OUT" \
+        && ! grep -q 'all sections up to date' "$OUT"; then
+        note_pass "dockit-sync classifies a selected section missing from a partial adopter"
+    else
+        note_fail "dockit-sync classifies a selected section missing from a partial adopter"
+    fi
+
+    SYNC_EXCLUDED_REPO="$TMP_ROOT/sync-only-excluded"
+    init_sync_section_repo "$SYNC_EXCLUDED_REPO" "with-footer"
+    cat >>"$SYNC_EXCLUDED_REPO/.dockit-config.yml" <<'EOF'
+exclude_sections:
+  LLM_START_HERE.md:
+    - independent-review-policy
+EOF
+    "$SYNC_TOOL" --init-state --project "$SYNC_EXCLUDED_REPO" >"$OUT" 2>&1
+    cp "$SYNC_EXCLUDED_REPO/LLM_START_HERE.md" "$SYNC_EXCLUDED_REPO/LLM_START_HERE.before"
+    if "$SYNC_TOOL" --dry-run --project "$SYNC_EXCLUDED_REPO" --json \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>"$OUT.err" \
+        && cmp -s "$SYNC_EXCLUDED_REPO/LLM_START_HERE.before" \
+            "$SYNC_EXCLUDED_REPO/LLM_START_HERE.md" \
+        && grep -q '"detail": "excluded by .dockit-config.yml"' "$OUT" \
+        && ! grep -q 'all sections up to date' "$OUT"; then
+        note_pass "dockit-sync classifies an explicitly excluded selected section"
+    else
+        note_fail "dockit-sync classifies an explicitly excluded selected section"
+    fi
+
+    SYNC_CURRENT_REPO="$TMP_ROOT/sync-only-current"
+    init_sync_section_repo "$SYNC_CURRENT_REPO" "with-footer"
+    if "$SYNC_TOOL" --init-state --project "$SYNC_CURRENT_REPO" >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --apply --project "$SYNC_CURRENT_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && "$SYNC_TOOL" --apply --project "$SYNC_CURRENT_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q 'section already current' "$OUT" \
+        && ! grep -q 'preserved template_version/template_ref' "$OUT"; then
+        note_pass "dockit-sync distinguishes current sections without an applied-change warning"
+    else
+        note_fail "dockit-sync distinguishes current sections without an applied-change warning"
+    fi
+
+    SYNC_WHOLE_REPO="$TMP_ROOT/sync-only-whole"
+    init_sync_section_repo "$SYNC_WHOLE_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_WHOLE_REPO" >"$OUT" 2>&1
+    if "$SYNC_TOOL" --dry-run --project "$SYNC_WHOLE_REPO" \
+            --only LLM_START_HERE.md \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q 'LLM_START_HERE.md:trace-protocol' "$OUT" \
+        && grep -q 'LLM_START_HERE.md:independent-review-policy' "$OUT"; then
+        note_pass "dockit-sync supports whole-file and repeated selectors"
+    else
+        note_fail "dockit-sync supports whole-file and repeated selectors"
+    fi
+
+    if ! "$SYNC_TOOL" --init-state --project "$SYNC_WHOLE_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && ! "$SYNC_TOOL" --restore 20000101_000000 --project "$SYNC_WHOLE_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && ! "$SYNC_TOOL" --dry-run --project "$SYNC_WHOLE_REPO" \
+            --only NOT_IN_MANIFEST.md >"$OUT" 2>&1 \
+        && ! "$SYNC_TOOL" --dry-run --project "$SYNC_WHOLE_REPO" \
+            --only docs/integrations/CODEX.md:not-a-section >"$OUT" 2>&1 \
+        && ! "$SYNC_TOOL" --dry-run --project "$SYNC_WHOLE_REPO" \
+            --only VERSION >"$OUT" 2>&1 \
+        && ! "$SYNC_TOOL" --dry-run --project "$SYNC_WHOLE_REPO" \
+            --only LLM_START_HERE.md:commit.policy >"$OUT" 2>&1; then
+        note_pass "dockit-sync rejects incompatible, unknown, skip, and regex-like selectors"
+    else
+        note_fail "dockit-sync rejects incompatible, unknown, skip, and regex-like selectors"
+    fi
+
+    SYNC_MISSING_REPO="$TMP_ROOT/sync-only-missing-file"
+    init_sync_section_repo "$SYNC_MISSING_REPO" "with-footer"
+    rm "$SYNC_MISSING_REPO/LLM_START_HERE.md"
+    git -C "$SYNC_MISSING_REPO" add -u
+    git -C "$SYNC_MISSING_REPO" commit -qm "remove start guide"
+    "$SYNC_TOOL" --init-state --project "$SYNC_MISSING_REPO" >"$OUT" 2>&1
+    expect_fail "dockit-sync rejects a section selector when the downstream file is missing" \
+        "$SYNC_TOOL" --dry-run --project "$SYNC_MISSING_REPO" \
+        --only LLM_START_HERE.md:independent-review-policy
+
+    if "$SYNC_TOOL" --apply --project "$SYNC_MISSING_REPO" \
+            --only LLM_START_HERE.md >"$OUT" 2>&1; then
+        SYNC_MISSING_STATE="$SYNC_MISSING_REPO/.git/.dockit/state.yml"
+        TEMPLATE_SECTION_COUNT=$(grep -c '<!-- DOCKIT-TEMPLATE:START ' \
+            "$PROJECT_ROOT/LLM_START_HERE.md")
+        STATE_SECTION_COUNT=$(grep -c '^    [^[:space:]][^:]*:' "$SYNC_MISSING_STATE")
+    else
+        TEMPLATE_SECTION_COUNT=0
+        STATE_SECTION_COUNT=-1
+    fi
+    if [ "$TEMPLATE_SECTION_COUNT" -gt 0 ] \
+        && [ "$STATE_SECTION_COUNT" -eq "$TEMPLATE_SECTION_COUNT" ]; then
+        note_pass "dockit-sync records every section baseline when selective sync creates a file"
+    else
+        {
+            echo "selective whole-file creation did not record all section baselines"
+            [ -f "$SYNC_MISSING_STATE" ] && sed -n '1,180p' "$SYNC_MISSING_STATE"
+            [ -f "$OUT" ] && sed -n '1,160p' "$OUT"
+            echo "template_sections=$TEMPLATE_SECTION_COUNT state_sections=$STATE_SECTION_COUNT"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync records every section baseline when selective sync creates a file"
+    fi
+
+    sed 's/Prefer Fable/Prefer exact Fable/' "$SYNC_MISSING_REPO/LLM_START_HERE.md" \
+        >"$SYNC_MISSING_REPO/LLM_START_HERE.local"
+    mv "$SYNC_MISSING_REPO/LLM_START_HERE.local" "$SYNC_MISSING_REPO/LLM_START_HERE.md"
+    cp "$SYNC_MISSING_REPO/LLM_START_HERE.md" "$SYNC_MISSING_REPO/LLM_START_HERE.before-conflict"
+    if ! "$SYNC_TOOL" --apply --project "$SYNC_MISSING_REPO" >"$OUT" 2>&1 \
+        && grep -q 'LLM_START_HERE.md:independent-review-policy.*CONFLICT' "$OUT" \
+        && grep -q '__project__.*ERROR.*rolled back: conflicts' "$OUT" \
+        && cmp -s "$SYNC_MISSING_REPO/LLM_START_HERE.before-conflict" \
+            "$SYNC_MISSING_REPO/LLM_START_HERE.md"; then
+        note_pass "dockit-sync protects local edits after selective whole-file creation"
+    else
+        note_fail "dockit-sync protects local edits after selective whole-file creation"
+    fi
+
+    SYNC_MALFORMED_STATE_REPO="$TMP_ROOT/sync-only-malformed-state"
+    init_sync_section_repo "$SYNC_MALFORMED_STATE_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_MALFORMED_STATE_REPO" >"$OUT" 2>&1
+    SYNC_MALFORMED_STATE="$SYNC_MALFORMED_STATE_REPO/.git/.dockit/state.yml"
+    sed 's/^    footer:/   footer:/' "$SYNC_MALFORMED_STATE" >"$SYNC_MALFORMED_STATE.tmp"
+    mv "$SYNC_MALFORMED_STATE.tmp" "$SYNC_MALFORMED_STATE"
+    cp "$SYNC_MALFORMED_STATE" "$SYNC_MALFORMED_STATE.before"
+    cp "$SYNC_MALFORMED_STATE_REPO/LLM_START_HERE.md" \
+        "$SYNC_MALFORMED_STATE_REPO/LLM_START_HERE.before"
+    if ! "$SYNC_TOOL" --apply --project "$SYNC_MALFORMED_STATE_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q 'rejected malformed section_hashes' "$OUT" \
+        && grep -q '__project__.*ERROR.*rolled back: selective state merge failure' "$OUT" \
+        && cmp -s "$SYNC_MALFORMED_STATE.before" "$SYNC_MALFORMED_STATE" \
+        && cmp -s "$SYNC_MALFORMED_STATE_REPO/LLM_START_HERE.before" \
+            "$SYNC_MALFORMED_STATE_REPO/LLM_START_HERE.md"; then
+        note_pass "dockit-sync rejects malformed state and rolls back file plus state"
+    else
+        note_fail "dockit-sync rejects malformed state and rolls back file plus state"
+    fi
+
+    SYNC_EMPTY_HASH_REPO="$TMP_ROOT/sync-only-empty-hash"
+    init_sync_section_repo "$SYNC_EMPTY_HASH_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_EMPTY_HASH_REPO" >"$OUT" 2>&1
+    SYNC_EMPTY_HASH_STATE="$SYNC_EMPTY_HASH_REPO/.git/.dockit/state.yml"
+    sed 's/^    footer: .*/    footer: ""/' "$SYNC_EMPTY_HASH_STATE" \
+        >"$SYNC_EMPTY_HASH_STATE.tmp"
+    mv "$SYNC_EMPTY_HASH_STATE.tmp" "$SYNC_EMPTY_HASH_STATE"
+    cp "$SYNC_EMPTY_HASH_STATE" "$SYNC_EMPTY_HASH_STATE.before"
+    if ! "$SYNC_TOOL" --apply --project "$SYNC_EMPTY_HASH_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q 'rejected malformed section_hashes' "$OUT" \
+        && cmp -s "$SYNC_EMPTY_HASH_STATE.before" "$SYNC_EMPTY_HASH_STATE"; then
+        note_pass "dockit-sync rejects an empty quoted section baseline"
+    else
+        note_fail "dockit-sync rejects an empty quoted section baseline"
+    fi
+
+    SYNC_BRANCH_REPO="$TMP_ROOT/sync-only-branch-collision"
+    init_sync_section_repo "$SYNC_BRANCH_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_BRANCH_REPO" >"$OUT" 2>&1
+    DOCKIT_VERSION=$(sed -n '1p' "$PROJECT_ROOT/VERSION")
+    git -C "$SYNC_BRANCH_REPO" branch "dockit-sync-${DOCKIT_VERSION}-selective"
+    if "$SYNC_TOOL" --apply --git-branch --project "$SYNC_BRANCH_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && git -C "$SYNC_BRANCH_REPO" branch --show-current \
+            | grep -Eq "^dockit-sync-${DOCKIT_VERSION}-selective-[0-9]{14}$"; then
+        note_pass "dockit-sync preserves selective naming after branch collision"
+    else
+        note_fail "dockit-sync preserves selective naming after branch collision"
+    fi
+
+    SYNC_PREFLIGHT_REPO="$TMP_ROOT/sync-only-preflight"
+    init_sync_versioned_doc_repo "$SYNC_PREFLIGHT_REPO"
+    cp "$CHECK_VERSION" "$SYNC_PREFLIGHT_REPO/scripts/check-version-sync.sh"
+    chmod +x "$SYNC_PREFLIGHT_REPO/scripts/check-version-sync.sh"
+    "$SYNC_TOOL" --init-state --project "$SYNC_PREFLIGHT_REPO" >"$OUT" 2>&1
+    sed 's/doc-version: 0.1.0/doc-version: 9.9.9/' \
+        "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.md" >"$SYNC_PREFLIGHT_REPO/LLM_START_HERE.drift"
+    mv "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.drift" "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.md"
+    cp "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.md" "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.before"
+    if "$SYNC_TOOL" --apply --project "$SYNC_PREFLIGHT_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && cmp -s "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.before" \
+            "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.md" \
+        && grep -q 'pre-existing validation failure' "$OUT" \
+        && ! grep -q '<!-- DOCKIT-TEMPLATE:START independent-review-policy -->' \
+            "$SYNC_PREFLIGHT_REPO/LLM_START_HERE.md"; then
+        note_pass "dockit-sync classifies pre-existing validation failure before mutation"
+    else
+        note_fail "dockit-sync classifies pre-existing validation failure before mutation"
+    fi
+
+    SYNC_ALL_ROOT="$TMP_ROOT/sync-only-all"
+    mkdir -p "$SYNC_ALL_ROOT"
+    init_sync_section_repo "$SYNC_ALL_ROOT/adopter-one" "with-footer"
+    init_sync_section_repo "$SYNC_ALL_ROOT/adopter-two" "with-footer"
+    init_sync_section_repo "$SYNC_ALL_ROOT/adopter-three" "with-footer"
+    sed 's/adoption_mode: full/adoption_mode: partial/' \
+        "$SYNC_ALL_ROOT/adopter-two/.dockit-config.yml" \
+        >"$SYNC_ALL_ROOT/adopter-two/.dockit-config.yml.tmp"
+    mv "$SYNC_ALL_ROOT/adopter-two/.dockit-config.yml.tmp" \
+        "$SYNC_ALL_ROOT/adopter-two/.dockit-config.yml"
+    "$SYNC_TOOL" --init-state --project "$SYNC_ALL_ROOT/adopter-one" >"$OUT" 2>&1
+    "$SYNC_TOOL" --init-state --project "$SYNC_ALL_ROOT/adopter-two" >"$OUT" 2>&1
+    "$SYNC_TOOL" --init-state --project "$SYNC_ALL_ROOT/adopter-three" >"$OUT" 2>&1
+    if "$SYNC_TOOL" --dry-run --all --src-root "$SYNC_ALL_ROOT" --json \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>"$OUT.err" \
+        && [ "$(head -n 1 "$OUT")" = "[" ] \
+        && [ "$(tail -n 1 "$OUT")" = "]" ] \
+        && [ "$(grep -c '"project":' "$OUT")" -eq 3 ] \
+        && grep -q '"project": "adopter-one"' "$OUT" \
+        && grep -q '"project": "adopter-two"' "$OUT" \
+        && grep -q '"project": "adopter-three"' "$OUT" \
+        && grep -q '"detail": "no markers (partial adopter)"' "$OUT" \
+        && ! grep -q 'LLM-DocKit Sync\|Template:\|Mode:\|Scope:' "$OUT"; then
+        note_pass "dockit-sync emits one attributable mixed JSON report for --all --only"
+    else
+        {
+            echo "selective --all JSON output was not singular and attributable"
+            sed -n '1,200p' "$OUT"
+            [ -s "$OUT.err" ] && sed -n '1,120p' "$OUT.err"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync emits one attributable mixed JSON report for --all --only"
+    fi
+
+    mkdir -p "$SYNC_ALL_ROOT/adopter-one/.git/.dockit"
+    printf '%s\n' "$$" >"$SYNC_ALL_ROOT/adopter-one/.git/.dockit/sync.lock"
+    if "$SYNC_TOOL" --dry-run --all --src-root "$SYNC_ALL_ROOT" --json \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>"$OUT.err"; then
+        LIVE_LOCK_EXITED_ZERO=true
+    else
+        LIVE_LOCK_EXITED_ZERO=false
+    fi
+    if ! $LIVE_LOCK_EXITED_ZERO \
+        && [ "$(head -n 1 "$OUT")" = "[" ] \
+        && [ "$(tail -n 1 "$OUT")" = "]" ] \
+        && grep -q '"project": "adopter-one".*"status": "ERROR".*locked by active PID' "$OUT" \
+        && grep -q '"project": "adopter-two"' "$OUT" \
+        && grep -q '"project": "adopter-three"' "$OUT" \
+        && [ -f "$SYNC_ALL_ROOT/adopter-one/.git/.dockit/sync.lock" ] \
+        && [ "$(cat "$SYNC_ALL_ROOT/adopter-one/.git/.dockit/sync.lock")" = "$$" ]; then
+        note_pass "dockit-sync preserves live locks and still emits the fleet JSON report"
+    else
+        {
+            echo "live lock aborted or erased the fleet report"
+            sed -n '1,200p' "$OUT"
+            [ -s "$OUT.err" ] && sed -n '1,120p' "$OUT.err"
+        } >"$OUT.tmp"
+        mv "$OUT.tmp" "$OUT"
+        note_fail "dockit-sync preserves live locks and still emits the fleet JSON report"
+    fi
+
+    SYNC_LOCK_FAILURE_REPO="$TMP_ROOT/sync-only-lock-failure"
+    init_sync_section_repo "$SYNC_LOCK_FAILURE_REPO" "with-footer"
+    ln -s /dev/null "$SYNC_LOCK_FAILURE_REPO/.git/.dockit"
+    if ! "$SYNC_TOOL" --dry-run --project "$SYNC_LOCK_FAILURE_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q '__project__.*ERROR.*cannot create lock directory' "$OUT"; then
+        note_pass "dockit-sync reports non-holder lock acquisition failures"
+    else
+        note_fail "dockit-sync reports non-holder lock acquisition failures"
+    fi
 fi
 
 if [ ! -x "$CODEX_INSTALLER" ]; then

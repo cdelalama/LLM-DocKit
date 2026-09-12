@@ -13,6 +13,132 @@ the active normative source for new work.
 
 ---
 
+## 2026-09-12 - Exact Opus audit of the v4.14.0 selective-sync candidate
+
+- **Preferred auditor evidence**: three exact `claude-fable-5-1` high-effort
+  attempts returned HTTP 429 with `You've reached your Fable limit.`; Claude
+  `/status` showed Fable week 100%, reset 2026-09-16 14:00 UTC, while the
+  all-model pool retained capacity.
+- **Effective auditor**: exact `claude-opus-5[1m]`, high effort, 1M context.
+  Command explicitly set `--model 'claude-opus-5[1m]' --effort high`, supplied
+  no fallback model, used restricted/plan mode, allowed only file reads and
+  read-only Git commands, and requested no subagents. CLI telemetry identified
+  Opus as the canonical result model and `subagent_stats.spawned: 0`; a tiny
+  Haiku internal-CLI usage entry was not an auditor substitution and produced
+  no finding or verdict.
+- **Round 1 target**: base `e51fc6f64465fd28716c0e1eae374c70be9e3247`,
+  candidate tree `dfd3627a0c1cac53889e8e30db73242e26690ebe`, binary
+  diff SHA-256 `6d1b3d1739175c521116af0c3fce217dcf9015768dc1883da55b690e99760750`.
+- **Round 1 validation packet**: 4.14.0 markers 9/9, DocKit checks 10/10,
+  validator smoke 62/62, `git diff --check` PASS.
+- **Round 1 verdict**: `GO WITH REQUIRED CHANGES`.
+- **Round 2 target**: candidate tree
+  `4dfb5923628a58f5340d0610c892e78a3305a214`, binary diff SHA-256
+  `74b69d3ee8d527e4847f4d55129f471fd2d46a822ed20730428d4399d827e529`.
+- **Round 2 validation packet**: markers 9/9, DocKit 10/10, smoke 71/71,
+  `git diff --check` PASS, and real fleet dry-run 21 eligible / 2 partial / 0
+  errors with one parseable 23-project JSON array.
+- **Round 2 verdict**: `GO WITH REQUIRED CHANGES`; A1 remained partial because
+  whole-file creation lacked baselines, and the round-1 diff hash was
+  mistranscribed. Opus also recommended closing live-lock report loss,
+  malformed-state baseline loss, and ambiguous rollback JSON before release.
+- **Round 3 target**: candidate tree
+  `b6a3d02cb8899bba86d9e7b27a10ef8942ffbee5`, binary diff SHA-256
+  `280fbd418bb54511089cade6b6bf10074dab096905d9efe62fa1c7c47b2a5824`.
+- **Round 3 validation packet**: markers 9/9, DocKit 10/10, smoke 75/75,
+  shell syntax and `git diff --check` PASS, and a freshly repeated fleet
+  dry-run with 21 eligible / 2 partial / 0 errors.
+- **Round 3 verdict**: `GO`; no BLOCKER, HIGH, or MEDIUM findings remained.
+  Opus identified two optional LOW hardening cases and two test/documentation
+  NOTES, which the executor chose to close before publication.
+
+### Findings and executor reconciliation
+
+- **A1 BLOCKER - AGREED**: selective apply preserved full template identity by
+  skipping state writes entirely, which also discarded the delivered section's
+  conflict baseline. The correction merges delivered section hashes while
+  preserving prior `template_version`/`template_ref`; a regression proves a
+  later local edit conflicts and survives rollback byte-for-byte.
+- **A2 HIGH - AGREED**: partial and excluded adopters looked indistinguishable
+  from current. Selected sections now report explicit current, partial,
+  excluded, updated, conflict, and error outcomes in text and JSON.
+- **A3 HIGH - AGREED**: 62/62 overstated new-feature coverage. The first
+  correction reached 71/71; the final matrix reaches 78/78 and exercises state
+  merge/conflict, whole-file and repeated selectors, partial/excluded/current,
+  invalid combinations and selector forms, missing file, pre-existing
+  validation failure, branch collision, lock failures, and attributable
+  `--all --json` output.
+- **A4-A12 - AGREED WITH MODIFICATION**: quota-exhaustion wording and evidence
+  destination were tightened; fleet JSON, literal selector matching,
+  prevalidation, whole-file unknown-section checks, selective branch naming,
+  skip-path rejection, and change-only warnings were addressed. Pre-existing
+  validation failure is classified without mutation rather than treated as a
+  new sync failure.
+- **A13-A14 - NOTE**: helper duplication and historical insertion-before-footer
+  ordering do not affect correctness and are deferred.
+- **A15 - DISPUTED AS A CHANGE, ACCEPTED AS A DOCUMENTED CHOICE**: the
+  SessionStart payload already mandates reading `LLM_START_HERE.md`; duplicating
+  exact model IDs in the bootstrap would create a second fleet value that can
+  drift. D-020 records the single-source choice.
+- **A16 - AGREED**: D-020 now disambiguates the older, qualified MED D-020.
+
+### Round 2 findings and executor reconciliation
+
+- **B1 HIGH - AGREED**: the section-hash code had landed in `sync_copy` rather
+  than the `section-merge` file-creation branch. It now records every template
+  section only on the correct path; regressions prove all baselines exist and a
+  later local policy edit conflicts and survives rollback.
+- **B2/B9 MEDIUM/NOTE - AGREED**: a live lock used `die`, aborted fleet JSON,
+  and the EXIT trap could delete the other process's lock. Lock acquisition now
+  returns a project error, preserves the holder's lock, and continues `--all`;
+  a heterogeneous fleet regression verifies all three project entries remain.
+- **B3 MEDIUM - AGREED**: the round-1 diff hash was copied incorrectly despite
+  the correct tree. It is corrected above from the retained round-1 snapshot.
+- **B4/B8 MEDIUM/LOW - AGREED**: selective state parsing now rejects malformed
+  `section_hashes` with a precise reason and rolls back both state and files;
+  it cannot silently discard untouched baselines.
+- **B5 MEDIUM - AGREED**: each apply rollback now adds an attributable
+  project-level error entry; prior `UPDATED` entries no longer stand alone.
+- **B6/B7/B10/B11 - AGREED WITH MODIFICATION**: coverage is now heterogeneous
+  and 78/78, branch collision retains `-selective`, the path/section no-space
+  contract remains valid, and CHANGELOG names the expanded scope.
+- **B12 - CLOSED FOR ROUND 3**: this registry records the round-3 candidate,
+  validation packet, and `GO`. The executor voluntarily hardened the remaining
+  LOW/NOTE cases, so that replacement tree receives one final same-session
+  audit before release.
+
+### Round 3 findings and executor reconciliation
+
+- **C1 LOW - AGREED**: non-holder lock failures now carry explicit directory or
+  file diagnostics, and the caller retains a non-empty fallback. A regression
+  forces lock-directory failure and verifies the attributable message.
+- **C2 LOW - AGREED**: selective state validation now accepts only a non-empty
+  lowercase 64-character SHA-256 value, quoted or unquoted. An empty quoted
+  baseline fails and preserves state byte-for-byte.
+- **C3 NOTE - AGREED**: the A3 narrative now separates the historical 71/71
+  round from the final 78/78 suite instead of leaving an apparently stale
+  count.
+- **C4/C6 NOTE - ACCEPTED AS BOUNDARIES**: conflict plus project rollback are
+  intentionally two report entries for one event, and a real adopter apply is
+  still a downstream gate rather than source-release evidence.
+- **C5 NOTE - AGREED**: a real selective `--git-branch` collision regression
+  now verifies that the timestamp fallback retains the `-selective` suffix.
+
+### Corrected-candidate fleet preview
+
+The real read-only command `dockit-sync.sh --dry-run --all --json --only
+LLM_START_HERE.md:independent-review-policy` produced one parseable 23-project
+array: 21 full adopters would insert the section, while `med` and
+`msgvault-lab` were explicitly reported as partial adopters without markers;
+there were no errors. No downstream file or state was changed.
+
+### Remaining gate
+
+The final 78-case replacement tree must be re-read in the same Opus session.
+A final GO may authorize only the LLM-DocKit source release; it cannot authorize
+downstream apply, commits in adopters, global configuration, or runtime and
+infrastructure changes.
+
 ## 2026-07-16 - Post-ship audit of the v4.13.0 session-aware Stop gate
 
 - **Auditor**: Claude

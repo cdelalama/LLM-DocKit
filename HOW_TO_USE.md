@@ -296,6 +296,51 @@ scripts/dockit-sync.sh --dry-run --all
 scripts/dockit-sync.sh --apply --all
 ```
 
+### Selective Fleet Updates
+
+Use repeatable `--only` selectors when one policy or file must reach the fleet
+without applying every unrelated change from the current template:
+
+```sh
+# Preview only the independent-review policy in every registered project
+scripts/dockit-sync.sh --dry-run --all \
+  --only LLM_START_HERE.md:independent-review-policy
+
+# Apply only that policy after reviewing the fleet report
+scripts/dockit-sync.sh --apply --all \
+  --only LLM_START_HERE.md:independent-review-policy
+```
+
+A selector is either a manifest path (the complete file) or
+`path:section-id` for one `section-merge` block. Selectors are validated before
+any project is touched and may be repeated. A section-only selector cannot
+create a missing downstream file; select the whole path for that case.
+
+Selective apply preserves backups, conflict detection, rollback, project
+validation, and local exclusions. It merges baseline hashes only for selected
+sections whose content now equals the template, while preserving the prior
+`.git/.dockit/state.yml` `template_version` and `template_ref`: receiving one
+policy is not evidence that the adopter is current with the complete template.
+Run a normal full sync later to advance that version and reference.
+
+Selective preflight also runs the adopter's available version-sync validation
+before mutation. An already-failing adopter is reported as
+`SKIPPED / pre-existing validation failure` and remains unchanged, so the
+policy rollout is not blamed for older drift. Text and `--json` reports
+distinguish current, partial, excluded, preflight-failed, updated, and error
+outcomes; JSON emits one fleet array with a `project` on every entry.
+An active project lock becomes an attributable error while the remaining
+projects continue; the live holder's lock is preserved. If an apply is rolled
+back, the report includes a project-level rollback error instead of leaving
+`UPDATED` entries unqualified.
+
+For `adoption_mode: full`, a new selected section is inserted automatically.
+For `partial`, missing markers remain a warning and the section is skipped;
+add the markers intentionally or keep the local exception. A stricter local
+policy always wins over the fleet default and should be made explicit through
+`exclude_sections` plus local rationale rather than overwritten with
+`--force`.
+
 ### Restoring from Backup
 
 ```sh
@@ -317,6 +362,7 @@ scripts/dockit-sync.sh [options]
   --project PATH     Sync a single project
   --all              Sync all .dockit-enabled projects
   --src-root PATH    Root directory for projects (default: ~/src)
+  --only SELECTOR    Sync only a manifest path or path:section (repeatable)
   --force            Overwrite even with conflicts
   --git-branch       Create git branch before applying
   --json             Report in JSON format

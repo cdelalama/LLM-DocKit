@@ -1,4 +1,4 @@
-<!-- doc-version: 4.13.3 -->
+<!-- doc-version: 4.14.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -69,6 +69,38 @@ Session-start scope:
 - Do not bump versions without consulting docs/VERSIONING_RULES.md for impact level (patch/minor/major).
 - Do NOT batch multiple code commits without versioning. No exceptions.
 <!-- DOCKIT-TEMPLATE:END version-management -->
+
+<!-- DOCKIT-TEMPLATE:START independent-review-policy -->
+### Independent Review Policy
+
+For consequential source candidates that require an independent model review,
+the operator-wide default is:
+
+1. Prefer Fable, exact model `claude-fable-5-1`, with high effort.
+2. If direct quota evidence shows that exact Fable is unavailable because its
+   quota is exhausted, Opus may complete the same review gate using exact model
+   `claude-opus-5[1m]`, with high effort. Record the quota evidence, effective
+   model, effort, command, candidate revision/tree, and validation packet in
+   `docs/llm/REVIEWS.md` when it exists, otherwise in the audited revision's
+   HISTORY entry.
+3. Never substitute Sonnet, Haiku, an ambiguous alias, or an unrecorded model.
+   If neither allowed exact model is available, freeze the candidate and audit
+   packet. Continue only work already authorized that does not depend on the
+   missing verdict.
+
+The auditor is independent and read-only: it reads primary files and evidence,
+does not edit the candidate, and returns evidence-backed findings. The executor
+must verify each finding, reconcile disagreements with the same auditor session
+where practical, and preserve explicit unresolved disagreement for the
+operator. A review verdict does not authorize build, deployment, runtime,
+secrets, infrastructure, lifecycle, or acceptance changes.
+
+This synchronized section is the fleet default, not permission to weaken an
+existing project contract. A stricter project-local accepted rule wins until
+the operator explicitly supersedes it. Projects that intentionally own a
+different policy may exclude `independent-review-policy` in
+`.dockit-config.yml`; the exception and rationale must remain visible locally.
+<!-- DOCKIT-TEMPLATE:END independent-review-policy -->
 
 <!-- DOCKIT-TEMPLATE:START env-policy -->
 ### Environment Files (If Applicable)

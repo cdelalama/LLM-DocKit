@@ -2139,3 +2139,41 @@ Mitigation in source project: v4.13.3 extends the HISTORY footer grammar and
 validator with explicit external revision classification, adds pass/fail
 regressions for namespaced, undeclared, and malformed external references, and
 updates the scaffold guidance. D-019 records the fail-closed ownership rule.
+
+## DF-056 - Fleet policy updates are coupled to unrelated template drift
+
+- Source: Irrigation Portal independent-auditor gate
+- Date observed: 2026-09-12
+- Category: process
+- Status: implemented (4.14.0)
+- Related: DF-024, DF-043, D-020, D-021
+
+Observation: the operator accepted a reusable Fable-to-Opus fallback policy
+and asked whether it had to be explained separately in every project. The
+existing sync tool could update all registered adopters, but only by processing
+the complete manifest. A fleet dry-run showed many projects with unrelated
+version lag, local section conflicts, or partial adoption. Using full sync for
+one policy would either widen the change silently or require manual per-repo
+work.
+
+Protocol implication:
+
+- Put the model-specific fallback and local-precedence rule in one managed
+  `LLM_START_HERE.md` section so new and existing full adopters share it.
+- Add repeatable `--only path[:section]` selection to the central sync tool.
+- Validate the complete selection before touching any adopter.
+- Preserve existing backup, conflict, rollback, exclusion, and validation
+  behavior for the selected scope.
+- Merge conflict baselines for sections actually delivered, but do not advance
+  the adopter's full `template_version` or `template_ref` after a selective
+  apply. Partial adoption must never masquerade as complete template currency.
+- Preserve stricter project-local accepted policy and report partial adopters
+  that lack the new section instead of forcing it.
+
+Mitigation in source project: v4.14.0 adds the managed
+`independent-review-policy` section, implements selective sync, documents its
+fleet workflow, and adds regression coverage for scope isolation, state
+preservation, conflict protection, partial/excluded/preflight classification,
+malformed-state rollback, attributable fleet JSON including lock/rollback
+outcomes, and pre-mutation selector rejection. No adopter is modified by the
+source release itself.

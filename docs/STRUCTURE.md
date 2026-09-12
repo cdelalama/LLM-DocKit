@@ -67,7 +67,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
 | scripts/dockit-session-gate.sh | Records session baselines and drives Claude Code Stop validation | Required for Claude Code enforcement |
 | scripts/test-validator.sh | Smoke-tests validator edge cases in throwaway repos | Recommended before validator changes |
-| scripts/dockit-sync.sh | Propagates template updates to downstream projects | Template only |
+| scripts/dockit-sync.sh | Propagates full or `--only` scoped template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
 | scripts/dockit-install-codex-hook.sh | Installs the Codex CLI SessionStart onboarding hook | Downstream + template |
