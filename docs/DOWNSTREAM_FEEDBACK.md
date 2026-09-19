@@ -1,5 +1,24 @@
 # Downstream Feedback
 
+## DF-058 - Delivery governance can exceed the application's complexity
+
+- Source: Riego P12 delivery and Carlos's explicit postmortem request
+- Date observed: 2026-09-19
+- Category: proportionality / viability / review loops / operator visibility
+- Status: open; report recorded, implementation reserved for a separate session
+- Related: issue #1; D-009, D-011, D-015, D-020, D-021
+- Complete evidence and implementation brief:
+  `docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md`.
+
+Repeated reviewed, reversible infrastructure attempts consumed days while the
+application was already deployed. Ingress viability was checked too late,
+acceptance machinery amplified small corrections and current-state documents
+became long mixed histories. Existing structural validators passed without
+proving user-visible progress. Add proportional profiles, early viability,
+bounded candidates/attempts/reviews, short current handoffs and selective fleet
+rollout. Preserve safety, recovery and exact model evidence. This intake does
+not ship the controls or close the issue.
+
 Living log of observations collected from projects that adopt LLM-DocKit. Each
 entry describes a real-world drift, gap, or friction point encountered in a
 downstream project, along with the implication for DocKit itself. Use this file

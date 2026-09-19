@@ -61,6 +61,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | docs/integrations/ | Operator/tool integration notes, such as Codex CLI setup | Template + downstream |
 | docs/ROADMAP.md | LLM-DocKit source roadmap | Source only; not synced downstream |
 | docs/FLEET_ROLLOUT_2026-09-12.md | Exact adopter registration, publication, and exception evidence for the 2026-09-12 policy rollout | Source only; not synced downstream |
+| docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md | Delivery postmortem and separate-session implementation brief (DF-058, issue #1) | Source only; proposed controls |
 | docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
 | dockit-sync-manifest.yml | Sync strategy per file (copy/skip/section-merge/yaml-merge) | Template only |
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |

@@ -5,6 +5,17 @@ This file is the current operational snapshot. Long-form rationale lives in `doc
 
 ## Open work — next concrete step
 
+**2026-09-19 priority for a separate session:** implement the proportional
+delivery proposal in `docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md` and DF-058
+in `docs/DOWNSTREAM_FEEDBACK.md`, tracked by GitHub issue #1. This report is
+not a shipped policy. Read its evidence corrections, acceptance fixtures and
+rollout boundary before changing `scripts/dockit-validate-session.sh` or
+`LLM_START_HERE.md`. D-009/D-011 preserve the DocKit/ForgeOS ownership split.
+Riego delivery continues separately and must not wait for this framework work.
+
+The following September 12 closeout is historical: its follow-up was published
+as 6a08e5f before this report. It is not the next task.
+
 **The exact v4.15.0 source tree is published. The policy rollout is complete;
 the next concrete work is the non-behavioral audit closeout in
 `docs/llm/REVIEWS.md`, `docs/llm/HISTORY.md`, `docs/llm/HANDOFF.md`,
@@ -202,7 +213,10 @@ A multi-day deliberation on 2026-05-02→04 produced cross-repo proposals and su
 DFs whose runtime ownership is now outside DocKit scope: DF-030, DF-031, and DF-032 in `docs/DOWNSTREAM_FEEDBACK.md`. They remain useful evidence for the pending ForgeOS ownership decision and for `llm-council` corpus/curation work, but they no longer drive a DocKit consensus runtime.
 
 ## Current Status
-- Last Updated: 2026-09-12 - Codex GPT-5
+- Last Updated: 2026-09-19 - Codex
+- Current priority: DF-058 proportional-delivery implementation in a separate
+  session; report recorded, policy and fleet rollout pending. Behavior remains
+  4.15.0. The following release narrative is historical.
 - Session Focus: **Published v4.15.0 as the durable closeout of the authorized
   fleet rollout and the audited tooling corrections it exposed.**
   `docs/FLEET_ROLLOUT_2026-09-12.md` records 38 registered
