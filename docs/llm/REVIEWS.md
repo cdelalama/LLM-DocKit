@@ -13,6 +13,203 @@ the active normative source for new work.
 
 ---
 
+## 2026-09-21 - DF-058 complete source controls and local pilot
+
+**Status: SOURCE GO and LOCAL-PILOT GO; incident acceptance remains open.**
+The operator's implementation GO covers the corrected complete source scope.
+Exact preferred `claude-fable-5-1` high returned quota exhaustion (HTTP 429, no
+useful review) in session `1ba32246-c5b9-4b1d-97ce-648fdb3d2605`.
+D-020 fallback used exact `claude-opus-5[1m]` high in the same session
+`b0ae0593-d9c3-4f6c-a0eb-8cd4bda63baa` for one contract review and three
+implementation/delta rounds. Model initialization telemetry confirms the request;
+assistant message metadata reports the underlying `claude-opus-5`. No other
+review model or subagent was used.
+
+The auditor had only Read/Glob/Grep, no shell. It inspected actual source and
+accepted the narrow DocKit/adopter/ForgeOS boundary. It did not run tests, compute
+hashes or independently verify Git identity. Executor-supplied code tree
+ac30257291d1526e56286911c0bfde5fcd8fc08f and local pilot snapshot
+9b4a3209a8347bb921d764324e3ddf07072132f0 are evidence inputs, not independent
+reproductions. Later documentation records this verdict without claiming otherwise.
+
+All supported core findings are closed: causal-set retention, identity across
+clones, under-lock binding/clock, receipt TTL/artifacts, interpreter, committed
+prefix/cache, missing-checkpoint recovery, coverage/isolation and exact binding.
+The final S1-S3 and P1-P3 closures are in
+`docs/archive/DF058_OPUS_FINAL_REVIEW_2026-09-21.md`; C1's synthetic-test
+rerunnability correction was applied by the executor according to the review.
+No supported issue is waived because a budget expired. A padded-wc arithmetic
+concern was withdrawn by the auditor after the executor's counterargument.
+
+Executor gates: delivery 84/84; validator 96/96; source seven checked/passed plus
+four explicit legitimate skips; version 10/10. Riego adverse tests drive its real
+entrypoint under mocked Docker, keeping synthetic review records clearly marked.
+The one actual local networkless packaging attempt is recorded separately in
+`docs/archive/DF058_IMPLEMENTATION_2026-09-21.md`. It cannot establish gardener,
+physical or off-LAN use or close DF-058 / issue #1. The 38-adopter selective preview
+is read-only and confers no integration/protection status.
+
+Reproducible review invocation (each prompt retained in the local evidence directory):
+`claude --model 'claude-opus-5[1m]' --effort high --restricted --permission-mode dontAsk --tools Read,Glob,Grep --allowedTools Read,Glob,Grep --strict-mcp-config --mcp-config '{"mcpServers":{}}' --output-format stream-json --verbose --resume b0ae0593-d9c3-4f6c-a0eb-8cd4bda63baa -p <bounded-prompt>`.
+The initial Opus call used `--session-id`; read access was limited to both audited
+worktrees and `/tmp/dockit-df058-implementation-20260921`. Prompts, JSONL, direct
+quota evidence and test logs remain there; the archive preserves portable outcomes.
+
+## 2026-09-19 - Replacement roadmap after operator scope correction
+
+**Status: AGREED FOR PLANNING with conditions incorporated; no source GO.**
+Carlos rejected the first roadmap because it left prerequisite/retry controls
+for later. The executor accepted the scope error and replaced the roadmap;
+the earlier agreement below remains historical evidence. The deliverable now
+covers the complete causal loop through a real integrated adopter pilot.
+
+The executor resumed exact `claude-opus-5[1m]`, high effort, in the same session
+`775e8c6d-1595-4089-a750-0c1c3d0c0cf4` under the already-recorded D-020 Fable
+quota evidence. The round-2 restricted read-only command was reused with the
+replacement prompt on stdin. Opus needed no additional file reads, made no
+writes and assessed the proposal against the existing source baseline and
+prior discussion. This is a planning verdict, not an independent run of the
+proposed mechanisms or an exact-tree review of these documentation edits.
+
+Opus agreed that the prior scope was too small and that the replacement fits
+D-009/D-011: DocKit supplies the contract, checker and record writer; the adopter
+owns probes and invocation in its existing mutation command; ForgeOS retains
+runtime authority. No future ForgeOS implementation is a prerequisite here.
+
+Its conditional verdict was AGREED FOR PLANNING. The executor incorporated
+all four required integrity corrections and both wording corrections:
+
+1. Derive integrated/tested adoption from a rerunnable negative integration
+   artifact and fresh, matching execution evidence; copied scripts or an
+   operator/agent assertion cannot claim a protected mutation path.
+2. Detect record deletion/truncation/rewriting against committed history and
+   retained append checkpoints, not merely valid syntax. Preserve continuity
+   of uncommitted events without a product release for every attempt; never
+   claim tamper-proofing against control of all evidence.
+3. Stable failing-dependency identity lives in the reviewed declaration;
+   changing it triggers reassessment instead of resetting the budget.
+4. Limit the initial new schema to stable identity and fields exercised by
+   the two actual reproducers. Link existing review/authority/acceptance
+   records rather than inventing generic speculative fields.
+5. The current source candidate is reviewed under existing D-020. New limits
+   start operating at the integrated pilot, not retroactively on their own
+   unimplemented code.
+6. Usability is a declared criterion followed by attributed real acceptance
+   evidence; the generic checker does not independently certify real use.
+   Failures gate only the opted-in project entrypoint, not chat or Stop/session
+   authority. Recovery remains available after ordinary budgets expire.
+
+The first accepted improvement must show failed-prerequisite refusal before
+mutation, equivalent-retry refusal despite renaming, corrected-evidence
+continuation, supported-security-finding blocking, recovery after budget
+exhaustion, session continuity and actual user-path acceptance. Source
+publication is not incident-remediation acceptance. Riego remains an optional
+pilot rather than a dependency, and selective fleet delivery follows evidence.
+
+Temporary evidence: `/tmp/dockit-df058-consensus-20260919/opus-round3.txt`,
+`opus-round3.jsonl` and `opus-round3-result.md`. Durable outcome and reasoning
+are recorded here; temporary transcripts are not an archival guarantee.
+
+Replacement prompt SHA-256: a0143a0675304a9f0bf4bedcc8d1e4edbf7329f1a2f2621d1ce7bf1390f0ac0e.
+Verdict text SHA-256: 192ed066c4f4201bf3a64aff4f5431494ef7c199d8238032d412a4c2f5f1dc61.
+
+## 2026-09-19 - DF-058 planning consensus with exact Opus
+
+**Status: superseded by the operator-corrected complete-delivery plan above.**
+The two-round agreement below was real, but its scope was insufficient: it
+improved documentation while deferring the controls needed to address the
+incident. Preserve it as history, not an implementation instruction. The live
+sequence is now in `docs/ROADMAP.md`. No source-release GO was ever issued.
+
+- Source baseline: commit `811077abd80a68cdf7a26671fe450557e8c55f77`, version
+  4.15.0, clean local main matching the local origin/main tracking ref.
+  Source tree: b0f05917283183c99ef2d7b16e74e1d353848140.
+- Preferred model: exact `claude-fable-5-1`, effort high, session
+  `7dedee7b-1e11-429f-b4ba-503dc93d50ca`. One attempt returned HTTP 429 and
+  "You've reached your Fable limit." It produced no review.
+- Effective auditor: exact `claude-opus-5[1m]`, effort high, session
+  `775e8c6d-1595-4089-a750-0c1c3d0c0cf4`, resumed for the second round.
+  Result telemetry confirms that exact requested model, canonical
+  `claude-opus-5`, and context window 1000000; no alternative reviewer or
+  subagent was used.
+- Command: `claude -p --model 'claude-opus-5[1m]' --effort high --restricted
+  --permission-mode plan --tools Read,Glob,Grep --allowedTools Read,Glob,Grep
+  --strict-mcp-config --mcp-config '{"mcpServers":{}}'
+  --add-dir /tmp/dockit-df058-consensus-20260919 --output-format stream-json
+  --verbose --session-id 775e8c6d-1595-4089-a750-0c1c3d0c0cf4` with the
+  first prompt on stdin. Round 2 used `--resume` with that same ID and
+  `--permission-mode dontAsk`; all other model/tool restrictions remained.
+  Fable used the same restricted invocation with its exact model/session.
+- Capability: primary-file Read/Grep inspection, no shell, external services,
+  writes or independent test execution. The executor supplied Git identity and
+  validation evidence. Plan-mode scaffolding prompted one unavailable Write
+  call to an operator plan path; the tool rejected it and no file was created.
+  Round 2 used read-only tools without plan mode. Do not describe supplied
+  test results as independently executed by Opus.
+- Baseline validation: existing validator returned ten PASS-shaped results,
+  five explicitly skipped; version sync was 9/9. No smoke-suite rerun or live
+  Riego/infra acceptance was claimed in this planning session.
+- Local evidence: prompts, JSONL results and baseline packet under
+  `/tmp/dockit-df058-consensus-20260919/`; these are temporary transcripts,
+  not a durable archive guarantee. This registry preserves the causal record.
+  Round-2 prompt SHA-256:
+  c8a4d449481f62d20b5619df8b3cc6077713667bed0634a2386fe40394d3ca22.
+  Final verdict text SHA-256:
+  ba0fc60c677f9e4998967141e2e37bb0feb1f63be60874aa05d56eb069abe6ed.
+
+### Round 1 - CHANGES REQUIRED
+
+Opus corroborated the stale source snapshot and verified that exact duplicate
+H2 matching misses the actual Do Not Touch aliases. It confirmed that adding
+config cannot honestly exercise four of the five skipped checks; Trace needs
+an anchor, an honest activation date and CI commit history. It accepted
+additive skip metadata while preserving existing status and exit contracts.
+
+Disagreements remained: Opus initially wanted handoff-shape entirely opt-in,
+opposed an umbrella DF convention, and wanted fleet delivery removed from the
+release scope. The executor accepted the factual corrections, distinguished
+source publication from eventual rollout, and proposed default size-only WARN
+with explicitly configured content checks. Existing DF-003/006/010 were mapped
+before creating new backlog entries. No undocumented policy became active.
+
+### Round 2 - CONSENSUS STATUS: AGREED
+
+Opus explicitly accepted the executor's compromise and withdrew the claim that
+delivering the advisory had no adopter value. Both parties agreed:
+
+1. Honest reporting fixes misleading coverage, not the entire delivery failure.
+   Keep status/exit compatibility; count skips explicitly, before quiet filtering.
+2. Default size-only WARN at a provisional configurable 200 lines. Grammar-based
+   content checks require configured scope, canonical title boundaries/aliases
+   and explicit current-version fields. Strict opt-in can fail contracted
+   deterministic violations; length remains advisory. Document new WARN/SKIP
+   displays and distinguish unconfigured content checks from exercised ones.
+3. Source enables both applicable Trace and handoff checks, with the real
+   activation date, anchor/footer evidence and full CI Git history. Do not
+   invent external dependencies or phase grammar to obtain an artificial 10/10.
+4. Preserve HANDOFF history in a linked archive, then exclude source-only
+   archives from fresh init targets. Never delete the source's historical
+   evidence or an existing adopter's archives. Test config regeneration too.
+5. No new umbrella DF convention. Preserve the original intake provenance;
+   narrow/reorder DF-058 for skip reporting, reuse DF-003 and DF-006, and keep
+   DF-010 distinct. New later contracts, not this bookkeeping exercise, may
+   justify DF-059+. The overall incident stays open.
+6. One source candidate, exact independent source review, one real clean
+   adopter pilot, then separately scoped selective delivery. Routine sync also
+   carries copy-strategy scripts; planned delivery includes scripts wherever
+   still outdated plus guidance/config recipes. D-021 template-currency limits
+   and protected worktrees remain binding. Riego is not a blocking dependency.
+7. No profile/gate/budget/attempt schema in v4.16.0. Future prerequisite evidence
+   and mechanical retry grouping need separate contracts. Project probes and
+   ForgeOS authority stay outside the validator; budgets never auto-approve
+   supported findings or prevent recovery.
+
+The executor accepted the three final non-blocking amendments: title-boundary
+matching, source-archive pruning only in generated init targets with regression
+coverage, and no premature DF-059+ entries. No substantive disagreement remains
+on this roadmap. The agreed discussion predates these documentation edits;
+this is not an exact-tree audit of the resulting docs or future implementation.
+
 ## 2026-09-12 - Exact Opus audit of the fleet-rollout closeout
 
 - **Preferred auditor evidence**: exact `claude-fable-5-1` at high effort was

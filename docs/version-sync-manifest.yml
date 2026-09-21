@@ -22,3 +22,4 @@ targets:
 - path: docs/VERSIONING_RULES.md   marker: html-comment
 - path: docs/integrations/CODEX.md marker: html-comment
 - path: docs/llm/HANDOFF.md        marker: html-comment
+- path: docs/DELIVERY_CONTRACT.md marker: html-comment
