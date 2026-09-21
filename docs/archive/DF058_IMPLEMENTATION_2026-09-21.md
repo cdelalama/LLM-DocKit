@@ -114,3 +114,22 @@ The actual adopter exposed generic `*.log` ignore rules hiding its journal from
 ordinary status output. Its integration adds a scoped ignore exception and commits
 the journal; the portable contract now requires that handoff check explicitly.
 Local checkpoints preserve uncommitted events, but cannot transmit them to a clone.
+
+## Publication closure
+
+- DocKit PR #2 merged as f3bd1777740178e333d9973926b830a871f90a9e after
+  final-candidate CI run 35621133916 passed. Source version is 4.16.0.
+- Riego PR #1 merged as 2923512883671e3b838c1f118471b2cdf3a60f31 after
+  four-job Source CI run 35622423192 passed. Its initial source job caught a
+  missing generated OpenAPI version update; the generator corrected only that
+  documentation field. Browser, container and governance passed both runs.
+- The pilot's existing 58 validator regressions pass with the new validator.
+  Its oversized historical HANDOFF is now a visible exit-neutral warning.
+- The actual review/journal/acceptance are committed in the adopter. Synthetic
+  adverse controls and negative integration passed again after real history was
+  committed, proving C1's correction without resetting actual attempts.
+- The source primary checkout's exact inherited planning patch was checked against
+  its saved bytes, retained under `.git/dockit/df058/`, then incorporated through
+  a fast-forward to the reviewed release. No unrelated edits were overwritten.
+- No broad fleet apply, shared runtime deployment, off-LAN acceptance or issue
+  closure is claimed. Those remain the concrete next adoption/acceptance work.

@@ -7,8 +7,8 @@
 - Last Updated: 2026-09-21 - Codex
 - Current source version: 4.16.0
 - Owner: Carlos
-- Session focus: implement the complete DF-058 delivery-control loop.
-- Source: 4.16.0 candidate; exact Opus source/delta GO; publication pending.
+- Session focus: v4.16.0 source delivery and local pilot completed.
+- Source: v4.16.0 published via PR #2; exact Opus source/delta GO and CI PASS.
 - Pilot: Riego local container command integrated; adverse controls and one real
   local packaging attempt pass. Gardener/off-LAN acceptance remains open.
 - Validation: 84 delivery and 96 validator regressions pass; 10 version targets
@@ -16,16 +16,17 @@
 
 ## Open work -- next concrete step
 
-Finish source CI/publication and retain the local pilot evidence in
-`docs/archive/DF058_IMPLEMENTATION_2026-09-21.md` and `docs/llm/REVIEWS.md`.
-The reviewed `scripts/dockit-delivery-record.sh` / `docs/DELIVERY_CONTRACT.md`
-candidate. `docs/ROADMAP.md` keeps full incident acceptance separate; the selective
-preview in `docs/archive/DF058_FLEET_PREVIEW_2026-09-21.json` is not deployment.
+Use `docs/DELIVERY_CONTRACT.md` and `scripts/dockit-delivery-record.sh` to
+integrate the next real project delivery command with its own decisive probes.
+Record actual outcome acceptance in `docs/archive/DF058_IMPLEMENTATION_2026-09-21.md`
+and retain the boundary in `docs/ROADMAP.md`: local packaging is accepted, while
+Riego gardener/off-LAN use and broad entrypoint adoption remain open. The 38-project
+preview in `docs/archive/DF058_FLEET_PREVIEW_2026-09-21.json` applied no changes.
 
 ## Do Not Touch
 
-Preserve the primary checkout's inherited planning edits and unrelated adopter
-worktrees. Do not mutate production, shared networking, NAS, HA or physical
+Preserve unrelated adopter worktrees. The inherited primary planning edits are
+incorporated in this release and retained as an exact local Git-directory backup. Do not mutate production, shared networking, NAS, HA or physical
 controllers through this source task. Pilot operations must follow that
 project's current authority and isolation requirements. Do not change the sync
 manifest grammar or bypass independent review/versioning. Stage explicit paths.
@@ -40,11 +41,11 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 ## Trace Anchor
 
 - Role: executor
-- Subject: `811077a` docs: record Riego delivery postmortem and remediation handoff
-- Commit time: 2026-09-19 13:27:15 UTC
+- Subject: `f3bd177` Merge pull request #2 from cdelalama/feat/df058-delivery
+- Commit time: 2026-09-21 15:48:00 UTC
 - Repo state: committed baseline; this anchor is not a live HEAD assertion.
-- Validation: implementation baseline and prior planning context loaded.
-- Next gate: actual local pilot outcome, reviewed source publication and CI.
+- Validation: 84 delivery tests, 96 validator regressions, exact review and CI PASS.
+- Next gate: project-specific delivery integration and real user-path acceptance.
 <!-- DOCKIT-STATE:END -->
 
 ## Historical Context

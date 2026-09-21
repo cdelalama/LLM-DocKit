@@ -5,10 +5,10 @@ review provenance is in `docs/llm/REVIEWS.md`. The 4.16.0 source candidate prese
 
 ## Implementation status - 2026-09-21
 
-Steps 1-4 are implemented in the 4.16.0 source candidate with 84 delivery and
+Steps 1-4 are implemented and published in 4.16.0 with 84 delivery and
 96 validator regressions passing. Step 5 has exact-model source GO, a separately
 integrated Riego local packaging pilot with adverse cases passing, and a read-only
-38-adopter selective-sync preview. Final local acceptance/publication are recorded
+38-adopter selective-sync preview. Successful local packaging acceptance and publication are recorded
 in `docs/archive/DF058_IMPLEMENTATION_2026-09-21.md`. This is not gardener/off-LAN
 acceptance, full fleet protection or closure of issue #1; those gates remain real.
 

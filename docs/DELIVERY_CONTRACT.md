@@ -1,7 +1,7 @@
 <!-- doc-version: 4.16.0 -->
 # Delivery evidence contract v1
 
-Status: implementation candidate for DF-058; not deployment authorization.
+Status: schema 1 delivered in DocKit 4.16.0; not deployment authorization.
 
 ## Boundary
 
