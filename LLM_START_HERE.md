@@ -1,4 +1,4 @@
-<!-- doc-version: 4.15.0 -->
+<!-- doc-version: 4.16.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -264,6 +264,26 @@ trace_protocol:
   enabled: false
 ```
 <!-- DOCKIT-TEMPLATE:END trace-protocol -->
+
+<!-- DOCKIT-TEMPLATE:START delivery-evidence -->
+## Optional Delivery Controls
+
+For repeated delivery/infrastructure attempts, adopt `docs/DELIVERY_CONTRACT.md`
+in the actual project mutation command. The project runs the real prerequisite
+probe, records its observation, and calls `scripts/dockit-delivery-record.sh begin`
+immediately before mutation; it records outcome and recovery afterward.
+
+Copying scripts or a passing session validator is not integration. Require the
+project's rerunnable negative test to demonstrate zero mutation calls for a failed
+prerequisite, plus a current candidate-bound integration receipt. The journal
+preserves attempt/review counts across sessions and versions. Repeating a failed
+causal state or exhausting a budget requires bounded reassessment, never automatic
+approval. Existing independent review and operational authority still apply.
+Recovery must remain available independently of ordinary delivery checks.
+
+Keep source publication, deployment and actual user acceptance separate. A short
+HANDOFF names the observed result, current blocker and next concrete step.
+<!-- DOCKIT-TEMPLATE:END delivery-evidence -->
 
 <!-- DOCKIT-TEMPLATE:START do-not-touch -->
 ## Do Not Touch Zones

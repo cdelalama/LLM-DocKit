@@ -1,0 +1,1605 @@
+{
+  "mode": "dry-run",
+  "source_version": "4.16.0",
+  "date": "2026-09-21",
+  "actual_projects_mutated": 0,
+  "protection_claim": "none; command integration and current tests required",
+  "results": [
+    {
+      "project": "PentAGI-Lab",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "PentAGI-Lab",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "PiHA-Deployer",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "audio-batch",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "audio-batch",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "audio-batch",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "audio-batch",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "audio-batch",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "audio-batch",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "audio-batch",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "buzz-lab",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "cambio-claro",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "carlos-brand",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "claude-quest",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "claude-quest",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cortex",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "cortex",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cortex",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cortex",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cortex",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "cortex",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "cortex",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-android",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "devenv-android",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "devenv-bootstrap",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "devenv-entry",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "devenv-spawner",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "devenv",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "devenv",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "devenv",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "forgeos-convergence",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "forgeos",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forgeos",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "forgeos",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumlens",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "forumlens",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumlens",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumlens",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumlens",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumlens",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "forumlens",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "forumvault-lab",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "hermes-lab",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "home-infra-protocol",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "home-infra",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "home-infra",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "home-infra",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "house-thermal-monitor",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "infra-portal",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "infra-portal",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "infra-portal",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "infra-portal",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "infra-portal",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "infra-portal",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "infra-portal",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "irrigation-portal",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "juiced",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "juiced",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "juiced",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "juiced",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "juiced",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "juiced",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "juiced",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "llm-council",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "llm-council",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "llm-council",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "llm-council",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "llm-council",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "llm-council",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "llm-council",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "med",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "med",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "med",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "med",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "med",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "med",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "SKIPPED",
+      "detail": "no markers (partial adopter)"
+    },
+    {
+      "project": "med",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "SKIPPED",
+      "detail": "no markers (partial adopter)"
+    },
+    {
+      "project": "msgvault-lab",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "msgvault-panel",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "nas-backup",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "nas-backup",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "nas-backup",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "nas-backup",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "nas-backup",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "nas-backup",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "nas-backup",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "pi-fleet",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "plaud-mirror",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "qnap-magnet-builder",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "tomatic",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "tomatic",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "tomatic",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "tomatic",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "tomatic",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "tomatic",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "tomatic",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "travel-ledger",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "unifi-mcp",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "vaultwarden-deploy",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "x-signal",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "x-signal",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "x-signal",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "x-signal",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "x-signal",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "x-signal",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "x-signal",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "youtube2text",
+      "file": "scripts/dockit-validate-session.sh",
+      "status": "UPDATED",
+      "detail": "template changed"
+    },
+    {
+      "project": "youtube2text",
+      "file": "scripts/dockit-delivery-check.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "youtube2text",
+      "file": "scripts/dockit-delivery-record.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "youtube2text",
+      "file": "scripts/dockit-delivery-lib.sh",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "youtube2text",
+      "file": "scripts/dockit-delivery-state.awk",
+      "status": "NEW",
+      "detail": "will be created from template"
+    },
+    {
+      "project": "youtube2text",
+      "file": "LLM_START_HERE.md:delivery-evidence",
+      "status": "UPDATED",
+      "detail": "section inserted"
+    },
+    {
+      "project": "youtube2text",
+      "file": "docs/DELIVERY_CONTRACT.md",
+      "status": "NEW",
+      "detail": "will be created from template"
+    }
+  ]
+}

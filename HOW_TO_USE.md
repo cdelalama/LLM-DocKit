@@ -608,3 +608,36 @@ docs/
 ---
 
 **Remember**: This scaffold is a starting point. Adapt it to your workflow, remove what you don't need, and add what makes sense for your project. The core value is the LLM handoff protocol and documentation discipline.
+
+## Optional delivery controls and honest validation
+
+See `docs/DELIVERY_CONTRACT.md` for project integration. Synchronizing the four
+`dockit-delivery-*` helpers and guidance installs capabilities only. Protection
+requires a reviewed project probe, an actual guarded mutation entrypoint and a
+rerunnable negative test with current recorded evidence. No existing adopter
+command is changed automatically. Use selective `--only` sync and retain each
+project's existing authority/recovery boundary.
+
+The validator keeps legacy PASS/exit semantics for skipped checks and adds
+`skipped` per result plus `checked`, `skipped`, `passed`, `failed` totals to JSON.
+Quiet output suppresses PASS rows but keeps totals. Human output shows `[SKIP]`.
+
+`handoff-shape` advises at more than 200 lines by default; set top-level
+`handoff_max_lines: 0` to disable size advice. Content checks require explicit
+scope and field declarations, for example:
+
+```yaml
+handoff_active_start: "<!-- DOCKIT-STATE:START -->"
+handoff_active_end: "<!-- DOCKIT-STATE:END -->"
+handoff_singleton_sections: "Current Status,Open work,Do Not Touch"
+handoff_version_label: "- Current source version:"
+handoff_shape_strict: true
+```
+
+Within those exact marker lines, the configured `##` title prefixes must each
+appear once (word boundary required), and the explicit version must equal VERSION.
+Fenced code, quotes and text outside the scope are excluded. Content findings
+warn unless strict mode is explicitly enabled; size remains advisory even then.
+This checks the declared structure, not arbitrary prose semantics. DocKit itself
+activates these checks and Trace from 2026-09-21. Init generates downstream config
+and omits source archives; sync preserves project HANDOFF/config ownership.

@@ -170,6 +170,8 @@ echo "  copied scaffold (tracked files only, via git archive)"
 
 rm -f HOW_TO_USE.md
 rm -f docs/DOWNSTREAM_FEEDBACK.md
+# Only this newly generated target is pruned; source/adopter history is preserved.
+rm -rf docs/archive
 rm -f docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md
 rm -f docs/ROADMAP.md
 rm -f dockit-sync-manifest.yml

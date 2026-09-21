@@ -1580,6 +1580,8 @@ else
     if "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
         && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
         && [ ! -f "$SCAFFOLD_REPO/docs/ROADMAP.md" ] \
+        && [ ! -d "$SCAFFOLD_REPO/docs/archive" ] \
+        && ! grep -q handoff_active_start "$SCAFFOLD_REPO/.dockit-config.yml" \
         && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
         && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
         && ! grep -Eq 'path: docs/ARCHITECTURE\.md[[:space:]]+marker: html-comment' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
@@ -1596,6 +1598,60 @@ else
         note_fail "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
     fi
 fi
+
+# Coverage must remain honest even when PASS rows are filtered away.
+COVERAGE_REPO="$TMP_ROOT/coverage"; init_gate_repo "$COVERAGE_REPO"
+coverage_check() {
+    "$VALIDATOR" --project "$COVERAGE_REPO" --json "$@" --check version-sync --check external-context > "$TMP_ROOT/coverage.json"
+    grep -q '"checked":1,"skipped":1,"passed":1,"failed":0' "$TMP_ROOT/coverage.json"
+}
+expect_pass "selected JSON coverage distinguishes checked and skipped" coverage_check
+expect_pass "quiet JSON retains totals before suppressing PASS rows" coverage_check --quiet
+if grep -q '"checks":\[\]' "$TMP_ROOT/coverage.json"; then note_pass "quiet JSON suppresses only result rows"; else note_fail "quiet JSON suppresses only result rows"; fi
+SHAPE_REPO="$TMP_ROOT/shape"; init_gate_repo "$SHAPE_REPO"
+shape_check() { "$VALIDATOR" --project "$SHAPE_REPO" --json --check handoff-shape; }
+expect_pass "no config preserves legacy validator behavior" shape_check
+seq 201 > "$SHAPE_REPO/docs/llm/HANDOFF.md"
+if shape_check > "$OUT" && grep -q '"status":"WARN"' "$OUT"; then note_pass "large HANDOFF warns without failing by default"; else note_fail "large HANDOFF warns without failing by default"; fi
+cat > "$SHAPE_REPO/.dockit-config.yml" <<'SHAPECONFIG'
+handoff_max_lines: 200
+handoff_active_start: "<!-- ACTIVE -->"
+handoff_active_end: "<!-- END -->"
+handoff_singleton_sections: "Current Status,Open work,Do Not Touch"
+handoff_version_label: "- Current source version:"
+handoff_shape_strict: true
+SHAPECONFIG
+cat > "$SHAPE_REPO/docs/llm/HANDOFF.md" <<'SHAPEDOC'
+# Handoff
+<!-- ACTIVE -->
+## Current Status
+- Current source version: 0.1.0
+## Open work -- next concrete step
+Touch `scripts/foo.sh`.
+## Do Not Touch
+None.
+> ## Do Not Touch
+```
+## Do Not Touch
+- Current source version: 9.9.9
+```
+<!-- END -->
+## Do Not Touch
+- Current source version: 9.9.9
+SHAPEDOC
+expect_pass "strict shape excludes historical prose fences and quotes" shape_check
+cp "$SHAPE_REPO/docs/llm/HANDOFF.md" "$TMP_ROOT/shape-clean"
+sed '/None./a\## Do Not Touchstone' "$TMP_ROOT/shape-clean" > "$SHAPE_REPO/docs/llm/HANDOFF.md"
+expect_pass "canonical title prefix requires a word boundary" shape_check
+sed '/None./a\## Do Not Touch' "$TMP_ROOT/shape-clean" > "$SHAPE_REPO/docs/llm/HANDOFF.md"
+expect_fail "strict shape rejects duplicate active singleton sections" shape_check
+sed 's/handoff_shape_strict: true/handoff_shape_strict: false/' "$SHAPE_REPO/.dockit-config.yml" > "$TMP_ROOT/config"; cp "$TMP_ROOT/config" "$SHAPE_REPO/.dockit-config.yml"
+if shape_check > "$OUT" && grep -q '"status":"WARN"' "$OUT"; then note_pass "content warnings fail only after strict opt-in"; else note_fail "content warnings fail only after strict opt-in"; fi
+sed 's/handoff_shape_strict: false/handoff_shape_strict: true/' "$TMP_ROOT/config" > "$SHAPE_REPO/.dockit-config.yml"
+sed 's/0.1.0/0.0.9/' "$TMP_ROOT/shape-clean" > "$SHAPE_REPO/docs/llm/HANDOFF.md"
+expect_fail "strict shape catches explicit current-version drift" shape_check
+sed '/<!-- END -->/d' "$TMP_ROOT/shape-clean" > "$SHAPE_REPO/docs/llm/HANDOFF.md"
+expect_fail "strict shape rejects an unclosed active scope" shape_check
 
 printf '\nValidator smoke: %d passed, %d failed\n' "$pass_count" "$fail_count"
 

@@ -1,0 +1,12 @@
+# Source-local settings; init regenerates project config, sync never copies this.
+trace_protocol:
+  enabled: true
+  since: 2026-09-21
+  local_timezone: Europe/Madrid
+  reject_current_anchor_label: true
+handoff_max_lines: 200
+handoff_active_start: "<!-- DOCKIT-STATE:START -->"
+handoff_active_end: "<!-- DOCKIT-STATE:END -->"
+handoff_singleton_sections: "Current Status,Open work,Do Not Touch"
+handoff_version_label: "- Current source version:"
+handoff_shape_strict: true

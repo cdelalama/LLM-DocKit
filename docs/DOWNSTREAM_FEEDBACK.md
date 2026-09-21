@@ -1,24 +1,5 @@
 # Downstream Feedback
 
-## DF-058 - Delivery governance can exceed the application's complexity
-
-- Source: Riego P12 delivery and Carlos's explicit postmortem request
-- Date observed: 2026-09-19
-- Category: proportionality / viability / review loops / operator visibility
-- Status: open; report recorded, implementation reserved for a separate session
-- Related: issue #1; D-009, D-011, D-015, D-020, D-021
-- Complete evidence and implementation brief:
-  `docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md`.
-
-Repeated reviewed, reversible infrastructure attempts consumed days while the
-application was already deployed. Ingress viability was checked too late,
-acceptance machinery amplified small corrections and current-state documents
-became long mixed histories. Existing structural validators passed without
-proving user-visible progress. Add proportional profiles, early viability,
-bounded candidates/attempts/reviews, short current handoffs and selective fleet
-rollout. Preserve safety, recovery and exact model evidence. This intake does
-not ship the controls or close the issue.
-
 Living log of observations collected from projects that adopt LLM-DocKit. Each
 entry describes a real-world drift, gap, or friction point encountered in a
 downstream project, along with the implication for DocKit itself. Use this file
@@ -2246,3 +2227,66 @@ The date-only lookups elsewhere in the validator intentionally implement
 DF-046's local-calendar bookkeeping rule and carry no UTC suffix. They are not
 missed instances of this defect; the UTC conversion requirement applies to
 timestamps explicitly labelled `UTC`.
+
+## DF-058 - Delivery governance can exceed the application's complexity
+
+- Source: Riego P12 delivery and Carlos's explicit postmortem request
+- Date observed: 2026-09-19
+- Category: process
+- Status: accepted; full delivery candidate in progress, real acceptance open
+- Related: issue #1; DF-003, DF-006, DF-010, DF-059, DF-060, DF-061; D-023
+- Complete evidence and implementation brief:
+  `docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md`.
+
+Repeated reviewed, reversible infrastructure attempts consumed days while the
+application was already deployed. Ingress viability was checked too late,
+acceptance machinery amplified small corrections and current-state documents
+became long mixed histories. Existing structural validators passed without
+proving user-visible progress. Add proportional profiles, early viability,
+bounded candidates/attempts/reviews, short current handoffs and selective fleet
+rollout. Preserve safety, recovery and exact model evidence. This intake does
+not ship the controls or close the issue.
+
+This incident entry retains the end-to-end acceptance boundary. Independently
+resolvable defects are tracked below; existing state/prose-quality defects stay
+under DF-003, DF-006 and DF-010 instead of duplicate new entries.
+
+## DF-059 - Decisive prerequisites are not enforced before delivery mutation
+
+- Source: Riego DF-058 postmortem, 2026-09-19
+- Date observed: 2026-09-19
+- Category: gap
+- Status: accepted; source candidate implemented, real adopter acceptance open
+- Related: DF-058; D-023
+
+Native ingress viability was established only after expensive peer/workflow work.
+Project-owned real probes must guard the actual mutation entrypoint. A copied
+checker or session reminder cannot close this defect. Acceptance requires zero
+mutation calls for absent, false, stale and wrong-context prerequisite evidence.
+
+## DF-060 - Retry and review budgets depend on agent recollection
+
+- Source: Riego DF-058 postmortem, 2026-09-19
+- Date observed: 2026-09-19
+- Category: gap
+- Status: accepted; source candidate implemented, real adopter acceptance open
+- Related: DF-058, DF-059; D-023
+
+Versions, packet names and sessions can obscure repeated equivalent attempts.
+Count from a continuity-checked append journal, bind approvals to candidates,
+retain all failed causal states until explicit bounded reassessment, and preserve
+recovery after budgets expire. Security findings do not become accepted when a
+budget is exhausted. A real adopter must prove resumption and recovery behavior.
+
+## DF-061 - Skipped validation is indistinguishable from checked PASS coverage
+
+- Source: LLM-DocKit self-audit supplied by the operator, 2026-09-19
+- Date observed: 2026-09-19
+- Category: usability
+- Status: accepted; additive coverage reporting implemented in source candidate
+- Related: DF-010, DF-058
+
+The source repo lacked config and reported skipped checks within its PASS total.
+Add explicit per-check skip metadata and checked/skipped totals before quiet
+filtering, retain consumer-compatible statuses/exits, and activate applicable
+source-local Trace/content checks. Legitimately inapplicable checks stay skipped.

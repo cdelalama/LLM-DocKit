@@ -4,6 +4,21 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.16.0] - 2026-09-21
+
+- Add opt-in delivery declarations and serialized evidence, attempt and review
+  journals. Integrated project commands can refuse unmet prerequisites,
+  equivalent failed retries and exhausted budgets while keeping recovery open.
+- Bind review and executed negative-test receipts to the exact declared candidate;
+  retain continuity through sessions, interruptions and committed clone restoration.
+- Show checked/skipped validation coverage honestly. Advise on oversized HANDOFFs
+  by default; enforce explicitly configured current-state structure only on opt-in.
+- Adopt Trace/current-state checks in DocKit, preserve the old handoff in a source
+  archive, and keep source config/archive out of newly initialized adopters.
+- Ship integration guidance and behavioral regressions. Copied scripts and source
+  publication do not establish real delivery acceptance or close the Riego incident.
+
+
 ## [4.15.0] - 2026-09-12
 
 ### Added

@@ -25,6 +25,11 @@ files:
 - path: scripts/pre-commit-hook.sh        strategy: copy
 - path: scripts/dockit-generate-external-context.sh  strategy: copy
 - path: scripts/dockit-validate-session.sh strategy: copy
+- path: scripts/dockit-delivery-check.sh strategy: copy
+- path: scripts/dockit-delivery-record.sh strategy: copy
+- path: scripts/dockit-delivery-lib.sh strategy: copy
+- path: scripts/dockit-delivery-state.awk strategy: copy
+- path: scripts/test-delivery.sh strategy: copy
 - path: scripts/test-validator.sh       strategy: copy
 - path: scripts/dockit-trace-status.sh  strategy: copy
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
@@ -46,6 +51,7 @@ files:
 - path: docs/version-sync-manifest.yml    strategy: yaml-merge
 
 # --- Docs integrations (copy: shared operator/tool guidance) ---
+- path: docs/DELIVERY_CONTRACT.md strategy: copy
 - path: docs/integrations/CODEX.md        strategy: copy
 
 # --- Skip: project-specific content ---

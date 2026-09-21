@@ -5,5 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Validate documentation state
         run: scripts/dockit-validate-session.sh --human
+      - name: Validator regression tests
+        run: scripts/test-validator.sh
+      - name: Delivery behavior tests
+        run: scripts/test-delivery.sh

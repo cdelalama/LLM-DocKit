@@ -1173,3 +1173,24 @@ delivery and complete template currency as three separate claims.
   graduates it to an evidenced complete-template identity. `--force` is for an
   intentional provenance replacement, not the normal graduation path.
 - Full DocKit upgrades and per-project runtime gates remain separate work.
+
+## D-023 - Delivery checks guard opted-in commands, not runtime authority
+
+**Status:** accepted for the operator-authorized DF-058 implementation.
+
+DocKit owns the portable declaration, deterministic checker and serialized
+record writer in `docs/DELIVERY_CONTRACT.md`. An adopter owns real probes,
+causal-state normalization, the invocation at its actual mutation entrypoint,
+and its independently authorized recovery. ForgeOS retains orchestration and
+authority under D-009/D-011; delivery does not depend on a future ForgeOS module.
+A file/model verdict cannot grant authority or prove real user acceptance.
+
+The first accepted delivery includes the prerequisite/retry/recovery loop and a
+real integrated pilot. Documentation-only improvements cannot close DF-058.
+The new schema is limited to the two incident reproducers and stable identity;
+existing authority/review/acceptance documents are linked, not duplicated.
+Attempt/review budgets are provisional reassessment boundaries, never automatic
+GO, and cannot prevent recovery. Grammar-free, exit-neutral handoff-size advice
+may be default-on; new grammar-dependent/strict checks require explicit project
+configuration. Existing strict checks retain their behavior. All delivery
+failures affect only opted-in project entrypoints, never general Stop/chat gates.
