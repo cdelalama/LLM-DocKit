@@ -9,16 +9,16 @@
 - Owner: Carlos
 - Session focus: implement the complete DF-058 delivery-control loop.
 - Source: 4.16.0 candidate; exact Opus source/delta GO; publication pending.
-- Pilot: Riego local container command integrated; adverse controls pass.
-  Actual local packaging acceptance pending; gardener/off-LAN acceptance remains open.
+- Pilot: Riego local container command integrated; adverse controls and one real
+  local packaging attempt pass. Gardener/off-LAN acceptance remains open.
 - Validation: 84 delivery and 96 validator regressions pass; 10 version targets
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
 
-Record the actual local pilot result in
+Finish source CI/publication and retain the local pilot evidence in
 `docs/archive/DF058_IMPLEMENTATION_2026-09-21.md` and `docs/llm/REVIEWS.md`.
-Publish the reviewed `scripts/dockit-delivery-record.sh` / `docs/DELIVERY_CONTRACT.md`
+The reviewed `scripts/dockit-delivery-record.sh` / `docs/DELIVERY_CONTRACT.md`
 candidate. `docs/ROADMAP.md` keeps full incident acceptance separate; the selective
 preview in `docs/archive/DF058_FLEET_PREVIEW_2026-09-21.json` is not deployment.
 

@@ -35,7 +35,16 @@ roadmap and runtime remain separately owned and gated.
   retry, honors a synthetic unresolved review blocker, retains incomplete cleanup,
   permits recovery after exhaustion and preserves counts across processes.
   Synthetic fixture reviews are not independent approvals or real security findings.
-- Real local packaging acceptance: in progress after final independent delta GO; one actual attempt reserved.
+- Real local packaging acceptance: PASS on one actual attempt and one recorded
+  independent approval. Candidate f425279fbeebcab0a8249ceab6ed2456c2ee0e97,
+  local source snapshot 9b4a3209a8347bb921d764324e3ddf07072132f0. The container
+  passed build/native dependency checks, health/version, Spanish login, non-root,
+  read-only/networkless isolation, DB modes and clean shutdown. Event 6 records
+  attempt 5 as success/recovered=yes; fresh daemon reads confirm its exact owned
+  container/image tag absent. Elapsed reservation-to-finish was 406 seconds;
+  active labor versus dependency wait is not inferred. No second attempt ran.
+  The retained actual journal/approval/acceptance live in the pilot repository.
+  This is local packaging evidence, not remote/gardener acceptance.
 
 Evidence was produced by the executor. The independent reviewer used Read/Glob/Grep
 only; it did not run suites, compute hashes or independently verify Git identities.
@@ -92,3 +101,16 @@ Installation is scripts-only until a project's actual entrypoint and current
 negative integration evidence prove otherwise. Preserve local edits, partial
 adoption, stricter rules and independent operational boundaries during rollout.
 Full incident-remediation acceptance and broad entrypoint adoption remain open.
+
+## Executor artifact digests
+
+- `delivery-final.log` SHA-256: 529d0a91617d5c711a8be75079c0ccc07855a96f4c3942373a3f6fa904578899
+- `validator-tests4.log` SHA-256: c1ef17419e3efb945b696fa796eb6afeb844a2080e2c2636f3651ab58126d277
+- `pilot-real-container.log` SHA-256: 2729a103ee73d0d5c9b70cc1586562786b83fd8e51c11bb05fcec6f483b0168c
+- `pilot-negative-final.log` SHA-256: 6b1500dc0f0f4fad5e1403543b92d3f81d03a49707756de80b656c071e7557e0
+- `pilot-controls-final.log` SHA-256: 1e1535ce6ca777f938e329ab6e42642c1b420e86efe0e79de60d9d7fc833ae75
+
+The actual adopter exposed generic `*.log` ignore rules hiding its journal from
+ordinary status output. Its integration adds a scoped ignore exception and commits
+the journal; the portable contract now requires that handoff check explicitly.
+Local checkpoints preserve uncommitted events, but cannot transmit them to a clone.
