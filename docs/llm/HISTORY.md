@@ -14,6 +14,8 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
+- 2026-09-23 - Codex - Prepared the authorized fleet rollout; repaired two model-wording-dependent sync tests in 4.16.2, retained local controls and recorded source-only adoption and Riego acceptance boundaries. Files: scripts/test-validator.sh, docs/DELIVERY_CONTRACT.md, docs/FLEET_ROLLOUT_2026-09-23.md. Version impact: patch 4.16.2.
+
 - 2026-09-23 - Codex - Changed the shared Claude preference to exact Opus 5.5 with high effort by explicit operator instruction; recorded D-024, preserved historical review models and documented the distinction between runtime settings and synchronized repository policy. - Files: [CHANGELOG.md, docs/llm/REVIEWS.md, LLM_START_HERE.md, HOW_TO_USE.md, docs/llm/DECISIONS.md, docs/llm/HANDOFF.md, docs/llm/HISTORY.md, docs/CLAUDE_DEFAULT_2026-09-23.md, version markers] - Version impact: yes (4.16.0 -> 4.16.1 patch, model policy).
 
 - 2026-09-21 - Codex - Published v4.16.0 through PR #2 after exact review, 84 delivery tests, 96 validator regressions and green CI. The integrated Riego local container pilot passed one actual attempt with confirmed cleanup and committed history; its source PR also passed all four CI jobs. The 38-adopter selective preview remains read-only and gardener/off-LAN acceptance remains open. Preserved the exact inherited planning patch before fast-forwarding the primary checkout. - Files: [docs/llm/HANDOFF.md, docs/ROADMAP.md, docs/DELIVERY_CONTRACT.md, docs/archive/DF058_IMPLEMENTATION_2026-09-21.md] - Version impact: no (publication evidence for 4.16.0).

@@ -4,6 +4,17 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.16.2] - 2026-09-23
+
+### Fixed
+- Make sync conflict regression fixtures independent of model-policy wording.
+- Qualify delivery review policy ownership for downstream adopters.
+
+### Rollout
+- Record the operator-authorized selective fleet update, preserved local controls,
+  and remaining per-project delivery integration and Riego acceptance gates.
+
+
 ## [4.16.1] - 2026-09-23
 
 ### Changed

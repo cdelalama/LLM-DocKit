@@ -1,4 +1,4 @@
-<!-- doc-version: 4.16.1 -->
+<!-- doc-version: 4.16.2 -->
 # Delivery evidence contract v1
 
 Status: schema 1 delivered in DocKit 4.16.0; not deployment authorization.
@@ -99,8 +99,8 @@ and an existing review-evidence file. An approval with blockers is invalid.
 Any unresolved blocker prevents ordinary readiness; a new candidate cannot erase
 it. Subsequent review explicitly reconciles findings. Review rounds are counted
 from the journal; passing the provisional limit requires bounded reassessment,
-never automatic GO. The current kit candidate still uses the existing D-020
-review process, not an unimplemented limit on its own development.
+never automatic GO. The current kit candidate still uses the LLM-DocKit independent-review-policy
+process (D-020 provenance requirements, current model preference under D-024), not an unimplemented limit on its own development.
 
 ## Operations
 
