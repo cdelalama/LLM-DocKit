@@ -33,6 +33,12 @@ Riego initial full suite: 473 PASS and three checkout-mode failures, then all 15
 affected tests PASS after restoring tracked 0755 modes; build and hygiene PASS.
 All command outputs are executor evidence, not independently reproduced by Opus.
 
+Initial source CI used a synthetic PR merge commit dated 2026-09-24 +0200,
+while the authored source receipt was dated 2026-09-23 UTC. The final receipt
+uses the verified current Madrid calendar day and an actual-current-time
+Madrid-offset documentation commit, so authored and merge provenance agree.
+No validator, workflow or date check was weakened.
+
 Publication remains source-only, fast-forward and scoped. Dirty primary worktrees
 and the old convergence checkout are not modified; side refs/patches carry their
 pending adoption. No operational, deployment or end-user acceptance is claimed.
