@@ -13,3 +13,6 @@ jobs:
         run: scripts/test-validator.sh
       - name: Delivery behavior tests
         run: scripts/test-delivery.sh
+
+      - name: Dossier opt-in discovery tests
+        run: sh scripts/test-dossier-discovery.sh

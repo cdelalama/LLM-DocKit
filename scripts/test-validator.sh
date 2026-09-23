@@ -1149,7 +1149,7 @@ else
         note_fail "dockit-sync rejects invalid selectors before project mutation"
     fi
 
-    sed 's/Prefer Fable/Prefer exact Fable/' "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
+    awk '{ print; if ($0 == "<!-- DOCKIT-TEMPLATE:START independent-review-policy -->") print "Local test policy amendment." }' "$SYNC_ONLY_REPO/LLM_START_HERE.md" \
         >"$SYNC_ONLY_REPO/LLM_START_HERE.local"
     mv "$SYNC_ONLY_REPO/LLM_START_HERE.local" "$SYNC_ONLY_REPO/LLM_START_HERE.md"
     cp "$SYNC_ONLY_REPO/LLM_START_HERE.md" "$SYNC_ONLY_REPO/LLM_START_HERE.before-conflict"
@@ -1286,7 +1286,7 @@ EOF
         note_fail "dockit-sync records every section baseline when selective sync creates a file"
     fi
 
-    sed 's/Prefer Fable/Prefer exact Fable/' "$SYNC_MISSING_REPO/LLM_START_HERE.md" \
+    awk '{ print; if ($0 == "<!-- DOCKIT-TEMPLATE:START independent-review-policy -->") print "Local test policy amendment." }' "$SYNC_MISSING_REPO/LLM_START_HERE.md" \
         >"$SYNC_MISSING_REPO/LLM_START_HERE.local"
     mv "$SYNC_MISSING_REPO/LLM_START_HERE.local" "$SYNC_MISSING_REPO/LLM_START_HERE.md"
     cp "$SYNC_MISSING_REPO/LLM_START_HERE.md" "$SYNC_MISSING_REPO/LLM_START_HERE.before-conflict"
