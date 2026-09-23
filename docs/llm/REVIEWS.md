@@ -2,9 +2,9 @@
 
 ## 2026-09-23 - Selective fleet rollout and 4.16.3 source publication
 
-Status: SOURCE GO and ROLLOUT GO after four same-session rounds; source publication only.
+Status: SOURCE GO and ROLLOUT GO after five same-session rounds; source publication only.
 Exact model: claude-opus-5-5, requested effort high, CLI 2.1.280.
-All four completed rounds returned modelUsage with that exact model. Auditor session:
+All five completed rounds returned modelUsage with that exact model. Auditor session:
 e06df549-3d43-4283-90a3-4f1833f7af04. Read-only tools: Read, Glob, Grep;
 restricted mode, dontAsk, strict empty MCP configuration. Invocation selected
 `--model claude-opus-5-5 --effort high` explicitly; resumes use the same session.
@@ -46,6 +46,13 @@ fixtures must pass before publication; source CI must pass and its base remain
 unchanged before merge. Receipt-only relabelling to 4.16.3 is approved.
 The real host's low-storage refusal remains valid; only synthetic fixture
 storage is mocked. The underlying validator timezone issue is a follow-up.
+
+Fifth bounded review covers the devenv 0.14.7 ShellCheck adaptation only;
+its reviewed/final trees and receipt delta are in the durable fleet ledger.
+Source PR #4 CI passed; its base remained unchanged and merged tree matched
+the reviewed candidate plus approved receipts. Both Riego clean-commit fixtures
+and all four hosted jobs passed. The final ledger records actual publication
+and distinct project CI failures; no universal green-CI claim is made.
 
 Publication remains source-only, fast-forward and scoped. Dirty primary worktrees
 and the old convergence checkout are not modified; side refs/patches carry their

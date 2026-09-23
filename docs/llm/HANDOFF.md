@@ -7,8 +7,8 @@
 - Last Updated: 2026-09-23 - Codex
 - Current source version: 4.16.3
 - Owner: Carlos
-- Session focus: operator-authorized fleet rollout; model-independent sync regressions fixed.
-- Source: v4.16.3 fleet patch candidate; 84 delivery and 96 repaired validator
+- Session focus: operator-authorized selective fleet rollout published; project acceptance stays separate.
+- Source: v4.16.3 fleet patch published; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
 - Pilot: Riego local container command integrated; adverse controls and one real
@@ -18,9 +18,12 @@
 
 ## Open work -- next concrete step
 
-Finish the reviewed selective rollout in `docs/FLEET_ROLLOUT_2026-09-23.md`;
-record per-project publication and dirty-worktree preservation. Real mutation
+Review the completed distribution and named project CI follow-ups in
+`docs/FLEET_ROLLOUT_2026-09-23.md` and its durable ledger
+`docs/archive/FLEET_ROLLOUT_2026-09-23.json`. Integrate the retained side branches
+with their owners' pending work; keep the old convergence guard. Real mutation
 entrypoint adoption remains project-specific; Riego remote acceptance is open.
+Track the two newly observed tooling follow-ups in `docs/DOWNSTREAM_FEEDBACK.md`.
 
 Current model policy: `LLM_START_HERE.md` independent-review-policy; adoption
 instructions: `HOW_TO_USE.md` Claude Model Default. Runtime settings are separate

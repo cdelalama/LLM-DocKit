@@ -1,0 +1,2430 @@
+{
+  "release": "4.16.3",
+  "source": {
+    "head": "110d276eb81eb5b0dd0701db42ca3e907041329d",
+    "tree": "1a24d583f3e83f33b7c049bdedb929828d7e4bd1",
+    "version": "4.16.3",
+    "merged_commit": "e1fb355353c4384f13b5baff97af6d50301a0c24",
+    "ci_run": 35929677557,
+    "reviewed_tree": "3ac1c7cdf40d519dee3e2ac5b106ad1080fb87a0",
+    "receipt_delta_paths": [
+      "docs/llm/REVIEWS.md"
+    ]
+  },
+  "scope": "selective-source-adoption; no deployment or end-user acceptance",
+  "review": {
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "session": "e06df549-3d43-4283-90a3-4f1833f7af04",
+    "rounds": 5,
+    "read_only": true,
+    "test_provenance": "executor supplied",
+    "verdict_sha256": {
+      "opus-review.json": "4d522ec97e474bcce2ca85f074726ec11d4fd6b04eecd9fc04f0e754e7825621",
+      "opus-final.json": "af1383f2a0291b80b6336e0118471a706df74e3cf4f069821aa605073c7ef22d",
+      "opus-closure.json": "07acd90b947f956a60e2ef512c7e1a4491c9b8a8c7b7772bf6a95707bd2e0385",
+      "opus-operational-delta.json": "1e60f576cbecf57b9619f0977832e4f28e20c3c0e9b7fbabe45c10cfda51bda1",
+      "opus-devenv-delta.json": "2de033d4caefaede4e9efa8723449134e624c79c97b57ce9ffabb32544adc74a"
+    }
+  },
+  "projects": [
+    {
+      "name": "PentAGI-Lab",
+      "base": "4ef64c0381cf02554fcdf0607984c4fca8d66f49",
+      "new_version": "0.2.2",
+      "publish_mode": "fast-forward-remote",
+      "tree": "3270e825e3bce4accfd955a7eb8be20e0e5c2204",
+      "reviewed_tree": "c4f0bc7054f6745611b7ba19ca97c7ac5b0bf812",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "de87ca60da085ddeeac99f20d2ed8e3d70c7eca7",
+      "release_receipt_base_tree": "9c8910d4014feaf280f9d08d3f6b821a2a4c9d8f",
+      "release_receipt_tree": "3270e825e3bce4accfd955a7eb8be20e0e5c2204",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "PentAGI-Lab",
+        "version": "0.2.2",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "de87ca60da085ddeeac99f20d2ed8e3d70c7eca7",
+        "remote_head": "de87ca60da085ddeeac99f20d2ed8e3d70c7eca7",
+        "branch": "master"
+      },
+      "primary": {
+        "project": "PentAGI-Lab",
+        "mode": "fast-forward",
+        "head": "de87ca60da085ddeeac99f20d2ed8e3d70c7eca7"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "PiHA-Deployer",
+      "base": "a95972d489c4f290266f95909e507aae2c864f92",
+      "new_version": null,
+      "publish_mode": "fast-forward-remote",
+      "tree": "72e3958b412ba4c27befe4239582117540e9047d",
+      "reviewed_tree": "b4c7a7af05515f9d3013ce9546825d6e061503ea",
+      "receipt_delta_paths": [],
+      "commit": "fe86e097a56127a5adfa1fa715910f50d3c6226b",
+      "release_receipt_base_tree": "b4c7a7af05515f9d3013ce9546825d6e061503ea",
+      "release_receipt_tree": "72e3958b412ba4c27befe4239582117540e9047d",
+      "release_receipt_delta_paths": [
+        "docs/DELIVERY_CONTRACT.md",
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "PiHA-Deployer",
+        "version": null,
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "fe86e097a56127a5adfa1fa715910f50d3c6226b",
+        "remote_head": "fe86e097a56127a5adfa1fa715910f50d3c6226b",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "PiHA-Deployer",
+        "mode": "fast-forward",
+        "head": "fe86e097a56127a5adfa1fa715910f50d3c6226b"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "audio-batch",
+      "base": "f9f04cde4da1740e4be45748e18b86b1933db32b",
+      "new_version": "0.1.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "1ed01e9a3e2c631f4041b193e793e5b319249ee5",
+      "reviewed_tree": "6cd74675ff3db01aa006a9dcc6568b545b1b5abe",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "60483cd956fcc1f2b647866de8d879a9a3fb785e",
+      "release_receipt_base_tree": "816bd3004745b113398346031582fc1fb7567970",
+      "release_receipt_tree": "1ed01e9a3e2c631f4041b193e793e5b319249ee5",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "audio-batch",
+        "version": "0.1.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "60483cd956fcc1f2b647866de8d879a9a3fb785e",
+        "remote_head": "60483cd956fcc1f2b647866de8d879a9a3fb785e",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "audio-batch",
+        "mode": "fast-forward",
+        "head": "60483cd956fcc1f2b647866de8d879a9a3fb785e"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "buzz-lab",
+      "base": "fa3a2a80613b6a24d7c4478f879235721539732e",
+      "new_version": "0.3.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "6c68221c82d1f8bced833cab87629bb712d9a14e",
+      "reviewed_tree": "5107ef4d9a8b990042465ecac3a9ad7714ec104f",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "2572defda352bd06bc3f749e56ee2be5c17ebb46",
+      "release_receipt_base_tree": "efc79d7f9c6a810bf755d0a41d8b845023f20f2c",
+      "release_receipt_tree": "6c68221c82d1f8bced833cab87629bb712d9a14e",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "buzz-lab",
+        "version": "0.3.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "2572defda352bd06bc3f749e56ee2be5c17ebb46",
+        "remote_head": "2572defda352bd06bc3f749e56ee2be5c17ebb46",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "buzz-lab",
+        "mode": "fast-forward",
+        "head": "2572defda352bd06bc3f749e56ee2be5c17ebb46"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "cambio-claro",
+      "base": "76eb2c2dc85201219be277edf8f521103c3cb56e",
+      "new_version": "0.2.1",
+      "publish_mode": "local-side-branch",
+      "tree": "d1ac6a2dc0f70fc11272e955e2df8f1f64b552a8",
+      "reviewed_tree": "f8bc0eebb3ce42a844cc6572ed620db96219843f",
+      "receipt_delta_paths": [
+        "CHANGELOG.md",
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "5dc8f4a1da049be7dae225faa56ca7767cbda77f",
+      "release_receipt_base_tree": "b1fe3cbfce4d2b383373f64b8693fda6618451b2",
+      "release_receipt_tree": "d1ac6a2dc0f70fc11272e955e2df8f1f64b552a8",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "cambio-claro",
+        "version": "0.2.1",
+        "mode": "local-side-branch",
+        "result": "local-commit",
+        "commit": "5dc8f4a1da049be7dae225faa56ca7767cbda77f"
+      },
+      "primary": {
+        "project": "cambio-claro",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "76eb2c2dc85201219be277edf8f521103c3cb56e"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "carlos-brand",
+      "base": "7f1cfb12092daf82065dd9043c5b236c87e1f9fa",
+      "new_version": "0.1.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "1fd4ec62a86011ff0af950170e8e1ddb20d393b4",
+      "reviewed_tree": "984ac653c8cd9cd2fea0faa828e664c7436bf034",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "916ba3b2afa6444ecedcf673876b76e83a3f7d65",
+      "release_receipt_base_tree": "298e9b02669108cd10106b706244879b3771977c",
+      "release_receipt_tree": "1fd4ec62a86011ff0af950170e8e1ddb20d393b4",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "carlos-brand",
+        "version": "0.1.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "916ba3b2afa6444ecedcf673876b76e83a3f7d65",
+        "remote_head": "916ba3b2afa6444ecedcf673876b76e83a3f7d65",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "carlos-brand",
+        "mode": "fast-forward",
+        "head": "916ba3b2afa6444ecedcf673876b76e83a3f7d65"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "claude-quest",
+      "base": "e99a7038d008dad35148a2dc9d65bf9dd321f43d",
+      "new_version": "1.0.2",
+      "publish_mode": "local-only-third-party",
+      "tree": "f1f2c14a4eb88ae6b2752d43edc7b71532ae5739",
+      "reviewed_tree": "ba68fb62563a90d96fc2f59ebba0f9449b28b86a",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "5bedfac9d85a9c09e160657ccb00b06948f73297",
+      "release_receipt_base_tree": "77e7df371f7ae4b2c0307db8bd080609c5221597",
+      "release_receipt_tree": "f1f2c14a4eb88ae6b2752d43edc7b71532ae5739",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "claude-quest",
+        "version": "1.0.2",
+        "mode": "local-only-third-party",
+        "result": "local-commit",
+        "commit": "5bedfac9d85a9c09e160657ccb00b06948f73297"
+      },
+      "primary": {
+        "project": "claude-quest",
+        "mode": "fast-forward",
+        "head": "5bedfac9d85a9c09e160657ccb00b06948f73297"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "cortex",
+      "base": "ff8195d9849c144a953de533f3612b928fbb284c",
+      "new_version": "0.4.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "2a4b2bfb6ef5a90f5ca3f68bd9b20844fc93ef49",
+      "reviewed_tree": "e026ef30f31e9da88e84e61ccc70d3ee412850cd",
+      "receipt_delta_paths": [],
+      "commit": "c62c6e334903a340f611f70219f5b5edf44d9ef8",
+      "release_receipt_base_tree": "e026ef30f31e9da88e84e61ccc70d3ee412850cd",
+      "release_receipt_tree": "2a4b2bfb6ef5a90f5ca3f68bd9b20844fc93ef49",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "cortex",
+        "version": "0.4.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "c62c6e334903a340f611f70219f5b5edf44d9ef8",
+        "remote_head": "c62c6e334903a340f611f70219f5b5edf44d9ef8",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "cortex",
+        "mode": "fast-forward",
+        "head": "c62c6e334903a340f611f70219f5b5edf44d9ef8"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "devenv",
+      "base": "2a7713951a8572fb2abbcb33c08549a5b3407b7b",
+      "new_version": "0.14.7",
+      "publish_mode": "fast-forward-remote",
+      "tree": "f3580cb41a0503b8ff9e22ea343e9574e72e835e",
+      "reviewed_tree": "cce44519b4f3b8714b57c523b417f3b1dfafa39f",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "efc744c31859bd777484ce3949865f1caa4bf30d",
+      "release_receipt_base_tree": "6b9c33b5eee2fd977cf9e974cb657e6e944e5a83",
+      "release_receipt_tree": "f541cc0853f99f6e2da0c08d86c747c114adce8a",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "lint_reviewed_tree": "4c2ce3ae359750ede7400ff01fbf5c445016cea8",
+      "lint_final_tree": "f3580cb41a0503b8ff9e22ea343e9574e72e835e",
+      "lint_receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "publication": {
+        "project": "devenv",
+        "version": "0.14.7",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "efc744c31859bd777484ce3949865f1caa4bf30d",
+        "remote_head": "efc744c31859bd777484ce3949865f1caa4bf30d",
+        "branch": "master"
+      },
+      "primary": {
+        "project": "devenv",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "1971925c3f2d1d722b2fd7522dac130f081782ac"
+      },
+      "checks": [
+        {
+          "name": "Windows PowerShell syntax and line endings",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/devenv/actions/runs/35930831955/job/107416733946"
+        },
+        {
+          "name": "Linux product and governance",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/devenv/actions/runs/35930831955/job/107416733773"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": false,
+          "sha256": "f64f42aa3e60ba1f990f3ae9ac224197c45e4cf3c022a2e286fbcee0a47b46c9",
+          "adaptation": "Equivalent quoted empty CDPATH assignment for existing ShellCheck gate"
+        }
+      ]
+    },
+    {
+      "name": "devenv-android",
+      "base": "f4ae5c1535cf0b0b075a04e409bba20f741c1a87",
+      "new_version": "0.2.6",
+      "publish_mode": "fast-forward-remote",
+      "tree": "8fe3a0e2fcda96fcfa8cbb0f891941292f3d393a",
+      "reviewed_tree": "e326c778bed5ea20fea0a5a6b95f2deec967ec53",
+      "receipt_delta_paths": [],
+      "commit": "f128889e2196a7090710e16407394e9209bf8448",
+      "release_receipt_base_tree": "e326c778bed5ea20fea0a5a6b95f2deec967ec53",
+      "release_receipt_tree": "8fe3a0e2fcda96fcfa8cbb0f891941292f3d393a",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "devenv-android",
+        "version": "0.2.6",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "f128889e2196a7090710e16407394e9209bf8448",
+        "remote_head": "f128889e2196a7090710e16407394e9209bf8448",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "devenv-android",
+        "mode": "fast-forward",
+        "head": "f128889e2196a7090710e16407394e9209bf8448"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "devenv-bootstrap",
+      "base": "f44ea10944ff9cd488fdd2547e35f5fa1d7baa67",
+      "new_version": "0.1.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "f29e4c375bf947245bb58ffe1e102f37577c4cb6",
+      "reviewed_tree": "8ee21cfad6771adb33f284ddc206face2ff63424",
+      "receipt_delta_paths": [],
+      "commit": "81fcbce965915017b22d7cd2c8ed86325a1fedba",
+      "release_receipt_base_tree": "8ee21cfad6771adb33f284ddc206face2ff63424",
+      "release_receipt_tree": "f29e4c375bf947245bb58ffe1e102f37577c4cb6",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "devenv-bootstrap",
+        "version": "0.1.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "81fcbce965915017b22d7cd2c8ed86325a1fedba",
+        "remote_head": "81fcbce965915017b22d7cd2c8ed86325a1fedba",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "devenv-bootstrap",
+        "mode": "fast-forward",
+        "head": "81fcbce965915017b22d7cd2c8ed86325a1fedba"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "devenv-entry",
+      "base": "c7fc63b3a7daf9603846bd749d2ca41bee408411",
+      "new_version": "0.4.5",
+      "publish_mode": "fast-forward-remote",
+      "tree": "26a364fba7c4563753b7e6a1e251c36d46f2c477",
+      "reviewed_tree": "157c5b4951e2d4498f1b940bb517126a420b163c",
+      "receipt_delta_paths": [],
+      "commit": "18b5c2d8e29d100af9a1e5bd05bb0ad7833acb9d",
+      "release_receipt_base_tree": "157c5b4951e2d4498f1b940bb517126a420b163c",
+      "release_receipt_tree": "26a364fba7c4563753b7e6a1e251c36d46f2c477",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "devenv-entry",
+        "version": "0.4.5",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "18b5c2d8e29d100af9a1e5bd05bb0ad7833acb9d",
+        "remote_head": "18b5c2d8e29d100af9a1e5bd05bb0ad7833acb9d",
+        "branch": "master"
+      },
+      "primary": {
+        "project": "devenv-entry",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "1a981fa7749f8f0b15d2b65a946c8c3e53885cfd"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "devenv-spawner",
+      "base": "0ee66f367446b32dc18c60374c46f19b35ff8fbd",
+      "new_version": "0.1.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "f6f4abf6322a2354e13861814d623e66713ad5d3",
+      "reviewed_tree": "c166aa93c39b291b4b520028434911f1448c6dc1",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "6ea33ee9eb4ae145a3c8333df0055dd0454b6bbf",
+      "release_receipt_base_tree": "753145dccba395f6c929c30dbe71f7e2067f6dc4",
+      "release_receipt_tree": "f6f4abf6322a2354e13861814d623e66713ad5d3",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "devenv-spawner",
+        "version": "0.1.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "6ea33ee9eb4ae145a3c8333df0055dd0454b6bbf",
+        "remote_head": "6ea33ee9eb4ae145a3c8333df0055dd0454b6bbf",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "devenv-spawner",
+        "mode": "fast-forward",
+        "head": "6ea33ee9eb4ae145a3c8333df0055dd0454b6bbf"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "forgeos",
+      "base": "316152054a081de35853f825016b180ed1bd2cd9",
+      "new_version": "0.25.7",
+      "publish_mode": "fast-forward-remote",
+      "tree": "7c4853c1ed5c0b0ab652bb327af3f860c7caff33",
+      "reviewed_tree": "99c0f3a4e25338cfeae14db21225c618c0758d1a",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "d38f34cef575e2d8e3f00e807e775abae5d8b9b6",
+      "release_receipt_base_tree": "c219a3a131100d393111f168a73e3f17baece113",
+      "release_receipt_tree": "7c4853c1ed5c0b0ab652bb327af3f860c7caff33",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "forgeos",
+        "version": "0.25.7",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "d38f34cef575e2d8e3f00e807e775abae5d8b9b6",
+        "remote_head": "d38f34cef575e2d8e3f00e807e775abae5d8b9b6",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "forgeos",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "9f2681b866ecd2d90e01499184c26954eed99d99"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "forgeos-convergence",
+      "base": "fd96d7f3cdd305dc4090699e2e0bc5366f5c74ef",
+      "new_version": "0.25.0",
+      "publish_mode": "deferred-integration",
+      "tree": "e2c156da6bebdd0dcc9f4b440eff1a8c105ca2e6",
+      "publication": {
+        "project": "forgeos-convergence",
+        "version": "0.25.0",
+        "mode": "deferred-integration",
+        "result": "deferred",
+        "reviewed_tree": "e2c156da6bebdd0dcc9f4b440eff1a8c105ca2e6"
+      },
+      "primary": {
+        "project": "forgeos-convergence",
+        "mode": "deferred-integration",
+        "artifact": "/home/cdelalama/src/forgeos-convergence/.git/dockit/fleet-20260923/integration.patch"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "forumlens",
+      "base": "871ba83751684048456181a04fee5020d79b1067",
+      "new_version": "0.1.44",
+      "publish_mode": "fast-forward-remote",
+      "tree": "410df93cd4418bdedc62802101c57e9f0d6c95fd",
+      "reviewed_tree": "d9441e90b7bfa2e03dee8b690801a2d96624f64c",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "48f1049a845a8306abac488af0a0a097f703bc07",
+      "release_receipt_base_tree": "c9997db0b59c173adf7c29edbaf2fc21b0c7a141",
+      "release_receipt_tree": "410df93cd4418bdedc62802101c57e9f0d6c95fd",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "forumlens",
+        "version": "0.1.44",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "48f1049a845a8306abac488af0a0a097f703bc07",
+        "remote_head": "48f1049a845a8306abac488af0a0a097f703bc07",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "forumlens",
+        "mode": "fast-forward",
+        "head": "48f1049a845a8306abac488af0a0a097f703bc07"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "forumvault-lab",
+      "base": "d9354cffbad4363f3e1f99b643a9c33d5954d0f4",
+      "new_version": "0.16.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "592db8936dcd818c28536fe5a8c6136224f6952d",
+      "reviewed_tree": "14d4f23efea8956517af87a1a756062cfdb2477e",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "dd30c48b9c3362c25272bf5d85992b8c4708f31e",
+      "release_receipt_base_tree": "3da69bf1e41757cb611916cffa4546db0beaa409",
+      "release_receipt_tree": "592db8936dcd818c28536fe5a8c6136224f6952d",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "forumvault-lab",
+        "version": "0.16.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "dd30c48b9c3362c25272bf5d85992b8c4708f31e",
+        "remote_head": "dd30c48b9c3362c25272bf5d85992b8c4708f31e",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "forumvault-lab",
+        "mode": "fast-forward",
+        "head": "dd30c48b9c3362c25272bf5d85992b8c4708f31e"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "hermes-lab",
+      "base": "4711cefa2ace670764cc87f0370d59121aa6139c",
+      "new_version": "0.13.1",
+      "publish_mode": "fast-forward-remote",
+      "tree": "5e73e2d88ab9a819a640e2210ee8108d87edf766",
+      "reviewed_tree": "66a77416c896a18af2a8b7f8a4ad557260119c59",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "204a52521d2016fa543d9613b09ebd0318c27c2e",
+      "release_receipt_base_tree": "3f03e7b6292d69a3a204e9796d60926eebc23202",
+      "release_receipt_tree": "5e73e2d88ab9a819a640e2210ee8108d87edf766",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "hermes-lab",
+        "version": "0.13.1",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "204a52521d2016fa543d9613b09ebd0318c27c2e",
+        "remote_head": "204a52521d2016fa543d9613b09ebd0318c27c2e",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "hermes-lab",
+        "mode": "fast-forward",
+        "head": "204a52521d2016fa543d9613b09ebd0318c27c2e"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "home-infra",
+      "base": "70c5b71671159cfd99e3f8f587b17206e99f2773",
+      "new_version": "0.42.1",
+      "publish_mode": "fast-forward-remote",
+      "tree": "b918f53d086dc09f7e0729c1ad001cdb9334ab3a",
+      "reviewed_tree": "9434aa0e4314654c826b3038a7c4ed746db30efe",
+      "receipt_delta_paths": [
+        "docs/llm/HANDOFF.md"
+      ],
+      "commit": "16cd48b7d310c137d8a93d0a3b72e0b510bbe6ea",
+      "release_receipt_base_tree": "8b3ea1ef497960aded4a77d1c5efa40f76630ca3",
+      "release_receipt_tree": "b918f53d086dc09f7e0729c1ad001cdb9334ab3a",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "home-infra",
+        "version": "0.42.1",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "16cd48b7d310c137d8a93d0a3b72e0b510bbe6ea",
+        "remote_head": "16cd48b7d310c137d8a93d0a3b72e0b510bbe6ea",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "home-infra",
+        "mode": "fast-forward",
+        "head": "16cd48b7d310c137d8a93d0a3b72e0b510bbe6ea"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "home-infra-protocol",
+      "base": "9d79f84b471d2532c72b5ccc3473bde1cd42e1ab",
+      "new_version": "0.13.9",
+      "publish_mode": "fast-forward-remote",
+      "tree": "574eda6bcc17d1a3e37ce44eb60d331d1488ee34",
+      "reviewed_tree": "e92798ef3abfee79e766bc87d92fb1656a46c20a",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "5eed983965969b572d3b0f47bd72dcc5b71bf3fd",
+      "release_receipt_base_tree": "e15598a2617dd09136f882e33779e8f15afd101e",
+      "release_receipt_tree": "574eda6bcc17d1a3e37ce44eb60d331d1488ee34",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "home-infra-protocol",
+        "version": "0.13.9",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "5eed983965969b572d3b0f47bd72dcc5b71bf3fd",
+        "remote_head": "5eed983965969b572d3b0f47bd72dcc5b71bf3fd",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "home-infra-protocol",
+        "mode": "fast-forward",
+        "head": "5eed983965969b572d3b0f47bd72dcc5b71bf3fd"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "house-thermal-monitor",
+      "base": "3a574740d35d344eb2da09a9dbfe6cccab9d7ec7",
+      "new_version": "0.5.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "86158507b9d9e966d745c3f66dceab968aff20fe",
+      "reviewed_tree": "a11252e3439838f903b99e01010f0e7dcf3c3737",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "5ac32a61d2013f23ae42c417513a4c5fc66f3080",
+      "release_receipt_base_tree": "baeb711b1354d7d03c9dc07b44c082c89a8e812d",
+      "release_receipt_tree": "86158507b9d9e966d745c3f66dceab968aff20fe",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "house-thermal-monitor",
+        "version": "0.5.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "5ac32a61d2013f23ae42c417513a4c5fc66f3080",
+        "remote_head": "5ac32a61d2013f23ae42c417513a4c5fc66f3080",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "house-thermal-monitor",
+        "mode": "fast-forward",
+        "head": "5ac32a61d2013f23ae42c417513a4c5fc66f3080"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "infra-portal",
+      "base": "e6b2812e0ab4793665b902cec1a249ec0f1b85a0",
+      "new_version": "0.29.1",
+      "publish_mode": "fast-forward-remote",
+      "tree": "008af5289921d235515845fb4b18013fe1b7673a",
+      "reviewed_tree": "0b1002d87382bc7ef8ec38ed4f4fd44bf79bb3bd",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "ee8712ba26c5a12f2090ea19b37ef5ff7caa1690",
+      "release_receipt_base_tree": "f503778ec878e5fcb6e43b6af28c977f7247da47",
+      "release_receipt_tree": "008af5289921d235515845fb4b18013fe1b7673a",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "infra-portal",
+        "version": "0.29.1",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "ee8712ba26c5a12f2090ea19b37ef5ff7caa1690",
+        "remote_head": "ee8712ba26c5a12f2090ea19b37ef5ff7caa1690",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "infra-portal",
+        "mode": "fast-forward",
+        "head": "ee8712ba26c5a12f2090ea19b37ef5ff7caa1690"
+      },
+      "checks": [
+        {
+          "name": "validate-docs",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/infra-portal/actions/runs/35929936154/job/107413826160"
+        },
+        {
+          "name": "validate-code",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/cdelalama/infra-portal/actions/runs/35929936154/job/107413825641"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "irrigation-portal",
+      "base": "ed46538910dfaccf4ed6a99216f9127bee7ab87a",
+      "new_version": "1.0.15",
+      "publish_mode": "fast-forward-remote",
+      "tree": "2508e689933725e3e280f45d40fc261bb85b223b",
+      "reviewed_tree": "4dbd11181534f4c14ecf644753702281fb4373ce",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "a5698e62ab6eb2876437f959b722d5bddcc808a3",
+      "operational_reviewed_tree": "a27e1b36c9124ed133bfc9b41bb51368de8a9d6d",
+      "release_receipt_base_tree": "a27e1b36c9124ed133bfc9b41bb51368de8a9d6d",
+      "release_receipt_tree": "2508e689933725e3e280f45d40fc261bb85b223b",
+      "release_receipt_delta_paths": [
+        "CHANGELOG.md",
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md",
+        "docs/llm/REVIEWS.md"
+      ],
+      "publication": {
+        "project": "irrigation-portal",
+        "version": "1.0.15",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "a5698e62ab6eb2876437f959b722d5bddcc808a3",
+        "remote_head": "a5698e62ab6eb2876437f959b722d5bddcc808a3",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "irrigation-portal",
+        "mode": "fast-forward",
+        "head": "a5698e62ab6eb2876437f959b722d5bddcc808a3"
+      },
+      "checks": [
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/irrigation-portal/actions/runs/35929944546/job/107413854050"
+        },
+        {
+          "name": "source",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/irrigation-portal/actions/runs/35929944546/job/107413854043"
+        },
+        {
+          "name": "container",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/irrigation-portal/actions/runs/35929944546/job/107413854020"
+        },
+        {
+          "name": "governance",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/irrigation-portal/actions/runs/35929944546/job/107413853804"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "juiced",
+      "base": "66271b2d77838d7b0e3b167d2aca25723aa8f3f5",
+      "new_version": "0.1.3",
+      "publish_mode": "local-side-branch",
+      "tree": "068f0b325e2ed36ae9dd7d7f592e7d50165f2f76",
+      "reviewed_tree": "6b02597998584a431861243881f83925d56ab55a",
+      "receipt_delta_paths": [
+        "CHANGELOG.md",
+        "docs/llm/HANDOFF.md"
+      ],
+      "commit": "9bd224485732445e11c77a33db8f7fb83cbbb4cb",
+      "release_receipt_base_tree": "d50c69f54c54a2fbc9f9f288c5e729239276d626",
+      "release_receipt_tree": "068f0b325e2ed36ae9dd7d7f592e7d50165f2f76",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "juiced",
+        "version": "0.1.3",
+        "mode": "local-side-branch",
+        "result": "local-commit",
+        "commit": "9bd224485732445e11c77a33db8f7fb83cbbb4cb"
+      },
+      "primary": {
+        "project": "juiced",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "66271b2d77838d7b0e3b167d2aca25723aa8f3f5"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "llm-council",
+      "base": "8b005c214546852da29c774a9b8554bf3aa007bb",
+      "new_version": "0.1.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "bbfeca22ff9009c9da95ad3749fbf1ab8c9b010b",
+      "reviewed_tree": "d0fd766cbe67fe2c7475e3f4d5b51d17f94efbb5",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "8d76674ed2c87d39139b2eff3c36ad3cffdd2064",
+      "release_receipt_base_tree": "9968a52e76112611b3fbc05a025760d448ad038c",
+      "release_receipt_tree": "bbfeca22ff9009c9da95ad3749fbf1ab8c9b010b",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "llm-council",
+        "version": "0.1.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "8d76674ed2c87d39139b2eff3c36ad3cffdd2064",
+        "remote_head": "8d76674ed2c87d39139b2eff3c36ad3cffdd2064",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "llm-council",
+        "mode": "fast-forward",
+        "head": "8d76674ed2c87d39139b2eff3c36ad3cffdd2064"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "med",
+      "base": "3ac4fc28f8f943752804ee4f21365ef8dd88ae2d",
+      "new_version": "1.10.1",
+      "publish_mode": "fast-forward-remote",
+      "tree": "1e0f6464192ce9b5b65fbd5fdd3d13d936f96432",
+      "reviewed_tree": "3245522074ddd3f13e5761ad7f834de105940cfe",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "c4f7d1b2004670bfc36677913f6302fe472dc05e",
+      "release_receipt_base_tree": "7a27b1f696cec4f73c21ac9b3b31af2bf4a7cef3",
+      "release_receipt_tree": "1e0f6464192ce9b5b65fbd5fdd3d13d936f96432",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "med",
+        "version": "1.10.1",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "c4f7d1b2004670bfc36677913f6302fe472dc05e",
+        "remote_head": "c4f7d1b2004670bfc36677913f6302fe472dc05e",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "med",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "a2936358386715f54ee08ed04c91b15ad49e8f26"
+      },
+      "checks": [
+        {
+          "name": "validate",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/med/actions/runs/35929961294/job/107413903362"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "msgvault-lab",
+      "base": "51dd915a1421b0d64938e9ec119fc4cf74da6256",
+      "new_version": "0.25.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "a13f519f9239712240edb4e644c65527584188d8",
+      "reviewed_tree": "85fcd9fd7ac314e6c01ca4f80bf0d258d736807d",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "05d432f7e7951ee824a1b39e70793cb7e555fc6d",
+      "release_receipt_base_tree": "9a433f8ed3d346b3038918bf2dd26124164f7e18",
+      "release_receipt_tree": "a13f519f9239712240edb4e644c65527584188d8",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "msgvault-lab",
+        "version": "0.25.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "05d432f7e7951ee824a1b39e70793cb7e555fc6d",
+        "remote_head": "05d432f7e7951ee824a1b39e70793cb7e555fc6d",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "msgvault-lab",
+        "mode": "fast-forward",
+        "head": "05d432f7e7951ee824a1b39e70793cb7e555fc6d"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "msgvault-panel",
+      "base": "6a69f2ead2403d1818ab1dbc7d74d3fd2819da0a",
+      "new_version": "0.15.8",
+      "publish_mode": "fast-forward-remote",
+      "tree": "c8db085ce2491332394fce017d3e48d9c5c2355d",
+      "reviewed_tree": "6131b1067562830cb5ec6baeefd5d70fdc35e824",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "86d1b274bdebbf78bb7ca08d4afd2750f6d0bd8a",
+      "release_receipt_base_tree": "f1764080b328207ebaa527f61e1ec08315710cf7",
+      "release_receipt_tree": "c8db085ce2491332394fce017d3e48d9c5c2355d",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "msgvault-panel",
+        "version": "0.15.8",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "86d1b274bdebbf78bb7ca08d4afd2750f6d0bd8a",
+        "remote_head": "86d1b274bdebbf78bb7ca08d4afd2750f6d0bd8a",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "msgvault-panel",
+        "mode": "fast-forward",
+        "head": "86d1b274bdebbf78bb7ca08d4afd2750f6d0bd8a"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "nas-backup",
+      "base": "e8bf005096741c5f46f605773890b1137457d3f4",
+      "new_version": "1.5.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "479b00441854b9e0f0eaf3f86657fa3e98b3a78c",
+      "reviewed_tree": "7b39ff5fbcfefbc0b424bb567b2b15cf89075519",
+      "receipt_delta_paths": [
+        "docs/llm/HANDOFF.md",
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "87b78a131493de2641120c3ad465e83292083617",
+      "release_receipt_base_tree": "7e82407a70ad5cba696b334a01dc7fd92196872b",
+      "release_receipt_tree": "479b00441854b9e0f0eaf3f86657fa3e98b3a78c",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "nas-backup",
+        "version": "1.5.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "87b78a131493de2641120c3ad465e83292083617",
+        "remote_head": "87b78a131493de2641120c3ad465e83292083617",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "nas-backup",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "e8bf005096741c5f46f605773890b1137457d3f4"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "pi-fleet",
+      "base": "55704bc768d7e7af3b2e9f3f5fbad1a53b86e17f",
+      "new_version": "0.4.16",
+      "publish_mode": "fast-forward-remote",
+      "tree": "bd6e482ce7bbf28d1583dbd312fa858d53e4c9a0",
+      "reviewed_tree": "92629e7b1e4a1dfaa4b166b3fc051be738d891ed",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "963a9801b1565769b52fcca4e2d2e3f84f2ab45c",
+      "release_receipt_base_tree": "17f1aeb95f895b09b87a06a8c31eb63919971dce",
+      "release_receipt_tree": "bd6e482ce7bbf28d1583dbd312fa858d53e4c9a0",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "pi-fleet",
+        "version": "0.4.16",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "963a9801b1565769b52fcca4e2d2e3f84f2ab45c",
+        "remote_head": "963a9801b1565769b52fcca4e2d2e3f84f2ab45c",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "pi-fleet",
+        "mode": "fast-forward",
+        "head": "963a9801b1565769b52fcca4e2d2e3f84f2ab45c"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "plaud-mirror",
+      "base": "0b5b97c5ea8b5f28114adb866fd291bc07a1cee7",
+      "new_version": "0.16.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "03d336a914a6f1c657ba31c274fb833e1408b55f",
+      "reviewed_tree": "81be0b79366ba2609ef43cfdfb225bf9dfbfee22",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "85f624f94e4b97bd2f5af0e00bc5694f65bc1da6",
+      "release_receipt_base_tree": "eb59a9901a803dd8ac0b54147c0887009c0bbbce",
+      "release_receipt_tree": "03d336a914a6f1c657ba31c274fb833e1408b55f",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "plaud-mirror",
+        "version": "0.16.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "85f624f94e4b97bd2f5af0e00bc5694f65bc1da6",
+        "remote_head": "85f624f94e4b97bd2f5af0e00bc5694f65bc1da6",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "plaud-mirror",
+        "mode": "fast-forward",
+        "head": "85f624f94e4b97bd2f5af0e00bc5694f65bc1da6"
+      },
+      "checks": [
+        {
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/plaud-mirror/actions/runs/35929999645/job/107414029970"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "qnap-magnet-builder",
+      "base": "234978d79cb3d0c2b8d5882616c6e6b0ed9103d5",
+      "new_version": "0.4.4",
+      "publish_mode": "fast-forward-remote",
+      "tree": "436a3cc89e91211a8f81ad770c33e24cb5eb878b",
+      "reviewed_tree": "fa5d9afa7d3254ee4b737f1c29fd9d00a4c8c69b",
+      "receipt_delta_paths": [
+        "docs/llm/HANDOFF.md",
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "5c28033c8ea56c64a6f15b1b87961fc2b76b46ce",
+      "release_receipt_base_tree": "47456149585a2ca91123f451a4c670d5810350c8",
+      "release_receipt_tree": "436a3cc89e91211a8f81ad770c33e24cb5eb878b",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "qnap-magnet-builder",
+        "version": "0.4.4",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "5c28033c8ea56c64a6f15b1b87961fc2b76b46ce",
+        "remote_head": "5c28033c8ea56c64a6f15b1b87961fc2b76b46ce",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "qnap-magnet-builder",
+        "mode": "fast-forward",
+        "head": "5c28033c8ea56c64a6f15b1b87961fc2b76b46ce"
+      },
+      "checks": [
+        {
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/qnap-magnet-builder/actions/runs/35930007365/job/107414056266"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "tomatic",
+      "base": "7ee382f33dfd9ed23ed60587fa4a5be1e2ddce5c",
+      "new_version": "0.1.9",
+      "publish_mode": "fast-forward-remote",
+      "tree": "4c39870954f04f14135c7ae54ef4907bb2120d4c",
+      "reviewed_tree": "029c82cb9918b9cebea0bdab757436f13e795dcf",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "e056c824266a5772f2a52822772c87bb75f5fca9",
+      "release_receipt_base_tree": "c302733d7ba6365b69890ab1a04db2e199444bab",
+      "release_receipt_tree": "4c39870954f04f14135c7ae54ef4907bb2120d4c",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "tomatic",
+        "version": "0.1.9",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "e056c824266a5772f2a52822772c87bb75f5fca9",
+        "remote_head": "e056c824266a5772f2a52822772c87bb75f5fca9",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "tomatic",
+        "mode": "fast-forward",
+        "head": "e056c824266a5772f2a52822772c87bb75f5fca9"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "travel-ledger",
+      "base": "4a8d9f20882f33e3b903834ba884fd29bcc1ebd4",
+      "new_version": "0.9.15",
+      "publish_mode": "fast-forward-remote",
+      "tree": "11e4fca7b6650a0c03b66ee87c0924d135111b87",
+      "reviewed_tree": "c33acce80dfaec27c68a4ab1a05c8a7c2f26de57",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "eb60131139f79054c9123763e4ca47bfd818d097",
+      "release_receipt_base_tree": "fd782c2c9a829616278a56e6ba9306a62368dd48",
+      "release_receipt_tree": "11e4fca7b6650a0c03b66ee87c0924d135111b87",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "travel-ledger",
+        "version": "0.9.15",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "eb60131139f79054c9123763e4ca47bfd818d097",
+        "remote_head": "eb60131139f79054c9123763e4ca47bfd818d097",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "travel-ledger",
+        "mode": "protected-primary",
+        "branch": "dockit-fleet-4.16.3-20260923",
+        "head": "4a8d9f20882f33e3b903834ba884fd29bcc1ebd4"
+      },
+      "checks": [
+        {
+          "name": "validate",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/cdelalama/travel-ledger/actions/runs/35930020708/job/107414099503"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "unifi-mcp",
+      "base": "e252686a9942e8305d0d6d99093dfe9dc1ade97b",
+      "new_version": "0.4.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "75447b2472eabf1f59ca05814127830b6466bdd0",
+      "reviewed_tree": "7eee49b4a1473e2657272274b470fbf7a91f5259",
+      "receipt_delta_paths": [],
+      "commit": "9d09733c325849edd4116efcb08deaad44c2e4e7",
+      "release_receipt_base_tree": "7eee49b4a1473e2657272274b470fbf7a91f5259",
+      "release_receipt_tree": "75447b2472eabf1f59ca05814127830b6466bdd0",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "unifi-mcp",
+        "version": "0.4.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "9d09733c325849edd4116efcb08deaad44c2e4e7",
+        "remote_head": "9d09733c325849edd4116efcb08deaad44c2e4e7",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "unifi-mcp",
+        "mode": "fast-forward",
+        "head": "9d09733c325849edd4116efcb08deaad44c2e4e7"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "vaultwarden-deploy",
+      "base": "40ee536facdc03dd56e8bede265f87d720e77310",
+      "new_version": "0.3.5",
+      "publish_mode": "fast-forward-remote",
+      "tree": "d20aaa827da317ed0c3c66ae3fea32956ad9e31c",
+      "reviewed_tree": "6c2ca1b3fd74bccaac963d1ab1892f7556f22988",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "ce7ac54fb9bdf042a1a6c99a4e0e77644116e4cb",
+      "release_receipt_base_tree": "525bd448bb3bbabb029390e3e4e7cfb118c4f6cc",
+      "release_receipt_tree": "d20aaa827da317ed0c3c66ae3fea32956ad9e31c",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "vaultwarden-deploy",
+        "version": "0.3.5",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "ce7ac54fb9bdf042a1a6c99a4e0e77644116e4cb",
+        "remote_head": "ce7ac54fb9bdf042a1a6c99a4e0e77644116e4cb",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "vaultwarden-deploy",
+        "mode": "fast-forward",
+        "head": "ce7ac54fb9bdf042a1a6c99a4e0e77644116e4cb"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "x-signal",
+      "base": "68a3cea44eee60f29b2bed22468ae00e90d8c00d",
+      "new_version": "0.1.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "34a13cc05d62c1797367a7c54d03958316f8f728",
+      "reviewed_tree": "af816e0e8a79a503fa23bfbd98dea2e6e4e34719",
+      "receipt_delta_paths": [],
+      "commit": "1dcf8fa87fbe477d515d3810a554a0445b440673",
+      "release_receipt_base_tree": "af816e0e8a79a503fa23bfbd98dea2e6e4e34719",
+      "release_receipt_tree": "34a13cc05d62c1797367a7c54d03958316f8f728",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "x-signal",
+        "version": "0.1.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "1dcf8fa87fbe477d515d3810a554a0445b440673",
+        "remote_head": "1dcf8fa87fbe477d515d3810a554a0445b440673",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "x-signal",
+        "mode": "fast-forward",
+        "head": "1dcf8fa87fbe477d515d3810a554a0445b440673"
+      },
+      "checks": [],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    },
+    {
+      "name": "youtube2text",
+      "base": "1b1a06e1162ed05c12d738ce532a8fc0c5cb0564",
+      "new_version": "0.40.3",
+      "publish_mode": "fast-forward-remote",
+      "tree": "84769311af19c304adf6629af035ae2ffd931a7a",
+      "reviewed_tree": "c0332b3ca8e41a808cb0f46435dd9fb1f638cb86",
+      "receipt_delta_paths": [
+        "docs/llm/REVIEWS.md"
+      ],
+      "commit": "7f97e832271cd60a02e9435fe213a481cde742b6",
+      "release_receipt_base_tree": "25ae1768353715219f92acbceed77ddcf67fed3f",
+      "release_receipt_tree": "84769311af19c304adf6629af035ae2ffd931a7a",
+      "release_receipt_delta_paths": [
+        "docs/llm/DOCKIT_ADOPTION.md",
+        "docs/llm/HANDOFF.md",
+        "docs/llm/HISTORY.md"
+      ],
+      "publication": {
+        "project": "youtube2text",
+        "version": "0.40.3",
+        "mode": "fast-forward-remote",
+        "result": "published",
+        "commit": "7f97e832271cd60a02e9435fe213a481cde742b6",
+        "remote_head": "7f97e832271cd60a02e9435fe213a481cde742b6",
+        "branch": "main"
+      },
+      "primary": {
+        "project": "youtube2text",
+        "mode": "fast-forward",
+        "head": "7f97e832271cd60a02e9435fe213a481cde742b6"
+      },
+      "checks": [
+        {
+          "name": "Dependabot",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/cdelalama/Youtube2Text/actions/runs/35930176200/job/107414602703"
+        },
+        {
+          "name": "validate",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/cdelalama/Youtube2Text/actions/runs/35930057533/job/107414213613"
+        }
+      ],
+      "portable_file_evidence": [
+        {
+          "path": "scripts/dockit-delivery-check.sh",
+          "source_equal": true,
+          "sha256": "d8746a616bf1047454cbe81a4aca919fd6fd6f0111c779b05a3867db820ec842"
+        },
+        {
+          "path": "scripts/dockit-delivery-record.sh",
+          "source_equal": true,
+          "sha256": "458fc9da15a29cde97a449a672d54f5d46c85f5f752ef4a1b1d9a70eab627bd4"
+        },
+        {
+          "path": "scripts/dockit-delivery-lib.sh",
+          "source_equal": true,
+          "sha256": "a2c162bb5d0626221382e08fca856c75d28526a3cda636e16d5f47775852f1d4"
+        },
+        {
+          "path": "scripts/dockit-delivery-state.awk",
+          "source_equal": true,
+          "sha256": "7c7ea51513272624038b291784948fd77163a475f0b390a51fbe53fd51239878"
+        },
+        {
+          "path": "scripts/test-delivery.sh",
+          "source_equal": true,
+          "sha256": "c706ff999b38c01059e309dff888f4ae6769af59fe150efa9e6e00fdab2a59e1"
+        }
+      ]
+    }
+  ]
+}

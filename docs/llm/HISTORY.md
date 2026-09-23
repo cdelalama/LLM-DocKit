@@ -14,6 +14,8 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
+- 2026-09-23 - Codex - Closed the selective 4.16.3 fleet rollout: 34 owned remotes verified, three local-only commits, one convergence patch deferred; 29 clean primaries advanced and eight dirty primaries preserved. Riego 1.0.15 four-job CI and both delivery fixtures pass. Recorded inherited CI failures and independent exact Opus review; no runtime deployment. Files: docs/FLEET_ROLLOUT_2026-09-23.md, docs/archive/FLEET_ROLLOUT_2026-09-23.json, docs/DOWNSTREAM_FEEDBACK.md, docs/llm/HANDOFF.md, docs/llm/REVIEWS.md. Version impact: none (publication receipts).
+
 - 2026-09-23 - Codex - Pin documentation CI to the authored PR head after synthetic merge timestamps alternated across UTC/Madrid calendar dates; all validation and regression steps remain enabled. Files: .github/workflows/doc-validation.yml, version targets, docs/llm/HANDOFF.md. Version impact: patch 4.16.3; downstream delivery bytes unchanged.
 
 - 2026-09-23 - Codex - Prepared the authorized fleet rollout; repaired two model-wording-dependent sync tests in 4.16.2, retained local controls and recorded source-only adoption and Riego acceptance boundaries. Files: scripts/test-validator.sh, docs/DELIVERY_CONTRACT.md, docs/FLEET_ROLLOUT_2026-09-23.md. Version impact: patch 4.16.2.

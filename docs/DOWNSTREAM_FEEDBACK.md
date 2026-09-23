@@ -2290,3 +2290,34 @@ The source repo lacked config and reported skipped checks within its PASS total.
 Add explicit per-check skip metadata and checked/skipped totals before quiet
 filtering, retain consumer-compatible statuses/exits, and activate applicable
 source-local Trace/content checks. Legitimately inapplicable checks stay skipped.
+
+
+## DF-062 - Validation dates depend on synthetic merge timestamp timezone
+
+- Source: LLM-DocKit fleet rollout, PR #4, 2026-09-23
+- Date observed: 2026-09-23
+- Category: gap
+- Status: open; source PR CI uses the reviewed authored head as a bounded mitigation
+- Related: DF-057
+
+Runs 35928204596 and 35928579232 alternated between Madrid and UTC calendar
+dates for synthetic merge commits. Changing receipt dates inverted the failure.
+`validation_reference_date` currently uses the stored commit timezone. A fresh
+clone of a merge commit can therefore reject correctly UTC-dated receipts.
+Source CI now checks the reviewed head SHA and retains every test; verify the
+base is unchanged before merge. Define and regression-test one explicit date
+basis for generic validation in a separate source change. No check was disabled.
+
+## DF-063 - Imported test fixtures can fail an adopter's stricter static checks
+
+- Source: devenv hosted CI run 35929849752, 2026-09-23
+- Date observed: 2026-09-23
+- Category: gap
+- Status: open; adopter compatibility fix published in devenv 0.14.7
+- Related: DF-056
+
+The upstream delivery fixture's `CDPATH= cd` empty assignment passed behavioral
+regressions but failed devenv's existing ShellCheck SC1007 gate. The reviewed
+local adaptation uses `CDPATH='' cd`, preserving semantics and the full lint
+gate. Upstream fixture normalization and representative adopter static checks
+remain a follow-up; project behavior suites alone do not prove static compatibility.

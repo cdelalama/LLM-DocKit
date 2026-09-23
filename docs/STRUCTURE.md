@@ -113,3 +113,5 @@ Provide tips for new contributors (human or LLM) on where to start, which direct
 
 Fleet rollout evidence: `docs/FLEET_ROLLOUT_2026-09-23.md` records selective
 adoption, per-project publication and preserved integration boundaries.
+
+Exact publication/review/CI ledger: `docs/archive/FLEET_ROLLOUT_2026-09-23.json`.
