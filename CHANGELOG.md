@@ -4,6 +4,12 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.16.1] - 2026-09-23
+
+### Changed
+
+- Default Claude advisory and independent review to exact Opus 5.5 at high effort (D-024); supersede the inherited Fable-first preference and document runtime settings separately from repository policy.
+
 ## [4.16.0] - 2026-09-21
 
 - Add opt-in delivery declarations and serialized evidence, attempt and review

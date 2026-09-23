@@ -1,20 +1,30 @@
-<!-- doc-version: 4.16.0 -->
+<!-- doc-version: 4.16.1 -->
 # LLM Work Handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-21 - Codex
-- Current source version: 4.16.0
+- Last Updated: 2026-09-23 - Codex
+- Current source version: 4.16.1
 - Owner: Carlos
-- Session focus: v4.16.0 source delivery and local pilot completed.
-- Source: v4.16.0 published via PR #2; exact Opus source/delta GO and CI PASS.
+- Session focus: operator-selected Opus 5.5 default (D-024); delivery pilot gates unchanged.
+- Source: v4.16.1 policy release, exact Opus 5.5 final delta GO;
+  validation and candidate provenance are recorded in REVIEWS.md.
+  Previous release v4.16.0 was published via PR #2; delivery gates are unchanged.
 - Pilot: Riego local container command integrated; adverse controls and one real
   local packaging attempt pass. Gardener/off-LAN acceptance remains open.
 - Validation: 84 delivery and 96 validator regressions pass; 10 version targets
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+Current model policy: `LLM_START_HERE.md` independent-review-policy; adoption
+instructions: `HOW_TO_USE.md` Claude Model Default. Runtime settings are separate
+from selective repository sync. See `docs/CLAUDE_DEFAULT_2026-09-23.md` for actual
+surface coverage and limits. Preserve earlier review provenance and dirty adopters.
+Open tooling follow-up: `scripts/dockit-sync.sh` rejects linked worktrees as
+not a repository. After a separately validated repair, rerun a selective dry-run
+against ForgeOS and reconcile its state without force or unrelated updates.
 
 Use `docs/DELIVERY_CONTRACT.md` and `scripts/dockit-delivery-record.sh` to
 integrate the next real project delivery command with its own decisive probes.
@@ -34,7 +44,8 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 ## Selected Decisions
 
 - D-009/D-011: DocKit substrate versus ForgeOS runtime/authority.
-- D-020: exact Fable review, exact Opus only on recorded Fable quota exhaustion.
+- D-024 supersedes D-020 model preference: exact Opus 5.5 at high effort by default;
+  explicit task selection wins, no silent fallback. Independent review remains required.
 - D-021/D-022: selective sync, honest registration and template identity.
 - D-023: opted-in command checks, evidence, continuity and recovery boundary.
 

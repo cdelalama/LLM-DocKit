@@ -1,5 +1,45 @@
 # Reviews
 
+## 2026-09-23 - Opus 5.5 default policy review
+
+**Status:** final bounded delta GO, 2026-09-23, exact claude-opus-5-5.
+Third round explicitly selected the exact model and high effort, using the same
+read-only flags. Returned modelUsage confirms the model. N1 populated/local-date
+release notes and N2 durable provenance passed; no scope blockers remain.
+Final reviewed candidate trees (non-commit objects):
+- LLM-DocKit-opus-default: 5d9c33b85316a0ce4ca3c78aa8064542f0d196cd
+- forgeos-opus-default: 2c8f82d22a8877728920fafaa118cb9cff4fbc72
+Final validation-packet SHA-256: 16787b121a398f4fe3e1ecab757192412c79580667eb863bc29f3bd88e75d1b7
+
+- Model provenance: returned modelUsage claude-opus-5-5 in both rounds; effort
+  explicitly requested as high. Reasoning-budget behavior is not inferred.
+- CLI: 2.1.280 on dev-vm. Tools disabled, strict empty MCP configuration,
+  hooks disabled for the bounded review, no session persistence.
+- Round 1 invocation: `claude -p --effort high --output-format json` plus the
+  read-only isolation flags. No --model flag: the saved user default was exercised.
+- Round 2 invocation: same isolation, explicit `--model claude-opus-5-5 --effort high`.
+- The first packet omitted some staged version files; the second supplied the
+  complete diff and actual validator output. Actual version files were present.
+- Round 1: NO-GO on scope wording, instruction/enforcement distinction and
+  missing version evidence. Round 2 confirms those resolved, then requires
+  populated/local-date changelogs and this durable review record.
+- Executor verified both remaining fixes: dated nonempty release notes in each
+  repo and model/effort/command/tree/validation evidence here. The final bounded
+  delta review above closes those findings after the corrections were inspected.
+
+Round 1 candidate trees (non-commit objects):
+- LLM-DocKit-opus-default: 0a17f2455aad7a3026cb8126543e8c1ce2fe1e3a
+- forgeos-opus-default: 69171e9c8aa97f79e4a34df5f4a70aed95266e34
+
+Round 2 candidate trees (non-commit objects):
+- LLM-DocKit-opus-default: cc69fb2d8d858921059c46f377b14b46a7f9c510
+- forgeos-opus-default: 2321f1c34a16e6b702d289ed3cc2cd3410e681b0
+
+Validation: DocKit 7 passed / 4 legitimate skips; ForgeOS 10 passed;
+version sync 10/12 targets; diff whitespace checks. Dates use Europe/Paris
+(operator date 2026-09-23 while the VM UTC date was still 2026-09-22).
+
+
 Audit trail of substantive reviews, audits, and arbitrated decisions in this
 repo. Each entry should capture the **causal reasoning** that produced a
 decision or verdict, not the transcript of the deliberation.

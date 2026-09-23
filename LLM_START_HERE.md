@@ -1,4 +1,4 @@
-<!-- doc-version: 4.16.0 -->
+<!-- doc-version: 4.16.1 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -73,37 +73,42 @@ Session-start scope:
 <!-- DOCKIT-TEMPLATE:START independent-review-policy -->
 ### Independent Review Policy
 
-For consequential source candidates that require an independent model review,
-the operator-wide default is:
+The operator-wide Claude default is Opus 5.5, exact model
+`claude-opus-5-5`, with high effort. This applies to Claude advisory/coauthor
+work and independent source review unless the operator explicitly selects a
+different model for the task. The operator's 2026-09-23 decision supersedes the
+previous inherited Fable-first / quota-only Opus fallback preference.
 
-1. Prefer Fable, exact model `claude-fable-5-1`, with high effort.
-2. If direct quota evidence shows that exact Fable is unavailable because its
-   quota is exhausted, Opus may complete the same review gate using exact model
-   `claude-opus-5[1m]`, with high effort. Record the quota evidence, effective
-   model, effort, command, candidate revision/tree, and validation packet in
-   `docs/llm/REVIEWS.md` when it exists, otherwise in the audited revision's
-   HISTORY entry. When durable Trace is enabled, keep non-commit object IDs such
-   as tree hashes as plain text in HISTORY and HANDOFF Trace Anchors:
-   backtick-quoted hashes are reserved for commit provenance and must resolve as
-   commits. Never remove backticks from a commit to bypass validation; classify
-   a cross-repository commit with the Trace `external=repo@hash` field instead.
-3. Never substitute Sonnet, Haiku, an ambiguous alias, or an unrecorded model.
-   If neither allowed exact model is available, freeze the candidate and audit
-   packet. Continue only work already authorized that does not depend on the
-   missing verdict.
+1. Select the exact model explicitly for non-interactive review; do not use a
+   floating `opus`, `best` or `default` alias as audit provenance.
+2. Record effective model, effort, command, candidate revision/tree and validation
+   packet in `docs/llm/REVIEWS.md` when present, otherwise the audited revision's
+   HISTORY entry. Verify returned model metadata; a self-reported model name in
+   the answer is not evidence. Do not silently substitute Fable, older Opus,
+   Sonnet, Haiku or another model. If the selected model is unavailable or the
+   provider changes it, preserve the packet and keep the required review gate
+   open; continue only authorized work that does not depend on that verdict.
+3. When durable Trace is enabled, keep non-commit object IDs such as tree hashes
+   as plain text in HISTORY and HANDOFF Trace Anchors. Backtick-quoted hashes are
+   reserved for commit provenance and must resolve as commits. Never remove
+   backticks from a commit to bypass validation; classify a cross-repository
+   commit with the Trace `external=repo@hash` field instead.
 
 The auditor is independent and read-only: it reads primary files and evidence,
 does not edit the candidate, and returns evidence-backed findings. The executor
 must verify each finding, reconcile disagreements with the same auditor session
-where practical, and preserve explicit unresolved disagreement for the
-operator. A review verdict does not authorize build, deployment, runtime,
-secrets, infrastructure, lifecycle, or acceptance changes.
+where practical, and preserve explicit unresolved disagreement for the operator.
+A review verdict does not authorize build, deployment, runtime, secrets,
+infrastructure, lifecycle or acceptance changes.
 
-This synchronized section is the fleet default, not permission to weaken an
-existing project contract. A stricter project-local accepted rule wins until
-the operator explicitly supersedes it. Projects that intentionally own a
-different policy may exclude `independent-review-policy` in
-`.dockit-config.yml`; the exception and rationale must remain visible locally.
+This synchronized section changes the model preference, not other project review
+requirements. Explicit task-specific operator choices remain authoritative. A documented
+operator-approved project model exception remains an exception until explicitly
+superseded; exclusion alone is not approval of a different model. Other project
+review constraints remain in force. Projects that exclude this section through
+`.dockit-config.yml` must keep the exception and its authority visible.
+The source policy belongs to LLM-DocKit; Claude Code's user `model` setting is a
+separate runtime default and does not prove that project copies were synchronized.
 <!-- DOCKIT-TEMPLATE:END independent-review-policy -->
 
 <!-- DOCKIT-TEMPLATE:START env-policy -->

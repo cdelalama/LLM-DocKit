@@ -1000,7 +1000,7 @@ possible peer checkout or remote lives.
 
 ## D-020 - Independent review uses an exact recorded fallback, not model substitution
 
-**Status:** accepted
+**Status:** model preference superseded by D-024 on 2026-09-23; independent-review and provenance requirements retained.
 
 ### Decision
 
@@ -1194,3 +1194,30 @@ GO, and cannot prevent recovery. Grammar-free, exit-neutral handoff-size advice
 may be default-on; new grammar-dependent/strict checks require explicit project
 configuration. Existing strict checks retain their behavior. All delivery
 failures affect only opted-in project entrypoints, never general Stop/chat gates.
+
+## D-024 - Opus 5.5 is the operator-wide Claude default
+
+**Status:** accepted by explicit operator instruction, 2026-09-23.
+
+Use exact `claude-opus-5-5` with high effort for Claude work, including advice,
+coauthoring and independent review, unless the operator explicitly selects a
+different model for a task. This replaces D-020's inherited Fable-first and
+quota-only older-Opus fallback preference. It does not weaken independent review,
+source evidence, privacy, lifecycle or deployment requirements. Model availability
+does not authorize substitution; keep a required review gate open on failure.
+
+The single managed repository policy remains the `independent-review-policy`
+section of LLM_START_HERE.md, distributed by selective DocKit sync. Runtime
+defaults are separate: Claude Code user settings use `model` and `effortLevel`.
+Global agent instructions record this explicit preference as explicit operator direction overriding the earlier inherited preference,
+not as a technical enforcement mechanism. Old reviews and
+archived prompts retain the exact model actually used; do not rewrite history.
+
+Verification: official Claude Code model documentation names claude-opus-5-5
+and requires CLI >=2.1.280. The dev-vm CLI 2.1.280 returned a successful minimal
+request with `modelUsage` naming the exact requested model on 2026-09-23.
+Source: https://code.claude.com/docs/en/model-config
+
+Distribution must preserve dirty worktrees, local exclusions, hooks and unrelated
+settings. Updating the source/user default does not prove every repository copy
+or already-running session has switched. Report applied and deferred surfaces.

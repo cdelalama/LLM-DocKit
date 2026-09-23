@@ -342,6 +342,28 @@ scripts/dockit-sync.sh --dry-run --all
 scripts/dockit-sync.sh --apply --all
 ```
 
+### Claude Model Default
+
+The shared Claude model preference lives in the managed
+`independent-review-policy` block of `LLM_START_HERE.md`. D-024 selects exact
+`claude-opus-5-5` at high effort; the operator's explicit task choice takes precedence.
+Distribute just this section using the selective commands below. Do not replace
+whole settings/hook files for a model-policy update or rewrite historical reviews.
+
+Claude Code also has a runtime default in user `settings.json`:
+
+```json
+{"model": "claude-opus-5-5", "effortLevel": "high"}
+```
+
+Merge these fields into the existing file, preserving every unrelated key. CLI
+flags, environment overrides and project/local/managed settings may supersede it;
+inspect the actual returned model. Existing sessions may retain their selection.
+An explicit fresh-session default check and an audit invocation check are separate
+evidence. Model aliases that move to future versions are not an audit pin.
+
+Official reference: https://code.claude.com/docs/en/model-config
+
 ### Selective Fleet Updates
 
 Use repeatable `--only` selectors when one policy or file must reach the fleet
