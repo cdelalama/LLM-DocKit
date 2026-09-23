@@ -7,6 +7,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Validate the reviewed source commit, not a synthetic merge timestamp.
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Validate documentation state
         run: scripts/dockit-validate-session.sh --human
       - name: Validator regression tests

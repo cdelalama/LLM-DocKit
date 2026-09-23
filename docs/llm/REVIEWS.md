@@ -1,5 +1,57 @@
 # Reviews
 
+## 2026-09-23 - Selective fleet rollout and 4.16.3 source publication
+
+Status: SOURCE GO and ROLLOUT GO after four same-session rounds; source publication only.
+Exact model: claude-opus-5-5, requested effort high, CLI 2.1.280.
+All four completed rounds returned modelUsage with that exact model. Auditor session:
+e06df549-3d43-4283-90a3-4f1833f7af04. Read-only tools: Read, Glob, Grep;
+restricted mode, dontAsk, strict empty MCP configuration. Invocation selected
+`--model claude-opus-5-5 --effort high` explicitly; resumes use the same session.
+The initial --bare launch did not use OAuth and returned not-logged-in before
+any model request; the normal restricted invocation authenticated successfully.
+
+Initial review closed seven blockers after preserving local controls, clarifying
+fresh Riego candidate evidence, explicit global policy authority, and publication
+boundaries. Second review accepted the 36 ordinary candidates conditionally,
+held Vaultwarden for its two-line manifest grammar and requested moving the source
+HISTORY entry outside the example fence. Those fixes are now applied. Final exact-model review cleared source tree
+9c5ec8d1772279274c5b59f1d460ac4d572fedfe and corrected Vaultwarden.
+The two local side branches were cleared conditional on deleting only the stray
+unpublished 0.1.2 changelog blocks; that exact deletion was verified.
+Metadata-only receipt finalization is explicitly accepted without another round.
+MED D-045 is an inherited default superseded by the operator-wide instruction;
+this interpretation was explicitly reconciled with the same auditor.
+
+Reviewed source tree before the final docs delta: 5b7151add15fed065789ff8da427bf1c89bb8a67
+(tree object, not a commit). Packet location: /tmp/dockit-fleet-20260923.
+Source tests: 84 delivery, 96 validator PASS. Local Plaud extensions: 38 PASS;
+PiHA component adapter: positive and two negative cases PASS. All 38 adopter
+version/session checks pass; 35 applicable pre-commit scripts pass. Two projects
+have no hook script; convergence integration is explicitly deferred.
+Riego initial full suite: 473 PASS and three checkout-mode failures, then all 15
+affected tests PASS after restoring tracked 0755 modes; build and hygiene PASS.
+All command outputs are executor evidence, not independently reproduced by Opus.
+
+Source CI runs 35928204596 and 35928579232 exposed opposite-day synthetic
+PR merge timestamps (+0200 versus UTC). Changing the document date simply
+inverted the mismatch. The bounded CI correction checks out the exact authored
+pull-request head SHA, matching the independently reviewed candidate; its
+ordinary authored UTC commit date agrees with the source receipts. Full Git
+history and every validation/test step remain enabled. The current hook mechanically requires a version bump for this workflow path,
+so the correction is versioned as 4.16.3 without bypassing the hook. Fourth bounded review returned GO for source tree
+3ac1c7cdf40d519dee3e2ac5b106ad1080fb87a0 and Riego tree
+a27e1b36c9124ed133bfc9b41bb51368de8a9d6d. Both clean-commit Riego
+fixtures must pass before publication; source CI must pass and its base remain
+unchanged before merge. Receipt-only relabelling to 4.16.3 is approved.
+The real host's low-storage refusal remains valid; only synthetic fixture
+storage is mocked. The underlying validator timezone issue is a follow-up.
+
+Publication remains source-only, fast-forward and scoped. Dirty primary worktrees
+and the old convergence checkout are not modified; side refs/patches carry their
+pending adoption. No operational, deployment or end-user acceptance is claimed.
+
+
 ## 2026-09-23 - Opus 5.5 default policy review
 
 **Status:** final bounded delta GO, 2026-09-23, exact claude-opus-5-5.

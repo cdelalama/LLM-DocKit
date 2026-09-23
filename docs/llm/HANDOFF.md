@@ -1,22 +1,26 @@
-<!-- doc-version: 4.16.1 -->
+<!-- doc-version: 4.16.3 -->
 # LLM Work Handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
 - Last Updated: 2026-09-23 - Codex
-- Current source version: 4.16.1
+- Current source version: 4.16.3
 - Owner: Carlos
-- Session focus: operator-selected Opus 5.5 default (D-024); delivery pilot gates unchanged.
-- Source: v4.16.1 policy release, exact Opus 5.5 final delta GO;
-  validation and candidate provenance are recorded in REVIEWS.md.
-  Previous release v4.16.0 was published via PR #2; delivery gates are unchanged.
+- Session focus: operator-authorized fleet rollout; model-independent sync regressions fixed.
+- Source: v4.16.3 fleet patch candidate; 84 delivery and 96 repaired validator
+  regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
+  The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
 - Pilot: Riego local container command integrated; adverse controls and one real
   local packaging attempt pass. Gardener/off-LAN acceptance remains open.
 - Validation: 84 delivery and 96 validator regressions pass; 10 version targets
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+Finish the reviewed selective rollout in `docs/FLEET_ROLLOUT_2026-09-23.md`;
+record per-project publication and dirty-worktree preservation. Real mutation
+entrypoint adoption remains project-specific; Riego remote acceptance is open.
 
 Current model policy: `LLM_START_HERE.md` independent-review-policy; adoption
 instructions: `HOW_TO_USE.md` Claude Model Default. Runtime settings are separate

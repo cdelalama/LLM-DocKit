@@ -110,3 +110,6 @@ Outline conventions for file names, branches, environment variables, or other pr
 
 ## Onboarding Notes
 Provide tips for new contributors (human or LLM) on where to start, which directories to explore first, and any caveats about legacy code or experimental features.
+
+Fleet rollout evidence: `docs/FLEET_ROLLOUT_2026-09-23.md` records selective
+adoption, per-project publication and preserved integration boundaries.
