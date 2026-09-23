@@ -1,10 +1,10 @@
 # Reviews
 
-## 2026-09-23 - Selective fleet rollout and 4.16.2 regression repair
+## 2026-09-23 - Selective fleet rollout and 4.16.3 source publication
 
-Status: SOURCE GO and ROLLOUT GO after three same-session rounds; source publication only.
+Status: SOURCE GO and ROLLOUT GO after four same-session rounds; source publication only.
 Exact model: claude-opus-5-5, requested effort high, CLI 2.1.280.
-All three completed rounds returned modelUsage with that exact model. Auditor session:
+All four completed rounds returned modelUsage with that exact model. Auditor session:
 e06df549-3d43-4283-90a3-4f1833f7af04. Read-only tools: Read, Glob, Grep;
 restricted mode, dontAsk, strict empty MCP configuration. Invocation selected
 `--model claude-opus-5-5 --effort high` explicitly; resumes use the same session.
@@ -33,11 +33,19 @@ Riego initial full suite: 473 PASS and three checkout-mode failures, then all 15
 affected tests PASS after restoring tracked 0755 modes; build and hygiene PASS.
 All command outputs are executor evidence, not independently reproduced by Opus.
 
-Initial source CI used a synthetic PR merge commit dated 2026-09-24 +0200,
-while the authored source receipt was dated 2026-09-23 UTC. The final receipt
-uses the verified current Madrid calendar day and an actual-current-time
-Madrid-offset documentation commit, so authored and merge provenance agree.
-No validator, workflow or date check was weakened.
+Source CI runs 35928204596 and 35928579232 exposed opposite-day synthetic
+PR merge timestamps (+0200 versus UTC). Changing the document date simply
+inverted the mismatch. The bounded CI correction checks out the exact authored
+pull-request head SHA, matching the independently reviewed candidate; its
+ordinary authored UTC commit date agrees with the source receipts. Full Git
+history and every validation/test step remain enabled. The current hook mechanically requires a version bump for this workflow path,
+so the correction is versioned as 4.16.3 without bypassing the hook. Fourth bounded review returned GO for source tree
+3ac1c7cdf40d519dee3e2ac5b106ad1080fb87a0 and Riego tree
+a27e1b36c9124ed133bfc9b41bb51368de8a9d6d. Both clean-commit Riego
+fixtures must pass before publication; source CI must pass and its base remain
+unchanged before merge. Receipt-only relabelling to 4.16.3 is approved.
+The real host's low-storage refusal remains valid; only synthetic fixture
+storage is mocked. The underlying validator timezone issue is a follow-up.
 
 Publication remains source-only, fast-forward and scoped. Dirty primary worktrees
 and the old convergence checkout are not modified; side refs/patches carry their

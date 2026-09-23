@@ -6,7 +6,11 @@ Operator authorized updating all registered projects. This report initially reco
 reviewed source candidates; the publication ledger below is filled after remote
 readback. A prepared candidate is not a published update.
 
-Release: LLM-DocKit 4.16.2, based on 4.16.1 revision 361b393. The patch corrects
+The final 4.16.3 CI-only adjustment validates the exact authored PR candidate
+instead of a synthetic merge timestamp. Portable adopter bytes are unchanged
+from the reviewed 4.16.2 packet.
+
+Release: LLM-DocKit 4.16.3, based on 4.16.1 revision 361b393. The patch corrects
 two sync tests that attempted to alter removed Fable wording instead of creating
 a real conflict. Fixtures now insert a model-independent local constraint.
 The portable delivery behavior is unchanged from 4.16.0.
@@ -51,7 +55,7 @@ ForgeOS main is the separate published adoption surface.
 
 ## Riego
 
-Riego's source update is 1.0.14; no runtime deployment is included. Its historical
+Riego's source update is 1.0.15; no runtime deployment is included. Its historical
 1.0.13 local pilot and append-only journal remain intact. Bound version inputs
 changed: the next guarded begin needs fresh review, integration and prerequisites.
 No journal events are appended and no init/restore side effects are published.

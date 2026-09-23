@@ -14,7 +14,9 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
-- 2026-09-24 - Codex - Prepared the authorized fleet rollout; repaired two model-wording-dependent sync tests in 4.16.2, retained local controls and recorded source-only adoption and Riego acceptance boundaries. Files: scripts/test-validator.sh, docs/DELIVERY_CONTRACT.md, docs/FLEET_ROLLOUT_2026-09-23.md. Version impact: patch 4.16.2.
+- 2026-09-23 - Codex - Pin documentation CI to the authored PR head after synthetic merge timestamps alternated across UTC/Madrid calendar dates; all validation and regression steps remain enabled. Files: .github/workflows/doc-validation.yml, version targets, docs/llm/HANDOFF.md. Version impact: patch 4.16.3; downstream delivery bytes unchanged.
+
+- 2026-09-23 - Codex - Prepared the authorized fleet rollout; repaired two model-wording-dependent sync tests in 4.16.2, retained local controls and recorded source-only adoption and Riego acceptance boundaries. Files: scripts/test-validator.sh, docs/DELIVERY_CONTRACT.md, docs/FLEET_ROLLOUT_2026-09-23.md. Version impact: patch 4.16.2.
 
 - 2026-09-23 - Codex - Changed the shared Claude preference to exact Opus 5.5 with high effort by explicit operator instruction; recorded D-024, preserved historical review models and documented the distinction between runtime settings and synchronized repository policy. - Files: [CHANGELOG.md, docs/llm/REVIEWS.md, LLM_START_HERE.md, HOW_TO_USE.md, docs/llm/DECISIONS.md, docs/llm/HANDOFF.md, docs/llm/HISTORY.md, docs/CLAUDE_DEFAULT_2026-09-23.md, version markers] - Version impact: yes (4.16.0 -> 4.16.1 patch, model policy).
 

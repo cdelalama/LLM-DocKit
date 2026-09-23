@@ -1,14 +1,14 @@
-<!-- doc-version: 4.16.2 -->
+<!-- doc-version: 4.16.3 -->
 # LLM Work Handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-24 - Codex
-- Current source version: 4.16.2
+- Last Updated: 2026-09-23 - Codex
+- Current source version: 4.16.3
 - Owner: Carlos
 - Session focus: operator-authorized fleet rollout; model-independent sync regressions fixed.
-- Source: v4.16.2 fleet patch candidate; 84 delivery and 96 repaired validator
+- Source: v4.16.3 fleet patch candidate; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
 - Pilot: Riego local container command integrated; adverse controls and one real
