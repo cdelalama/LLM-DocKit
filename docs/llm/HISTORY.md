@@ -6,6 +6,8 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ## Log
 
+- 2026-09-23 - Codex - Added optional fixed-name Dossier discovery, inert malformed-data handling, last-local-revision Trace instructions and regression coverage. Version impact: yes (4.17.0 minor). Trace: role=executor; state=source-candidate; validation=optional-discovery-regression-and-opus55-high; next=source-review-and-adopter-sync
+
 ### Example Entry Format
 
 ```

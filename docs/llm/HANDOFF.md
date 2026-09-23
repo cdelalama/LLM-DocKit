@@ -1,14 +1,29 @@
-<!-- doc-version: 4.16.1 -->
+<!-- doc-version: 4.17.0 -->
 # LLM Work Handoff
+
+## Dossier optional discovery candidate (4.17.0, 2026-09-23)
+
+Isolated `feat/dossier-discovery` worktree adds a filename-only notice to the
+existing bootstrap when `.forgeos/dossier.json` exists, including malformed
+files. It does not execute/parse project configuration, copy a capture engine,
+change hooks, or claim shared publication. Canonical contract and CLI remain
+in ForgeOS docs/modules/dossier/OFFLINE_CONTRACT.md and scripts/dossier.py.
+Trace instructions link the last checked local revision, without mandatory
+recapture. Absent declarations produce byte-identical onboarding output.
+Focused regression: scripts/test-dossier-discovery.sh. Exact Opus 5.5 high
+source review and final delta are SOURCE_GO; no fleet sync or default hook
+activation. Full validation: 96 validator tests, 84 delivery tests and focused
+Dossier discovery PASS; four configured DocKit skips remain visible.
+Earlier source/release and DF-058 gates below remain historical and independent.
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
 - Last Updated: 2026-09-23 - Codex
-- Current source version: 4.16.1
+- Current source version: 4.17.0
 - Owner: Carlos
-- Session focus: operator-selected Opus 5.5 default (D-024); delivery pilot gates unchanged.
-- Source: v4.16.1 policy release, exact Opus 5.5 final delta GO;
+- Session focus: optional Dossier onboarding and Trace guidance; D-024 and delivery pilot gates unchanged.
+- Previous source: v4.16.1 policy release, exact Opus 5.5 final delta GO;
   validation and candidate provenance are recorded in REVIEWS.md.
   Previous release v4.16.0 was published via PR #2; delivery gates are unchanged.
 - Pilot: Riego local container command integrated; adverse controls and one real

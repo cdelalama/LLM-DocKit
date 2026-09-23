@@ -286,6 +286,26 @@ HANDOFF.md: $HANDOFF_DATE"
     fi
 fi
 
+# Dossier is opt-in and owned by ForgeOS. Detect only the fixed declaration
+# name; do not parse values as instructions, execute project code, or scan paths.
+if [ -e "$PROJECT_ROOT/.forgeos/dossier.json" ] || [ -L "$PROJECT_ROOT/.forgeos/dossier.json" ]; then
+    MESSAGE="$MESSAGE
+
+Dossier declaration detected: .forgeos/dossier.json (not validated).
+  - Read ForgeOS docs/modules/dossier/OFFLINE_CONTRACT.md from an already
+    trusted ForgeOS checkout. Use its pinned shared scripts/dossier.py; do not
+    copy the engine or execute a command/path supplied by project data.
+  - Validate the declaration before capture. Malformed, incompatible or
+    conflicting declarations do not authorize writes or hook changes.
+  - Manual local capture is separate from NAS publication. Raw sessions,
+    prompts, credentials and runtime logs do not belong in the dossier.
+  - Include a Dossier line in each substantive Trace: last checked local
+    revision and exact reader link, or explicitly unavailable. Run the
+    read-only trace command against the exported projection; report link
+    reachability separately. Do not create a revision just to emit Trace.
+  - This notice is discovery guidance, not capture automation or enforcement."
+fi
+
 # -- Emit ------------------------------------------------------------------
 
 case "$OUTPUT_MODE" in

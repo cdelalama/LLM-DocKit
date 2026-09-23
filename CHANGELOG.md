@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.17.0] - 2026-09-23
+
+### Added
+
+- Optional inert Dossier declaration discovery and Trace guidance; no capture engine, hooks or fleet changes.
+
+### Changed
+
+### Fixed
+
+- Make two sync-conflict fixtures amend the stable policy section marker instead of an obsolete model-preference sentence. The prior setup silently made no edit after the Opus default change.
+
 ## [4.16.1] - 2026-09-23
 
 ### Changed
