@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-25T22:38:54.730233+00:00",
+  "scope": "Registered technical llm-dockit pilot; no fleet opt-in",
+  "sources": {
+    "forgeos": {
+      "source": "045b2ebc9d1e12abac276e99d4cd6b0a72f98038",
+      "tag": "registry.lamanoriega.com/forgeos-dossier:0.1.0",
+      "id": "sha256:24c83ea66225f65bc7d66dcef97219a21488f257cfb6eaf204718b9b8767440e",
+      "digests": [
+        "registry.lamanoriega.com/forgeos-dossier@sha256:b7bb256b4a162e3ba51090ac22e821e4b7fd83e0904aac46ba69c95ca1166dc8"
+      ],
+      "source_path": "/share/Container/runtime/forgeos-dossier/releases/forgeos-045b2ebc9d1e12abac276e99d4cd6b0a72f98038"
+    },
+    "infra-portal": {
+      "source": "c70007fb840044599d597d5ba97d6f2c60fb8d85",
+      "tag": "registry.lamanoriega.com/infra-portal:0.32.2",
+      "id": "sha256:37da197719e886f5912e33b1511ba9fa681c01b6cc474eb2d97f5284d20349f9",
+      "digests": [
+        "registry.lamanoriega.com/infra-portal@sha256:8da4b089edb4621dc3fe4e95987a07ee6dd42e3cecb9d90bcf83043de90ba8e1"
+      ],
+      "source_path": "/share/Container/runtime/forgeos-dossier/releases/infra-portal-c70007fb840044599d597d5ba97d6f2c60fb8d85"
+    }
+  },
+  "independent_review": {
+    "model": "claude-opus-5-5",
+    "requested_effort": "high",
+    "session": "573102d3-ccec-4d6c-8905-7e0de750879d",
+    "verdict": "SOURCE_GO plus CI, packaging and placement GO; runtime evidence supplied by executor"
+  },
+  "evidence": {
+    "actual-publications": [
+      {
+        "name": "S1",
+        "revision": "shared:058c04cb094dc7a26d6ccfe0d6f356106b5c7900e4c2f68523743299326521ef",
+        "origin_local_revision": "local:42ac9f94606e4c6a82bea3d7cb8fb2a39b3cf4694b6b14021c330606eaa22025",
+        "candidate_id": "17eadd1f88dc54487f7e6131a69e0fb0adc806fa5b6f47ddf8b418be1dcc280d",
+        "received_at": "2026-09-25T22:29:36Z",
+        "published_at": "2026-09-25T22:30:02Z",
+        "observed_at": "2026-09-25T20:51:18Z",
+        "content_exactly_preserved": true,
+        "submit_retry": "already_received",
+        "publish_retry": "already_published"
+      },
+      {
+        "name": "S2",
+        "revision": "shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0",
+        "origin_local_revision": "local:6c3d54d03cad20b1e7a6d766839a24bddd68284df36f7e425e95c2c0e97a54d9",
+        "candidate_id": "50c69e5c852610d2a15bc5b677afe0331dc32b552a3c67812b0a6a82f34fb723",
+        "received_at": "2026-09-25T22:30:27Z",
+        "published_at": "2026-09-25T22:30:52Z",
+        "observed_at": "2026-09-25T20:59:32Z",
+        "content_exactly_preserved": true,
+        "submit_retry": "already_received",
+        "publish_retry": "already_published"
+      }
+    ],
+    "portal-deployment": {
+      "state": "serving",
+      "version": "0.32.2",
+      "source": "c70007fb840044599d597d5ba97d6f2c60fb8d85",
+      "image": "registry.lamanoriega.com/infra-portal:0.32.2@sha256:8da4b089edb4621dc3fe4e95987a07ee6dd42e3cecb9d90bcf83043de90ba8e1",
+      "container_id": "99179fb7ea2c14765841ac56bfd30739a6dfd69c57176af2d74ccfd52df08c52",
+      "healthy": true,
+      "existing_mounts_preserved": 10,
+      "only_new_mount": "portal-ssh read-only",
+      "reader_source_ip": "172.29.12.2",
+      "private_store_writer_key_docker_socket_absent": true,
+      "compose_before_sha256": "a0db0e7a2175cff69a4b794e93ead87aea7181ac7471e9a57e68982b001b29d4",
+      "compose_after_sha256": "b39fcabb060a515a6e41fb7e10e71063fdc27d577c48f603633e84982fd31dbc",
+      "shared_current": "shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0",
+      "reader_url": "https://infra.lamanoriega.com/dossier/shared/llm-dockit?revision=shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0",
+      "runtime_scripts_absent": true
+    },
+    "portal-sqlite-backup": {
+      "state": "verified",
+      "method": "SQLite Online Backup API",
+      "quick_check": "ok",
+      "bytes": 716427264,
+      "tables": [
+        "events",
+        "probes",
+        "sqlite_sequence"
+      ],
+      "previous_image": "registry.lamanoriega.com/infra-portal:0.29.0@sha256:1e859ad511f1f4a4fdde7afc12bf0756afd3a91b7d188cef1b2843be0e3689e5",
+      "previous_source": "ee79d414ff9f214b0b607779e267b1a81fc7f98e",
+      "data_volume": "infra-portal_infra-portal-data",
+      "location": "/share/ZFS18_DATA/homes/cdelalama/forgeos-dossier/backups/portal-before-0.32.2.sqlite",
+      "sha256": "3ec7f568e2d400e64b7f96e4363b87f57333f914c253f28ff8bb96e6e72d8d41",
+      "physical_independence": false
+    },
+    "actual-restore-receipt": {
+      "state": "verified",
+      "scope": "isolated restore on same NAS; not independent hardware recovery",
+      "shared_revision": "shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0",
+      "records": 2,
+      "backup_sha256": "1a1cefcd4b57080fda16904631ee078fec032dfd4940a91b94051a75da44ce57",
+      "original_records_preserved": true,
+      "both_exact_historical_reads": true,
+      "physical_backup_destination": "pending operator choice"
+    },
+    "custody-placement": {
+      "root": "/share/ZFS18_DATA/homes/cdelalama/forgeos-dossier",
+      "dataset": "zpool1/zfs18",
+      "device_inode_owner_mode": "32:2729 1000:100 700",
+      "parent_acl_sha256": "d01176bf7bd51d6eeae4284c63b0cf5e0f05afee680e4e7226eca332316e6267",
+      "parent_acls_unchanged": true,
+      "new_directory_mode": "0700",
+      "new_file_mode": "0600",
+      "extra_acl_entries": false,
+      "other_uid_denied": true,
+      "homes_smb_valid_users": [
+        "root",
+        "admin"
+      ],
+      "snapshot_observed": [
+        "zpool1/zfs18@:init:"
+      ],
+      "physical_backup": false
+    },
+    "transport-negatives": {
+      "state": "passed",
+      "receipts": [
+        {
+          "case": "reader denies submit",
+          "pass": true
+        },
+        {
+          "case": "reader denies status",
+          "pass": true
+        },
+        {
+          "case": "reader denies backup",
+          "pass": true
+        },
+        {
+          "case": "reader denies genesis",
+          "pass": true
+        },
+        {
+          "case": "reader denies policy",
+          "pass": true
+        },
+        {
+          "case": "reader denies publish",
+          "pass": true
+        },
+        {
+          "case": "original command ignored",
+          "pass": true
+        },
+        {
+          "case": "PTY denied",
+          "pass": true
+        },
+        {
+          "case": "remote forwarding denied",
+          "pass": true
+        },
+        {
+          "case": "local forwarded channel denied",
+          "pass": true
+        },
+        {
+          "case": "dynamic forwarded channel denied",
+          "pass": true
+        },
+        {
+          "case": "sshd rejects forwarding channel",
+          "pass": true
+        },
+        {
+          "case": "agent request grants no command authority",
+          "pass": true
+        }
+      ],
+      "agent_forwarding": "restrict forbids; SSH does not expose a positive rejection acknowledgment",
+      "reader_source_verified": true,
+      "writer_wrong_source_denied": true,
+      "writer_private_key_stayed_on_dev_vm": true,
+      "existing_keys_preserved": true,
+      "writer_origin_probe": "TCP relay from NAS loopback; admin SSH -W refused by global forwarding policy"
+    },
+    "nas-kill-race": {
+      "scope": "probabilistic Docker process death; not power loss",
+      "iterations": [
+        {
+          "iteration": 0,
+          "delay_seconds": 0.272,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:f2d49671828dec340788032b2463f3aaf32274b2035c18b91ef1e9bc3f7f726a"
+        },
+        {
+          "iteration": 1,
+          "delay_seconds": 0.359,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:497f7667673439b0db2c2e7c1a072357fe4b855016d0199c07d6570c5ce67e7d"
+        },
+        {
+          "iteration": 2,
+          "delay_seconds": 0.439,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:9e413602940d2196887202e0103e32cc8cb7c3090ad4ac2fc79b1716fe8f3a67"
+        },
+        {
+          "iteration": 3,
+          "delay_seconds": 0.162,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:248aff4d82027abaa8cfc5b49695f1b0428cd9f76ab602c023aa9646b89798c9"
+        },
+        {
+          "iteration": 4,
+          "delay_seconds": 0.386,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:4b03cdf0964fcd9445e084d35aa82d2f72b45650fd25a210bc2caacd98d8df1b"
+        },
+        {
+          "iteration": 5,
+          "delay_seconds": 0.122,
+          "kill_delivered": true,
+          "exit_code": 137,
+          "retry_state": "published",
+          "chain_verified": true,
+          "revision": "shared:33cd37b2073fd3eacee2776188b79474fbb38201a4a623f55678b8eea71e5a7e"
+        }
+      ],
+      "kill_delivered": 6
+    },
+    "nas-fault-probe": {
+      "state": "passed",
+      "scope": "synthetic NAS filesystem, actual child process death; not power loss",
+      "results": [
+        "before process death, kernel lock release, exact retry: PASS",
+        "after process death, kernel lock release, exact retry: PASS"
+      ],
+      "restore": true,
+      "records": 2,
+      "backup_sha256": "f68369adf2803ce6aea5f699d56bd4f511c4b036f4af37117caadf3ba8fff936"
+    },
+    "live-browser": {
+      "kind": "Actual NAS-backed Portal through private HTTPS from dev-vm",
+      "observed_at": "2026-09-25T22:36:31.791Z",
+      "receipts": [
+        {
+          "width": 390,
+          "section": "Ahora",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "section": "Roadmap",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "section": "Informes",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "section": "Decisiones",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "section": "Fuentes",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "roadmap": "Dónde estamos",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "roadmap": "Qué se hizo",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "roadmap": "Qué cambió",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "roadmap": "Qué falta",
+          "pass": true
+        },
+        {
+          "width": 390,
+          "historical": "S1",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "section": "Ahora",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "section": "Roadmap",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "section": "Informes",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "section": "Decisiones",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "section": "Fuentes",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "roadmap": "Dónde estamos",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "roadmap": "Qué se hizo",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "roadmap": "Qué cambió",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "roadmap": "Qué falta",
+          "pass": true
+        },
+        {
+          "width": 840,
+          "historical": "S1",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "section": "Ahora",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "section": "Roadmap",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "section": "Informes",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "section": "Decisiones",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "section": "Fuentes",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "roadmap": "Dónde estamos",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "roadmap": "Qué se hizo",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "roadmap": "Qué cambió",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "roadmap": "Qué falta",
+          "pass": true
+        },
+        {
+          "width": 1440,
+          "historical": "S1",
+          "pass": true
+        },
+        {
+          "case": "Portal header entry",
+          "pass": true
+        },
+        {
+          "case": "Registered DocKit project entry opens reader",
+          "pass": true
+        },
+        {
+          "case": "Local revision not promoted or redirected",
+          "pass": true
+        }
+      ],
+      "not_claimed": [
+        "off-LAN or phone operator acceptance",
+        "dev-vm shutdown",
+        "physical backup recovery"
+      ]
+    },
+    "live-api-check": {
+      "observed_at": "2026-09-25T22:35:12.782925+00:00",
+      "receipts": [
+        {
+          "case": "S1 exact API",
+          "pass": true
+        },
+        {
+          "case": "S2 exact API",
+          "pass": true
+        },
+        {
+          "case": "GET /api/dossier/projects/forgeos",
+          "pass": true
+        },
+        {
+          "case": "GET /api/dossier/projects/llm-dockit?revision=shared:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "pass": true
+        },
+        {
+          "case": "GET /api/dossier/projects/llm-dockit?revision=local:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "pass": true
+        },
+        {
+          "case": "POST /api/dossier/projects/llm-dockit",
+          "pass": true
+        },
+        {
+          "case": "20 concurrent cached reads, no private DTO keys",
+          "pass": true
+        },
+        {
+          "case": "NAS raw LAN port 18080 inaccessible",
+          "pass": true
+        }
+      ],
+      "public_dns": ";; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 3363\n;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 1232\n; COOKIE: 0b48838c5a241aa5 (echoed)\n;; ANSWER SECTION:\ninfra.lamanoriega.com.\t88\tIN\tA\t10.0.0.220",
+      "not_claimed": "No off-LAN browser or physical user acceptance"
+    },
+    "image-failure-probe": {
+      "scope": "Exact published image with real SSH blocked by isolated network; production untouched",
+      "results": [
+        {
+          "path": "/projects",
+          "status": 503
+        },
+        {
+          "path": "/projects/llm-dockit",
+          "status": 503
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Physical backup destination pending operator choice; dev-vm is hosted on NAS2",
+    "No off-LAN/phone/golden or dev-vm shutdown acceptance",
+    "D0/D2 and full D4 remain open",
+    "Manual curation/capture/publication only; no new hooks or auto publication"
+  ],
+  "private_packet": "/tmp/dossier-delivery-20260925"
+}

@@ -1,8 +1,9 @@
 # LLM-DocKit Dossier adoption
 
-Status: declared, validated and capturing locally; shared publication unavailable.
+Status: local capture and shared NAS publication active; connected Portal reader
+available on LAN/WireGuard. Physical independent backup placement remains open.
 Owner: this repository. User direction: use ForgeOS Dossier for DocKit's own
-project tracking, 2026-09-25. This is not a fleet opt-in or shared publication.
+project tracking, 2026-09-25. This is not a fleet opt-in.
 
 ## Contract and identity
 
@@ -14,7 +15,8 @@ in the registry do not override this repository's VERSION or current Git state.
 Shared implementation: ForgeOS tool 1.1.0 at published reviewed commit
 4fedd81759fd57b4d336672068051e633af3b070, SHA-256
 fd34d3f45a9382fbf8317a932edd1fa827230d0acccaba68c0b87963c1704a95.
-That candidate is on the Dossier branch, not merged ForgeOS main. Read its
+That exact offline engine is now also contained in published ForgeOS main
+045b2ebc9d1e12abac276e99d4cd6b0a72f98038; its bytes/pin remain unchanged. Read its
 `docs/modules/dossier/OFFLINE_CONTRACT.md` and `ADOPTION_PACKET.md` before capture.
 Use the verified shared checkout; never copy the engine into DocKit. The current
 ForgeOS main checkout can be an older unrelated worktree without this module.
@@ -42,8 +44,8 @@ python3 "$DOSSIER_FORGEOS/scripts/dossier.py" --project "$DOSSIER_PROJECT" lates
 Default private custody is the current user's XDG state root under
 `forgeos/dossier`, otherwise `~/.local/state/forgeos/dossier`. It is outside Git,
 owned by the current user, with private permissions. Other projects' records are
-not read, moved or rewritten. No prior DocKit Dossier binding/history exists at
-that declared custody; no legacy migration is performed. This is not a search
+not read, moved or rewritten. The initial bind found no prior DocKit history at that declared custody;
+existing L1/L2 are now preserved. No legacy migration was performed. This is not a search
 for unknown outboxes elsewhere. Any discovered legacy custody must be reconciled
 before changing the local history.
 
@@ -64,10 +66,10 @@ capture at every turn.
 
 A reviewed technical-only export may be written outside Git under the same
 private state root's `exports/llm-dockit` directory. `trace --export-file` checks
-that exact export against the local chain. Include the last local revision and
-explicit reader unavailability in substantive Trace; a generated URL is not
-proof of accessible delivery. No shared receipt, server current pointer, automatic
-session hook, NAS service or connected Portal adoption is claimed.
+that exact export against the local chain. Include the last local revision and the separately verified shared reader in
+Trace. The reserved local URL remains unavailable. Shared publication has an
+independent receipt; local captures never advance it automatically. No new
+session hook or automatic capture/publication is installed.
 
 ## Custody and acceptance
 
@@ -110,3 +112,37 @@ meaningfully changes. In particular, source publication can merit a later update
 resolve the newest local revision with latest instead of treating this L1 receipt
 as a permanent latest pointer. Off-host custody and connected-reader acceptance
 remain separate work.
+
+## Shared technical delivery - 2026-09-25
+
+Live reader: https://infra.lamanoriega.com/dossier/shared/llm-dockit.
+Open Portal's Dossiers entry, then Abrir dossier. LAN/WireGuard access without
+user authentication is limited to reviewed technical llm-dockit content.
+The reader shows current/history, Roadmap, reports, decisions and source evidence.
+
+Exact deployment, review, native-origin and restore evidence:
+DOSSIER_SHARED_DELIVERY_2026-09-25.json. ForgeOS source 045b2ebc9d1e12abac276e99d4cd6b0a72f98038
+provides separate scripts/dossier_remote.py and dossier_shared.py; offline 1.1.0
+is unchanged. Portal 0.32.2 source c70007fb840044599d597d5ba97d6f2c60fb8d85 serves
+the strict read DTO. Existing Portal data and ten mounts remain preserved.
+
+Private NAS custody is /share/ZFS18_DATA/homes/cdelalama/forgeos-dossier, outside
+Git, with private ACLs and separate fixed reader/writer SSH identities. The
+writer's host binding is in the current user's private Dossier ssh directory.
+The project declaration contains no credentials or executable remote destination.
+Use the trusted shared client's explicit submit/publish/read/backup commands;
+review content for sharing and retain exact UUIDs on retries. No auto-merge or
+silent reset of local/shared current pointers is permitted.
+
+L1 and L2 were admitted as native candidates and published separately as S1/S2.
+Their original content/observation times are identical; server publication dates
+are 2026-09-25T22:30:02Z and 2026-09-25T22:30:52Z. Exact retries retain addresses.
+S1: shared:058c04cb094dc7a26d6ccfe0d6f356106b5c7900e4c2f68523743299326521ef.
+S2: shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0.
+
+49 source tests, 19 tests on final NAS custody, six real Docker process kills,
+transport denials, 33 actual browser checks and isolated S1/S2 restore passed.
+Process-death tests are not power-loss proof. Physical independent backup is
+pending the operator's Pi/encrypted-cloud destination choice: dev-vm and NAS2
+share hardware. No recurring backup schedule, off-LAN/phone/golden acceptance,
+native Windows parity or full ForgeOS D0/D2/D4 closure is claimed.

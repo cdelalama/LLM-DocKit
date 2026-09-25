@@ -7,10 +7,10 @@
 - Last Updated: 2026-09-25 - Codex
 - Current source version: 4.17.0
 - Owner: Carlos
-- Session focus: adopt ForgeOS Dossier for this project; local capture verified.
+- Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
-  L1 captured and verified across clone/worktree; no shared publication or
-  accessible reader is claimed. Read latest for current host-local revision.
+  Native L1/L2 are preserved in shared S1/S2; connected Portal reader and
+  isolated restore pass. Independent physical backup placement remains open.
 - Source: v4.16.3 fleet patch published; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
@@ -24,7 +24,9 @@
 
 Use `.forgeos/dossier.json` and `docs/operations/DOSSIER.md` to maintain this
 project's verified local Dossier. Capture meaningful state changes with the
-shared tool; connected reader, shared publication and off-host backup remain open.
+shared tool; shared publication and the Portal reader are live. Resolve the
+independent backup destination and retain the acceptance limits in
+`docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json`.
 The optional discovery integration reuses PR #3; its prior worktree is preserved.
 
 Review the completed distribution and named project CI follow-ups in
@@ -74,7 +76,7 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 - Commit time: 2026-09-23 22:56:57 UTC
 - Repo state: published baseline anchor; not a live HEAD assertion.
 - Validation: local capture, retry/no_change, clone/worktree and checked export pass.
-- Next gate: maintain local captures; connected reader and off-host custody stay open.
+- Next gate: maintain curated local/shared revisions; independent backup destination remains open.
 <!-- DOCKIT-STATE:END -->
 
 ## Historical Context

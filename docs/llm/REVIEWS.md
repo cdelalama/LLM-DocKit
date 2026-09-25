@@ -940,3 +940,12 @@ closed arbitrated decision.
 ### Verdict
 pass | pass-with-notes | needs-changes
 ```
+
+## 2026-09-25 - Shared technical Dossier delivery
+
+Exact claude-opus-5-5 high, session 573102d3-ccec-4d6c-8905-7e0de750879d.
+Independent read-only source review found and closed policy-narrowing B1; source,
+CI, packaging and private-placement deltas received GO. Returned model metadata
+verified. Runtime evidence is executor-supplied, not an auditor-run experiment.
+The approved receipt-only closure preserves independent physical backup and
+D0/D2/full D4/human acceptance gates. See docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json.
