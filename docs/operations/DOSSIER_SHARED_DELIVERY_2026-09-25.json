@@ -254,7 +254,7 @@
     },
     "live-browser": {
       "kind": "Actual NAS-backed Portal through private HTTPS from dev-vm",
-      "observed_at": "2026-09-25T22:36:31.791Z",
+      "observed_at": "2026-09-25T22:48:14.349Z",
       "receipts": [
         {
           "width": 390,
@@ -426,7 +426,7 @@
       ]
     },
     "live-api-check": {
-      "observed_at": "2026-09-25T22:35:12.782925+00:00",
+      "observed_at": "2026-09-25T22:48:15.291187+00:00",
       "receipts": [
         {
           "case": "S1 exact API",
@@ -434,6 +434,10 @@
         },
         {
           "case": "S2 exact API",
+          "pass": true
+        },
+        {
+          "case": "S3 exact API",
           "pass": true
         },
         {
@@ -461,8 +465,14 @@
           "pass": true
         }
       ],
-      "public_dns": ";; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 3363\n;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 1232\n; COOKIE: 0b48838c5a241aa5 (echoed)\n;; ANSWER SECTION:\ninfra.lamanoriega.com.\t88\tIN\tA\t10.0.0.220",
-      "not_claimed": "No off-LAN browser or physical user acceptance"
+      "not_claimed": "No off-LAN browser or physical user acceptance",
+      "dns_query_from_lan": ";; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 339\n;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 1232\n; COOKIE: ca681cc58fb1f629 (echoed)\n;; ANSWER SECTION:\ninfra.lamanoriega.com.\t245\tIN\tA\t10.0.0.220",
+      "public_dns_doh": {
+        "method": "Cloudflare DNS-over-HTTPS GET https://cloudflare-dns.com/dns-query?name=infra.lamanoriega.com&type=A with accept application/dns-json",
+        "Status": 3,
+        "Answer": [],
+        "interpretation": "NXDOMAIN; UDP resolver query from LAN returned internal view and is not public DNS evidence"
+      }
     },
     "image-failure-probe": {
       "scope": "Exact published image with real SSH blocked by isolated network; production untouched",
@@ -476,6 +486,31 @@
           "status": 503
         }
       ]
+    },
+    "current-restore-receipt": {
+      "state": "verified",
+      "scope": "isolated restore on same NAS; not independent hardware recovery",
+      "shared_revision": "shared:f731e1766c4ab7a6d03e3f97dcecea374b25e7e103199ab71c10616112d952c2",
+      "records": 3,
+      "backup_sha256": "69382458b00f856e42f7c9c031b57a76adbd2393a0f606e4fd5e976754639d36",
+      "original_records_preserved": true,
+      "all_exact_historical_reads": true,
+      "physical_backup_destination": "pending operator choice"
+    },
+    "new-publication-watch": {
+      "previous_revision": "shared:ab93baac535b5b8459875719e8c61e89d43a52f8a12301769d39deafe4f1fcc0",
+      "announcement": true,
+      "selection_preserved": true,
+      "observed_at": "2026-09-25T22:46:56.525Z"
+    },
+    "catalog-delivery": {
+      "state": "verified",
+      "home_infra_commit": "ceac4d387d97854f0eb6c60b12c5a3e42bc2f4b6",
+      "catalog_sha256": "398bc585f058d0b92f746eb71ccd6bcf00e6f5df6acef2d324c13a5f46f9b506",
+      "individual_bind_inodes_preserved": true,
+      "other_service_entries_unchanged": true,
+      "observed_portal_image": "registry.lamanoriega.com/infra-portal:0.32.2",
+      "method": "Scoped two-file in-place promotion with private preimage and rollback; legacy sync helper rejects linked worktree"
     }
   },
   "limits": [
@@ -484,5 +519,52 @@
     "D0/D2 and full D4 remain open",
     "Manual curation/capture/publication only; no new hooks or auto publication"
   ],
-  "private_packet": "/tmp/dossier-delivery-20260925"
+  "private_packet": "/tmp/dossier-delivery-20260925",
+  "current_publication": {
+    "name": "S3",
+    "revision": "shared:f731e1766c4ab7a6d03e3f97dcecea374b25e7e103199ab71c10616112d952c2",
+    "origin_local_revision": "local:d8c725bad2d5ca7c729cd4afb1e32f62f8f45d46e0884aee9b8901950e42eb03",
+    "candidate_id": "813ca82e5cb90691d4cef4d5fe8c7f60a1d27887b0d073dc18f3584378ce17e4",
+    "received_at": "2026-09-25T22:46:25Z",
+    "published_at": "2026-09-25T22:46:38Z",
+    "observed_at": "2026-09-25T22:41:59Z",
+    "content_exactly_preserved": true,
+    "curation_go": "exact preapproved Opus edits applied"
+  },
+  "current_reader_url": "https://infra.lamanoriega.com/dossier/shared/llm-dockit?revision=shared:f731e1766c4ab7a6d03e3f97dcecea374b25e7e103199ab71c10616112d952c2",
+  "curation_review": {
+    "model": "claude-opus-5-5",
+    "requested_effort": "high",
+    "session": "573102d3-ccec-4d6c-8905-7e0de750879d",
+    "verdict": "CURATION_GO after exact preapproved wording edits",
+    "access_wording": "Unauthenticated LAN/WireGuard reader; restricted SSH transport roles",
+    "L2_acceptance": "Authorized shared receipt, reader access and backup/restore evidence.",
+    "comparison": "L2 did not distinguish physical recovery; original task included off-host recovery. Explicit split retained in changes, with physical backup blocked.",
+    "no_other_semantic_changes": true
+  },
+  "operational_review": {
+    "model": "claude-opus-5-5",
+    "requested_effort": "high",
+    "session": "573102d3-ccec-4d6c-8905-7e0de750879d",
+    "verdict": "Bounded operational GO; conditional CURATION_GO exact edits applied",
+    "runtime_checks": "Executor-supplied; reviewer did not execute",
+    "model_metadata": {
+      "claude-opus-5-5": {
+        "inputTokens": 152,
+        "outputTokens": 88279,
+        "thinkingTokens": 54644,
+        "cacheReadInputTokens": 10156920,
+        "cacheCreationInputTokens": 247690,
+        "webSearchRequests": 0,
+        "costUSD": 5.7790919999999995,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  "current_local_export_sha256": "865c371973c210e3c9a906fd66372c16bab4608fff77c74319c61cd78f9e2f1b",
+  "ci_note": "Home Infra receipt run 36198149673 first failed an unchanged Riego signal/lock test; rerun passed. No ingress code was changed."
 }

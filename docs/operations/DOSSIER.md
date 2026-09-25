@@ -146,3 +146,26 @@ Process-death tests are not power-loss proof. Physical independent backup is
 pending the operator's Pi/encrypted-cloud destination choice: dev-vm and NAS2
 share hardware. No recurring backup schedule, off-LAN/phone/golden acceptance,
 native Windows parity or full ForgeOS D0/D2/D4 closure is claimed.
+
+## Current shared revision receipt
+
+The reviewed current-state capture is local:d8c725bad2d5ca7c729cd4afb1e32f62f8f45d46e0884aee9b8901950e42eb03 (L3),
+anchored to DocKit 1831e82cb6482842e6519a9a8a64a92982ef50e0. It explicitly separates
+delivered technical publication/reader/same-NAS restore from the blocked physical
+backup milestone. Opus approved the exact corrected unauthenticated-access
+wording and recovery split before capture/publication.
+
+S3: shared:f731e1766c4ab7a6d03e3f97dcecea374b25e7e103199ab71c10616112d952c2,
+published 2026-09-25T22:46:38Z; original observation 2026-09-25T22:41:59Z.
+Current reader: https://infra.lamanoriega.com/dossier/shared/llm-dockit.
+S1/S2 remain exact historical links; an already-open S2 tab announced S3 without
+changing its selection. All three revisions restored in isolated NAS custody.
+
+The trusted shared client on this host is
+/home/cdelalama/src/.worktrees/forgeos-dossier-shared/scripts/dossier_remote.py.
+Its explicit private binding is
+/home/cdelalama/.local/state/forgeos/dossier/ssh/llm-dockit-binding.json.
+Use that reviewed implementation for manual status/read/submit/publish/backup;
+the original sibling Dossier worktree is preserved and may lack the remote CLI.
+No shell path from a project declaration is executed. Receipt-only commits after
+L3 can report source drift without requiring a new capture of identical state.

@@ -9,8 +9,9 @@
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
-  Native L1/L2 are preserved in shared S1/S2; connected Portal reader and
-  isolated restore pass. Independent physical backup placement remains open.
+  Native L1-L3 are preserved in shared S1-S3; connected Portal reader and
+  isolated restore pass. Current S3 reflects delivery; independent physical
+  backup placement remains open.
 - Source: v4.16.3 fleet patch published; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.

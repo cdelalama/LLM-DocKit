@@ -14,6 +14,8 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
+- 2026-09-25 - Codex - Published reviewed current L3 as S3, verified notification without selection jump, all three exact API revisions and isolated restore, and refreshed 33 browser checks. Catalog metadata synchronized without changing other service entries or bind inodes. Physical backup remains operator-pending. Receipt: docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json. Trace: role=executor; state=current-S3-serving; validation=curation-go-browser-history-restore; next=independent-backup-placement
+
 - 2026-09-25 - Codex - Delivered native DocKit L1/L2 through actual NAS S1/S2 and the connected Portal reader. Source/delta reviews by exact Opus 5.5 high, 19 final-ZFS tests, six real Docker kills, restricted SSH negatives, 33 live browser checks and isolated restore pass. Preserve fleet/adopter and manual acceptance boundaries; physical backup awaits operator destination. Files: docs/operations/DOSSIER.md, docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json, docs/llm/HANDOFF.md. Version impact: none (operational adoption receipt).
 
 - 2026-09-25 - Codex - Verified the first real local Dossier capture: exact retry and no_change retain one revision; an actual clone and linked worktree recover the same registered identity and history. Recorded checked private export, custody modes and explicit reader/backup unavailability. Files: docs/operations/DOSSIER.md, docs/llm/HANDOFF.md, docs/llm/REVIEWS.md. Version impact: none (adoption receipt); shared runtime remains open.
