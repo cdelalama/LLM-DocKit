@@ -14,6 +14,8 @@ YYYY-MM-DD - <LLM_NAME> - <Brief summary> - Files: [list of touched files] - Ver
 
 ### Your Project History
 
+- 2026-09-25 - Codex - Verified the first real local Dossier capture: exact retry and no_change retain one revision; an actual clone and linked worktree recover the same registered identity and history. Recorded checked private export, custody modes and explicit reader/backup unavailability. Files: docs/operations/DOSSIER.md, docs/llm/HANDOFF.md, docs/llm/REVIEWS.md. Version impact: none (adoption receipt); shared runtime remains open.
+
 - 2026-09-25 - Codex - Adopt ForgeOS Dossier for DocKit itself with registered identity, a pinned shared tool and private local custody. Reuse the reviewed optional discovery implementation, preserve the fleet release and exclude source identity from new scaffolds. Files: .forgeos/dossier.json, scripts/dockit-bootstrap-context.sh, scripts/dockit-init-project.sh, scripts/test-dossier-discovery.sh, scripts/test-validator.sh, docs/operations/DOSSIER.md, docs/llm/HANDOFF.md. Version impact: minor 4.17.0; local capture and source review pending.
 
 - 2026-09-23 - Codex - Closed the selective 4.16.3 fleet rollout: 34 owned remotes verified, three local-only commits, one convergence patch deferred; 29 clean primaries advanced and eight dirty primaries preserved. Riego 1.0.15 four-job CI and both delivery fixtures pass. Recorded inherited CI failures and independent exact Opus review; no runtime deployment. Files: docs/FLEET_ROLLOUT_2026-09-23.md, docs/archive/FLEET_ROLLOUT_2026-09-23.json, docs/DOWNSTREAM_FEEDBACK.md, docs/llm/HANDOFF.md, docs/llm/REVIEWS.md. Version impact: none (publication receipts).

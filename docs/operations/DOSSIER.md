@@ -1,6 +1,6 @@
 # LLM-DocKit Dossier adoption
 
-Status: declared and validated local preparation; first capture receipt follows.
+Status: declared, validated and capturing locally; shared publication unavailable.
 Owner: this repository. User direction: use ForgeOS Dossier for DocKit's own
 project tracking, 2026-09-25. This is not a fleet opt-in or shared publication.
 
@@ -83,3 +83,30 @@ this adopter receipt does not close other projects' pilots or shared runtime gat
 
 Registry identity evidence: Home Infra revision d032c47a245b61663f491c993baa8e94264a7878,
 `docs/PROJECTS.yml`, SHA-256 5d619166015cdb6f2bb43ec7c635ab8cecda4406f80cd5f48ad30d1c86175d95.
+
+## Actual local pilot receipt - 2026-09-25
+
+- Project/registry identity: llm-dockit, explicitly matched to the pinned registry.
+- Source anchors: 5a2bba147d545ab6bce0ecd7362853b0098720a1; all six sources use committed bytes.
+- Local revision: local:42ac9f94606e4c6a82bea3d7cb8fb2a39b3cf4694b6b14021c330606eaa22025.
+- Capture ID: 7570e116-a64b-4d56-8508-a37a25f015c9; observed 2026-09-25T20:51:18Z.
+- Exact retry: already_captured, same revision. no_change: same revision and one
+  record. Separate actual clone and linked worktree read this same identity/history.
+- Reviewed technical export SHA-256: baba5715d77bdd289866a90a9e1aef3544090b6c698371877c2ce090c5a414ed.
+  Location: the user state root's `exports/llm-dockit/llm-dockit.json`.
+- trace --export-file verified the exact private export. Reserved reader URL is
+  unavailable, not an accessible delivery. No network serving was configured.
+- Binding/current/record files are 0600; custody directories are 0700. The
+  reviewed export is deliberately 0644 per the shared tool, inside a 0700
+  export directory and private state ancestors; it is not a publicly served file.
+- Migration choice: no prior DocKit binding/history at this declared custody;
+  native v1 starts here. No unknown outbox search or legacy migration occurred.
+- Backup: no accepted off-host backup/restore. Native Windows remains untested.
+
+The post-capture receipt commit changes captured source documents, so latest may
+report may_be_behind_or_working_tree. That is expected and does not require a
+capture just to emit Trace. Capture a new revision when curated project state
+meaningfully changes. In particular, source publication can merit a later update;
+resolve the newest local revision with latest instead of treating this L1 receipt
+as a permanent latest pointer. Off-host custody and connected-reader acceptance
+remain separate work.
