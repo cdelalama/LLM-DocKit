@@ -1,5 +1,36 @@
 # Reviews
 
+## 2026-09-25 - DocKit Dossier self-adoption, 4.17.0
+
+Pilot receipt: real L1 local:42ac9f94606e4c6a82bea3d7cb8fb2a39b3cf4694b6b14021c330606eaa22025; retry/no_change,
+actual clone/worktree, private modes and exact export/Trace pass. See the owning
+runbook for capture ID, source anchors, registry evidence and backup limits.
+Committed source tree after approved review receipt: b5ba4d1fd3bad8a58a7c615d42a49fa7b6029496.
+Delta from reviewed tree: docs/llm/HANDOFF.md, docs/llm/REVIEWS.md only.
+Further finalization remains limited to the four approved receipt files. No
+code/config or version marker changes followed the reviewed candidate.
+
+Exact claude-opus-5-5 at high effort returned SOURCE/LOCAL-CAPTURE GO with no
+blockers. Effective modelUsage verified; session 0c11263b-e1df-4acb-9892-dc8aa799d80c.
+Read-only invocation used --restricted --permission-mode dontAsk,
+--tools Read,Glob,Grep --allowedTools Read,Glob,Grep, strict empty MCP and
+settings disableAllHooks=true. No independent shell/test/hash execution claimed.
+Reviewed candidate tree: aa886dacec58b63558fd297200e0b42effdf6074 (tree object, not a commit).
+
+Executor evidence: 96 validator tests, inert discovery, 15 shared-tool synthetic
+checks, 10 version targets, 7 session checks and 4 explicit skips. Registered
+llm-dockit identity matches the supplied Home Infra registry projection.
+The source init must exclude the declaration/runbook; its regression passes.
+
+Approval covers source and this project's manual offline capture only. Commit
+before capture; pin all sources; retain private native history; record actual
+retry/no_change/clone/worktree/export evidence. The reader remains unavailable.
+Receipt-only finalization in HANDOFF/HISTORY/REVIEWS/DOSSIER is approved; code,
+configuration and version changes reopen review. Final source tests and CI must
+pass, with unchanged main base 4866b59 before publication. Minor non-blocking
+notes: generated STRUCTURE remains a customizable template with source pointers;
+discovery test uses explicit sh; final handoff adds the new decision references.
+
 ## 2026-09-23 - Selective fleet rollout and 4.16.3 source publication
 
 Status: SOURCE GO and ROLLOUT GO after five same-session rounds; source publication only.

@@ -1,22 +1,31 @@
-<!-- doc-version: 4.16.3 -->
+<!-- doc-version: 4.17.0 -->
 # LLM Work Handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-23 - Codex
-- Current source version: 4.16.3
+- Last Updated: 2026-09-25 - Codex
+- Current source version: 4.17.0
 - Owner: Carlos
-- Session focus: operator-authorized selective fleet rollout published; project acceptance stays separate.
+- Session focus: adopt ForgeOS Dossier for this project; local capture verified.
+- Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
+  L1 captured and verified across clone/worktree; no shared publication or
+  accessible reader is claimed. Read latest for current host-local revision.
 - Source: v4.16.3 fleet patch published; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
 - Pilot: Riego local container command integrated; adverse controls and one real
   local packaging attempt pass. Gardener/off-LAN acceptance remains open.
-- Validation: 84 delivery and 96 validator regressions pass; 10 version targets
+- Validation: Dossier discovery, 15 module self-tests and 96 validator regressions
+  pass; 84 final delivery tests pass; CI verifies publication; 10 version targets
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+Use `.forgeos/dossier.json` and `docs/operations/DOSSIER.md` to maintain this
+project's verified local Dossier. Capture meaningful state changes with the
+shared tool; connected reader, shared publication and off-host backup remain open.
+The optional discovery integration reuses PR #3; its prior worktree is preserved.
 
 Review the completed distribution and named project CI follow-ups in
 `docs/FLEET_ROLLOUT_2026-09-23.md` and its durable ledger
@@ -50,6 +59,8 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 
 ## Selected Decisions
 
+- D-025/D-026: inert Dossier discovery and source-only registered self-adoption.
+
 - D-009/D-011: DocKit substrate versus ForgeOS runtime/authority.
 - D-024 supersedes D-020 model preference: exact Opus 5.5 at high effort by default;
   explicit task selection wins, no silent fallback. Independent review remains required.
@@ -59,11 +70,11 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 ## Trace Anchor
 
 - Role: executor
-- Subject: `f3bd177` Merge pull request #2 from cdelalama/feat/df058-delivery
-- Commit time: 2026-09-21 15:48:00 UTC
-- Repo state: committed baseline; this anchor is not a live HEAD assertion.
-- Validation: 84 delivery tests, 96 validator regressions, exact review and CI PASS.
-- Next gate: project-specific delivery integration and real user-path acceptance.
+- Subject: `4866b59` docs: record verified fleet rollout and remaining project gates
+- Commit time: 2026-09-23 22:56:57 UTC
+- Repo state: published baseline anchor; not a live HEAD assertion.
+- Validation: local capture, retry/no_change, clone/worktree and checked export pass.
+- Next gate: maintain local captures; connected reader and off-host custody stay open.
 <!-- DOCKIT-STATE:END -->
 
 ## Historical Context

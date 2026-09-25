@@ -663,3 +663,13 @@ warn unless strict mode is explicitly enabled; size remains advisory even then.
 This checks the declared structure, not arbitrary prose semantics. DocKit itself
 activates these checks and Trace from 2026-09-21. Init generates downstream config
 and omits source archives; sync preserves project HANDOFF/config ownership.
+
+## Optional Dossier local preparation
+
+A project can opt in with the versioned `.forgeos/dossier.json` contract owned
+by ForgeOS. Bootstrap only notices its presence, including invalid declarations.
+Read ForgeOS docs/modules/dossier/OFFLINE_CONTRACT.md from a trusted checkout,
+validate the pinned shared tool, and capture curated changes outside Git.
+Include the latest checked local revision/link in Trace; no new capture is
+required when content has not changed. Server publication remains unavailable
+until D1. This source candidate installs no hooks and migrates no existing outbox.

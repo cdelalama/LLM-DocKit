@@ -174,6 +174,9 @@ rm -f docs/DOWNSTREAM_FEEDBACK.md
 rm -rf docs/archive
 rm -f docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md
 rm -f docs/ROADMAP.md
+# Dossier identity and custody instructions belong to the source project only.
+rm -f .forgeos/dossier.json docs/operations/DOSSIER.md
+if [ -d .forgeos ]; then rmdir .forgeos 2>/dev/null || :; fi
 rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh
 rm -f scripts/dockit-sync-check.sh

@@ -1221,3 +1221,27 @@ Source: https://code.claude.com/docs/en/model-config
 Distribution must preserve dirty worktrees, local exclusions, hooks and unrelated
 settings. Updating the source/user default does not prove every repository copy
 or already-running session has switched. Report applied and deferred surfaces.
+
+## D-025 - Optional Dossier discovery remains inert (2026-09-23)
+
+DocKit notices only the fixed `.forgeos/dossier.json` filename and points to
+ForgeOS's pinned shared offline contract/tool. It does not execute declarations,
+copy the capture engine, register projects, change hooks or admit legacy drafts.
+An opted-in session includes its last checked local revision/link in Trace,
+without forcing a capture. Local preparation is distinct from shared publication.
+Exact Opus 5.5 high reviewed this boundary; final source evidence is owned by
+ForgeOS docs/modules/dossier/reports/DC0_OPUS_REVIEW.md. D0/D2 automation remains
+separate from this filename-only bootstrap notice.
+
+
+## D-026 - DocKit adopts Dossier with its own registered project identity
+
+Accepted by operator direction on 2026-09-25. DocKit uses ForgeOS's published,
+pinned offline candidate for its own curated project state, with the registered
+`llm-dockit` identity. ForgeOS owns the engine/contract; DocKit owns content and
+its explicit local captures. No shared publication or fleet opt-in follows.
+
+The scaffold initializer must remove DocKit's source declaration and custody
+runbook. Otherwise every new project would impersonate DocKit and could share
+its local history. The existing init regression checks that both are absent.
+Local custody remains outside Git and source anchors remain committed evidence.
