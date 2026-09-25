@@ -1570,6 +1570,9 @@ else
         mkdir -p "$INIT_SOURCE/$(dirname "$_file")"
         cp "$PROJECT_ROOT/$_file" "$INIT_SOURCE/$_file"
     done
+    mkdir -p "$INIT_SOURCE/.forgeos" "$INIT_SOURCE/docs/operations"
+    printf '{"project_id":"source-only-identity"}\n' > "$INIT_SOURCE/.forgeos/dossier.json"
+    printf 'source-only custody instructions\n' > "$INIT_SOURCE/docs/operations/DOSSIER.md"
     git -C "$INIT_SOURCE" init -q
     git -C "$INIT_SOURCE" config user.email smoke@example.invalid
     git -C "$INIT_SOURCE" config user.name Smoke
@@ -1583,6 +1586,8 @@ else
         && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
         && [ ! -f "$SCAFFOLD_REPO/docs/ROADMAP.md" ] \
         && [ ! -d "$SCAFFOLD_REPO/docs/archive" ] \
+        && [ ! -e "$SCAFFOLD_REPO/.forgeos/dossier.json" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/DOSSIER.md" ] \
         && ! grep -q handoff_active_start "$SCAFFOLD_REPO/.dockit-config.yml" \
         && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
         && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \

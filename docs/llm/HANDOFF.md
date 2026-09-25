@@ -1,22 +1,29 @@
-<!-- doc-version: 4.16.3 -->
+<!-- doc-version: 4.17.0 -->
 # LLM Work Handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-23 - Codex
-- Current source version: 4.16.3
+- Last Updated: 2026-09-25 - Codex
+- Current source version: 4.17.0
 - Owner: Carlos
-- Session focus: operator-authorized selective fleet rollout published; project acceptance stays separate.
+- Session focus: adopt ForgeOS Dossier for this project; declared local preparation.
+- Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
+  First capture pending; no shared publication or accessible reader is claimed.
 - Source: v4.16.3 fleet patch published; 84 delivery and 96 repaired validator
   regressions pass. Exact Opus 5.5 SOURCE/ROLLOUT GO is recorded in REVIEWS.md.
   The prior v4.16.1 model policy and v4.16.0 delivery behavior are retained.
 - Pilot: Riego local container command integrated; adverse controls and one real
   local packaging attempt pass. Gardener/off-LAN acceptance remains open.
-- Validation: 84 delivery and 96 validator regressions pass; 10 version targets
+- Validation: Dossier discovery, 15 module self-tests and 96 validator regressions
+  pass; prior 84 delivery tests remain the release baseline; 10 version targets
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+Finish this project's local Dossier capture and record its checked receipt in
+`docs/operations/DOSSIER.md`, using `.forgeos/dossier.json` and the shared tool.
+The optional discovery integration reuses PR #3; its prior worktree is preserved.
 
 Review the completed distribution and named project CI follow-ups in
 `docs/FLEET_ROLLOUT_2026-09-23.md` and its durable ledger
@@ -49,6 +56,8 @@ project's current authority and isolation requirements. Do not change the sync
 manifest grammar or bypass independent review/versioning. Stage explicit paths.
 
 ## Selected Decisions
+
+- D-025/D-026: inert Dossier discovery and source-only registered self-adoption.
 
 - D-009/D-011: DocKit substrate versus ForgeOS runtime/authority.
 - D-024 supersedes D-020 model preference: exact Opus 5.5 at high effort by default;

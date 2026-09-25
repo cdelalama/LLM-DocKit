@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "contract": "forgeos/dossier-offline-v1",
+  "project_id": "llm-dockit",
+  "display_name": "LLM-DocKit",
+  "registry": {
+    "namespace": "home-infra-projects",
+    "project_id": "llm-dockit"
+  },
+  "tool": {
+    "version": "1.1.0",
+    "sha256": "fd34d3f45a9382fbf8317a932edd1fa827230d0acccaba68c0b87963c1704a95"
+  },
+  "sources": [
+    "docs/llm/HANDOFF.md",
+    "docs/llm/DECISIONS.md",
+    "docs/ROADMAP.md",
+    "docs/FLEET_ROLLOUT_2026-09-23.md",
+    "docs/DOWNSTREAM_FEEDBACK.md",
+    "docs/operations/DOSSIER.md"
+  ]
+}

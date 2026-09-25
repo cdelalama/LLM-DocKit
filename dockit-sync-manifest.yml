@@ -79,3 +79,7 @@ files:
 - path: dockit-sync-manifest.yml          strategy: skip
 - path: docs/DOWNSTREAM_FEEDBACK.md       strategy: skip
 - path: docs/FLEET_ROLLOUT_2026-09-12.md  strategy: skip
+
+# Source Dossier identity and custody are never fleet defaults.
+- path: .forgeos/dossier.json             strategy: skip
+- path: docs/operations/DOSSIER.md         strategy: skip
