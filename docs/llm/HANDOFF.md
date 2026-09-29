@@ -4,9 +4,14 @@
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-25 - Codex
+- Last Updated: 2026-09-29 - Codex
 - Current source version: 4.17.0
 - Owner: Carlos
+- Advisory review: bounded ecosystem/DF-058 agreement recorded in
+  `docs/archive/DOCKIT_ECOSYSTEM_CONSENSUS_2026-09-29.md` and `docs/llm/REVIEWS.md`.
+  This isolated review receipt changes no accepted policy or operational state.
+  Product fixes, permanent auditor capture and real-pilot acceptance remain open.
+  The Open work queue below predates this report and is not yet restructured; the report's Proposed next work gives the owner-labelled ordering.
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
   Native L1-L3 are preserved in shared S1-S3; connected Portal reader and

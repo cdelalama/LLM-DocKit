@@ -1,5 +1,54 @@
 # Reviews
 
+## 2026-09-29 - Ecosystem boundaries and DF-058 advisory consensus
+
+Status: FINAL ADVISORY CONSENSUS / REPORT GO after exact preapproved wording edits C1-C4.
+Report: docs/archive/DOCKIT_ECOSYSTEM_CONSENSUS_2026-09-29.md.
+Source baseline: d065a38602656ce8936e3ecfc6f0bedb7beafd27, version 4.17.0.
+No source behavior, acceptance policy, runtime, deployment or issue closure follows.
+
+Independent advisor: exact claude-opus-5-5, requested effort high, CLI 2.1.284.
+Session e3b75d85-647b-4592-94a8-e28382a04ff7 was resumed for rounds 2 and 3.
+All three completed rounds returned success with exact init/assistant/modelUsage
+metadata and matching requested/result session IDs. This is independent file
+review, not independently executed tests or runtime observations.
+
+Command: claude -p --model claude-opus-5-5 --effort high --restricted
+--permission-mode dontAsk --tools Read,Glob,Grep --allowedTools Read,Glob,Grep
+--strict-mcp-config --mcp-config '{"mcpServers":{}}'
+--settings '{"disableAllHooks":true}' --output-format stream-json --verbose,
+with --session-id initially and --resume thereafter; source/evidence read roots
+were explicitly supplied with --add-dir. No model substitution or no-persistence
+flag was used. Full invocation arrays and outcomes are in the private packet.
+
+Three Codex researchers surveyed 47 primary directories; executor covered DocKit
+and the preserved ForgeOS convergence clone. Point-in-time inventory: 49 primary
+Git directories, 38 marked adopters, 9 dirty primaries; 27 immediate linked
+worktrees excluded from project counts. The separate typed registry's absent
+source identities are accounted for. Scope is ownership/orientation and targeted
+code-path evidence, not an exhaustive security/runtime audit.
+
+The agreement preserves real useful acceptance, allows an equivalent adopter
+under existing criteria, keeps Riego operations separately owned, interprets
+D-026 through later DS-21 authorization, and limits permanent capture work to a
+ForgeOS-owned invoker/adapter plus deliberate caller adoption. Opus withdrew
+its initial mandatory sweeper/extra operator-question proposals. The Codex platform researcher withdrew a universal external-dependency pilot requirement; the reviewer's round-1 framing was corrected the same way. Historical
+pasted-review dissent is retained in the report.
+
+Private packet: ~/.local/state/forgeos/reviews/dockit-ecosystem-consensus-20260929/.
+It holds exact prompts/streams, stderr, native snapshots, model/capture receipts,
+inventory, source hashes and research reports. Task-local caller copies each
+completed round to ForgeOS auto-captures with parent/child linkage and hash
+readback; no permanent hook/config change is claimed. Raw sessions stay out of
+Git and Dossier. Reviewed report candidate tree (non-commit object):
+c909e143bf63d27805476dac17c4ebb7afb2fe62. Round 3 explicitly preapproved exact
+C1-C4 wording corrections and metadata-only closure; those corrections are applied.
+Round-03 receipt SHA-256: 61119b397db641a24f1a35d3f7d168cff568b835513b31122ebd9e56c8866856.
+Documentation candidate validation: 7 checked/passed, 4 legitimate skips;
+10 version targets agree at 4.17.0; diff whitespace check passed. Final tree,
+receipt/packet hashes and final validation output are retained in the private
+closeout manifest; no self-referential final-tree claim is embedded here.
+
 ## 2026-09-25 - DocKit Dossier self-adoption, 4.17.0
 
 Pilot receipt: real L1 local:42ac9f94606e4c6a82bea3d7cb8fb2a39b3cf4694b6b14021c330606eaa22025; retry/no_change,
