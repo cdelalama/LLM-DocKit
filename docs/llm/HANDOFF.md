@@ -97,3 +97,5 @@ The prior long snapshot is preserved in
 inventory. Riego delivery remains independent of this kit update.
 
 Workspace source review: exact Opus 5.5/high PASS; see REVIEWS.md. Parent records preserve task custody and do not accept unknown source or runtime changes.
+
+DEV rollout receipt: menu and init expose 33 admitted primary projects; managed creation and custody guards are installed. This task is closed in WORK_INDEX without removing its checkout. Home Infra documents retained physical relocation decisions separately.

@@ -1,3 +1,5 @@
+- 2026-09-29 - Codex - Recorded publication and verified DEV rollout for this task; marked its workspace closed without deleting it, reconciled newly observed concurrent worktrees, and retained separate physical relocation custody gates. Files: WORK_INDEX, work records, HANDOFF, HISTORY. Version impact: none (operational receipt).
+
 - 2026-09-29 - Codex - Implemented explicit project admission and parent-owned task workspace contracts within this repository ownership boundary; added isolated validation and durable adoption pointers. See docs/WORKSPACE_OWNERSHIP.md. Independent exact Opus 5.5/high source review PASS and validation evidence are recorded in REVIEWS.md.
 
 # LLM Change History
