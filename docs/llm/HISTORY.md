@@ -1,3 +1,5 @@
+- 2026-09-29 - Codex - Implemented explicit project admission and parent-owned task workspace contracts within this repository ownership boundary; added isolated validation and durable adoption pointers. See docs/WORKSPACE_OWNERSHIP.md. Independent exact Opus 5.5/high source review PASS and validation evidence are recorded in REVIEWS.md.
+
 # LLM Change History
 
 Append new entries at the top so the most recent activity is easiest to find. Follow the required format:

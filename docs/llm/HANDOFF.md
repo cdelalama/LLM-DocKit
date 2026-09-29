@@ -1,11 +1,19 @@
-<!-- doc-version: 4.17.0 -->
+<!-- doc-version: 4.18.0 -->
 # LLM Work Handoff
+
+## Workspace ownership rollout (2026-09-29)
+
+- Last Updated: 2026-09-29 - Codex (workspace ownership slice).
+
+Parent-owned workspaces are documented in `docs/WORKSPACE_OWNERSHIP.md`.
+This scoped rollout preserves all prior product work and handoff context below.
+
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
 - Last Updated: 2026-09-25 - Codex
-- Current source version: 4.17.0
+- Current source version: 4.18.0
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
@@ -87,3 +95,5 @@ The prior long snapshot is preserved in
 `docs/llm/REVIEWS.md`; stable rationale is in `docs/llm/DECISIONS.md`.
 `docs/FLEET_ROLLOUT_2026-09-12.md` is historical fleet evidence, not a fresh
 inventory. Riego delivery remains independent of this kit update.
+
+Workspace source review: exact Opus 5.5/high PASS; see REVIEWS.md. Parent records preserve task custody and do not accept unknown source or runtime changes.

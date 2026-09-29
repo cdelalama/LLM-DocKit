@@ -118,3 +118,11 @@ Exact publication/review/CI ledger: `docs/archive/FLEET_ROLLOUT_2026-09-23.json`
 
 Source Dossier declaration: `.forgeos/dossier.json`; usage and local adoption
 receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream identity.
+
+## Workspace ownership additions
+
+- `docs/WORKSPACE_OWNERSHIP.md`: ownership contract, operations and validation.
+- `docs/llm/WORK_INDEX.md` and `docs/llm/work/*.json`: portable parent task index and records, when adopted.
+
+- `scripts/dockit-workspace.py`: canonical DocKit portable work-record validation.
+- `scripts/test-work-records.py`: portable record and linked-checkout regression.

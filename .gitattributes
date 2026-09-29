@@ -1,0 +1,3 @@
+
+# Byte-identical portable validator for host content pins, including Windows.
+scripts/dockit-workspace.py text eol=lf

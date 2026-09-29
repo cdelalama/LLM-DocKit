@@ -1,4 +1,4 @@
-<!-- doc-version: 4.17.0 -->
+<!-- doc-version: 4.18.0 -->
 # <PROJECT_NAME> Architecture (Optional)
 
 > Version: 0.1.0-draft
@@ -64,3 +64,7 @@ Phases/milestones in order:
 1. <Phase 0> - <goal>
 2. <Phase 1> - <goal>
 
+
+## Parent-owned workspace boundary
+
+See [Workspace ownership](WORKSPACE_OWNERSHIP.md). Devenv owns admission and visibility; ForgeOS owns task workspace operations; LLM-DocKit owns portable record validation; Home Infra owns installed host policy and custody.

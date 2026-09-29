@@ -1,0 +1,11 @@
+name: Workspace ownership contract
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate isolated workspace contract
+        run: python3 scripts/test-work-records.py

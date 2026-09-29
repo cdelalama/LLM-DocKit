@@ -36,3 +36,5 @@ Goals:
 
 To avoid Windows encoding issues, keep `docs/llm/*` ASCII-only when possible.
 
+
+- [Parent-owned task index](WORK_INDEX.md): retained work and explicit disposition.

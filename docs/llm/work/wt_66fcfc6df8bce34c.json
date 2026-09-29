@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "docs/opus-5-5-default",
+  "id": "wt_66fcfc6df8bce34c",
+  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: docs/opus-5-5-default",
+  "schema": 1,
+  "state": "retained"
+}

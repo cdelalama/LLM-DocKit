@@ -949,3 +949,38 @@ CI, packaging and private-placement deltas received GO. Returned model metadata
 verified. Runtime evidence is executor-supplied, not an auditor-run experiment.
 The approved receipt-only closure preserves independent physical backup and
 D0/D2/full D4/human acceptance gates. See docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json.
+
+## 2026-09-29 - Parent-owned DEV workspace source review
+
+Role: independent read-only advisor/source reviewer. Model requested and returned:
+`claude-opus-5-5`; command effort `high`, returned canonicalModel verified in
+modelUsage. CLI used --safe-mode --permission-mode plan --tools ""
+--no-session-persistence --print --output-format json --model claude-opus-5-5
+--effort high. The reviewer received primary source, concrete test evidence and
+prior findings; it did not execute tools or independently run the tests.
+
+First review: two P1 and five P2 findings. The second confirmed P1 closure and
+identified three remaining P2: diagnostic fallback, guarded test fixtures and
+helper pin enforcement on export. Final core review: PASS, no unresolved
+P0/P1/P2. Exact candidate input hashes are in the retained packet manifest.
+Prompt SHA-256: 1884885b4df95ca454734fa3e12ed9144ec7de303a902f1550639f3db8464715.
+Response SHA-256: 18f55866b0bf245859f8cc0d7054809a4e78a26a2cc8e8252a10a34b45dede74.
+
+Executor validation: DEV admission 7, ForgeOS 9, portable record 3 and Git guard
+1 tests pass with the guard first on PATH; ForgeOS 9 also pass on Windows with
+bundled Git 2.53 (old system Git 2.35 lacks required porcelain -z support).
+Session recovery 28, restore policy 71 and runtime integration 187 pass in
+isolated HOME/tmux fixtures. DocKit validator 96, delivery 84, optional discovery,
+ShellCheck, version synchronization and the live isolated systemd fixture pass.
+The systemd fixture preserves the same tmux PIDs; actual operator sessions are
+never used as test fixtures. All eight owner helpers match the canonical hash.
+
+Raw bounded packets remain in private host rollout custody, outside project Git.
+Final delivery/CLI supplemental review and observed runtime receipt are recorded
+by Home Infra. Source review is not a claim of physical relocation or runtime
+activation. No dirty/unpublished worktree is merged or deleted by adoption.
+
+Accepted nonblocking followups: a record-only abandon/retire command, improved
+diagnostic caching, and fuller guarded relocation tooling. Closed/clean/merged
+does not authorize deletion. An ignored-but-pinned helper remains a generic
+export edge case; this rollout's eight helpers are tracked and hash-verified.

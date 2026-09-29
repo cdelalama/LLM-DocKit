@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "fix/fleet-rollout-20260923",
+  "id": "wt_c96e20d1843453b7",
+  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: fix/fleet-rollout-20260923",
+  "schema": 1,
+  "state": "retained"
+}

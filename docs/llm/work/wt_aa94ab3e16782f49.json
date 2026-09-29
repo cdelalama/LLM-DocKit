@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "codex/workspace-ownership-20260929",
+  "id": "wt_aa94ab3e16782f49",
+  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: codex/workspace-ownership-20260929",
+  "schema": 1,
+  "state": "retained"
+}

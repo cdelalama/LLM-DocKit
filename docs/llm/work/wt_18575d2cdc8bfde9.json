@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "feat/dossier-discovery",
+  "id": "wt_18575d2cdc8bfde9",
+  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: feat/dossier-discovery",
+  "schema": 1,
+  "state": "retained"
+}

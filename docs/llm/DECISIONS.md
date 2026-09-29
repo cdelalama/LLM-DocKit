@@ -1245,3 +1245,7 @@ The scaffold initializer must remove DocKit's source declaration and custody
 runbook. Otherwise every new project would impersonate DocKit and could share
 its local history. The existing init regression checks that both are absent.
 Local custody remains outside Git and source anchors remain committed evidence.
+
+## Parent-owned workspace decision - 2026-09-29
+
+Carlos authorized correcting DEV project clutter and preventing recurrence after the reviewed design. Tasks remain owned by their parent, canonical project admission is explicit, and source placement is hidden. Adopt metadata before any custody-dependent movement; preserve unknown/dirty/unpublished work. See `docs/WORKSPACE_OWNERSHIP.md` for this repository contract.

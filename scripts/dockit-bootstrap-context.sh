@@ -306,6 +306,17 @@ Dossier declaration detected: .forgeos/dossier.json (not validated).
   - This notice is discovery guidance, not capture automation or enforcement."
 fi
 
+# Parent-owned task records are portable; current workspace locations are host-local.
+if [ -d "$PROJECT_ROOT/docs/llm/work" ]; then
+    MESSAGE="$MESSAGE
+
+Parent-owned work: read docs/llm/WORK_INDEX.md and the relevant docs/llm/work record.
+  - Validate with python3 scripts/dockit-workspace.py --project .
+  - Preserve active, paused, pending-integration and retained work. Closed is
+    a recorded disposition, never permission to delete a checkout or evidence.
+  - Use the installed task-workspace status command for live locations when available."
+fi
+
 # -- Emit ------------------------------------------------------------------
 
 case "$OUTPUT_MODE" in

@@ -1,4 +1,4 @@
-<!-- doc-version: 4.17.0 -->
+<!-- doc-version: 4.18.0 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -303,3 +303,30 @@ Use the Do Not Touch section in docs/llm/HANDOFF.md to flag any files or areas t
 
 Every change must be documented. If you are unsure about a rule, ask the user before proceeding.
 <!-- DOCKIT-TEMPLATE:END footer -->
+
+<!-- DOCKIT-TEMPLATE:START workspace-ownership -->
+### Parent-owned task workspaces
+
+The source root contains admitted primary projects. Tasks, experiments, reviews,
+disk investigations and delivery branches belong to an existing project; their
+folder names never make them independent projects. A new top-level project needs
+an explicit operator purpose and `devenv admission add PROJECT` after validating
+its canonical repository. Visibility is independent from lifecycle and sessions.
+
+On managed hosts use `task-workspace create --project OWNER --task ID --purpose
+"Specific result"`. Worktrees live under the host's hidden worktree root and
+host-local locations stay out of portable project records. Start by reading
+`docs/llm/WORK_INDEX.md` when present and `task-workspace status --project .`.
+After adoption or completion, export the validated `docs/llm/work/*.json` records
+and index into a reviewed task checkout, update the parent's handoff/history,
+validate, commit and safely publish. Record a disposition and next step even when
+work is paused or incomplete. An export does not prove publication; verify the
+records against a freshly fetched `refs/remotes/origin/*` reference.
+
+Never infer deletion eligibility from age, a clean Git status, a merged branch,
+or a closed task. Ignored evidence, untracked material and active processes need
+separate custody checks. Preserve unknown, dirty, unpublished and active work.
+Do not create task-named siblings under the source root or auto-admit directories.
+The PATH guard protects supported CLI workflows; direct Git binaries and other
+clients can bypass it, so project admission and reconciliation remain essential.
+<!-- DOCKIT-TEMPLATE:END workspace-ownership -->

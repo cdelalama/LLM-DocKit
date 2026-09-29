@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "feat/df058-delivery",
+  "id": "wt_ecf27ef256cff43e",
+  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: feat/df058-delivery",
+  "schema": 1,
+  "state": "retained"
+}

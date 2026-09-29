@@ -1,4 +1,4 @@
-<!-- doc-version: 4.17.0 -->
+<!-- doc-version: 4.18.0 -->
 # Project Context - <PROJECT_NAME>
 
 ## Vision
@@ -31,3 +31,7 @@ Provide a snapshot of the project's current state. Highlight completed milestone
 
 ## References
 Link to any external documentation, specifications, or resources relevant to the project.
+
+## Parent-owned workspace boundary
+
+See [Workspace ownership](WORKSPACE_OWNERSHIP.md). Devenv owns admission and visibility; ForgeOS owns task workspace operations; LLM-DocKit owns portable record validation; Home Infra owns installed host policy and custody.
