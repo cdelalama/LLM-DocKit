@@ -1,4 +1,19 @@
 <!-- doc-version: 4.18.1 -->
+## 2026-09-30 - Spanish Dossier delivered and verified
+
+Last Updated: 2026-09-30 - Codex.
+English engineering sources and Spanish operator-facing prose are now explicit
+in DocKit, ForgeOS and all three adopters. Portal 0.33.4 serves Spanish Plaud
+L4/S4, Home Infra L3/S3 and DocKit L4/S4; exact original history remains readable.
+Separate exact Opus high source/curation GO, 193 tests, live API and all three
+projects at 390/840/1440 px pass. Complete decision reasons and source fields
+are verified in the actual reader. The measured complete-history SSH read now
+has a bounded 30-second deadline. Eleven mounts and three bindings are intact.
+All three coherent backups restore in isolated same-NAS custody.
+Owner: docs/archive/DOSSIER_LANGUAGE_2026-09-30.md.
+Next: normal curated use; independent physical recovery and broader product
+localization remain separate. Re-measure if a complete-history read exceeds 20 s.
+
 
 ## 2026-09-30 - Spanish operator-facing Dossier correction
 

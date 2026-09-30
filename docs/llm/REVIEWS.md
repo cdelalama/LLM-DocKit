@@ -1,3 +1,12 @@
+## 2026-09-30 - Full Spanish curation and live acceptance
+
+Exact Opus 5.5 high (canonicalModel verified) reviewed every human field and
+all 28 Plaud decision reasons. CURATION_GO followed four precise semantic
+corrections. IDs, statuses, relations, original source pins and technical literal
+multisets are exact. Actual API/browser, same-UUID capture/export and isolated
+restore evidence is recorded in docs/archive/DOSSIER_LANGUAGE_2026-09-30.json.
+This closes technical delivery, not independent physical recovery or new roadmap gates.
+
 ## 2026-09-30 - Spanish Dossier source correction
 
 - Subject: separate English engineering sources from Spanish operator-facing prose; complete Dossier curation contract and Portal copy correction.

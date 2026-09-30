@@ -58,3 +58,31 @@ restore is logical recovery, not independent hardware recovery.
 Exact Opus 5.5 high coauthoring and independent read-only review use different
 sessions. Record actual canonicalModel metadata and distinguish translation,
 source review, publication, runtime and browser evidence. Actual receipts follow.
+
+## Verified delivery receipt
+
+Portal 0.33.4 is serving the three current Spanish Dossiers. Plaud L4/S4,
+Home Infra L3/S3 and DocKit L4/S4 retain every original English revision and
+source anchor. New local captures pass same-UUID retries, reviewed export and
+exact shared readback. Separate Opus coauthor, source and curation sessions
+confirm the language boundary and complete field/decision translation.
+
+Live HTTPS checks cover all five sections and all four roadmap views at
+390/840/1440 px, complete decision reasons, source fields, milestone details,
+entry-point tooltip/accessibility and blocker navigation. All three exact
+histories and negative identity/revision routes pass. No horizontal overflow
+or page errors were observed; original design goldens are unchanged.
+
+The first deployment hit the prior 15-second timeout. The measured 15,756 ms
+valid read justified the reviewed 30-second deadline. The previous image and
+configuration were restored before final delivery. The first repeated SQLite
+backup needed shared-memory file access after recreation; the retry kept a
+read-only SQLite connection, used Online Backup, and passed quick_check.
+All eleven mounts and all three reader bindings are preserved. Each complete
+Dossier backup restored into isolated same-NAS custody; this is not independent
+physical disaster recovery. Complete sanitized receipts are in the adjacent
+DOSSIER_LANGUAGE_2026-09-30.json.
+
+Follow-ups remain separate: independent physical recovery; broader non-Dossier
+UI localization; future complete-history read performance above 20 seconds.
+The project roadmaps and acceptance statuses were not changed by translation.

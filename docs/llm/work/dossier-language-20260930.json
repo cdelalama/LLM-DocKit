@@ -1,10 +1,13 @@
 {
-  "artifacts": [],
+  "artifacts": [
+    "docs/archive/DOSSIER_LANGUAGE_2026-09-30.md",
+    "docs/archive/DOSSIER_LANGUAGE_2026-09-30.json"
+  ],
   "branch": "work/dossier-language-20260930",
   "id": "dossier-language-20260930",
-  "next_step": "Complete this task and record its result or explicit pending disposition.",
+  "next_step": "Completed Spanish Dossier delivery; retain checkout and evidence. Independent physical recovery, broader product localization and proposed M0 remain separately owned.",
   "project": "LLM-DocKit",
   "purpose": "Separate technical documentation language from Spanish operator-facing Dossier content",
   "schema": 1,
-  "state": "active"
+  "state": "closed"
 }

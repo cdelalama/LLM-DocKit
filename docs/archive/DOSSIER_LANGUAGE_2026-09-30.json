@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-30T17:12:08.515676+00:00",
+  "instruction": "English engineering documentation; Spanish operator-facing Dossier prose",
+  "source_commits": [
+    {
+      "project": "LLM-DocKit",
+      "commit": "e06a299154b02542d7a49da1ec2e26b710126f5d",
+      "version": "4.18.1"
+    },
+    {
+      "project": "forgeos",
+      "commit": "3443e4f73222c785610e6262ebbb092395f705c2",
+      "version": "0.29.1"
+    },
+    {
+      "project": "infra-portal",
+      "commit": "0a09c96eede738f3430d74c0963194a6c64fc95c",
+      "version": "0.33.3"
+    },
+    {
+      "project": "home-infra",
+      "commit": "f92871916ce8d10b03e6c2e25357f58ebc53998e",
+      "version": "0.47.3"
+    },
+    {
+      "project": "plaud-mirror",
+      "commit": "08f0cd079711a8a45271a8a4030abad6a24e437e",
+      "version": "0.16.7"
+    },
+    {
+      "project": "infra-portal",
+      "commit": "32084ddfc2b5f090bfee4f0e8306bf197e211b61",
+      "version": "0.33.4"
+    },
+    {
+      "project": "home-infra",
+      "commit": "c9e88c00bae1d0d46c87515714aae340a5c0af9f",
+      "version": "0.47.4"
+    }
+  ],
+  "portal": {
+    "state": "serving",
+    "source": "32084ddfc2b5f090bfee4f0e8306bf197e211b61",
+    "version": "0.33.4",
+    "image": "registry.lamanoriega.com/infra-portal:0.33.4@sha256:b86af96c917f2919daf456ce893dbb3dd48230a808db83c2565a530c999b4636",
+    "id": "eed62e85f2bbbe0d695f2e430b3b88f4a216f6a19943392f2e4473f9299f8f3e",
+    "all_mounts_preserved": 11,
+    "previous_image": "registry.lamanoriega.com/infra-portal:0.33.2@sha256:0b039719aefbf97077ea2f6473b6a529c6a993b5b03ae6a42a5fd12f546937a4",
+    "projects": {
+      "projects": [
+        {
+          "project_id": "llm-dockit",
+          "display_name": "LLM-DocKit",
+          "revision": "shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75"
+        },
+        {
+          "project_id": "home-infra",
+          "display_name": "Home Infra",
+          "revision": "shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056"
+        },
+        {
+          "project_id": "plaud-mirror",
+          "display_name": "Plaud Mirror",
+          "revision": "shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91"
+        }
+      ],
+      "unavailable": 0
+    },
+    "rollback_applied": false,
+    "bindings_byte_identical": true
+  },
+  "dossiers": {
+    "plaud-mirror": {
+      "local_revision": "local:55b64c85cc1c7c2f63e61dae870c8d0d07c534e423decad7e915c2ac54931aad",
+      "shared_revision": "shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91",
+      "reader_url": "https://infra.lamanoriega.com/dossier/shared/plaud-mirror?revision=shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91",
+      "records": 4,
+      "original_history_preserved": true,
+      "current_content": "Spanish",
+      "source_pins": "original anchors retained; one new published language-policy anchor",
+      "backup_sha256": "8b04cc3cd1542372978e1ea4548b2071d6de9130c1657a4712f562dd07e167c4",
+      "same_nas_restore": "all exact revisions verified"
+    },
+    "home-infra": {
+      "local_revision": "local:88292b21ba6903375273670d44c7629ef4b7e474f0743a8fbdab04df05aedcad",
+      "shared_revision": "shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056",
+      "reader_url": "https://infra.lamanoriega.com/dossier/shared/home-infra?revision=shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056",
+      "records": 3,
+      "original_history_preserved": true,
+      "current_content": "Spanish",
+      "source_pins": "original anchors retained; one new published language-policy anchor",
+      "backup_sha256": "15e5cde43d3c14f42626916b1d6d81cda687d583603302e3806e2d7a90bbd2d9",
+      "same_nas_restore": "all exact revisions verified"
+    },
+    "llm-dockit": {
+      "local_revision": "local:5f86a451b98023a96674fbbf4678740656b4fb9515fd75913a66fe059e7dd333",
+      "shared_revision": "shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75",
+      "reader_url": "https://infra.lamanoriega.com/dossier/shared/llm-dockit?revision=shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75",
+      "records": 4,
+      "original_history_preserved": true,
+      "current_content": "Spanish",
+      "source_pins": "original anchors retained; one new published language-policy anchor",
+      "backup_sha256": "8feb3349e720ac73f1ebe4a8d4c53b48bc00e6c7d10855cc2b453cc580093c6c",
+      "same_nas_restore": "all exact revisions verified"
+    }
+  },
+  "reviews": {
+    "coauthor": {
+      "session_id": "a204a9d4-0da2-478b-abab-872ba73bb64e",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "scope": "coauthor"
+    },
+    "source": {
+      "session_id": "151ff611-275b-4ad9-bf7e-68e03cca6e7a",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "scope": "source"
+    },
+    "curation": {
+      "session_id": "0584a0eb-10b0-47fa-8191-5b4304d12827",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "scope": "curation"
+    },
+    "transport_followup": {
+      "session_id": "151ff611-275b-4ad9-bf7e-68e03cca6e7a",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "scope": "transport_followup"
+    }
+  },
+  "validation": {
+    "portal_tests": 193,
+    "typecheck": "passed",
+    "build": "passed",
+    "dockit_generated_spanish_policy": "passed",
+    "api_history_identity_routes": "passed",
+    "browser": {
+      "state": "passed",
+      "observed_at": "2026-09-30T17:11:27.064Z",
+      "scope": "actual HTTPS Spanish reader and all3 curated projects; no pixel-identity claim",
+      "checks": [
+        {
+          "slug": "plaud-mirror",
+          "width": 390,
+          "revision": "shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 28,
+          "sourceFields": 35,
+          "milestoneDialogs": 2,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "home-infra",
+          "width": 390,
+          "revision": "shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 4,
+          "sourceFields": 7,
+          "milestoneDialogs": 2,
+          "historyReads": 3,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "llm-dockit",
+          "width": 390,
+          "revision": "shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 3,
+          "sourceFields": 7,
+          "milestoneDialogs": 2,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "plaud-mirror",
+          "width": 840,
+          "revision": "shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 28,
+          "sourceFields": 35,
+          "milestoneDialogs": 2,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "home-infra",
+          "width": 840,
+          "revision": "shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 4,
+          "sourceFields": 7,
+          "milestoneDialogs": 2,
+          "historyReads": 3,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "llm-dockit",
+          "width": 840,
+          "revision": "shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 3,
+          "sourceFields": 7,
+          "milestoneDialogs": 2,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "plaud-mirror",
+          "width": 1440,
+          "revision": "shared:dafe90eaa931f07967f6affca61e33757ef653208b4b89e07d7f5c704e00eb91",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 28,
+          "sourceFields": 35,
+          "milestoneDialogs": 28,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "home-infra",
+          "width": 1440,
+          "revision": "shared:b629556a6000ec99119d0739eba55441738dc6b068b82e9b6687a0ad29f01056",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 4,
+          "sourceFields": 7,
+          "milestoneDialogs": 7,
+          "historyReads": 3,
+          "noHorizontalOverflow": true
+        },
+        {
+          "slug": "llm-dockit",
+          "width": 1440,
+          "revision": "shared:58c9b5f6c1961e6ebe2768e61b98b8482132895dd0a38276f21d69549219df75",
+          "sections": 5,
+          "roadmapViews": 4,
+          "fullDecisionReasons": 3,
+          "sourceFields": 7,
+          "milestoneDialogs": 6,
+          "historyReads": 4,
+          "noHorizontalOverflow": true
+        }
+      ]
+    },
+    "original_golden": "unchanged; no pixel-identity claim"
+  },
+  "recovery": {
+    "sqlite_backup": {
+      "state": "verified",
+      "method": "SQLite Online Backup API",
+      "quick_check": "ok",
+      "bytes": 716427264,
+      "tables": [
+        "events",
+        "probes",
+        "sqlite_sequence"
+      ],
+      "previous_image": "registry.lamanoriega.com/infra-portal:0.33.2@sha256:0b039719aefbf97077ea2f6473b6a529c6a993b5b03ae6a42a5fd12f546937a4",
+      "previous_source": "aa3b7cfe3f5be73838fb1db8eebcafb9ea421a11",
+      "data_volume": "infra-portal_infra-portal-data",
+      "sha256": "fd4a4e4f31bfde450742c6440728b04ed8fdc95e042a5445c633df11552c1e58",
+      "physical_independence": false
+    },
+    "dossier_restore": "all3 stores, same NAS only",
+    "physical_independence": false
+  },
+  "read_deadline": {
+    "before_ms": 15000,
+    "measured_valid_read_ms": 15756,
+    "after_ms": 30000,
+    "first_attempt": "0.33.3 failed reader gate and restored 0.33.2; final0.33.4 verified"
+  },
+  "producer_runtime": "Plaud and Media2Text unchanged; final verification recorded separately",
+  "evidence_packet": "dossier-language-20260930"
+}
