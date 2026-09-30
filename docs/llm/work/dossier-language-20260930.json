@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/dossier-language-20260930",
+  "id": "dossier-language-20260930",
+  "next_step": "Complete this task and record its result or explicit pending disposition.",
+  "project": "LLM-DocKit",
+  "purpose": "Separate technical documentation language from Spanish operator-facing Dossier content",
+  "schema": 1,
+  "state": "active"
+}

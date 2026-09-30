@@ -5,6 +5,18 @@ available on LAN/WireGuard. Physical independent backup placement remains open.
 Owner: this repository. User direction: use ForgeOS Dossier for DocKit's own
 project tracking, 2026-09-25. This is not a fleet opt-in.
 
+
+## Operator-facing language (2026-09-30 clarification)
+
+Carlos requires Spanish for every human-readable Dossier field, including
+headings, full decision reasons, milestone/acceptance text and source summaries.
+English engineering documentation does not determine the reader language.
+Follow the complete field-level checklist in ForgeOS docs/modules/dossier/OFFLINE_CONTRACT.md.
+Preserve IDs, statuses, technical literals and exact pinned source bytes. Check
+all visible fields and the real reader; schema checks do not prove language or
+semantic equivalence. Publish corrections as new dated revisions; retain earlier
+English revisions as original historical evidence. No schema or engine change.
+
 ## Contract and identity
 
 The root `.forgeos/dossier.json` is the only project declaration. Stable identity:

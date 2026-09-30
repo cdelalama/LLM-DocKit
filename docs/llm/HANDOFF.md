@@ -1,4 +1,20 @@
-<!-- doc-version: 4.18.0 -->
+<!-- doc-version: 4.18.1 -->
+
+## 2026-09-30 - Spanish operator-facing Dossier correction
+
+Last Updated: 2026-09-30 - Codex.
+Carlos explicitly requires Spanish for product/operator prose while canonical
+engineering documents remain English. The correction covers all authored
+Dossier fields, source titles/summaries and navigation, not only chat text.
+The source Language Policy and owning Dossier instructions now state this
+boundary. Portal 0.33.3 labels the section Hoja de ruta; route and technical
+identifiers retain their values. Prior immutable English revisions remain
+historical evidence. New Spanish revisions are prepared for Plaud, Home Infra
+and DocKit; source review, exact capture/publication and live-reader checks
+precede the delivery receipt. No product-roadmap gate is closed by translation.
+Owner: docs/archive/DOSSIER_LANGUAGE_2026-09-30.md.
+Next: exact Opus independent review, source publication and Spanish reader delivery.
+
 # LLM Work Handoff
 
 ## Workspace ownership rollout (2026-09-29)
@@ -12,8 +28,8 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-25 - Codex
-- Current source version: 4.18.0
+- Last Updated: 2026-09-30 - Codex
+- Current source version: 4.18.1
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.

@@ -1249,3 +1249,16 @@ Local custody remains outside Git and source anchors remain committed evidence.
 ## Parent-owned workspace decision - 2026-09-29
 
 Carlos authorized correcting DEV project clutter and preventing recurrence after the reviewed design. Tasks remain owned by their parent, canonical project admission is explicit, and source placement is hidden. Adopt metadata before any custody-dependent movement; preserve unknown/dirty/unpublished work. See `docs/WORKSPACE_OWNERSHIP.md` for this repository contract.
+
+## D-027 - Engineering language and operator language are independent
+
+Accepted by Carlos on 2026-09-30. English engineering documents do not imply
+English product views. Human-readable UI and projection fields use the selected
+operator language, Spanish in Carlos's workspace, even when stored in source
+JSON. Exact identifiers, source bytes and historical evidence remain unchanged.
+A language correction is a new dated observation, never a rewrite of history.
+The generic starter follows the configured conversation language unless the
+operator explicitly chooses a different product locale. Existing project-local
+Language Policy sections need reviewed adoption; no fleet sync is claimed.
+Field coverage and semantic review belong to authors and independent review;
+schema validation and the sharing filter are not language-detection guarantees.

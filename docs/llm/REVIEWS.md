@@ -1,3 +1,11 @@
+## 2026-09-30 - Spanish Dossier source correction
+
+- Subject: separate English engineering sources from Spanish operator-facing prose; complete Dossier curation contract and Portal copy correction.
+- Independent reviewer: exact `claude-opus-5-5`, high effort, canonicalModel verified; session `151ff611-275b-4ad9-bf7e-68e03cca6e7a`.
+- Verdict: SOURCE_GO after fixing entry-point tooltip/accessibility copy, recording expected visual-copy differences, patch version impacts and retained ownership follow-ups. Final required whitespace/table fixes applied; no golden replacement or pixel-identity claim.
+- Validation: all owner version/session/work-record checks passed; Portal typecheck, 193 tests and client/server build passed. Catalog audit passed with three pre-existing expiry warnings.
+- Boundary: source review only. Translation has a separate independent review; new captures/publication and actual browser delivery receive separate receipts. Runtime producers and pinned Dossier engine unchanged.
+
 # Reviews
 
 ## 2026-09-25 - DocKit Dossier self-adoption, 4.17.0

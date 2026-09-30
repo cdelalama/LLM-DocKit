@@ -664,6 +664,22 @@ This checks the declared structure, not arbitrary prose semantics. DocKit itself
 activates these checks and Trace from 2026-09-21. Init generates downstream config
 and omits source archives; sync preserves project HANDOFF/config ownership.
 
+## Documentation language versus product language
+
+Keep engineering sources in English while rendering operator-facing prose in
+the user's selected language. In Carlos's workspace the product language is
+Spanish. This applies to Dossier fields and exported JSON prose as well as
+buttons, accessibility labels, dashboards and readable reports. Translating
+navigation alone is insufficient. Preserve exact technical identifiers,
+commands, source bytes, hashes and immutable historical revisions.
+
+Adapt the Language Policy in LLM_START_HERE.md when initializing a project.
+That project-local section is outside managed section sync; review and update
+existing adopters explicitly. A source-template update is not a fleet rollout.
+Dossier curation/publication follows ForgeOS's OFFLINE_CONTRACT.md and
+ADOPTION_PACKET.md. Review all visible fields and the real reader before
+publication; structural validation cannot certify translation quality.
+
 ## Optional Dossier local preparation
 
 A project can opt in with the versioned `.forgeos/dossier.json` contract owned

@@ -1,3 +1,5 @@
+- 2026-09-30 - Codex - Separate English engineering sources from Spanish operator-facing prose; prepare complete translated Dossier content and Hoja de ruta labels. Existing identities, states and immutable history are preserved. Owner: docs/archive/DOSSIER_LANGUAGE_2026-09-30.md. Version impact: patch 4.18.1 (template policy). Trace: role=executor; state=language-correction-candidate; validation=exact-review-and-live-delivery-pending; next=source-review-publication-and-Spanish-reader
+
 - 2026-09-29 - Codex - Recorded publication and verified DEV rollout for this task; marked its workspace closed without deleting it, reconciled newly observed concurrent worktrees, and retained separate physical relocation custody gates. Files: WORK_INDEX, work records, HANDOFF, HISTORY. Version impact: none (operational receipt).
 
 - 2026-09-29 - Codex - Implemented explicit project admission and parent-owned task workspace contracts within this repository ownership boundary; added isolated validation and durable adoption pointers. See docs/WORKSPACE_OWNERSHIP.md. Independent exact Opus 5.5/high source review PASS and validation evidence are recorded in REVIEWS.md.

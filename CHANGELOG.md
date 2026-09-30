@@ -4,6 +4,16 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.18.1] - 2026-09-30
+
+- Separate English engineering sources from operator-language UI and Dossier prose; require full-field curation review.
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [4.18.0] - 2026-09-29
 
 - Added explicit project admission, parent-owned work records and managed task workspace policy within this repository ownership boundary.

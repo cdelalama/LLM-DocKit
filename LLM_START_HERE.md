@@ -1,4 +1,4 @@
-<!-- doc-version: 4.18.0 -->
+<!-- doc-version: 4.18.1 -->
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -23,10 +23,21 @@ Session-start scope:
 ## Critical Rules (Non-Negotiable)
 
 ### Language Policy
-- All code and documentation: English (update if your project needs a different language)
-- Conversation with the user: <CONVERSATION_LANGUAGE>
-- Comments in code: English
-- File names: English
+- Canonical engineering documentation, code identifiers, comments and file names: English.
+- Conversation with the user: <CONVERSATION_LANGUAGE>.
+- All operator-facing prose uses the configured conversation language unless
+  the user explicitly selects a different product language.
+- Product copy includes UI labels, dialogs, accessibility text, dashboards,
+  reports and every human-readable field in a Dossier projection. This rule
+  also applies when that content is stored in JSON or generated from English
+  technical documents. Translate its meaning before capture/publication.
+- Keep product names, exact commands, code literals, paths, schema keys, IDs,
+  enum values, hashes and source bytes unchanged. Source titles and explanatory
+  summaries shown to the operator use that product language; technical source files remain English.
+- A language correction creates a newly dated revision. Preserve original
+  observations, immutable historical revisions, status, evidence and permissions.
+- Before delivery, review every visible field and inspect the real reader in
+  the selected product language. Schema validation alone does not prove language or translation quality.
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
 ### Documentation Update Rules
