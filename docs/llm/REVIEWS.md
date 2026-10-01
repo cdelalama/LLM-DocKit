@@ -1009,3 +1009,14 @@ Accepted nonblocking followups: a record-only abandon/retire command, improved
 diagnostic caching, and fuller guarded relocation tooling. Closed/clean/merged
 does not authorize deletion. An ignored-but-pinned helper remains a generic
 export edge case; this rollout's eight helpers are tracked and hash-verified.
+
+## 2026-10-01 - Meaningful Dossier closeout and Plaud S7
+
+- Reviewer: exact claude-opus-5-5, high effort; returned modelUsage verified.
+- Mode: independent read-only source/curation audit, native session 151ff611-275b-4ad9-bf7e-68e03cca6e7a. Prior complete owner onboarding retained; current patches, primary files, all L7 fields, staged installed instructions, wrapper preimages and restore/read evidence inspected.
+- Candidates: plaud base 28c4a72ffb1bd2d98b6c0ba6070e1026ff1f4394 patch SHA-256 dc4c0ab3937ecc56368d1df714a2eea8f1badb62aaafc08b0f4e1b611b1d709c; dockit base 311fd9314130fca2eb7c4c9f0e984b5a4317ab69 patch SHA-256 5f489f68722c67591a9fbe6d46a32c9cb8d31e0af3c9b329818e3f936be0d0ad; forge base 8738657808e268f5ac906e15ccbc1589bb4aa2c5 patch SHA-256 04d773fbd096572e33f7e3879b165c9ced6efc89e5b89600213a50a0d6006b3f; home base ddefb6fb6fe1401158c97684be8cde24e945e0d0 patch SHA-256 fd25b6d235806cac8e5c002b6f45b4d874a43137111c1eb00fdce6bb382fbaa6.
+- Command: `/home/cdelalama/.local/bin/claude -p --resume 151ff611-275b-4ad9-bf7e-68e03cca6e7a --model claude-opus-5-5 --effort high --restricted --tools Read,Glob,Grep --allowedTools Read,Glob,Grep --permission-mode dontAsk --strict-mcp-config --mcp-config '{"mcpServers":{}}' --max-turns 16 --add-dir /home/cdelalama/src --add-dir /home/cdelalama/.local/state/plaud-mirror/dossier-m0-closeout-20261002 --output-format json`.
+- Native caller-side capture SHA-256: 2886b800afa0bba2e95ea190db327c6dfd4819c65e0ecd787560cd23bf540599; byte equality checked against the native session before continuing. Private transcript remains outside Git/Dossier.
+- Verdict: REQUEST_CHANGES -> conditional SOURCE_GO without another round after R1 newest-first HISTORY plus version impact, R2 UTC session-date consistency and passing owner checks, R3 generic DocKit owner wording. All three applied; optional marker/index/spelling fixes applied.
+- Scope approved: source publication; only the two fixed Plaud wrappers at one CPU; ordinary read headroom then reviewed L7/S7, complete post-publication archive/isolated restore and real 390/1440px reader verification. Required logs/readback remain separate from this source verdict.
+- No M1 processing, provider spend, source-policy expansion or independent disaster recovery is authorized or claimed. Receipt-only closure does not cause another capture.

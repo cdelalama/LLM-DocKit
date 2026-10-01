@@ -72,3 +72,28 @@ rendering; each project owns its content. Installations may repeat the rule in
 operator-wide agent instructions to cover repositories before selective sync.
 Record source, installed coverage and exceptions separately. Selective adoption
 does not assert a full template upgrade or overwrite project priorities.
+
+## Dossier closeout belongs to the executing agent
+
+The DocKit owner clarified this requirement on 2026-10-01 UTC: meaningful
+operator state must reach the already-admitted Dossier without another reminder.
+A confirmed milestone, accepted decision, priority change or new next action is
+meaningful. Before closing the task, record `refresh` or `no_change` with a
+reason. When refreshing, curate source-pinned content in the product language,
+validate and capture with the trusted engine, review sharing, publish through
+the existing project-specific authority and verify the real API/browser view.
+Do this within the current task's existing authorization. Source publication or
+a successful local capture alone does not finish a shared-reader update.
+
+This is agent-executed upkeep during the task, not a background publisher or
+permission to synthesize private content unattended. No new admission, source
+scope, secrets disclosure or provider expenditure is implied. Preserve required
+independent review. Local-only projects remain local unless separately admitted.
+Receipt-only commits and unchanged observations use `no_change`; never create a
+revision merely to catch its own receipt, version marker or trace metadata.
+
+If a required step genuinely cannot finish, retain the draft and evidence,
+name the responsible owner and concrete blocker, and mark delivery incomplete.
+Resolve authorized technical faults as part of the task before stopping. The
+operator must not discover a silently stale Dossier after being told work is done.
+This instruction is not a claim of new hooks or mechanical semantic enforcement.

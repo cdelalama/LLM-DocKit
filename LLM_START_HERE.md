@@ -1,4 +1,4 @@
-<!-- doc-version: 4.18.2 -->
+<!-- doc-version: 4.18.3 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 
@@ -60,6 +60,14 @@ Session-start scope:
   view: what is usable, who does what next, what finishes it, and why the route
   changed. Correct ambiguity before claiming delivery. Schema PASS is not proof
   of comprehension. Follow LLM-DocKit docs/OPERATOR_CLARITY.md for examples.
+- When meaningful operator state changes in a Dossier-enabled project, the
+  executing agent must assess refresh versus no_change before task closeout.
+  Milestone acceptance, decisions, priorities and next actions require refresh.
+  Complete already-authorized capture, sharing review, publication and real
+  reader readback without another reminder. No new project admission or wider
+  source disclosure is implied. Report an actual blocker and retain the draft;
+  do not call the Dossier current while it is stale. Receipt-only commits do
+  not trigger another capture. See the closeout section in OPERATOR_CLARITY.md.
 <!-- DOCKIT-TEMPLATE:END operator-clarity -->
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
