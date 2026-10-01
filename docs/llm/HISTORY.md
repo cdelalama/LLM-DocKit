@@ -1,4 +1,4 @@
-- 2026-10-01 - Codex - Require agent-owned meaningful Dossier closeout; preserve explicit sharing scope and no_change for receipt-only metadata. Plaud M0 acceptance and M1 preparation are the bounded operator outcome. Files: [LLM_START_HERE.md, docs/llm/HANDOFF.md]. Version impact: patch 4.18.3.
+- 2026-10-01 - Codex - Require agent-owned meaningful Dossier closeout; preserve explicit sharing scope and no_change for receipt-only metadata. Plaud M0 acceptance and M1 preparation are the bounded operator outcome. Files: [LLM_START_HERE.md, docs/llm/HANDOFF.md]. Version impact: patch 4.18.3. Delivery: shared rule installed; Plaud L7/S7, exact history and complete archive/restore verified. Receipt-only closeout is no_change.
 
 - 2026-10-01 - Codex - Applied the shared operator-clarity rule and explicit roadmap continuity requested by Carlos. Plain next actions and user-observable completion replace technical shorthand; earlier priorities, history and acceptance remain. Source and curation review precede delivery. Trace: role=executor; state=clarity-candidate; validation=review-and-owner-checks-pending; next=source-review-and-verified-reader
 

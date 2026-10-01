@@ -4,10 +4,11 @@
 Last Updated: 2026-10-01 - Codex.
 Meaningful Dossier changes are an agent-owned delivery step, without an operator
 reminder. Preserve source scope, review and immutable history; receipt-only
-commits do not trigger another capture. Plaud M0 acceptance needs S7; M1 next
+commits do not trigger another capture. Plaud M0 acceptance is delivered as L7/S7; M1 next
 action is agent connection/provider/cost preparation, not paid processing.
-Current task: reviewed host read-headroom correction and complete backup/restore
-before publication; final reader receipt will record the observed outcome.
+Closeout: shared rule published and installed; bounded host correction, actual
+L7/S7 reader and complete archive/restore passed. Receipt-only metadata is
+no_change; other projects' product state was not re-synthesized in this task.
 Other project priorities and runtime acceptance remain unchanged.
 
 Source follow-up: the shared clarity correction is published and reviewed with exact Opus 5.5/high. The managed task is closed; ordinary project priorities and real-device acceptance stay as recorded. The rule is installed in Codex, Claude and source-root instructions on this host with exact before/after byte receipts.

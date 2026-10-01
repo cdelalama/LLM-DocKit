@@ -1020,3 +1020,20 @@ export edge case; this rollout's eight helpers are tracked and hash-verified.
 - Verdict: REQUEST_CHANGES -> conditional SOURCE_GO without another round after R1 newest-first HISTORY plus version impact, R2 UTC session-date consistency and passing owner checks, R3 generic DocKit owner wording. All three applied; optional marker/index/spelling fixes applied.
 - Scope approved: source publication; only the two fixed Plaud wrappers at one CPU; ordinary read headroom then reviewed L7/S7, complete post-publication archive/isolated restore and real 390/1440px reader verification. Required logs/readback remain separate from this source verdict.
 - No M1 processing, provider spend, source-policy expansion or independent disaster recovery is authorized or claimed. Receipt-only closure does not cause another capture.
+
+### Actual reader and delivery review
+
+- Exact claude-opus-5-5/high, same independent read-only session: DELIVERED_GO
+  after inspecting the real 390/1440 px screenshots, M0/M1 dialogs, exact S7
+  API/history, installed instruction/wrapper receipts and complete restore.
+- Initial render round reached the caller's nine-tool-turn cap without a verdict;
+  evidence was retained and the same session/model resumed. No model substitution.
+- Final command: `/home/cdelalama/.local/bin/claude -p --resume 151ff611-275b-4ad9-bf7e-68e03cca6e7a --model claude-opus-5-5 --effort high --restricted --tools Read,Glob,Grep --allowedTools Read,Glob,Grep --permission-mode dontAsk --strict-mcp-config --mcp-config '{"mcpServers":{}}' --max-turns 6 --add-dir /home/cdelalama/src --add-dir /home/cdelalama/.local/state/plaud-mirror/dossier-m0-closeout-20261002 --output-format json`.
+- Final native transcript SHA-256: 57c9e5a3148c7214eaaf1d2af8ebd0340d1f8b159296c6a87cc199acd06de378; native/archive bytes equal.
+- Required closure: publish the already-prepared Home Infra receipt and bring
+  its clean canonical checkout forward; the auditor had read the older primary
+  instead of the managed delivery checkout. Home final session validator PASS.
+- Receipt/Trace/work-record closure may finish without another capture or review
+  round. Retain independent physical recovery and standard backup size limits.
+- Nonblocking Portal follow-up: cumulative change-list heading and generic
+  source labels. Priorities and historical revisions remain unchanged.
