@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "work/operator-clarity-20261001",
   "id": "operator-clarity-20261001",
-  "next_step": "Complete this task and record its result or explicit pending disposition.",
+  "next_step": "Apply the shared clarity rule during ordinary work; retain original priorities and separate device/runtime acceptance.",
   "project": "LLM-DocKit",
   "purpose": "Make operator roadmaps actionable, preserve branch continuity and publish the shared clarity protocol",
   "schema": 1,
-  "state": "active"
+  "state": "closed"
 }

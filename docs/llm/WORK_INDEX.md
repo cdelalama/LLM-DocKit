@@ -14,4 +14,4 @@ This index describes retained work, not permission to delete it.
 - [wt_f514a0c9d97112c2](work/wt_f514a0c9d97112c2.json): retained; Retained task checkout: 5a2bba147d545ab6bce0ecd7362853b0098720a1
 - [dossier-language-20260930](work/dossier-language-20260930.json): closed; Separate technical documentation language from Spanish operator-facing Dossier content
 
-- [operator-clarity-20261001](work/operator-clarity-20261001.json): active; Make operator roadmaps actionable, preserve branch continuity and publish the shared clarity protocol
+- [operator-clarity-20261001](work/operator-clarity-20261001.json): closed; Make operator roadmaps actionable, preserve branch continuity and publish the shared clarity protocol

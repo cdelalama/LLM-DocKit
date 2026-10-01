@@ -1,4 +1,6 @@
 <!-- doc-version: 4.18.2 -->
+Source follow-up: the shared clarity correction is published and reviewed with exact Opus 5.5/high. The managed task is closed; ordinary project priorities and real-device acceptance stay as recorded. The rule is installed in Codex, Claude and source-root instructions on this host with exact before/after byte receipts.
+
 
 ## Operator clarity and roadmap continuity - 2026-10-01
 
