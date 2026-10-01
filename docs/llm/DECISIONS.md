@@ -1262,3 +1262,16 @@ operator explicitly chooses a different product locale. Existing project-local
 Language Policy sections need reviewed adoption; no fleet sync is claimed.
 Field coverage and semantic review belong to authors and independent review;
 schema validation and the sharing filter are not language-detection guarantees.
+
+
+## D-028 - Operator clarity and explicit roadmap continuity
+
+Accepted by Carlos on 2026-10-01 for all projects. The managed operator-clarity
+section requires useful outcomes, observed state, remaining work, a named actor
+and concrete next action, observable completion and an explanation of priority
+changes. Separate work lines must not become a false linear execution sequence.
+See docs/OPERATOR_CLARITY.md. The rule is semantic author/reviewer responsibility;
+no automatic comprehension detector is claimed. Operator-wide instructions and
+selective repository adoption are recorded separately from full template currency
+and from rewriting historical publications. ForgeOS owns Dossier mapping, Portal
+faithful rendering, and each project its own content and acceptance.

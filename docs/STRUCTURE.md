@@ -126,3 +126,7 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 
 - `scripts/dockit-workspace.py`: canonical DocKit portable work-record validation.
 - `scripts/test-work-records.py`: portable record and linked-checkout regression.
+
+## Operator clarity - 2026-10-01
+
+`docs/OPERATOR_CLARITY.md` owns operator wording and roadmap continuity.

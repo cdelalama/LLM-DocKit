@@ -1,4 +1,14 @@
-<!-- doc-version: 4.18.1 -->
+<!-- doc-version: 4.18.2 -->
+
+## Operator clarity and roadmap continuity - 2026-10-01
+
+Last Updated: 2026-10-01 - Codex.
+Carlos requires actionable operator status across projects. The managed
+operator-clarity rule is selectively adopted; author/reviewer must inspect
+current usefulness, one named next action, observable completion and the fate
+of earlier work after priority changes. Existing priorities and runtime gates
+remain. Source and installed-policy review are tracked in REVIEWS.md.
+
 ## 2026-09-30 - Spanish Dossier delivered and verified
 
 Last Updated: 2026-09-30 - Codex.
@@ -43,8 +53,8 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-09-30 - Codex
-- Current source version: 4.18.1
+- Last Updated: 2026-10-01 - Codex
+- Current source version: 4.18.2
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.

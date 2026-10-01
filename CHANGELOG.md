@@ -4,6 +4,10 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.18.2] - 2026-10-01
+
+- Clarify operator outcomes, next actions and roadmap work lines under the shared DocKit rule.
+
 ## [4.18.1] - 2026-09-30
 
 - Separate English engineering sources from operator-language UI and Dossier prose; require full-field curation review.

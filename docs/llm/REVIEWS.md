@@ -1,3 +1,11 @@
+
+## 2026-10-01 - Shared operator clarity and roadmap continuity
+
+- Advisor: exact `claude-opus-5-5`, high effort, session `aee91cc8-92ab-44df-9fff-649a6c56df80`; canonicalModel verified. Native capture SHA256 `442c06282448f710a81721e79cc44ae6a8865c698a66135f40bed4d5341b8cce`.
+- Independent reviewer: exact `claude-opus-5-5`, high effort, session `151ff611-275b-4ad9-bf7e-68e03cca6e7a`; canonicalModel verified. Earlier rounds had partial onboarding and remain advisory; the final round received all 22 ordered onboarding files for DocKit, ForgeOS and Portal in full and rechecked current Plaud/Media2Text/Home Infra context loaded earlier. Native final capture SHA256 `5158d1be34f5520ba5b5f5875880d916630cc1c85b97da5176fb06ac9e0fdc80`.
+- Verdict: SOURCE_GO and CURATION_GO after R1-R5 (template neutrality, logical folder names, honest blocker/installation step, history format, source/date markers), K1-K2 (heading integrity and final build) and V-09 (authorised visual deviation). The missing Home Infra validator subsequently passed. The reviewer explicitly authorised these bounded documentary conditions and delivery/version/source-pin receipts without another round.
+- Validation: all six owner session/version/work checks pass; final Portal suite 195/195, typecheck and client/server build pass. Existing oversized-handoff warnings remain advisory. Tests/logs were executor evidence, not independently rerun by Opus.
+- Boundary: source and curation approval; production/browser delivery requires its own receipt. No actual-device M0 acceptance, independent recovery, original-golden replacement or unrelated Portal integration closure is claimed. Captures and private inputs remain outside Git.
 ## 2026-09-30 - Full Spanish curation and live acceptance
 
 Exact Opus 5.5 high (canonicalModel verified) reviewed every human field and

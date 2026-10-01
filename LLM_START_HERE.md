@@ -1,4 +1,5 @@
-<!-- doc-version: 4.18.1 -->
+<!-- doc-version: 4.18.2 -->
+
 # LLM Start Guide - <PROJECT_NAME>
 
 ## Read This First (Mandatory)
@@ -38,6 +39,28 @@ Session-start scope:
   observations, immutable historical revisions, status, evidence and permissions.
 - Before delivery, review every visible field and inspect the real reader in
   the selected product language. Schema validation alone does not prove language or translation quality.
+
+<!-- DOCKIT-TEMPLATE:START operator-clarity -->
+### Operator clarity and roadmap continuity
+
+- Write all operator-facing status, roadmaps, Dossiers, reports and questions
+  for someone returning without the chat. Use the configured product language.
+- Explain the useful outcome, what works today, what remains, and one immediate
+  next step: who acts, where, what they do, and the result they should see.
+  Read recorded operator/device preferences before asking for missing details.
+- Define completion with an observable user example. Unexplained phrases such
+  as "private transfer", "acceptance verified", "gate" or "canary" are not
+  actionable instructions. Keep technical evidence available separately.
+- Explain priority changes with previous/new order, date, reason and authority;
+  show what happens to the earlier unfinished work. Separate work lines and
+  real dependencies. Array order does not establish progress or prerequisites.
+- Preserve IDs, historical evidence, pending obligations and proposed/accepted
+  boundaries. Prepared, published, deployed and personally tried remain distinct.
+- Before delivery, author and independent reviewer read the actual operator
+  view: what is usable, who does what next, what finishes it, and why the route
+  changed. Correct ambiguity before claiming delivery. Schema PASS is not proof
+  of comprehension. Follow LLM-DocKit docs/OPERATOR_CLARITY.md for examples.
+<!-- DOCKIT-TEMPLATE:END operator-clarity -->
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
 ### Documentation Update Rules

@@ -1,4 +1,7 @@
+- 2026-10-01 - Codex - Applied the shared operator-clarity rule and explicit roadmap continuity requested by Carlos. Plain next actions and user-observable completion replace technical shorthand; earlier priorities, history and acceptance remain. Source and curation review precede delivery. Trace: role=executor; state=clarity-candidate; validation=review-and-owner-checks-pending; next=source-review-and-verified-reader
+
 - 2026-09-30 - Codex - Delivered current Spanish Dossier projections and corrected the complete-history read deadline; verified exact histories, all3 live readers at3 widths, all11 mounts/3bindings and isolated same-NAS restores. Version impact: none (delivery evidence for published source releases). Trace: role=executor; state=Spanish-Dossier-serving; validation=exact-opus-source-curation-and-live-readback; next=normal-curation-independent-recovery-and-language-followups
+
 
 - 2026-09-30 - Codex - Separate English engineering sources from Spanish operator-facing prose; prepare complete translated Dossier content and Hoja de ruta labels. Existing identities, states and immutable history are preserved. Owner: docs/archive/DOSSIER_LANGUAGE_2026-09-30.md. Version impact: patch 4.18.1 (template policy). Trace: role=executor; state=language-correction-candidate; validation=exact-review-and-live-delivery-pending; next=source-review-publication-and-Spanish-reader
 
