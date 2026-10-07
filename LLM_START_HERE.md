@@ -10,7 +10,9 @@ Requests/suggestions retain origins, owners and recall triggers; existing
 decision registers keep sole lifecycle authority. The first historical batch is
 bounded and remaining coverage stays explicit. Product priorities and runtime
 remain as recorded below. Independent exact Opus 5.5/high SOURCE_GO and final eight-project checks pass.
-Source publication and required Dossier readback remain separate delivery steps.
+Source publication and DEV installation are verified. The scoped Dossier/recovery
+delivery receipt is at the top of `docs/llm/HANDOFF.md`; source-only legacy owners
+remain explicit. Exact Opus 5.5/high delivery review is GO; existing priorities stay.
 
 
 # LLM Start Guide - <PROJECT_NAME>

@@ -1063,3 +1063,16 @@ export edge case; this rollout's eight helpers are tracked and hash-verified.
   legacy capture error history remains visible, not evidence of universal loss.
 - Source acceptance does not constitute installed-host or Dossier delivery.
   Actual operator-view review and recovery receipts follow separately.
+
+
+## 2026-10-07 - Idea continuity bounded delivery
+
+Exact `claude-opus-5-5` with high effort, independent session
+`3677ad88-e970-484d-aafb-648aeca229e5`, returned DELIVERY_GO on the actual
+reader/recovery and closing receipt packet. Model metadata and native parent/round
+artifacts are retained outside Git. The earlier advisor/consensus session was
+`139ec679-ca1a-4e18-824a-a16dfcda41b1`. All four shared histories and local Forge L6
+were restored and compared; fifty desktop/mobile section checks passed.
+Remaining history, same-hardware recovery limits, source-only legacy integrations,
+Portal dependency audit and ForgeOS transport/backup limits stay explicit.
+Final receipts change no application code, priority, source allowlist or admission.

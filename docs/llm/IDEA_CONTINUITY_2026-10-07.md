@@ -39,14 +39,41 @@ not full publication acceptance. See `docs/llm/REVIEWS.md` for final evidence.
 
 ## Delivery disposition
 
-Dossier assessment: refresh required through the existing source allowlist and admitted reader; delivery remains pending until its actual receipt.
-Publish source only after its required review. Curate meaningful existing Dossier
-state in Spanish, preserve its source scope and historical records, and verify
-the real reader. Receipt-only changes do not need recursive new captures.
-Technical source publication, installed host behavior, backup restoration and
-actual operator/device acceptance remain separate observations.
+This receipt supersedes preparation/publication-pending wording in earlier revisions.
+Feature source f40952807e23e68d1c38c0dfe8e8678b584d9d1d and witness 70823f7848ec4de23c7de6a60fbc024316aec75b are published.
+Existing shared Dossier 5 published and actual reader/history verified.
 
-Next agent action: publish the reviewed source and finish any required existing
-Dossier refresh for this adoption. Once delivered, apply the continuity rule during normal
-project work and recover the next declared historical batch. Earlier independent
-product priorities remain exactly as recorded; this task does not start them.
+All four refreshed shared histories match exactly (DocKit S5, Home S16, Portal S4,
+Plaud S9). All eight existing shared readers remain available; the other four
+projects and every prior record are unchanged. Five Spanish views pass fifty
+desktop/mobile section checks, including local Forge L6. Five Dossier histories
+restore in isolation. 7 captured advisory/review rounds (49 files) also restore
+from the private NAS copy with exact per-file and strict-manifest verification.
+These are same-NAS recovery observations, not physical independence.
+
+DEV global guidance and the pinned capture hook are installed; actual hook
+capture passes with zero new recorded errors. Historical hook errors remain
+unclassified. Seven clean primaries advance; dirty ForgeOS Live Now is preserved.
+The new continuity CI passes in all eight repositories. Media2Text's two current
+version prose fields are corrected; complete CI37643367525 passes. Portal's
+general dependency audit still fails on unchanged dependency bytes; its owner
+retains that separate application-release gate. No product runtime was deployed.
+
+Home publication exceeded the standard client's 25-second acknowledgment deadline.
+Direct status/read proved the exact publication and preserved history; no mutation
+retry or duplicate was made. Shared backup used a bounded task read-only transport.
+Plaud S9 exceeds the unchanged standard backup endpoint's 2MB pilot cap. A bounded
+project-only read-only custody archive under the publisher flock restored exactly,
+including every historical read; the installed transport/cap remains owner work.
+No source allowlist, registry admission, security role or disclosure scope changed.
+
+Independent actual-view/delivery review: exact Opus 5.5/high DELIVERY_GO,
+session 3677ad88-e970-484d-aafb-648aeca229e5; actual model and native round retained.
+This task closes only the implemented rule, scoped first recovery batch and bounded
+delivery. All 18 initial index entries retain their original dispositions; recording
+finance/Tesis requests does not implement them. The batch cursor/unknown corpus,
+Windows/fleet, physical independence and existing product gates remain open.
+Dossier assessment: no_change for these closing receipts; current approved captures
+already represent the meaningful continuity adoption. No recursive snapshot.
+
+Next: Apply the continuity rule in ordinary sessions and recover the next declared historical batch when relevant. Retain this checkout and private evidence; existing product priorities, physical recovery and Windows/fleet acceptance remain separately owned.
