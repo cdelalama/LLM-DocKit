@@ -1,4 +1,17 @@
-<!-- doc-version: 4.18.3 -->
+<!-- doc-version: 4.19.0 -->
+
+## Idea continuity adoption - 2026-10-07
+
+Last Updated: 2026-10-07 - Codex.
+Carlos authorized durable idea continuity across the eight reviewed projects.
+Read `docs/llm/IDEA_INDEX.json` before relevant brainstorming and
+`docs/llm/IDEA_CONTINUITY_2026-10-07.md` for scope, validation and delivery.
+Requests/suggestions retain origins, owners and recall triggers; existing
+decision registers keep sole lifecycle authority. The first historical batch is
+bounded and remaining coverage stays explicit. Product priorities and runtime
+remain as recorded below. Independent exact Opus 5.5/high SOURCE_GO and final eight-project checks pass.
+Source publication and required Dossier readback remain separate delivery steps.
+
 
 # LLM Start Guide - <PROJECT_NAME>
 
@@ -69,6 +82,22 @@ Session-start scope:
   do not call the Dossier current while it is stale. Receipt-only commits do
   not trigger another capture. See the closeout section in OPERATOR_CLARITY.md.
 <!-- DOCKIT-TEMPLATE:END operator-clarity -->
+
+<!-- DOCKIT-TEMPLATE:START idea-continuity -->
+### Preserve and recall project ideas
+
+Before brainstorming or resuming work, read `docs/llm/IDEA_INDEX.json` when
+adopted, its relevant owner registers, and retained work. Follow
+`docs/IDEA_CONTINUITY.md`. Preserve material requests, suggestions, constraints
+and unresolved questions with attribution, stable identity, owner and recall
+trigger. Reuse existing D/ADR/UP authority; the recall index never sets priority.
+Before closing, compare the session's ideas with recorded dispositions and
+reconcile newly closed tasks. Documented does not mean implemented. Author and
+reviewer check semantic coverage; the validator only checks the declared corpus.
+Run the idea check against the explicit reviewed start revision before publishing.
+Retain unknown coverage and the historical-backfill cursor; never claim all chats
+were captured. Complete the existing Dossier refresh/no_change assessment.
+<!-- DOCKIT-TEMPLATE:END idea-continuity -->
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
 ### Documentation Update Rules

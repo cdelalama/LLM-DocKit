@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "project": "LLM-DocKit",
+  "validator_sha256": "b1fe8e98663e6d03b440ed05a35578ffee5787750ba4f5adef32e672db521def",
+  "registers": [
+    {
+      "path": "docs/llm/DECISIONS.md",
+      "pattern": "^#{2,6}\\s+(D-\\d{3})\\b"
+    }
+  ],
+  "batches": [
+    {
+      "id": "B001-audit-20261007",
+      "date": "2026-10-07",
+      "sources": [
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "revision": "ca6fca011d2872548d24e88fdcbd9b6b9c502d5f"
+        },
+        {
+          "path": "docs/archive/DEFERRED_NEXT_VERSION.md",
+          "revision": "ca6fca011d2872548d24e88fdcbd9b6b9c502d5f"
+        }
+      ],
+      "excluded": [
+        "Full contents of all historic commits and native conversations; no broad private corpus promotion."
+      ],
+      "unknown": [
+        "Other hosts, external chats, retired worktrees, and complete historical capture coverage."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Review further historical suggestions and retained work in bounded attributed batches. The initial audit inventoried 2343 commit metadata entries and 625 Markdown paths across eight repos; those counts are not semantic review.",
+      "cursor": "Resume from this batch sources and the remaining historical queue; no exhaustive scan has been claimed."
+    }
+  ],
+  "entries": [
+    {
+      "id": "IDEA-0001",
+      "record": "native",
+      "kind": "agent_suggestion",
+      "title": "Former DocKit control-plane, arbiter and dashboard proposals now belong to ForgeOS",
+      "origin": {
+        "date": "2026-03-01",
+        "attribution": "Historical agent suggestion; not automatically operator-approved",
+        "sources": [
+          {
+            "path": "docs/archive/DEFERRED_NEXT_VERSION.md",
+            "revision": "ca6fca011d2872548d24e88fdcbd9b6b9c502d5f",
+            "contains": "# Deferred for Next Version"
+          }
+        ]
+      },
+      "batch": "B001-audit-20261007",
+      "owner": "LLM-DocKit",
+      "state": "transferred",
+      "recall_trigger": "When discussing shared control-plane ownership; consult the June lineage mapping before recreating the March proposal.",
+      "documentation_refs": [
+        {
+          "path": "docs/archive/DEFERRED_NEXT_VERSION.md",
+          "revision": "ca6fca011d2872548d24e88fdcbd9b6b9c502d5f"
+        }
+      ],
+      "rationale": "Existing DocKit/ForgeOS owner split and published lineage triage retain the proposal under ForgeOS.",
+      "successor": {
+        "path": "docs/brainstorms/2026-06-18-llm-dockit-draft-lineage-triage.md",
+        "project": "forgeos",
+        "contains": "# LLM-DocKit Draft Lineage Triage"
+      }
+    }
+  ],
+  "task_reconciliations": []
+}

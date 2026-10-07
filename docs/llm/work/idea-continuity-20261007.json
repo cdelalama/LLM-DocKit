@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/idea-continuity-20261007",
+  "id": "idea-continuity-20261007",
+  "next_step": "Complete this task and record its result or explicit pending disposition.",
+  "project": "LLM-DocKit",
+  "purpose": "Implement durable idea continuity, scoped historical recovery and explicit capture evidence",
+  "schema": 1,
+  "state": "active"
+}

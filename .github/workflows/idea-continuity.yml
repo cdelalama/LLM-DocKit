@@ -1,0 +1,31 @@
+name: Idea continuity
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  continuity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Preserve ideas against the event baseline
+        env:
+          IDEA_EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          base="$IDEA_EVENT_BASE"
+          if [ -z "$base" ] || [ "$base" = 0000000000000000000000000000000000000000 ]; then
+            base=$(git rev-parse HEAD^)
+          fi
+          rc=0
+          python3 scripts/dockit-ideas.py --project . --baseline "$base" || rc=$?
+          if [ "$rc" = 3 ]; then
+            echo "::warning::Cross-project references need the explicit owner mapping at publication closeout; local checks completed with visible warnings."
+          elif [ "$rc" != 0 ]; then
+            exit "$rc"
+          fi
+      - name: Contract regressions when owned here
+        run: |
+          if [ -f scripts/test-ideas.py ]; then python3 scripts/test-ideas.py; fi
+          if [ -f scripts/test-capture-continuity.py ]; then python3 scripts/test-capture-continuity.py; fi

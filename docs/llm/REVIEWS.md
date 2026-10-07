@@ -1037,3 +1037,29 @@ export edge case; this rollout's eight helpers are tracked and hash-verified.
   round. Retain independent physical recovery and standard backup size limits.
 - Nonblocking Portal follow-up: cumulative change-list heading and generic
   source labels. Priorities and historical revisions remain unchanged.
+
+## Idea continuity - 2026-10-07
+
+- Requested and actual model: claude-opus-5-5; high effort.
+- Advisor session: 139ec679-ca1a-4e18-824a-a16dfcda41b1, rounds 1-2.
+- Verdict: CONSENSUS_GO with explicit implementation conditions; advisory only.
+- Evidence: caller-side prompt/argv/result/stderr/native SHA256 and immutable
+  parent/round capture under private continuity implementation state.
+- Reconciled conditions: native versus authoritative references; no index
+  priority; explicit publication baseline; historical and newly closed task
+  distinction; pinned helper; strict exact-session capture; scoped recovery.
+- Independent source reviewer: 3677ad88-e970-484d-aafb-648aeca229e5,
+  rounds 1-2, actual claude-opus-5-5 canonical metadata/high effort verified.
+- Round1 withheld SOURCE_GO for malformed hook JSON, committed-index deletion
+  with a dirty tree, historical-only authority references and final test evidence.
+  All were corrected with regressions; nonblocking continuity/capture findings
+  were also incorporated. Round2 returned SOURCE_GO.
+- Prepublication conditions met: validation-02.json records zero-exit explicit
+  original-baseline checks with the full project map for all eight adopters;
+  final capture fixture archive dev-stage-t7ze66_6-1791384486936008847.tar.gz
+  was read back on NAS and staging finalized. Exact helper SHA256 is pinned in
+  each IDEA_INDEX; 16 idea, 14 capture and 96 existing validator tests pass.
+- Native rounds and growing parent snapshots are immutably captured outside Git;
+  legacy capture error history remains visible, not evidence of universal loss.
+- Source acceptance does not constitute installed-host or Dossier delivery.
+  Actual operator-view review and recovery receipts follow separately.

@@ -1,4 +1,17 @@
-<!-- doc-version: 4.18.3 -->
+<!-- doc-version: 4.19.0 -->
+
+## Idea continuity adoption - 2026-10-07
+
+Last Updated: 2026-10-07 - Codex.
+Carlos authorized durable idea continuity across the eight reviewed projects.
+Read `docs/llm/IDEA_INDEX.json` before relevant brainstorming and
+`docs/llm/IDEA_CONTINUITY_2026-10-07.md` for scope, validation and delivery.
+Requests/suggestions retain origins, owners and recall triggers; existing
+decision registers keep sole lifecycle authority. The first historical batch is
+bounded and remaining coverage stays explicit. Product priorities and runtime
+remain as recorded below. Independent exact Opus 5.5/high SOURCE_GO and final eight-project checks pass.
+Source publication and required Dossier readback remain separate delivery steps.
+
 ## Dossier closeout correction - 2026-10-01
 
 Last Updated: 2026-10-01 - Codex.
@@ -68,7 +81,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-10-01 - Codex
-- Current source version: 4.18.3
+- Current source version: 4.19.0
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
@@ -154,3 +167,5 @@ inventory. Riego delivery remains independent of this kit update.
 Workspace source review: exact Opus 5.5/high PASS; see REVIEWS.md. Parent records preserve task custody and do not accept unknown source or runtime changes.
 
 DEV rollout receipt: menu and init expose 33 admitted primary projects; managed creation and custody guards are installed. This task is closed in WORK_INDEX without removing its checkout. Home Infra documents retained physical relocation decisions separately.
+
+Continuity source receipt (2026-10-07 14:55:57 UTC): independent SOURCE_GO; explicit baseline and pinned helper verified. Required Dossier delivery remains open in the owning continuity note.

@@ -38,3 +38,7 @@ To avoid Windows encoding issues, keep `docs/llm/*` ASCII-only when possible.
 
 
 - [Parent-owned task index](WORK_INDEX.md): retained work and explicit disposition.
+
+## Idea continuity
+
+Read `docs/llm/IDEA_INDEX.json` before relevant brainstorming. Policy: `docs/IDEA_CONTINUITY.md`. Existing owner registers retain decision authority and roadmap priority. Coverage is the declared batch only.

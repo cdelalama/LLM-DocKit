@@ -130,3 +130,9 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 ## Operator clarity - 2026-10-01
 
 `docs/OPERATOR_CLARITY.md` owns operator wording and roadmap continuity.
+
+## Idea continuity
+
+- `docs/IDEA_CONTINUITY.md`: shared capture, recall and closeout rules.
+- `docs/llm/IDEA_INDEX.json`: project-owned references, untracked ideas and bounded coverage batches.
+- `scripts/dockit-ideas.py`: pinned structural and baseline validation.

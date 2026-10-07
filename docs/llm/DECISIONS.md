@@ -1275,3 +1275,9 @@ no automatic comprehension detector is claimed. Operator-wide instructions and
 selective repository adoption are recorded separately from full template currency
 and from rewriting historical publications. ForgeOS owns Dossier mapping, Portal
 faithful rendering, and each project its own content and acceptance.
+
+## D-029 - Project-owned idea continuity with explicit coverage
+
+Date: 2026-10-07. Authority: Carlos.
+
+Carlos authorized implementation on 2026-10-07 after the cross-project audit. DocKit owns the portable rule, pinned helper and session/CI integration. Native requests and suggestions retain identity, attribution and recall triggers; existing D/ADR/UP registers remain authoritative. The index carries no priority. Newly closed task records require idea reconciliation. Publication uses an explicit reviewed baseline. Structural PASS cannot prove semantic completeness or global conversation coverage. Historical recovery proceeds in declared batches. See docs/IDEA_CONTINUITY.md and docs/llm/IDEA_CONTINUITY_2026-10-07.md. Exact Opus 5.5/high advisor consensus accepted this boundary; independent source and Dossier delivery review remain separate.

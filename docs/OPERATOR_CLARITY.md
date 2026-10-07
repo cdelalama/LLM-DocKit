@@ -97,3 +97,7 @@ name the responsible owner and concrete blocker, and mark delivery incomplete.
 Resolve authorized technical faults as part of the task before stopping. The
 operator must not discover a silently stale Dossier after being told work is done.
 This instruction is not a claim of new hooks or mechanical semantic enforcement.
+
+## Retaining ideas before and after a priority change
+
+Apply `docs/IDEA_CONTINUITY.md` in adopting projects. Read their idea index and original owner records before brainstorming, preserve explicit dispositions, and reconcile task closure with idea state. The mechanical baseline guard does not replace semantic review or prove complete historical capture.

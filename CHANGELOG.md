@@ -4,6 +4,17 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.19.0] - 2026-10-07
+
+### Changed
+- Preserve project ideas through a pinned continuity index, session/CI checks and bounded historical recovery without changing product priorities.
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [4.18.3] - 2026-10-01
 
 - Require agents to complete meaningful Dossier updates and verify the existing reader during task closeout without operator reminders.
