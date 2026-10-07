@@ -1,5 +1,22 @@
 <!-- doc-version: 4.19.0 -->
 
+## Idea continuity publication witness - 2026-10-07
+
+Source f40952807e23e68d1c38c0dfe8e8678b584d9d1d (version 4.19.0) is published. The new idea-continuity
+CI passes in all eight adopters. DEV guidance is installed for Codex, Claude and
+the source root; the reviewed ForgeOS capture helper is installed at its pinned
+version. A real completed advisor session was captured through the configured
+hook and verified. Its new-error count is zero; the retained legacy error log
+remains unclassified. Exact Opus 5.5/high returned CONSENSUS_GO and independent
+SOURCE_GO. Sixteen idea tests, fourteen capture tests and ninety-six DocKit
+regression tests pass. Coverage is the declared initial batch, not all history.
+
+Seven clean primary checkouts were fast-forwarded; the dirty ForgeOS Live Now
+primary is preserved. Windows/fleet installation and physically independent
+recovery are not established. Required existing Dossier refresh/readback and the
+bounded review-corpus restore are still being completed by this agent. Existing
+product priorities and acceptance remain unchanged.
+
 ## Idea continuity adoption - 2026-10-07
 
 Last Updated: 2026-10-07 - Codex.
