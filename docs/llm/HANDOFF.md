@@ -1,4 +1,26 @@
-<!-- doc-version: 4.19.0 -->
+## Project protocol correction - 2026-10-13
+
+Last Updated: 2026-10-13 - Codex.
+D-030: Neutral host intake policy before scaffold writes. Source candidate; installation and consumer acceptance are
+not yet verified. Read `README.md`. The executor completes review, publication and
+DEV installation before claiming prevention. PriceBuddy remains stopped;
+Home Infra ADR-0075 selects Authelia/OIDC and oauth2-proxy for incompatible
+upstreams. The executor owns setup and real Sentinel lifecycle checks; only
+personal credential/MFA actions can require the operator. Do not ask him to choose a provider.
+Prior owner priorities and retained work below are unchanged by this correction.
+Dossier assessment: refresh required for this meaningful policy decision, within
+existing admission/source scope; no new disclosure is implied.
+
+### Trace Anchor - project protocol correction
+
+- Role: executor
+- Subject: Neutral host intake policy before scaffold writes
+- State verified: 2026-10-13 22:11:29 CEST (20:11:29 UTC); source candidate
+- Repo state: isolated task checkout at 03eeb65af43f0c7aae2e087f7281758eb8f92fd4; PriceBuddy uses its existing primary
+- Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
+- Next gate: executor reviews and publishes `README.md`, then verifies installed checks
+
+<!-- doc-version: 4.20.0 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -139,7 +161,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-10-01 - Codex
-- Current source version: 4.19.0
+- Current source version: 4.20.0
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
@@ -156,6 +178,8 @@ This scoped rollout preserves all prior product work and handoff context below.
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+Current correction: finish `README.md` and D-030 source review/rollout. The earlier work below is retained; this does not complete it.
 
 Use `.forgeos/dossier.json` and `docs/operations/DOSSIER.md` to maintain this
 project's verified local Dossier. Capture meaningful state changes with the
@@ -227,3 +251,22 @@ Workspace source review: exact Opus 5.5/high PASS; see REVIEWS.md. Parent record
 DEV rollout receipt: menu and init expose 33 admitted primary projects; managed creation and custody guards are installed. This task is closed in WORK_INDEX without removing its checkout. Home Infra documents retained physical relocation decisions separately.
 
 Continuity source receipt (2026-10-07 14:55:57 UTC): independent SOURCE_GO; explicit baseline and pinned helper verified. Required Dossier delivery remains open in the owning continuity note.
+
+## Protocol correction source review - 2026-10-13
+
+Exact claude-opus-5-5/high native session a1ccb565-36c3-4c72-8680-30a74394efe5
+returned SOURCE_GO in round 4 and confirmed it in round 5 after completing all
+mandatory onboarding. Actual provider metadata: firstParty; canonicalModel:
+claude-opus-5-5. Strict CAP-001 v2 round 5 capture accepted; manifest SHA-256:
+66de3a4fdaed3c4aed1ee8e111b87af10e0df892ce22a7deb3e5d8db17acfc77. Native parent, child, prompt, result and invocation
+remain in PriceBuddy private custody. Hook status is unknown with zero recorded
+errors; this is distinct from the accepted explicit capture.
+
+The approval covers source and bounded DEV/edge installation checks, not app
+delivery or Dossier sharing. Tested: 54 integration cases (12 explicit skips),
+13 Sentinel/intake cases, 15 auth-plan cases, 8 access cases, 8 ship cases,
+4 Protocol auth cases, 96 DocKit validator smoke cases and 2 host-hook cases.
+PriceBuddy's 8 focused supervisor cases and 710 upstream file hashes pass.
+The executor owns publication, installation/readback, PriceBuddy adoption,
+OIDC deployment, actual Sentinel lifecycle coverage and admitted Dossier upkeep.
+No provider choice is delegated to Carlos.

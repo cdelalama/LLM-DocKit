@@ -317,6 +317,25 @@ Parent-owned work: read docs/llm/WORK_INDEX.md and the relevant docs/llm/work re
   - Use the installed task-workspace status command for live locations when available."
 fi
 
+# A trusted host-owned policy can also diagnose adoption of an existing checkout.
+# Its outcome is orientation, not runtime permission or a reason to stop legacy
+# services. Only the fixed host path is executed; never a path from project data.
+INTAKE_POLICY="${XDG_CONFIG_HOME:-$HOME/.config}/llm-dockit/init-policy"
+if [ -e "$INTAKE_POLICY" ] || [ -L "$INTAKE_POLICY" ]; then
+    INTAKE_STATUS=1
+    if [ -f "$INTAKE_POLICY" ] && [ -x "$INTAKE_POLICY" ]; then
+        INTAKE_RESULT=$("$INTAKE_POLICY" --check-existing --target-dir "$PROJECT_ROOT" 2>&1) && INTAKE_STATUS=0 || INTAKE_STATUS=$?
+    else
+        INTAKE_RESULT="Configured host intake policy is unavailable."
+    fi
+    MESSAGE="$MESSAGE
+
+Host intake diagnosis (exit $INTAKE_STATUS): $INTAKE_RESULT
+Resolve missing adoption through the host owner's protocol before new runtime
+work. Legacy unresolved adoption is not authority to stop existing services or
+discard source work. This diagnosis is not runtime or consumer acceptance."
+fi
+
 # -- Emit ------------------------------------------------------------------
 
 case "$OUTPUT_MODE" in

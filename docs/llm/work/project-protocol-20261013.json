@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/project-protocol-20261013",
+  "id": "project-protocol-20261013",
+  "next_step": "Finish reviewed protocol source, DEV installation and PriceBuddy admission; retain explicit runtime acceptance gaps.",
+  "project": "LLM-DocKit",
+  "purpose": "Add neutral host intake policy hook to prevent implicit ecosystem bypass",
+  "schema": 1,
+  "state": "active"
+}

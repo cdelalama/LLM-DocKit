@@ -17,3 +17,5 @@ This index describes retained work, not permission to delete it.
 - [operator-clarity-20261001](work/operator-clarity-20261001.json): closed; Make operator roadmaps actionable, preserve branch continuity and publish the shared clarity protocol
 
 - [idea-continuity-20261007](work/idea-continuity-20261007.json): closed; implement durable idea continuity and scoped historical recovery.
+
+- [project-protocol-20261013](work/project-protocol-20261013.json): active; corrective project intake, Sentinel and authentication protocol.

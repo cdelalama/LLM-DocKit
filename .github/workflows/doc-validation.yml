@@ -18,3 +18,6 @@ jobs:
 
       - name: Dossier opt-in discovery tests
         run: sh scripts/test-dossier-discovery.sh
+
+      - name: Host intake policy regressions
+        run: python3 scripts/test-init-policy.py

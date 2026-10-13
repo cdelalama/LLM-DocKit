@@ -1,4 +1,4 @@
-<!-- doc-version: 4.19.0 -->
+<!-- doc-version: 4.20.0 -->
 # <PROJECT_NAME>
 
 <One-line description of what this project does.>
@@ -49,3 +49,18 @@ Released under the MIT License. See [LICENSE](LICENSE) for details.
 ---
 
 *Documentation scaffold powered by [LLM-DocKit](https://github.com/cdelalama/LLM-DocKit).*
+
+## Optional host intake policy
+
+Before creating a project, the initializer executes the host-owned
+`${XDG_CONFIG_HOME:-$HOME/.config}/llm-dockit/init-policy` when present, passing
+`--project-name` and `--target-dir` as separate arguments. A nonzero result or
+a broken/non-executable configured hook prevents all target writes. An absent
+hook preserves generic behavior. The host owns its policy and installation;
+DocKit does not select an ecosystem, registry, provider or monitoring product.
+This is an accidental-omission guard, not a security boundary against edits to
+host configuration. Adoption/sync do not rerun initialization or delete files.
+SessionStart also calls the same fixed hook with `--check-existing --target-dir`
+and reports its result in onboarding. That diagnosis requests corrective
+adoption before new runtime work; it does not stop existing services or claim
+consumer acceptance. Hosts implementing this optional hook support both modes.

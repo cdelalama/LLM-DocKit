@@ -112,6 +112,21 @@ if [ -e "$TARGET_DIR" ]; then
     exit 1
 fi
 
+# The host owns ecosystem admission. This optional neutral hook runs before any
+# target write; generic DocKit does not classify projects or select a registry.
+# A present but broken/non-executable hook fails closed, including a broken link.
+INIT_POLICY="${XDG_CONFIG_HOME:-$HOME/.config}/llm-dockit/init-policy"
+if [ -e "$INIT_POLICY" ] || [ -L "$INIT_POLICY" ]; then
+    if [ ! -f "$INIT_POLICY" ] || [ ! -x "$INIT_POLICY" ]; then
+        echo "ERROR: configured host intake policy is unavailable: $INIT_POLICY" >&2
+        exit 1
+    fi
+    if ! "$INIT_POLICY" --project-name "$PROJECT_NAME" --target-dir "$TARGET_DIR"; then
+        echo "ERROR: host intake policy rejected this scaffold; target was not created." >&2
+        exit 1
+    fi
+fi
+
 if [ -z "$SOURCE_DIR" ]; then
     if [ -n "${LLM_DOCKIT_ROOT:-}" ]; then
         SOURCE_DIR="$LLM_DOCKIT_ROOT"

@@ -4,6 +4,11 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.20.0] - 2026-10-13
+
+### Changed
+- Run optional host-owned intake policy before any scaffold target write; reject unavailable configured hooks.
+
 ## [4.19.0] - 2026-10-07
 
 ### Changed

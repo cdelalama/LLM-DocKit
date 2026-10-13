@@ -136,3 +136,5 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 - `docs/IDEA_CONTINUITY.md`: shared capture, recall and closeout rules.
 - `docs/llm/IDEA_INDEX.json`: project-owned references, untracked ideas and bounded coverage batches.
 - `scripts/dockit-ideas.py`: pinned structural and baseline validation.
+
+- `README.md`: current project-intake correction and owner-specific evidence boundary.

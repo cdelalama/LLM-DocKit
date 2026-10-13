@@ -1,4 +1,4 @@
-<!-- doc-version: 4.19.0 -->
+<!-- doc-version: 4.20.0 -->
 
 ## Idea continuity adoption - 2026-10-07
 

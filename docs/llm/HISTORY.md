@@ -1,3 +1,7 @@
+- 2026-10-13 - Codex - Exact Opus5.5/high protocol correction SOURCE_GO after full onboarding; strict v2 round5 accepted. Source tests pass; installation and consumer delivery remain open. Trace: role=executor; sent=2026-10-13 22:54:23 CEST (20:54:23 UTC); state=reviewed-source; validation=targeted-and-regression-PASS; next=publish-then-install-and-readback.
+
+- 2026-10-13 - Codex - Neutral host intake policy before scaffold writes; preserve prior operation and source custody. Version impact: minor 4.20.0, additive policy support with explicit migration. Source review and installed/live delivery remain open. Trace: role=executor; sent=2026-10-13 22:11:29 CEST (20:11:29 UTC); commits=03eeb65af43f0c7aae2e087f7281758eb8f92fd4; state=source-candidate; validation=targeted regression checks recorded in review packet; next=review source then publish/install and observe consumers.
+
 
 
 - 2026-10-07 - Codex - Continuity delivery receipt: published sources, DEV hook, four shared and one local Dossier, preserved history and bounded same-NAS restores. Reconciled retained ideas and task record; final exact Opus 5.5/high DELIVERY_GO recorded. Documentation-only, version 4.19.0 unchanged. Trace: role=executor; sent=2026-10-07 15:41:50 UTC; scope=idea-continuity; gate=cleared; source=70823f7848ec4de23c7de6a60fbc024316aec75b.

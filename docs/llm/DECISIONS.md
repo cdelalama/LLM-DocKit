@@ -1281,3 +1281,15 @@ faithful rendering, and each project its own content and acceptance.
 Date: 2026-10-07. Authority: Carlos.
 
 Carlos authorized implementation on 2026-10-07 after the cross-project audit. DocKit owns the portable rule, pinned helper and session/CI integration. Native requests and suggestions retain identity, attribution and recall triggers; existing D/ADR/UP registers remain authoritative. The index carries no priority. Newly closed task records require idea reconciliation. Publication uses an explicit reviewed baseline. Structural PASS cannot prove semantic completeness or global conversation coverage. Historical recovery proceeds in declared batches. See docs/IDEA_CONTINUITY.md and docs/llm/IDEA_CONTINUITY_2026-10-07.md. Exact Opus 5.5/high advisor consensus accepted this boundary; independent source and Dossier delivery review remain separate.
+
+
+## D-030 - Neutral host intake policy before scaffold writes (2026-10-13)
+
+Origin: Carlos explicitly required the complete ForgeOS/DocKit/Protocol/Portal/
+Dossier/Sentinel and OAuth route after PriceBuddy bypassed it as source-only.
+Tests, reviews, betas and DEV/NAS placement do not grant ecosystem exclusions.
+This owner implements its layer in `README.md`; existing source, running services,
+private custody, unrelated priorities and historical evidence remain. New
+requirements need explicit migration, source review and installed/live evidence.
+A declaration or fixture PASS does not establish runtime acceptance. Exact Opus
+5.5/high advisory confirmed the gap; final review and rollout are separate.

@@ -31,6 +31,25 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Review further historical suggestions and retained work in bounded attributed batches. The initial audit inventoried 2343 commit metadata entries and 625 Markdown paths across eight repos; those counts are not semantic review.",
       "cursor": "Resume from this batch sources and the remaining historical queue; no exhaustive scan has been claimed."
+    },
+    {
+      "id": "B-project-intake-20261013",
+      "date": "2026-10-13",
+      "sources": [
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "contains": "## D-030"
+        }
+      ],
+      "excluded": [
+        "Raw private conversations and unrelated project work."
+      ],
+      "unknown": [
+        "Complete historical conversation coverage and other-host installations."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Prior historical queues and unknown coverage remain unchanged.",
+      "cursor": "Recall before new project intake, existing-project adoption and temporary runtime delivery."
     }
   ],
   "entries": [
@@ -65,6 +84,29 @@
         "path": "docs/brainstorms/2026-06-18-llm-dockit-draft-lineage-triage.md",
         "project": "forgeos",
         "contains": "# LLM-DocKit Draft Lineage Triage"
+      }
+    },
+    {
+      "id": "REF-D-030-PROJECT-INTAKE",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Neutral host intake policy before scaffold writes",
+      "origin": {
+        "date": "2026-10-13",
+        "attribution": "Carlos required complete project protocol, explicitly Sentinel and OAuth, after the PriceBuddy omission.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-030"
+          }
+        ]
+      },
+      "batch": "B-project-intake-20261013",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before project intake, safe adoption, test/beta runtime or delivery acceptance.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-030"
       }
     }
   ],
