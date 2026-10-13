@@ -1094,3 +1094,26 @@ Dossier sharing. Strict CAP-001 v2 round7 accepted, manifest
 An initial caller invocation omitted --strict and was rejected without capture;
 its original evidence is preserved. Correct invocation accepted. Hook outcome
 remains unknown with zero recorded errors, separate from explicit capture.
+
+## 2026-10-13 - Scoped Dossier sharing and native capture R10
+
+Exact claude-opus-5-5/high, firstParty/canonicalModel verified, returned
+SOURCE_AND_SHARING_GO for the reviewed bytes. DocKit shared publication and
+ForgeOS local-only capture are within existing scope. Strict CAP-001 v2 round10
+accepted manifest 5670efa596438772696f70eea65bf894e2f590aa591dc3266580477711cc6911.
+Native session a1ccb565-36c3-4c72-8680-30a74394efe5. Interrupted/failed earlier
+rounds retained; hook outcome unknown with zero recorded errors. Actual reader
+and coherent recovery receipts do not extend disclosure or runtime acceptance.
+
+## 2026-10-13 - Actual readers and reconciled sharing R11
+
+Exact claude-opus-5-5/high, firstParty/canonicalModel verified, returned
+SOURCE_AND_SHARING_GO. Strict CAP-001 v2 round11 accepted manifest
+8d5615dfdf397c2379f0a2f93a88e28fa32b458ae02e05cb2bda66125b6ff77e.
+Actual DocKit shared S6 and PriceBuddy local L2 operator views and recovery were
+reviewed. ForgeOS remains local L12. Home conditional R10 sharing is superseded
+by the additive R11 candidate preserving the concurrent S35 peer and all its
+blockers; Home publication/readback/recovery remains required before claiming
+shared delivery. Source-only receipts may publish after documentation/explicit
+idea checks and exact final CI; no recursive capture. Runtime acceptance remains
+open. Native session a1ccb565-36c3-4c72-8680-30a74394efe5; hook outcome unknown.

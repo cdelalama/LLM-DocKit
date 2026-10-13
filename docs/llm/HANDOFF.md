@@ -6,12 +6,28 @@ canonical SessionStart diagnoses PriceBuddy in 4.971 seconds inside the installe
 15-second bound. Published ForgeOS integration/skills and global Codex/Claude/DEV
 guidance are aligned. Runtime refusal and legacy unresolved classification pass.
 No Windows/fleet installation or PriceBuddy consumer acceptance is claimed.
-PriceBuddy remains stopped while its owner admission and native contracts are
-completed. Home Infra selects Authelia plus oauth2-proxy; actual issuer/login and
-Sentinel enrollment/lifecycle are pending. The executor owns this correction;
-the independent priorities and other owner work retained below are unchanged.
-Dossier refresh is due for the changed operator state; source/installation is
-not a shared reader receipt.
+PriceBuddy has published canonical source and contracts; its application remains
+stopped. Home Infra selects Authelia plus oauth2-proxy. Actual issuer/login and
+Sentinel enrollment/lifecycle remain the executor's implementation work; Carlos
+owes no provider choice. Other owner priorities below retain their scope.
+Native L6 and shared S6 are published and verified in the actual InfraPortal
+reader, including the exact permalink and all six historical revisions. Isolated
+same-NAS restoration preserves every record; this is not physical independence.
+Native revision: local:625c84548821351c06f09416844c8a6b5cccb48a85050f1b0c85980156018231.
+Shared revision: shared:e979f3886c1e0f067e6bfcaedb1385451c1fa1affc86f68bf7990aaa3472179e.
+Dossier assessment: this final technical receipt is no_change; the meaningful
+correction is already captured. Exact Opus R10 approved the scoped content and
+source; actual reader/recovery observations are retained in PriceBuddy custody.
+
+### Trace Anchor - installed protocol and Dossier receipt
+
+- Role: executor
+- Sent: 2026-10-13 22:20:28 UTC
+- Subject: actual installed protocol and admitted Dossier closeout
+- Resulting state: published source 4f8bce0f16e30e5116d37855162d59a251e00ba8; version unchanged; application integration remains open
+- Repo state: retained task checkout; receipt-only candidate
+- Validation: exact native/shared scope, actual reader and coherent recovery
+- Next gate: PriceBuddy executor implements actual OAuth and Sentinel; other owner priorities unchanged
 
 ## Project protocol correction - 2026-10-13
 

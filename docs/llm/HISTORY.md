@@ -1,3 +1,14 @@
+## 2026-10-13 - Codex - Protocol Dossier actual readback
+
+Native L6 and shared S6 are published and verified in the actual InfraPortal
+reader, including the exact permalink and all six historical revisions. Isolated
+same-NAS restoration preserves every record; this is not physical independence.
+Native revision: local:625c84548821351c06f09416844c8a6b5cccb48a85050f1b0c85980156018231.
+Shared revision: shared:e979f3886c1e0f067e6bfcaedb1385451c1fa1affc86f68bf7990aaa3472179e.
+Receipt-only source update; no recursive snapshot. Trace: role=executor;
+sent=2026-10-13 22:20:28 UTC; commits=4f8bce0f16e30e5116d37855162d59a251e00ba8; state=installed-and-dossier-verified;
+validation=actual-reader-and-coherent-recovery; next=PriceBuddy-runtime-integration.
+
 ## 2026-10-13 — Verified DEV intake installation
 
 - Role: executor
