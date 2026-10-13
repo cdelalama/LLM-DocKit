@@ -1,3 +1,13 @@
+## 2026-10-13 — Verified DEV intake installation
+
+- Role: executor
+- Sent: 2026-10-13 23:25:10 CEST (21:25:10 UTC)
+- Subject: actual installed host intake/SessionStart/runtime readback
+- Resulting state: version unchanged; gate=next-slice; PriceBuddy adoption pending
+- Repo state: clean published source before this documentation-only observation
+- Validation: generic rejection, 4.971-second SessionStart, runtime refusal and legacy classification PASS
+- Next gate: executor completes reviewed Dossier upkeep within existing admission
+
 - 2026-10-13 - Codex - Exact Opus5.5/high protocol correction SOURCE_GO after full onboarding; strict v2 round5 accepted. Source tests pass; installation and consumer delivery remain open. Trace: role=executor; sent=2026-10-13 22:54:23 CEST (20:54:23 UTC); state=reviewed-source; validation=targeted-and-regression-PASS; next=publish-then-install-and-readback.
 
 - 2026-10-13 - Codex - Neutral host intake policy before scaffold writes; preserve prior operation and source custody. Version impact: minor 4.20.0, additive policy support with explicit migration. Source review and installed/live delivery remain open. Trace: role=executor; sent=2026-10-13 22:11:29 CEST (20:11:29 UTC); commits=03eeb65af43f0c7aae2e087f7281758eb8f92fd4; state=source-candidate; validation=targeted regression checks recorded in review packet; next=review source then publish/install and observe consumers.

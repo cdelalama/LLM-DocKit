@@ -1,3 +1,18 @@
+## DEV intake installation verified — 2026-10-13
+
+The reviewed complete-intake correction is now installed in DEV. The actual
+generic initializer rejects missing owner admission before creating a target;
+canonical SessionStart diagnoses PriceBuddy in 4.971 seconds inside the installed
+15-second bound. Published ForgeOS integration/skills and global Codex/Claude/DEV
+guidance are aligned. Runtime refusal and legacy unresolved classification pass.
+No Windows/fleet installation or PriceBuddy consumer acceptance is claimed.
+PriceBuddy remains stopped while its owner admission and native contracts are
+completed. Home Infra selects Authelia plus oauth2-proxy; actual issuer/login and
+Sentinel enrollment/lifecycle are pending. The executor owns this correction;
+the independent priorities and other owner work retained below are unchanged.
+Dossier refresh is due for the changed operator state; source/installation is
+not a shared reader receipt.
+
 ## Project protocol correction - 2026-10-13
 
 Last Updated: 2026-10-13 - Codex.

@@ -1076,3 +1076,21 @@ were restored and compared; fifty desktop/mobile section checks passed.
 Remaining history, same-hardware recovery limits, source-only legacy integrations,
 Portal dependency audit and ForgeOS transport/backup limits stay explicit.
 Final receipts change no application code, priority, source allowlist or admission.
+
+## 2026-10-13 — Installed intake and owner admission, round 7
+
+Exact claude-opus-5-5 at high effort, native firstParty metadata verified,
+session a1ccb565-36c3-4c72-8680-30a74394efe5: SOURCE_AND_ADOPTION_GO. Five-owner
+onboarding remains complete. No P1/P2. Technical source is curated into Spanish
+Dossier content; an authorized pilot retains D-014's pending-acceptance card.
+Retrofit authorization is D-006 through the canonical imported birth-source ref.
+The installed unrelated floating Claude alias is not evidence of an exact model;
+all task reviews explicitly select and verify the exact model.
+
+Approval covers installed readback, owner admission and its deterministically
+resolved plan, then safe retrofit. It does not approve application delivery or
+Dossier sharing. Strict CAP-001 v2 round7 accepted, manifest
+22076ba2356a03220bd54e379fe8a016636e9390c0c2e6b47aea8d7b9b39ba5c.
+An initial caller invocation omitted --strict and was rejected without capture;
+its original evidence is preserved. Correct invocation accepted. Hook outcome
+remains unknown with zero recorded errors, separate from explicit capture.
