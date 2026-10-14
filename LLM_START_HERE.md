@@ -1,4 +1,28 @@
-<!-- doc-version: 4.20.0 -->
+## GitHub validation efficiency - 2026-10-14
+
+Last Updated: 2026-10-14 - Codex. Source version 4.20.1.
+Read `docs/CI_EFFICIENCY.md`. The requested maintenance removes duplicate branch/PR runs,
+cancels superseded PR checks and preserves exact default-branch checks. Product
+runtime and earlier independent priorities remain unchanged. Source preparation,
+publication and successful hosted observation remain separate; this public repository can use standard hosted runners without consuming the private allowance. No paid usage or automatic retry was enabled.
+
+### Open work - next concrete step: CI maintenance
+
+Executor completes publication of the reviewed workflow list in `docs/CI_EFFICIENCY.md` and its
+owner receipt, then verifies the exact revision on the public standard runners.
+Earlier product work below remains independent; this maintenance does not accept it.
+Dossier assessment: refresh required for the shared CI policy and updater recovery; existing shared-publication hold remains.
+
+### Trace Anchor - CI maintenance
+
+- Role: executor
+- Subject: economical validation preserving existing tests
+- Resulting state: version=4.20.1; source candidate; hosted execution unverified
+- Repo state: isolated task based on 350d05327360166bea78b27112cdc7eae678923e; no primary reset
+- Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
+- Next gate: executor source publication, then exact hosted observation when available
+
+<!-- doc-version: 4.20.1 -->
 
 ## Idea continuity adoption - 2026-10-07
 
@@ -403,3 +427,10 @@ Do not create task-named siblings under the source root or auto-admit directorie
 The PATH guard protects supported CLI workflows; direct Git binaries and other
 clients can bypass it, so project admission and reconciliation remain essential.
 <!-- DOCKIT-TEMPLATE:END workspace-ownership -->
+
+## GitHub validation cost discipline
+
+Before changing `.github/workflows`, read `docs/CI_EFFICIENCY.md`. Retain useful
+checks, batch final reviewed publication, avoid duplicate branch/PR runs, and
+stop unchanged quota retries. Paid usage and additional access require their
+own authority. Existing adopters need explicit reviewed rollout.

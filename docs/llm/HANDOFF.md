@@ -1,3 +1,27 @@
+## GitHub validation efficiency - 2026-10-14
+
+Last Updated: 2026-10-14 - Codex. Source version 4.20.1.
+Read `docs/CI_EFFICIENCY.md`. The requested maintenance removes duplicate branch/PR runs,
+cancels superseded PR checks and preserves exact default-branch checks. Product
+runtime and earlier independent priorities remain unchanged. Source preparation,
+publication and successful hosted observation remain separate; this public repository can use standard hosted runners without consuming the private allowance. No paid usage or automatic retry was enabled.
+
+### Open work - next concrete step: CI maintenance
+
+Executor completes publication of the reviewed workflow list in `docs/CI_EFFICIENCY.md` and its
+owner receipt, then verifies the exact revision on the public standard runners.
+Earlier product work below remains independent; this maintenance does not accept it.
+Dossier assessment: refresh required for the shared CI policy and updater recovery; existing shared-publication hold remains.
+
+### Trace Anchor - CI maintenance
+
+- Role: executor
+- Subject: economical validation preserving existing tests
+- Resulting state: version=4.20.1; source candidate; hosted execution unverified
+- Repo state: isolated task based on 350d05327360166bea78b27112cdc7eae678923e; no primary reset
+- Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
+- Next gate: executor source publication, then exact hosted observation when available
+
 ## DEV intake installation verified — 2026-10-13
 
 The reviewed complete-intake correction is now installed in DEV. The actual
@@ -51,7 +75,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.20.0 -->
+<!-- doc-version: 4.20.1 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -192,7 +216,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-10-01 - Codex
-- Current source version: 4.20.0
+- Current source version: 4.20.1
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.

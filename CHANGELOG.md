@@ -4,6 +4,12 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.20.1] - 2026-10-14
+
+### Changed
+- Avoid duplicate branch/PR validation, cancel superseded PR checks, preserve every default-branch check and bound unattended validation time. Existing test commands remain unchanged.
+
+
 ## [4.20.0] - 2026-10-13
 
 ### Changed

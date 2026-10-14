@@ -138,3 +138,5 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 - `scripts/dockit-ideas.py`: pinned structural and baseline validation.
 
 - `README.md`: current project-intake correction and owner-specific evidence boundary.
+
+CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cost boundaries.

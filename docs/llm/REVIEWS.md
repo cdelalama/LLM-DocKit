@@ -1,3 +1,15 @@
+## 2026-10-14 - CI efficiency and recovery review
+
+Exact claude-opus-5-5, high effort, native firstParty metadata verified; session
+6c993d7f-38e5-4009-8c2f-99c9e14b6af9, round8. SOURCE_GO for all18workflow changes;
+local-only curation and update-recovery receipt approved after mechanical wording
+and source-label corrections. Strict capture v2 accepted, manifest SHA-256
+58e6ef03fec921f54ad9a1e3918741708b59d3628428095cef8cf20fdb01d626.
+The packet pins each candidate file. Required final local checks and unchanged
+reviewed semantics precede publication. Native evidence remains private.
+No hosted-green, product deployment, shared Dossier, shell-PR merge or Windows
+operator acceptance follows from this review. Existing exact platform gates stay.
+
 
 ## 2026-10-01 - Shared operator clarity and roadmap continuity
 

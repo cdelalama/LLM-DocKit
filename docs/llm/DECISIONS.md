@@ -1293,3 +1293,21 @@ private custody, unrelated priorities and historical evidence remain. New
 requirements need explicit migration, source review and installed/live evidence.
 A declaration or fixture PASS does not establish runtime acceptance. Exact Opus
 5.5/high advisory confirmed the gap; final review and rollout are separate.
+
+## D-031 - Preserve useful GitHub validation with bounded redundant demand
+
+Date: 2026-10-14. Authority: Carlos's explicit request to audit automation and
+continue the existing workflow more efficiently after an account-level refusal.
+
+Preserve tests and platform/release gates while removing branch/PR duplicate
+validation and canceling superseded PR checks. Every default-branch check keeps
+its own run identity. Batch reviewed publications and stop unchanged quota
+retries. Do not enable paid usage, enlarge billing scope, expose private source,
+install runners or delete evidence under this maintenance authority. Account
+usage needs actual measurement; a generic refusal does not establish a debt.
+Optimization cannot guarantee unlimited free execution. See `docs/CI_EFFICIENCY.md`.
+
+Exact Opus5.5/high round7 advisory consensus is accepted with executor corrections:
+workflow-run counts and job-duration estimates cannot confirm account billing;
+default-branch groups use distinct run IDs so queued runs cannot replace each
+other. Native Windows/product gates remain separate from workflow-only source.

@@ -1,10 +1,21 @@
 name: Idea continuity
-on: [push, pull_request]
+on:
+  push:
+    # Adopters: set this to the verified default branch.
+    branches: [main]
+    tags: ['**']
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: validation-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   continuity:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:

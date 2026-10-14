@@ -50,6 +50,26 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Prior historical queues and unknown coverage remain unchanged.",
       "cursor": "Recall before new project intake, existing-project adoption and temporary runtime delivery."
+    },
+    {
+      "id": "B-actions-efficiency-20261014",
+      "date": "2026-10-14",
+      "sources": [
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "contains": "## D-031 -"
+        }
+      ],
+      "excluded": [
+        "Private account data, native conversations and unrelated project work."
+      ],
+      "unknown": [
+        "Exact Actions allowance usage is unavailable with the existing token.",
+        "Earlier historical coverage remains unchanged."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Existing historical queue is unchanged.",
+      "cursor": "Recall when changing validation triggers or handling quota refusals."
     }
   ],
   "entries": [
@@ -107,6 +127,29 @@
       "ref": {
         "path": "docs/llm/DECISIONS.md",
         "contains": "## D-030"
+      }
+    },
+    {
+      "id": "REF-D-031-CI-EFFICIENCY",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Keep useful validation while reducing redundant Actions usage",
+      "origin": {
+        "date": "2026-10-14",
+        "attribution": "Carlos explicitly requested the audit and optimized continuation after the dev update and hosted-test refusal.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-031 -"
+          }
+        ]
+      },
+      "batch": "B-actions-efficiency-20261014",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before adding Actions jobs, publishing repeated receipts or retrying a quota refusal.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-031 -"
       }
     }
   ],

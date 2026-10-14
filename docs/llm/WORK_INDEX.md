@@ -19,3 +19,5 @@ This index describes retained work, not permission to delete it.
 - [idea-continuity-20261007](work/idea-continuity-20261007.json): closed; implement durable idea continuity and scoped historical recovery.
 
 - [project-protocol-20261013](work/project-protocol-20261013.json): active; corrective project intake, Sentinel and authentication protocol.
+
+- [actions-efficiency-20261014](work/actions-efficiency-20261014.json): pending-integration; Reduce redundant GitHub Actions validation while retaining release checks.

@@ -1,3 +1,5 @@
+- 2026-10-14 - Codex - Prepare 4.20.1 CI maintenance: preserve all test commands, default-branch checks and PR coverage while removing duplicate branch runs; cancel only superseded PR checks, add bounded timeouts/manual dispatch. Owner note: docs/CI_EFFICIENCY.md. No runtime/payment change; public hosted observation remains pending. Exact Opus7 advisory captured; exact Opus8 source review GO, final execution receipts separate. Trace: role=executor; state=source-candidate; validation=workflow-semantics-and-owner-checks; next=reviewed-publication-and-actual-hosted-observation.
+
 ## 2026-10-13 - Codex - Protocol Dossier actual readback
 
 Native L6 and shared S6 are published and verified in the actual InfraPortal
