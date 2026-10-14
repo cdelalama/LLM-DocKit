@@ -1,3 +1,5 @@
+- 2026-10-14 - Codex - Published4.20.1 at ec952fb9c226cd28b9895ed054871c2e234cbd33; actual public Idea continuity38629995423, Workspace38629995649 and manual Documentation Validation38630123628 pass. Private quota and platform gates remain independent. Local Dossier capture follows; shared publication held. Receipt only, no version change or recursive snapshot. Trace: role=executor; state=public-source-and-hosted-checks-verified; validation=three-exact-implementation-runs; next=native-capture-readback-under-shared-hold.
+
 - 2026-10-14 - Codex - Prepare 4.20.1 CI maintenance: preserve all test commands, default-branch checks and PR coverage while removing duplicate branch runs; cancel only superseded PR checks, add bounded timeouts/manual dispatch. Owner note: docs/CI_EFFICIENCY.md. No runtime/payment change; public hosted observation remains pending. Exact Opus7 advisory captured; exact Opus8 source review GO, final execution receipts separate. Trace: role=executor; state=source-candidate; validation=workflow-semantics-and-owner-checks; next=reviewed-publication-and-actual-hosted-observation.
 
 ## 2026-10-13 - Codex - Protocol Dossier actual readback

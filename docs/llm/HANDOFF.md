@@ -1,3 +1,15 @@
+## CI maintenance published and observed - 2026-10-14
+
+Version4.20.1 at ec952fb9c226cd28b9895ed054871c2e234cbd33 is published.
+The exact implementation passed Idea continuity38629995423, Workspace ownership
+38629995649 and manual Documentation Validation38630123628 on public standard
+runners. This public proof does not reopen private-account allowance or satisfy
+another project's platform tests. No paid usage was enabled.
+Next: executor captures the reviewed local Dossier and verifies its native reader;
+shared publication stays under Home Infra's writer/destination/recovery hold.
+Other project priorities and independent recovery remain separately owned.
+This final receipt does not require another recursive snapshot after that capture.
+
 ## GitHub validation efficiency - 2026-10-14
 
 Last Updated: 2026-10-14 - Codex. Source version 4.20.1.
