@@ -1,3 +1,22 @@
+## 2026-10-19 - Bounded template-import repair source approval
+
+Exact claude-opus-5-5/high, firstParty canonicalModel verified in CLI metadata.
+R07 requested changes; R09 resumed sessiond26da20d-8773-438b-ac36-da89e0a7309f
+returned SOURCE_GO for the exact code hashes. Strict native capture manifest:
+5ca1dbb5dc980b3a26a2e013ff9ab240719bb7f8df45a66aa62bd9eacd09d613.
+C1: scripts/test-validator.sh was unchanged. The executor invoked
+`sh scripts/test-validator.sh` with XDG_CONFIG_HOME pointing to an empty
+TemporaryDirectory only in the isolated fixture subprocess; production hook
+files/settings were never changed. Final96/96 pass. Migration22/22, init4/4,
+existing ideas16/16 pass; explicit owner continuity with ForgeOS mapping PASS.
+C2: a fresh synthetic child generated from the exact candidate passes all10
+version markers and the complete session validator10/10 with3explicit skips.
+All15 registered imported files match the pinned template blobs byte for byte.
+Reviewer permits mechanical source/version/review and portable work receipts;
+any code delta requires another review. No child/runtime/Dossier approval is
+inferred; Carlos's existing task authority covers the separate scoped operation.
+Private native transcripts and exact test invocations remain outside Git.
+
 ## 2026-10-14 - CI efficiency and recovery review
 
 Exact claude-opus-5-5, high effort, native firstParty metadata verified; session

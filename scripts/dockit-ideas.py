@@ -9,6 +9,11 @@ import subprocess
 import sys
 
 INDEX = "docs/llm/IDEA_INDEX.json"
+# A reviewed, finite migration registry, not a user-selectable bypass.
+TEMPLATE_IMPORTS = {'2f4ba1c91cc2ac0dd49682089bdf0916b6988138': {'project': 'house-docs', 'admission': 'e20ba680d65790e07f0844df1eb064be4f623902', 'contract_sha256': 'b68e01ca5b8c09829d6c29c1075f39452885ad9bfc70f75cef228a3c38fda64a', 'template_revision': '71a7d2a838d69d7a2897e35f587512628504f2b5', 'files': {'docs/llm/work/actions-efficiency-20261014.json': 'c15f60224b7364b8d079b28970f6e5ef00f7b318f53c2ad7801889548a61dc24', 'docs/llm/work/dossier-language-20260930.json': '5c130ed46c68694d0c0b506cf43b9a7081d5263794c6df1b1f6ede8e40bf0817', 'docs/llm/work/idea-continuity-20261007.json': 'df58cf44c2d1c98853677d7da68b7370fccd87748433ee19c7321f5c658b0674', 'docs/llm/work/operator-clarity-20261001.json': 'e051f46d1a4bb83cf6897c982f4dc2c3f3385e389877ea20e45af64e448ee6d3', 'docs/llm/work/project-protocol-20261013.json': '87b14363edb5734c276749a1e0cde09c138272119eeba8f6e1c7a45f397f7e28', 'docs/llm/work/wt_18575d2cdc8bfde9.json': '3155f5fcbf2451cf6719b2db76e6d8b50bd71c5f79edf76590bdb6691114a791', 'docs/llm/work/wt_592e417f602230b2.json': '9e38a7f98d362f626e074be27b311eff436f8da559d29a87ca07383f78fc651e', 'docs/llm/work/wt_66fcfc6df8bce34c.json': 'a3925f77f73c01d25fb9b26e58d881b5d27d800ac741b5147779e7359a0c770e', 'docs/llm/work/wt_aa94ab3e16782f49.json': '3550c29a48d43f08232aa88e6be542937a40b0680b7802cb2f6204bbdb81d49e', 'docs/llm/work/wt_c96e20d1843453b7.json': 'c4273c8bc3f4215302e4b37383f11272db0bec6c823fbc1ef409d5616e5efc1d', 'docs/llm/work/wt_ecf27ef256cff43e.json': '0929c81a02ecd494e6a6fc816526c47bfa1f1b1a2623946b6c6e1c8b18cefd3e', 'docs/llm/work/wt_f1cbeb73311127f3.json': '8a60f1d114fb5094e0b6c763d45620f0ae85a8cf40a937efd7892c34f7c89710', 'docs/llm/work/wt_f514a0c9d97112c2.json': '31c3aec9580209f579a2b8f34c41cbdd52a670479e13a7f36f3ed056f60bff92', 'docs/llm/IDEA_INDEX.json': '2005234bd983b62a437ec24a83b094d3b277d9810ad031d048fab116aa1e8dcf', 'docs/llm/WORK_INDEX.md': '8a77657d91d96d63331ae52ecd1bcf0fffc584a626bcede1052a39add4466f27'}}}
+REPAIR = "docs/llm/TEMPLATE_IMPORT_REPAIR.json"
+ARCHIVE = "docs/archive/template-import/"
+
 STATES = {"captured", "proposed", "accepted", "in_progress", "deferred",
           "rejected", "superseded", "transferred", "implemented"}
 TERMINAL = {"rejected", "superseded", "transferred", "implemented"}
@@ -58,6 +63,14 @@ def read(root, path, revision=None):
     return target.read_text(encoding="utf-8")
 
 
+def exact_bytes(root, path, revision=None):
+    # Validate containment and commit syntax through the ordinary reader first.
+    read(root, path, revision)
+    if revision:
+        return subprocess.check_output(["git", "-C", str(root), "show", revision + ":" + path])
+    return (root / path).read_bytes()
+
+
 def load(text):
     def unique(pairs):
         out = {}
@@ -73,6 +86,7 @@ class Checker:
         self.root = Path(root).resolve()
         self.projects = projects or {}
         self.warnings = []
+        self.requested_baseline = baseline
         self.baseline_mode = "explicit" if baseline else "inferred"
         self.baseline = None
         if baseline:
@@ -126,6 +140,88 @@ class Checker:
                    if revision else read(self.root, register.get("moved_to", register["path"])))
         return set(pattern.findall(content))
 
+    def template_import(self, data, old_text):
+        """Recognize only registered contaminated births; preserve every old byte."""
+        receipt_path = self.root / REPAIR
+        receipt_history = git(self.root, "log", "--full-history", "--format=%H", "HEAD", "--", REPAIR, optional=True)
+        require(receipt_path.exists() or not receipt_history, "Template repair receipt disappeared")
+        if not receipt_path.exists():
+            return old_text, set()
+        receipt = load(read(self.root, REPAIR))
+        require(set(receipt) == {"schema", "root", "admission", "project", "template_revision", "policy_revision", "review_manifest_sha256", "files"}, "Invalid template repair receipt")
+        roots = git(self.root, "rev-list", "--max-parents=0", "HEAD").splitlines()
+        require(len(roots) == 1 and receipt["root"] == roots[0], "Repair requires the single registered root")
+        spec = TEMPLATE_IMPORTS.get(roots[0])
+        require(spec is not None, "Unregistered template import; no automatic exception")
+        require(receipt["schema"] == 1 and receipt["project"] == spec["project"] == data["project"] != "LLM-DocKit", "Invalid repair project")
+        for key in ["admission", "template_revision", "files"]:
+            require(receipt[key] == spec[key], "Repair registry mismatch: " + key)
+        require(bool(re.fullmatch(r"[0-9a-f]{40}", receipt["policy_revision"])) and bool(re.fullmatch(r"[0-9a-f]{64}", receipt["review_manifest_sha256"])), "Repair needs pinned policy and review evidence")
+        contract_path = ".forgeos/project-birth.json"
+        contract_bytes = exact_bytes(self.root, contract_path, spec["admission"])
+        require(hashlib.sha256(contract_bytes).hexdigest() == spec["contract_sha256"], "Birth contract differs from registered admission")
+        contract = load(contract_bytes)
+        require(contract["project"]["name"] == data["project"] and contract["origin"]["created_by"] == "ForgeOS" and contract["origin"]["workflow"] == "/new-homelab-project" and contract["birth"]["retrofit"] is False, "Only independently registered new creation is eligible")
+        current_contract = load(read(self.root, contract_path))
+        require(current_contract["project"]["name"] == data["project"] and current_contract["birth"]["retrofit"] is False, "Current birth identity changed")
+        transitions = git(self.root, "log", "--full-history", "--format=%H", "--diff-filter=A", "HEAD", "--", REPAIR).splitlines()
+        require(len(transitions) <= 1, "Multiple repair transitions")
+        transition = transitions[0] if transitions else None
+        parent = git(self.root, "rev-parse", transition + "^" ).strip() if transition else git(self.root, "rev-parse", "HEAD").strip()
+        require(git(self.root, "rev-list", "--count", spec["admission"] + ".." + parent).strip() == "0" and parent == spec["admission"], "Repair must be the first change after registered admission")
+        require(self.baseline is not None, "Repair requires a known baseline")
+        born = load(read(self.root, INDEX, roots[0]))
+        require(born["project"] == "LLM-DocKit", "Birth did not import template identity")
+        archived = {p.relative_to(self.root / ARCHIVE).as_posix() for p in (self.root / ARCHIVE).rglob("*") if p.is_file()}
+        require(archived == set(spec["files"]), "Archive set differs from registered import")
+        removed = set()
+        for path, expected in spec["files"].items():
+            born_bytes = exact_bytes(self.root, path, roots[0])
+            require(hashlib.sha256(born_bytes).hexdigest() == expected, "Registered birth hash mismatch: " + path)
+            changes = git(self.root, "log", "--format=%H", roots[0] + ".." + parent, "--", path).strip()
+            require(not changes, "Imported record changed before repair: " + path)
+            archive_path = ARCHIVE + path
+            require(hashlib.sha256(exact_bytes(self.root, archive_path)).hexdigest() == expected, "Frozen archive changed: " + path)
+            if transition:
+                require(hashlib.sha256(exact_bytes(self.root, archive_path, transition)).hexdigest() == expected, "Repair commit archive differs: " + path)
+            if path.startswith("docs/llm/work/"):
+                require(not (self.root / path).exists(), "Foreign work record remains live: " + path)
+                removed.add(path)
+        if transition:
+            require(read(self.root, REPAIR) == read(self.root, REPAIR, transition), "Frozen repair receipt changed")
+            actual_deleted = set(git(self.root, "diff", "--no-renames", "--name-only", "--diff-filter=D", parent, transition).splitlines())
+        else:
+            actual_deleted = set(git(self.root, "diff", "HEAD", "--no-renames", "--name-only", "--diff-filter=D").splitlines())
+        require(actual_deleted == removed, "Repair deleted files outside the exact imported work set")
+        # The admission may already own real decisions even though its index
+        # is foreign. Preserve their IDs across this one-time identity repair.
+        boundary = load(read(self.root, INDEX, transition)) if transition else data
+        for register in born["registers"] + boundary["registers"]:
+            prior = git(self.root, "show", spec["admission"] + ":" + relative(register["path"]), optional=True)
+            if prior is None:
+                continue  # A genuinely new child register has no prior IDs.
+            pattern = re.compile(register["pattern"], re.MULTILINE)
+            prior_ids = set(pattern.findall(prior))
+            replacement = next((v for v in boundary["registers"] if v["path"] == register["path"]), register)
+            destination = replacement.get("moved_to", replacement["path"])
+            retained = read(self.root, destination, transition)
+            require(prior_ids <= set(pattern.findall(retained)), "Admission register IDs disappeared during repair: " + register["path"])
+        if self.baseline in {roots[0], spec["admission"]}:
+            # Explicit, reported transition boundary. Afterwards all normal
+            # anti-deletion checks compare with the first child-owned index.
+            if transition:
+                old_text = read(self.root, INDEX, transition)
+                self.baseline = transition
+                removed = set()
+            else:
+                old_text = None
+        else:
+            require(transition is not None, "Unpublished repair needs the reviewed admission baseline")
+            require(git(self.root, "merge-base", self.baseline, transition).strip() == transition, "Baseline predates the registered repair")
+            removed = set()
+        self.repair_transition = transition or "working-tree-candidate"
+        return old_text, removed
+
     def run(self):
         old_text = git(self.root, "show", self.baseline + ":" + INDEX, optional=True) if self.baseline else None
         path = self.root / INDEX
@@ -142,6 +238,7 @@ class Checker:
         require(data["schema"] == 1 and IDENTITY.fullmatch(data["project"]), "Invalid index identity")
         self.project = data["project"]
         self.projects.setdefault(self.project, str(self.root))
+        old_text, archived_tasks = self.template_import(data, old_text)
         for key in ["registers", "batches", "entries", "task_reconciliations"]:
             require(isinstance(data[key], list), "Expected array: " + key)
         batches = {}
@@ -246,7 +343,7 @@ class Checker:
         if self.baseline:
             old_tasks = git(self.root, "ls-tree", "-r", "--name-only", self.baseline, "docs/llm/work")
             for old_task in old_tasks.splitlines():
-                if old_task.endswith(".json"):
+                if old_task.endswith(".json") and old_task not in archived_tasks:
                     require((self.root / old_task).is_file(), "Task record disappeared: " + old_task)
         for task in sorted(work.glob("*.json")) if work.exists() else []:
             value = load(task.read_text())
@@ -258,7 +355,7 @@ class Checker:
             if not before or load(before).get("state") != "closed":
                 require(name in reconciliations, "Newly closed task lacks idea reconciliation: " + name)
         return {"status": "warning" if self.warnings else "pass", "project": self.project,
-                "baseline": self.baseline, "baseline_mode": self.baseline_mode, "entries": len(entries),
+                "baseline": self.baseline, "requested_baseline": self.requested_baseline, "baseline_mode": self.baseline_mode, "template_repair": getattr(self, "repair_transition", None), "entries": len(entries),
                 "registered_ids": sum(map(len, registers.values())), "batches": len(batches),
                 "warnings": sorted(set(self.warnings)), "coverage": "declared_corpus_only"}
 

@@ -21,3 +21,5 @@ This index describes retained work, not permission to delete it.
 - [project-protocol-20261013](work/project-protocol-20261013.json): active; corrective project intake, Sentinel and authentication protocol.
 
 - [actions-efficiency-20261014](work/actions-efficiency-20261014.json): pending-integration; Reduce redundant GitHub Actions validation while retaining release checks.
+
+- [house-docs-init-repair-20261019](work/house-docs-init-repair-20261019.json): pending-integration; repair foreign template state blocking House Docs.

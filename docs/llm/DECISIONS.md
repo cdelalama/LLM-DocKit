@@ -1311,3 +1311,12 @@ Exact Opus5.5/high round7 advisory consensus is accepted with executor correctio
 workflow-run counts and job-duration estimates cannot confirm account billing;
 default-branch groups use distinct run IDs so queued runs cannot replace each
 other. Native Windows/product gates remain separate from workflow-only source.
+
+## D-032 - Separate template guidance from owner continuity state
+
+Date: 2026-10-19. Authority: Carlos authorized completing House Docs with Opus
+as auditor and necessary infrastructure fixes. Opus R06 accepted this bounded
+correction; source acceptance is separate. New project indexes start empty with
+their real identity. Preserve already imported bytes through the finite,
+reviewed repair in docs/TEMPLATE_IMPORT_REPAIR.md. Never turn a migration into
+a general identity/anti-deletion bypass. Other affected projects remain untouched.

@@ -4,6 +4,19 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.20.2] - 2026-10-19
+
+### Fixed
+
+- Initialize child-owned idea/work records instead of copying the template owner.
+- Recognize the single reviewed House Docs import repair while freezing its exact archive.
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [4.20.1] - 2026-10-14
 
 ### Changed

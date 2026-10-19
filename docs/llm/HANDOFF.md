@@ -1,3 +1,17 @@
+## House Docs initializer repair - 2026-10-19
+
+Last Updated: 2026-10-19 - Codex.
+
+Current work: executor fixes the imported owner-state defect documented in
+`docs/TEMPLATE_IMPORT_REPAIR.md`. Version 4.20.2 source approved; publication and child adoption follow.
+
+### Open work - next concrete step: initializer repair
+
+Publish the independently reviewed `scripts/dockit-init-project.sh` and
+`scripts/dockit-ideas.py`, then apply only the registered House Docs repair. Earlier CI/product/recovery work below retains its owner and state.
+Dossier assessment: refresh required for this correction; the existing shared
+publication hold remains, so retain a reviewed local capture if still applicable.
+
 ## CI maintenance published and observed - 2026-10-14
 
 Version4.20.1 at ec952fb9c226cd28b9895ed054871c2e234cbd33 is published.
@@ -87,7 +101,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.20.1 -->
+<!-- doc-version: 4.20.2 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -228,7 +242,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-10-01 - Codex
-- Current source version: 4.20.1
+- Current source version: 4.20.2
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.

@@ -1,8 +1,7 @@
 #!/bin/sh
 # dockit-init-project.sh -- Initialize a new project from the LLM-DocKit scaffold.
 #
-# Portable POSIX sh. Zero external dependencies beyond standard tools (git, sed,
-# find). Produces a self-contained new project with the LLM-DocKit documentation
+# Portable POSIX sh; requires git, sed, find and python3. Produces a self-contained new project with the LLM-DocKit documentation
 # structure ready for first session.
 #
 # What it does:
@@ -158,7 +157,7 @@ TARGET_ABS=$(cd "$TARGET_DIR" && pwd)
 # Use git archive rather than a working-tree copy so untracked drafts in
 # the source LLM-DocKit checkout (proposals, scratch notes, local-only docs)
 # never leak into the new project. Only files committed to HEAD travel.
-if [ ! -d "$SOURCE_DIR/.git" ]; then
+if [ "$(git -C "$SOURCE_DIR" rev-parse --show-toplevel 2>/dev/null)" != "$(cd "$SOURCE_DIR" && pwd -P)" ]; then
     echo "ERROR: source is not a git repository: $SOURCE_DIR" >&2
     echo "Hint: clone LLM-DocKit instead of using a working-tree copy." >&2
     exit 1
@@ -184,7 +183,7 @@ echo "  copied scaffold (tracked files only, via git archive)"
 # checkout if they need to.
 
 rm -f HOW_TO_USE.md
-rm -f docs/DOWNSTREAM_FEEDBACK.md
+rm -f docs/DOWNSTREAM_FEEDBACK.md docs/TEMPLATE_IMPORT_REPAIR.md
 # Only this newly generated target is pruned; source/adopter history is preserved.
 rm -rf docs/archive
 rm -f docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md
@@ -196,6 +195,22 @@ rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh
 rm -f scripts/dockit-sync-check.sh
 rm -f scripts/dockit-init-project.sh
+
+# Owner records are not portable templates. Only the new target is reset.
+rm -rf docs/llm/work
+mkdir -p docs/llm/work
+rm -f docs/llm/TEMPLATE_IMPORT_REPAIR.json
+printf "# Reviews\n\nNo project reviews have been recorded yet.\n" > docs/llm/REVIEWS.md
+printf '# Parent-owned task index\n\nNo project tasks have been registered yet.\n' > docs/llm/WORK_INDEX.md
+python3 - "$PROJECT_NAME" <<'PY_INIT_IDEAS'
+import hashlib, json, pathlib, sys
+helper = pathlib.Path("scripts/dockit-ideas.py")
+pathlib.Path("docs/llm/IDEA_INDEX.json").write_text(json.dumps({
+    "schema": 1, "project": sys.argv[1],
+    "validator_sha256": hashlib.sha256(helper.read_bytes()).hexdigest(),
+    "registers": [], "batches": [], "entries": [], "task_reconciliations": []
+}, indent=2) + "\n")
+PY_INIT_IDEAS
 
 echo "  pruned DocKit-internal meta files"
 
@@ -364,6 +379,15 @@ echo "  substituted placeholders"
 # downstream commit so `template-residue` passes from day zero.
 
 if [ -f LLM_START_HERE.md ]; then
+    # Source-owner dated prefixes are not child onboarding guidance.
+    _tmp_owner_start=$(mktemp)
+    awk '/^<!-- doc-version:/ { marker = $0 } /^# LLM Start Guide/ { if (marker != "") print marker; start = 1 } start { print }' LLM_START_HERE.md > "$_tmp_owner_start"
+    if [ ! -s "$_tmp_owner_start" ]; then
+        echo "ERROR: generic LLM Start Guide boundary missing" >&2
+        exit 1
+    fi
+    mv "$_tmp_owner_start" LLM_START_HERE.md
+
     sed -i '/Replace angle-bracket placeholders/d' LLM_START_HERE.md
     _tmp_start=$(mktemp)
     awk '

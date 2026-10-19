@@ -1,3 +1,15 @@
+## House Docs initializer repair - 2026-10-19
+
+Current work: executor fixes the imported owner-state defect documented in
+`docs/TEMPLATE_IMPORT_REPAIR.md`. Version 4.20.2 source approved; publication and child adoption follow.
+
+### Open work - next concrete step: initializer repair
+
+Publish the independently reviewed `scripts/dockit-init-project.sh` and
+`scripts/dockit-ideas.py`, then apply only the registered House Docs repair. Earlier CI/product/recovery work below retains its owner and state.
+Dossier assessment: refresh required for this correction; the existing shared
+publication hold remains, so retain a reviewed local capture if still applicable.
+
 ## CI maintenance published and observed - 2026-10-14
 
 Version4.20.1 at ec952fb9c226cd28b9895ed054871c2e234cbd33 is published.
@@ -34,7 +46,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.20.1 -->
+<!-- doc-version: 4.20.2 -->
 
 ## Idea continuity adoption - 2026-10-07
 

@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/house-docs-init-repair-20261019",
+  "id": "house-docs-init-repair-20261019",
+  "next_step": "Publish reviewed source, apply only registered House Docs repair, and finish local Dossier custody; retain this checkout and unrelated owner priorities.",
+  "project": "LLM-DocKit",
+  "purpose": "Repair foreign template idea state blocking the authorized House Docs delivery",
+  "schema": 1,
+  "state": "pending-integration"
+}

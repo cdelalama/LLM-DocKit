@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "LLM-DocKit",
-  "validator_sha256": "b1fe8e98663e6d03b440ed05a35578ffee5787750ba4f5adef32e672db521def",
+  "validator_sha256": "a77a3b10a4b3e013645a2e8545566379690395fdc30a3c77878377c65c0d0739",
   "registers": [
     {
       "path": "docs/llm/DECISIONS.md",
@@ -70,6 +70,24 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Existing historical queue is unchanged.",
       "cursor": "Recall when changing validation triggers or handling quota refusals."
+    },
+    {
+      "id": "B-template-repair-20261019",
+      "date": "2026-10-19",
+      "sources": [
+        {
+          "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
+        }
+      ],
+      "excluded": [
+        "Private house documents and native review content"
+      ],
+      "unknown": [
+        "Other affected children not yet inventoried"
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical backfill remains as recorded.",
+      "cursor": "Inventory affected births without applying repairs."
     }
   ],
   "entries": [
@@ -151,6 +169,77 @@
         "path": "docs/llm/DECISIONS.md",
         "contains": "## D-031 -"
       }
+    },
+    {
+      "id": "REF-D-032-TEMPLATE-STATE",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Separate portable guidance from project-owned state",
+      "origin": {
+        "date": "2026-10-19",
+        "attribution": "Carlos authorized necessary fixes for complete House Docs deployment; exact Opus R06 advisory.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-032"
+          }
+        ]
+      },
+      "batch": "B-template-repair-20261019",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before initializing a child or repairing imported template state.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-032"
+      }
+    },
+    {
+      "id": "IDEA-0033",
+      "record": "native",
+      "kind": "agent_suggestion",
+      "title": "Inventory affected new children without applying repairs",
+      "origin": {
+        "date": "2026-10-19",
+        "attribution": "Exact Opus R06/R07 independent review suggestions.",
+        "sources": [
+          {
+            "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
+          }
+        ]
+      },
+      "batch": "B-template-repair-20261019",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before authorizing another template-import migration.",
+      "state": "deferred",
+      "documentation_refs": [
+        {
+          "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
+        }
+      ]
+    },
+    {
+      "id": "IDEA-0034",
+      "record": "native",
+      "kind": "agent_suggestion",
+      "title": "Review remaining optional source-owner template residue",
+      "origin": {
+        "date": "2026-10-19",
+        "attribution": "Exact Opus R06/R07 independent review suggestions.",
+        "sources": [
+          {
+            "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
+          }
+        ]
+      },
+      "batch": "B-template-repair-20261019",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before broader initializer/template cleanup beyond this bounded defect.",
+      "state": "deferred",
+      "documentation_refs": [
+        {
+          "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
+        }
+      ]
     }
   ],
   "task_reconciliations": [
