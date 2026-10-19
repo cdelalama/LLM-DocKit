@@ -1,3 +1,5 @@
+- 2026-10-19 - Codex - Close scoped House repair custody after reviewed native capture; retain separate shared recovery acceptance hold. Trace: role=executor; state=closed-scoped; validation=actual-capture-and-owner-gates; next=retain-evidence.
+
 - 2026-10-19 - Codex - Record published initializer repair and actual House-only adoption; preserve prior owner work. Version4.20.3 documentation only. Trace: role=executor; state=repair-adopted; validation=registered-child-continuity; next=local-curation-custody.
 
 - 2026-10-19 - Codex - Repair template owner-state contamination blocking House Docs; preserve exact imported history and normal continuity checks. - Files: [scripts/dockit-init-project.sh, scripts/dockit-ideas.py, docs/TEMPLATE_IMPORT_REPAIR.md] - Version impact: yes (4.20.2 patch) - Trace: role=executor; commits=none; state=isolated candidate; validation=22 migration,4 init,16 ideas,96 smoke and fresh-child full validation PASS; next=publish approved source and scoped child adoption

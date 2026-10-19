@@ -249,6 +249,14 @@
         "IDEA-0001"
       ],
       "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/house-docs-init-repair-20261019.json",
+      "ideas": [
+        "IDEA-0033",
+        "IDEA-0034"
+      ],
+      "no_ideas_reason": null
     }
   ]
 }

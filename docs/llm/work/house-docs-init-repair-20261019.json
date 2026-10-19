@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "work/house-docs-init-repair-20261019",
   "id": "house-docs-init-repair-20261019",
-  "next_step": "Publish reviewed source, apply only registered House Docs repair, and finish local Dossier custody; retain this checkout and unrelated owner priorities.",
+  "next_step": "House Docs delivery passed with published exact-source consumer evidence. Retain checkout and private evidence; no retirement authorized. Existing owner-wide Dossier/provider limits remain separate.",
   "project": "LLM-DocKit",
   "purpose": "Repair foreign template idea state blocking the authorized House Docs delivery",
   "schema": 1,
-  "state": "pending-integration"
+  "state": "closed"
 }

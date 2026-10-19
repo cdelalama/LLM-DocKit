@@ -181,3 +181,13 @@ Use that reviewed implementation for manual status/read/submit/publish/backup;
 the original sibling Dossier worktree is preserved and may lack the remote CLI.
 No shell path from a project declaration is executed. Receipt-only commits after
 L3 can report source drift without requiring a new capture of identical state.
+
+## House initializer repair capture — 2026-10-19
+
+Exact Opus5.5/high R26 conditional CURATION_GO corrections applied: headline
+limits verification to House Docs and states earlier projects were not audited
+or modified. Native L8 is local:9d7ecb59e6c5fd591370cf58b32acced0d028dd7c1eb579d3339e68a1f6c4595.
+Source is published a010033; full previous content and owner holds retained.
+Current shared backup succeeds at229662bytes; this does not replace the prior
+shared-publisher recovery acceptance. No shared publication or independent
+backup acceptance is claimed. Native reader verification is task-private.
