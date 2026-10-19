@@ -4,6 +4,16 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.20.3] - 2026-10-19
+
+- Record published initializer repair and House Docs-only adoption.
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [4.20.2] - 2026-10-19
 
 ### Fixed

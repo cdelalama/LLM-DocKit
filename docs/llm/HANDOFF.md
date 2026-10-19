@@ -2,15 +2,18 @@
 
 Last Updated: 2026-10-19 - Codex.
 
-Current work: executor fixes the imported owner-state defect documented in
-`docs/TEMPLATE_IMPORT_REPAIR.md`. Version 4.20.2 source approved; publication and child adoption follow.
+Current source version: 4.20.3 (documentation receipt).
+The implementation at f28594b92325dccf11a2f2556493396643f86d79 is published.
+The reviewed initializer/idea repair was applied only to registered House Docs;
+its repaired continuity checks pass. No other child repository was rewritten.
 
 ### Open work - next concrete step: initializer repair
 
-Publish the independently reviewed `scripts/dockit-init-project.sh` and
-`scripts/dockit-ideas.py`, then apply only the registered House Docs repair. Earlier CI/product/recovery work below retains its owner and state.
-Dossier assessment: refresh required for this correction; the existing shared
-publication hold remains, so retain a reviewed local capture if still applicable.
+Retain docs/TEMPLATE_IMPORT_REPAIR.md and the private House repair evidence.
+The executor captures the scoped reviewed Dossier update and preserves the
+previous publication hold only if the actual shared operation fails. The current
+shared backup succeeds (229662 bytes); publish and restore the reviewed update.
+Earlier CI/product/recovery work below retains its owner and state.
 
 ## CI maintenance published and observed - 2026-10-14
 
@@ -101,7 +104,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.20.2 -->
+<!-- doc-version: 4.20.3 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -242,7 +245,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-10-01 - Codex
-- Current source version: 4.20.2
+- Current source version: 4.20.3
 - Owner: Carlos
 - Session focus: maintain this project through its live shared Dossier.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
