@@ -2321,3 +2321,66 @@ regressions but failed devenv's existing ShellCheck SC1007 gate. The reviewed
 local adaptation uses `CDPATH='' cd`, preserving semantics and the full lint
 gate. Upstream fixture normalization and representative adopter static checks
 remain a follow-up; project behavior suites alone do not prove static compatibility.
+
+## DF-064 - Reported copied-document version drift needs path reconciliation
+
+- Source: sanitized downstream adoption report; synthetic adopter version 0.1.0
+- Date observed: 2026-11-01
+- Category: drift
+- Status: open; reported full-sync symptom not reproduced by the bounded current-source test
+- Related: DF-056, DF-065
+
+Observation: the downstream report described `docs/DELIVERY_CONTRACT.md` and
+`docs/integrations/CODEX.md` receiving template version 4.20.4 instead of the
+adopter's version, followed by validation failure and rollback. The public
+example uses adopter 0.1.0; no private project identity or paths are retained.
+This report does not establish that the currently published copy strategy is
+still defective. At source 0b2a12d75ba56d5274d0d28a79ceba578b5f1e1a,
+`scripts/dockit-sync.sh` calls `normalize_project_doc_version` after both new
+and updated copies. Its published blob SHA256 is
+1382057873f1613f5808f7a5b17167b3a19d2360ef806e443b5268222d687b16.
+
+Bounded reproduction: an isolated Git Bash fixture with `VERSION` 0.1.0, valid
+version markers and the real version checker ran `--init-state
+--untracked-existing-adoption`, then `--apply --only docs/DELIVERY_CONTRACT.md
+--only docs/integrations/CODEX.md`. Apply returned 0, both copied markers remained
+0.1.0 and the version checker returned 0. The Windows working-copy script SHA256
+was e727730dffb1fef233d6a0b942312865c7395eca85b12700a4a664c3f6bc6a66;
+its checkout line endings differ from the published blob. A subsequent full-sync
+attempt has no conclusive completion receipt and is not positive or negative
+proof of the reported rollback.
+
+Protocol implication: reconcile the actual failing executable bytes, checkout
+normalization, command, registration state and pre/post validation before
+selecting a correction. Retain a complete synthetic full-sync regression for the
+confirmed path if one is identified. Do not remove normalization, widen a sync,
+change an adopter's version or report a generic defect as confirmed merely to
+explain the original observation. This intake schedules no repair or rollout.
+
+## DF-065 - Pre-commit hook can discard a version-check failure
+
+- Source: synthetic hook control-flow reproduction at template version 4.20.4
+- Date observed: 2026-11-01
+- Category: gap
+- Status: open; failure propagation confirmed, no correction applied
+- Related: DF-061, DF-064
+
+Observation: `scripts/pre-commit-hook.sh` invokes `"$CHECK_SCRIPT"` in check 4
+without propagating its exit status. The later documentation-warning block can
+be the last successful command. In an isolated repository with only a synthetic
+Markdown file staged, a fixture version checker returned 1 and the documentation
+checker returned 1. The unchanged hook printed its documentation warning and
+returned 0. No real commit, installed hook or adopter was changed by this test.
+The published source is 0b2a12d75ba56d5274d0d28a79ceba578b5f1e1a;
+the hook blob SHA256 is
+a83d0d1c46841b823d2f9f16dcf2ad7c7c3a9c98c19bf8b10581b65d01c11ea3.
+The executed Windows working-copy SHA256 is
+1c06cbf3c233187ef102a110a1766f0276f8c6a4f88ee57c3cbe658abe3d8e41.
+
+Protocol implication: explicitly preserve a failed version-check exit across
+later advisory checks, while retaining the intended warning-only documentation
+behavior. A future correction needs regressions for a failed version check
+followed by both passing and failing documentation checks, plus the normal
+version-success paths. The control-flow fixture proves failure suppression; it
+does not claim a real malformed version was committed. This intake authorizes
+neither implementation nor installation and changes no existing work priority.

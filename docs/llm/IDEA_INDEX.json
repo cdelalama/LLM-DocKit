@@ -88,6 +88,29 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier historical backfill remains as recorded.",
       "cursor": "Inventory affected births without applying repairs."
+    },
+    {
+      "id": "B-sync-hook-feedback-20261101",
+      "date": "2026-11-01",
+      "sources": [
+        {
+          "path": "docs/DOWNSTREAM_FEEDBACK.md",
+          "contains": "## DF-064 -"
+        },
+        {
+          "path": "docs/DOWNSTREAM_FEEDBACK.md",
+          "contains": "## DF-065 -"
+        }
+      ],
+      "excluded": [
+        "Private downstream identities, paths, data and raw execution records."
+      ],
+      "unknown": [
+        "Root cause of the reported full-sync rollback and complete historical coverage."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical queues and unresolved feedback retain their existing scope.",
+      "cursor": "Recall these two entries before sync diagnosis or hook failure-propagation changes."
     }
   ],
   "entries": [
@@ -240,6 +263,52 @@
           "path": "docs/TEMPLATE_IMPORT_REPAIR.md"
         }
       ]
+    },
+    {
+      "id": "REF-DF-064",
+      "record": "reference",
+      "kind": "agent_suggestion",
+      "title": "Reconcile reported copied-document drift with the current executable",
+      "origin": {
+        "date": "2026-11-01",
+        "attribution": "Sanitized downstream feedback and bounded source/control-flow inspection; intake only.",
+        "sources": [
+          {
+            "path": "docs/DOWNSTREAM_FEEDBACK.md",
+            "contains": "## DF-064 -"
+          }
+        ]
+      },
+      "batch": "B-sync-hook-feedback-20261101",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before diagnosing a full-sync version-marker rollback.",
+      "ref": {
+        "path": "docs/DOWNSTREAM_FEEDBACK.md",
+        "contains": "## DF-064 -"
+      }
+    },
+    {
+      "id": "REF-DF-065",
+      "record": "reference",
+      "kind": "agent_suggestion",
+      "title": "Preserve failed version-check status through advisory hook checks",
+      "origin": {
+        "date": "2026-11-01",
+        "attribution": "Sanitized downstream feedback and bounded source/control-flow inspection; intake only.",
+        "sources": [
+          {
+            "path": "docs/DOWNSTREAM_FEEDBACK.md",
+            "contains": "## DF-065 -"
+          }
+        ]
+      },
+      "batch": "B-sync-hook-feedback-20261101",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before changing or qualifying pre-commit failure propagation.",
+      "ref": {
+        "path": "docs/DOWNSTREAM_FEEDBACK.md",
+        "contains": "## DF-065 -"
+      }
     }
   ],
   "task_reconciliations": [

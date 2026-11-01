@@ -1,3 +1,5 @@
+- 2026-11-01 - Codex - Retain DF-064 reported version-drift discrepancy and DF-065 confirmed hook exit suppression using public synthetic examples; both remain open, with no implementation, installation or priority change. Version4.20.5 documentation only; canonical isolated bump passes all10 markers. Exact Opus5.5/high SOURCE_GO; session9checked/4skipped PASS with inherited handoff-size warning; ideas and whitespace PASS. Trace: role=executor; sent=2026-11-01 17:58:42 UTC; commits=none; state=reviewed-feedback-source; validation=synthetic-reproductions-and-doc-checks; next=recall-open-feedback.
+
 - 2026-10-19 - Codex - Close scoped House repair custody after reviewed native capture; retain separate shared recovery acceptance hold. Trace: role=executor; state=closed-scoped; validation=actual-capture-and-owner-gates; next=retain-evidence.
 
 - 2026-10-19 - Codex - Record published initializer repair and actual House-only adoption; preserve prior owner work. Version4.20.3 documentation only. Trace: role=executor; state=repair-adopted; validation=registered-child-continuity; next=local-curation-custody.

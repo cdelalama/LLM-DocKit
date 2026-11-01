@@ -1,3 +1,13 @@
+## Downstream feedback intake - 2026-11-01
+
+Last Updated: 2026-11-01 - Codex. Source version 4.20.5.
+
+Read `docs/DOWNSTREAM_FEEDBACK.md` DF-064 and DF-065. DF-064 retains a reported
+full-sync symptom with a non-reproducing bounded current-source check; DF-065
+confirms that the hook can suppress a failing version-check exit. Both remain
+open. This is documentation intake, not a fix, installation or new priority.
+Earlier product, CI and recovery work keeps its existing state and owner.
+
 ## House Docs initializer repair - 2026-10-19
 
 Current work: executor fixes the imported owner-state defect documented in
@@ -46,7 +56,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.20.4 -->
+<!-- doc-version: 4.20.5 -->
 
 ## Idea continuity adoption - 2026-10-07
 

@@ -1,3 +1,13 @@
+## Downstream feedback intake - 2026-11-01
+
+Last Updated: 2026-11-01 - Codex. Source version 4.20.5.
+
+Read `docs/DOWNSTREAM_FEEDBACK.md` DF-064 and DF-065. DF-064 retains a reported
+full-sync symptom with a non-reproducing bounded current-source check; DF-065
+confirms that the hook can suppress a failing version-check exit. Both remain
+open. This is documentation intake, not a fix, installation or new priority.
+Earlier product, CI and recovery work keeps its existing state and owner.
+
 ## House Docs initializer repair - 2026-10-19
 
 Last Updated: 2026-10-19 - Codex.
@@ -105,7 +115,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.20.4 -->
+<!-- doc-version: 4.20.5 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -245,10 +255,15 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-10-01 - Codex
-- Current source version: 4.20.4
+- Last Updated: 2026-11-01 - Codex
+- Current source version: 4.20.5
 - Owner: Carlos
-- Session focus: maintain this project through its live shared Dossier.
+- Session focus: retain DF-064/DF-065 feedback without changing behavior or priorities.
+- Intake state: exact Opus 5.5/high SOURCE_GO; documentary checks pass.
+  No fix or downstream rollout; the normal source publication records this intake.
+- Dossier assessment: no_change for technical intake only; no accepted product
+  milestone, roadmap priority or runtime changed. Existing recovery limits remain.
+- Earlier dated operational observations below are retained, not reverified here.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
   Native L1-L3 are preserved in shared S1-S3; connected Portal reader and
   isolated restore pass. Current S3 reflects delivery; independent physical
@@ -263,6 +278,11 @@ This scoped rollout preserves all prior product work and handoff context below.
   agree. Seven source checks pass; four legitimate skips remain visible.
 
 ## Open work -- next concrete step
+
+`docs/DOWNSTREAM_FEEDBACK.md` DF-064/DF-065 retain the reviewed feedback.
+No repair is selected; this documentary publication does not start one.
+Recall DF-064 before another full-sync diagnosis and DF-065 before hook changes;
+the earlier work below retains its previous priority and authority.
 
 Current correction: finish `README.md` and D-030 source review/rollout. The earlier work below is retained; this does not complete it.
 
@@ -316,14 +336,25 @@ manifest grammar or bypass independent review/versioning. Stage explicit paths.
 ## Trace Anchor
 
 - Role: executor
+- Sent: 2026-11-01 18:58:42 Romance Standard Time (2026-11-01 17:58:42 UTC)
+- Subject: bounded downstream feedback intake DF-064/DF-065
+- Resulting state: reviewed documentary source; both findings open; no code or installation change
+- Repo state: task-scoped changes from published baseline 0b2a12d75ba56d5274d0d28a79ceba578b5f1e1a
+- Validation: synthetic selective sync passes; synthetic hook suppresses exit 1; exact Opus SOURCE_GO; session 9 checked/4 skipped PASS with inherited size warning; ideas/version/diff PASS
+- Next gate: recall findings at the related maintenance task; repair scope remains unselected
+<!-- DOCKIT-STATE:END -->
+
+## Historical Context
+
+### Previous Trace Anchor - retained verbatim
+
+- Role: executor
 - Subject: `4866b59` docs: record verified fleet rollout and remaining project gates
 - Commit time: 2026-09-23 22:56:57 UTC
 - Repo state: published baseline anchor; not a live HEAD assertion.
 - Validation: local capture, retry/no_change, clone/worktree and checked export pass.
 - Next gate: maintain curated local/shared revisions; independent backup destination remains open.
-<!-- DOCKIT-STATE:END -->
 
-## Historical Context
 
 The prior long snapshot is preserved in
 `docs/archive/HANDOFF_BEFORE_DF058_2026-09-21.md`. Review history is in

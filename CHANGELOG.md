@@ -4,6 +4,15 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.20.5] - 2026-11-01
+
+### Added
+
+- Retain DF-064 as a reported copied-document version discrepancy that the
+  bounded current-source test did not reproduce, and DF-065 as confirmed hook
+  failure suppression. Both remain open; no fix, installation or priority change.
+- Add explicit recall references and reproduction limits for this feedback intake.
+
 ## [4.20.4] - 2026-10-19
 
 - Record reviewed native House repair capture and retained shared recovery hold.
