@@ -1,3 +1,14 @@
+## Downstream feedback intake - 2026-11-10
+
+Last Updated: 2026-11-10 - Claude Opus 5.5. Source version 4.20.5.
+
+Read `docs/DOWNSTREAM_FEEDBACK.md` DF-066 and DF-067. DF-066: the 2026-09-23
+selective rollout left 20 local adopters on the pre-DF-052 inline Stop hook;
+Cortex was corrected in its own repository (cortex@8cf5c10, 0.5.3) and 19
+remain. DF-067: the pre-commit exclusions for `.claude/` and `.github/` never
+match. Both stay open here: documentation intake only, no source fix, fleet
+installation or priority change. Dossier: no_change (intake only).
+
 ## Downstream feedback intake - 2026-11-01
 
 Last Updated: 2026-11-01 - Codex. Source version 4.20.5.

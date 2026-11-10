@@ -2384,3 +2384,66 @@ followed by both passing and failing documentation checks, plus the normal
 version-success paths. The control-flow fixture proves failure suppression; it
 does not claim a real malformed version was committed. This intake authorizes
 neither implementation nor installation and changes no existing work priority.
+
+## DF-066 - Selective fleet rollout left adopters on the pre-DF-052 Stop hook
+
+- Source: Cortex Claude Code session (adopter 0.5.2, DocKit 4.16.3 selective rollout)
+- Date observed: 2026-11-10
+- Category: process
+- Status: open; Cortex corrected at cortex@8cf5c10 (0.5.3); 19 local adopters remain
+- Related: DF-039, DF-052, DF-054, DF-067, D-021
+
+Observation: Cortex received 4.16.3 through the 2026-09-23 selective rollout,
+which preserved project hooks. Its `.claude/settings.json` still ran the inline
+pre-4.13 Stop command and `scripts/dockit-session-gate.sh` was absent. A
+read-only status session inherited uncommitted documentation from an earlier
+session. Stop blocked with the fixed "update HANDOFF/HISTORY" reason while the
+real failures were history ordering and orientation inside the inherited text,
+then blocked again on the next stop because `stop_hook_active` is ignored. This
+is the DF-052 failure in a repository that never received the DF-052 cure; the
+rollout report does not mention the omitted gate.
+
+Fleet scan of local checkouts on dev-vm (`~/src/*` containing
+`scripts/dockit-validate-session.sh`), not of origin: 50 use the session gate;
+20 still had the inline Stop hook and no gate script: audio-batch,
+cambio-claro, cocoscopio, cortex (now corrected), devenv-bootstrap,
+devenv-entry, devenv-spawner, forgeos, forgeos-home-infra-interface,
+forgeos-project-birth, forumlens, forumvault-lab, home-infra-protocol, juiced,
+llm-council, med, tomatic, unifi-mcp, vaultwarden-deploy and youtube2text.
+
+The cure was verified in a scratch Cortex clone using the 4.20.5 gate and
+settings over the adopter's 4.16.3 validator: inherited dirt with no session
+edit does not block; a session edit without documentation blocks once with the
+real check output; a repeated Stop with `stop_hook_active=true` yields.
+
+Protocol implication: a selective rollout may preserve project-owned hook
+customizations, but not hook wiring with a known defect, and its report must
+list adopters left on superseded wiring. A mechanical detection (for example a
+validator or sync check that flags the inline Stop command) would make the gap
+visible instead of relying on recall. Each remaining adopter needs the gate
+script plus SessionStart/Stop wiring through its own repository rules. This
+intake changes no adopter besides Cortex and sets no priority.
+
+## DF-067 - Pre-commit tooling-path exclusions never match
+
+- Source: Cortex commit preparation (adopter 0.5.3); same code in DocKit 4.20.5
+- Date observed: 2026-11-10
+- Category: gap
+- Status: open; reproduced, no correction applied
+- Related: DF-065, DF-066
+
+Observation: check 2 in `scripts/pre-commit-hook.sh` documents that tooling
+paths are not product code, but filters them with `grep -v '^\\.claude/'` and
+`grep -v '^\\.github/'` inside single quotes. grep receives a pattern that
+requires a literal backslash, so `.claude/settings.json` and
+`.github/workflows/*.yml` are still classified as product code and demand a
+VERSION bump. The `docs/` exclusion works. Reproduction:
+`printf '.claude/settings.json\n.github/workflows/x.yml\n' | grep -v '^\\.claude/' | grep -v '^\\.github/'`
+prints both paths; with a single backslash it prints neither. The effect is
+conservative (extra bumps), not a skipped check.
+
+Protocol implication: use a single backslash (or one `grep -v -e ... -e ...`)
+and add regressions: staging only `.claude/settings.json`, or only a workflow
+file, requires no VERSION; staging `scripts/x.sh` still does. Correct it
+together with DF-065 because both live in the same hook. This intake authorizes
+neither implementation nor installation and changes no existing work priority.
