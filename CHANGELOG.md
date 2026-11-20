@@ -4,6 +4,12 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.1] - 2026-11-20
+
+### Changed
+
+- Record 45 verified default-branch source installations and classify the seven other inventory entries.
+
 ## [4.21.0] - 2026-11-20
 
 ### Added

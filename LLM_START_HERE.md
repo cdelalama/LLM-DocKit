@@ -1,24 +1,25 @@
-## Disposable runtime lifecycle correction - 2026-11-20
+## Disposable runtime rule verified on published branches - 2026-11-20
 
-Last Updated: 2026-11-20 - Codex. Carlos requires safe retirement of disposable
-test objects and propagation of the reviewed common protocol to every project.
-Read `docs/RUNTIME_LIFECYCLE.md`. Existing product priorities and retained evidence remain unchanged.
+Last Updated: 2026-11-20 - Codex.
+
+The canonical rule, advisory checker, validation entry point and orientation
+block match on 45 published default branches, including DocKit itself. This
+includes the ten selective adoptions and four reconciled task records. Three
+inventory entries point to third-party repositories and are outside the owned
+publication set. Four remain open: two paths without a source checkout, one
+missing checkout and one without an admitted parent for a task worktree.
 
 ### Open work - next concrete step
 
-The executing agent completes independent source review, publication and measured selective
-fleet installation. NAS cleanup and Executor recovery remain blocked by EDQUOT;
-no container deletion, storage recovery or scheduled collector is claimed.
-Dossier: refresh required; retain native draft/capture while NAS publication is
-blocked. Existing reader/admission/recovery obligations remain open.
+Home Infra and DocKit should resolve the four inventory entries. Producer owners
+must separately qualify an actual test, retain its evidence and verify its
+retirement. A source match alone cannot discover undeclared containers. Read
+`docs/RUNTIME_LIFECYCLE.md` and Home Infra's
+`docs/operations/NAS_RUNTIME_FLEET_2026-11-20.json` for the per-project receipt.
 
 ### Trace Anchor
 
-Role: executor; Subject: disposable runtime lifecycle correction;
-Resulting state: source candidate; gate: independent-review;
-Repo state: existing main with scoped task edits; earlier work preserved;
-Validation: bounded unit tests; source/fleet/runtime acceptance still separate;
-Next gate: reviewed source, first clean consumer, fleet receipt and storage remedy.
+Role: executor. State: 45 verified source installations, three third-party origins, four unresolved inventory entries. Evidence: per-repository published source inspection and exact Opus 5.5 high review of the new Dossier fields. Local capture and shared publication have separate receipts.
 
 ## Downstream feedback intake - 2026-11-01
 
@@ -78,7 +79,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.0 -->
+<!-- doc-version: 4.21.1 -->
 
 ## Idea continuity adoption - 2026-10-07
 
