@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "runtime-lifecycle-20261120",
+  "project": "LLM-DocKit",
+  "purpose": "Retire disposable test runtime while preserving evidence; apply common policy to every project",
+  "state": "active",
+  "branch": "main",
+  "artifacts": [
+    "docs/RUNTIME_LIFECYCLE.md"
+  ],
+  "next_step": "Complete source review, publication, fleet installation and explicit runtime reconciliation; preserve evidence and unknown objects."
+}

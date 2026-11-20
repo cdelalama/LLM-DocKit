@@ -4,6 +4,13 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.0] - 2026-11-20
+
+### Added
+
+- Add portable disposable-runtime receipts, finite hold validation and an advisory session check with explicit unknown coverage.
+- Publish the shared evidence-versus-runtime lifecycle and selective sync inputs; fleet installation remains separately measured.
+
 ## [4.20.5] - 2026-11-01
 
 ### Added

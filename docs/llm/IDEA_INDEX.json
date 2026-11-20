@@ -111,6 +111,24 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier historical queues and unresolved feedback retain their existing scope.",
       "cursor": "Recall these two entries before sync diagnosis or hook failure-propagation changes."
+    },
+    {
+      "id": "B-runtime-lifecycle-20261120",
+      "date": "2026-11-20",
+      "sources": [
+        {
+          "path": "docs/RUNTIME_LIFECYCLE.md"
+        }
+      ],
+      "excluded": [
+        "Raw private prompts, credentials, runtime logs and unrelated work."
+      ],
+      "unknown": [
+        "Earlier undeclared runtime producers and complete historical coverage."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier queues unchanged; classify historical runtime separately.",
+      "cursor": "Before new disposable runtime and fleet lifecycle closeout."
     }
   ],
   "entries": [
@@ -309,6 +327,31 @@
         "path": "docs/DOWNSTREAM_FEEDBACK.md",
         "contains": "## DF-065 -"
       }
+    },
+    {
+      "id": "RUNTIME-LIFECYCLE-20261120",
+      "record": "native",
+      "kind": "operator_request",
+      "title": "Preserve evidence, retire disposable runtime and update every project",
+      "origin": {
+        "date": "2026-11-20",
+        "attribution": "Carlos explicitly requested safe cleanup, Opus and Grok advice, protocol correction and propagation to all projects after agreement.",
+        "sources": [
+          {
+            "path": "docs/RUNTIME_LIFECYCLE.md"
+          }
+        ]
+      },
+      "batch": "B-runtime-lifecycle-20261120",
+      "owner": "LLM-DocKit",
+      "state": "captured",
+      "recall_trigger": "Before creating disposable runtime, closing the cleanup incident or claiming fleet completion.",
+      "documentation_refs": [
+        {
+          "path": "docs/RUNTIME_LIFECYCLE.md"
+        }
+      ],
+      "rationale": "Source implementation and inventory are in progress; actual cleanup, producer adoption, monitoring and fleet acceptance remain distinct."
     }
   ],
   "task_reconciliations": [

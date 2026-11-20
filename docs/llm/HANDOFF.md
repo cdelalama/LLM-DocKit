@@ -1,3 +1,25 @@
+## Disposable runtime lifecycle correction - 2026-11-20
+
+Last Updated: 2026-11-20 - Codex. Carlos requires safe retirement of disposable
+test objects and propagation of the reviewed common protocol to every project.
+Read `docs/RUNTIME_LIFECYCLE.md`. Existing product priorities and retained evidence remain unchanged.
+
+### Open work - next concrete step
+
+The executing agent completes independent source review, publication and measured selective
+fleet installation. NAS cleanup and Executor recovery remain blocked by EDQUOT;
+no container deletion, storage recovery or scheduled collector is claimed.
+Dossier: refresh required; retain native draft/capture while NAS publication is
+blocked. Existing reader/admission/recovery obligations remain open.
+
+### Trace Anchor
+
+Role: executor; Subject: disposable runtime lifecycle correction;
+Resulting state: source candidate; gate: independent-review;
+Repo state: existing main with scoped task edits; earlier work preserved;
+Validation: bounded unit tests; source/fleet/runtime acceptance still separate;
+Next gate: reviewed source, first clean consumer, fleet receipt and storage remedy.
+
 ## Downstream feedback intake - 2026-11-10
 
 Last Updated: 2026-11-10 - Claude Opus 5.5. Source version 4.20.5.
@@ -126,7 +148,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.20.5 -->
+<!-- doc-version: 4.21.0 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 

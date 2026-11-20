@@ -1,3 +1,25 @@
+## Disposable runtime lifecycle correction - 2026-11-20
+
+Last Updated: 2026-11-20 - Codex. Carlos requires safe retirement of disposable
+test objects and propagation of the reviewed common protocol to every project.
+Read `docs/RUNTIME_LIFECYCLE.md`. Existing product priorities and retained evidence remain unchanged.
+
+### Open work - next concrete step
+
+The executing agent completes independent source review, publication and measured selective
+fleet installation. NAS cleanup and Executor recovery remain blocked by EDQUOT;
+no container deletion, storage recovery or scheduled collector is claimed.
+Dossier: refresh required; retain native draft/capture while NAS publication is
+blocked. Existing reader/admission/recovery obligations remain open.
+
+### Trace Anchor
+
+Role: executor; Subject: disposable runtime lifecycle correction;
+Resulting state: source candidate; gate: independent-review;
+Repo state: existing main with scoped task edits; earlier work preserved;
+Validation: bounded unit tests; source/fleet/runtime acceptance still separate;
+Next gate: reviewed source, first clean consumer, fleet receipt and storage remedy.
+
 ## Downstream feedback intake - 2026-11-01
 
 Last Updated: 2026-11-01 - Codex. Source version 4.20.5.
@@ -56,7 +78,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.20.5 -->
+<!-- doc-version: 4.21.0 -->
 
 ## Idea continuity adoption - 2026-10-07
 
@@ -158,6 +180,22 @@ Run the idea check against the explicit reviewed start revision before publishin
 Retain unknown coverage and the historical-backfill cursor; never claim all chats
 were captured. Complete the existing Dossier refresh/no_change assessment.
 <!-- DOCKIT-TEMPLATE:END idea-continuity -->
+
+<!-- DOCKIT-TEMPLATE:START runtime-lifecycle -->
+### Retire disposable test runtime
+
+Follow docs/RUNTIME_LIFECYCLE.md whenever a task creates disposable runtime.
+Preserve durable evidence outside the container, then retire its exact ID and
+verify disappearance before declaring success. Persist creation intent and run ID;
+reconcile interrupted attempts before retrying. A failed cleanup stops that
+producer. Respect host creation holds and allocation checks before engine writes.
+Debug holds require an owner, reason, finite lease and next action. Record one
+sanitized receipt per run in docs/llm/runtime; none is task-specific with a reason,
+never inferred from missing records. Use scripts/dockit-runtime.py --strict for
+runtime closeout. Do not delete unknown objects, data volumes, images or historical
+snapshots by age. DocKit checks declarations; host reconciliation finds undeclared
+objects. Installing this rule does not install a garbage collector.
+<!-- DOCKIT-TEMPLATE:END runtime-lifecycle -->
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
 ### Documentation Update Rules

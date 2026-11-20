@@ -1320,3 +1320,15 @@ correction; source acceptance is separate. New project indexes start empty with
 their real identity. Preserve already imported bytes through the finite,
 reviewed repair in docs/TEMPLATE_IMPORT_REPAIR.md. Never turn a migration into
 a general identity/anti-deletion bypass. Other affected projects remain untouched.
+
+## D-033 - Retire disposable runtime after durable evidence capture
+
+Date: 2026-11-20. Authority: Carlos explicitly requested the correction and
+propagation to all projects after Opus and Grok advice. Both advisors agreed
+ownership and guarded sequence; exact source review remains separate.
+DocKit owns docs/RUNTIME_LIFECYCLE.md, a portable per-run receipt checker and
+selective distribution. ForgeOS owns guarded producer execution; Home Infra
+owns host health and bounded cleanup; Sentinel observes without deleting.
+Migration starts advisory with explicit coverage gaps. Historical records,
+unknown objects and production data are preserved. Installing rules does not
+prove runtime producer adoption or implement background garbage collection.
