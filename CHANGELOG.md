@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.2] - 2026-11-21
+
+### Fixed
+
+- Validate dated history in one AWK pass and avoid spawning Trace helpers for
+  entries without a commit hash. Retain first-error precedence and all existing
+  checks on quoted commit references. Human output preserves quoted helper
+  diagnostics. The scaffold smoke check compares both source root spellings
+  in one path format on Git for Windows.
+- Preserve the exact installed idea helper and the POSIX configuration bytes
+  when Git checks out this project on Windows.
+
 ## [4.21.1] - 2026-11-20
 
 ### Changed

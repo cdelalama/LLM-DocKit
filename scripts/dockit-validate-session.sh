@@ -128,6 +128,16 @@ add_result() {
         return
     fi
 
+    if [ "$OUTPUT_MODE" = human ]; then
+        [ "$_skipped" = true ] && _status=SKIP
+        if [ -n "$RESULTS" ]; then
+            RESULTS="$RESULTS
+"
+        fi
+        RESULTS="$RESULTS  [$_status] $_name: $_message"
+        return
+    fi
+
     if [ -n "$RESULTS" ]; then
         RESULTS="$RESULTS,"
     fi
@@ -321,38 +331,21 @@ check_history_entry() {
         return
     fi
 
-    _format_error=""
-    _order_error=""
-    _prev_date=""
-    _old_ifs="$IFS"
-    IFS='
-'
-    for _entry in $_entries; do
-        _date=$(printf '%s\n' "$_entry" | cut -d'|' -f1)
-        _format=$(printf '%s\n' "$_entry" | cut -d'|' -f2)
-        _line=$(printf '%s\n' "$_entry" | cut -d'|' -f3)
+    # Check every parsed row in one process, preserving the first violation.
+    _error=$(printf '%s\n' "$_entries" | awk -F'|' -v format="$_history_format" '
+        format != "any" && $2 != format {
+            print "line " $3 " uses " $2 " format but history_format=" format
+            exit
+        }
+        NR > 1 && $1 > prev {
+            print "line " $3 " has date " $1 " after newer entry " prev "; HISTORY.md must be newest-first"
+            exit
+        }
+        { prev = $1 }
+    ')
 
-        if [ "$_history_format" = "dash" ] && [ "$_format" != "dash" ]; then
-            _format_error="line $_line uses no-dash format but history_format=dash"
-            break
-        fi
-        if [ "$_history_format" = "no-dash" ] && [ "$_format" != "no-dash" ]; then
-            _format_error="line $_line uses dash format but history_format=no-dash"
-            break
-        fi
-
-        if [ -n "$_prev_date" ] && awk -v prev="$_prev_date" -v curr="$_date" 'BEGIN { exit (curr > prev) ? 0 : 1 }'; then
-            _order_error="line $_line has date $_date after newer entry $_prev_date; HISTORY.md must be newest-first"
-            break
-        fi
-        _prev_date="$_date"
-    done
-    IFS="$_old_ifs"
-
-    if [ -n "$_format_error" ]; then
-        add_result "history-entry" "FAIL" "$_format_error"
-    elif [ -n "$_order_error" ]; then
-        add_result "history-entry" "FAIL" "$_order_error"
+    if [ -n "$_error" ]; then
+        add_result "history-entry" "FAIL" "$_error"
     else
         add_result "history-entry" "PASS" "HISTORY.md first dated entry is $_expected_date ($_expected_label); format $_first_format accepted by history_format=$_history_format; dated entries are newest-first"
     fi
@@ -1101,12 +1094,12 @@ check_trace_protocol() {
         _history_entries=$(awk -v since="$_trace_since" '
             /^- [0-9]{4}-[0-9]{2}-[0-9]{2} - / {
                 d = substr($0, 3, 10)
-                if (d >= since) print d "|" $0
+                if (d >= since && $0 ~ /`[0-9A-Fa-f]{7,40}`/) print d "|" $0
                 next
             }
             /^[0-9]{4}-[0-9]{2}-[0-9]{2} - / {
                 d = substr($0, 1, 10)
-                if (d >= since) print d "|" $0
+                if (d >= since && $0 ~ /`[0-9A-Fa-f]{7,40}`/) print d "|" $0
             }
         ' "$HISTORY")
 
@@ -1114,8 +1107,8 @@ check_trace_protocol() {
         IFS='
 '
         for _history_record in $_history_entries; do
-            _date=$(printf '%s\n' "$_history_record" | cut -d'|' -f1)
-            _entry=$(printf '%s\n' "$_history_record" | cut -d'|' -f2-)
+            _date=${_history_record%%|*}
+            _entry=${_history_record#*|}
             _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
             [ -z "$_entry_hashes" ] && continue
 
@@ -1340,15 +1333,7 @@ else
     fi
     echo ""
 
-    # Print each result from JSON (simple approach: re-extract from accumulated data)
-    echo "$RESULTS" | sed 's/},{/}\n{/g' | while IFS= read -r entry; do
-        name=$(printf '%s' "$entry" | sed 's/.*"name":"\([^"]*\)".*/\1/')
-        status=$(printf '%s' "$entry" | sed 's/.*"status":"\([^"]*\)".*/\1/')
-        message=$(printf '%s' "$entry" | sed 's/.*"message":"\([^"]*\)".*/\1/' | sed 's/\\"/"/g')
-
-        if printf '%s' "$entry" | grep -q '"skipped":true'; then status=SKIP; fi
-        printf '  [%s] %s: %s\n' "$status" "$name" "$message"
-    done
+    [ -z "$RESULTS" ] || printf '%s\n' "$RESULTS"
 fi
 
 # ── Exit code ────────────────────────────────────────────────────────────────

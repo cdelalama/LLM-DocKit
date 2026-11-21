@@ -1,3 +1,13 @@
+## Windows session validation - 2026-11-21
+
+Last Updated: 2026-11-21 - Codex. Version 4.21.2 removes per-entry process
+creation from date/order checks and filters the input to Trace hash inspection.
+Home Infra supplied a 1,900-entry history and exposed two checkout-sensitive
+controls: the idea helper verifies its own bytes, and configuration readers
+count indentation. The source checkout pins those two paths to LF. Adopters
+retaining their own Git attributes should carry both entries together with
+the reviewed validator. See `docs/llm/HANDOFF.md`.
+
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
 Last Updated: 2026-11-20 - Codex.
@@ -79,7 +89,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.1 -->
+<!-- doc-version: 4.21.2 -->
 
 ## Idea continuity adoption - 2026-10-07
 

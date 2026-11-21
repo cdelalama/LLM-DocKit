@@ -1,3 +1,30 @@
+## Windows session validation - 2026-11-21
+
+Last Updated: 2026-11-21 - Codex. Version 4.21.2 removes per-entry process
+creation from date/order checks and filters the input to Trace hash inspection.
+Home Infra supplied a 1,900-entry history and exposed two checkout-sensitive
+controls: the idea helper verifies its own bytes, and configuration readers
+count indentation. The source checkout pins those two paths to LF. Adopters
+retaining their own Git attributes should carry both entries together with
+the reviewed validator. See `docs/llm/HANDOFF.md`.
+
+### Open work - next concrete step
+
+Home Infra selectively adopts `scripts/dockit-validate-session.sh` and the
+two path-specific LF attributes. Other adopters keep their current versions.
+
+## Trace Anchor
+
+- Role: executor
+- Subject: Windows documentary validation cost and reproducible inputs
+- State verified: source candidate and selective Home Infra consumer
+- Validation: 96 validator smoke checks passed on OCTA, including the scaffold initializer. Source documentary checks, ten version targets and the full Windows consumer closeout passed. The consumer history-only run took about one second.
+- Review: Codex gpt-6.2-astra/high supplied advisory input. Required independent
+  source review is pending because both configured Claude clients declined
+  subscription access before producing a model response.
+- Next gate: independent source verdict, source publication, then consumer verification
+- Dossier: no_change for validation tooling
+
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
 Last Updated: 2026-11-20 - Codex.
@@ -149,7 +176,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.1 -->
+<!-- doc-version: 4.21.2 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -289,10 +316,10 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-01 - Codex
-- Current source version: 4.20.5
+- Last Updated: 2026-11-21 - Codex
+- Current source version: 4.21.2
 - Owner: Carlos
-- Session focus: retain DF-064/DF-065 feedback without changing behavior or priorities.
+- Session focus: verified Windows history and Trace validation, with stable checkout bytes.
 - Intake state: exact Opus 5.5/high SOURCE_GO; documentary checks pass.
   No fix or downstream rollout; the normal source publication records this intake.
 - Dossier assessment: no_change for technical intake only; no accepted product

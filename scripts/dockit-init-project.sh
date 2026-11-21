@@ -157,7 +157,8 @@ TARGET_ABS=$(cd "$TARGET_DIR" && pwd)
 # Use git archive rather than a working-tree copy so untracked drafts in
 # the source LLM-DocKit checkout (proposals, scratch notes, local-only docs)
 # never leak into the new project. Only files committed to HEAD travel.
-if [ "$(git -C "$SOURCE_DIR" rev-parse --show-toplevel 2>/dev/null)" != "$(cd "$SOURCE_DIR" && pwd -P)" ]; then
+source_top=$(git -C "$SOURCE_DIR" rev-parse --show-toplevel 2>/dev/null) || source_top=""
+if [ -z "$source_top" ] || [ "$(cd "$source_top" && pwd -P)" != "$(cd "$SOURCE_DIR" && pwd -P)" ]; then
     echo "ERROR: source is not a git repository: $SOURCE_DIR" >&2
     echo "Hint: clone LLM-DocKit instead of using a working-tree copy." >&2
     exit 1
