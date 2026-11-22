@@ -22,6 +22,10 @@ while [ $# -gt 0 ]; do
             MODE=${1#--}
             shift
             ;;
+        --guarded-stop-worker)
+            MODE=worker
+            shift
+            ;;
         --project)
             [ $# -ge 2 ] || { usage; exit 2; }
             PROJECT_ROOT="$2"
@@ -40,6 +44,18 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$MODE" ] || { usage; exit 2; }
+
+if [ "$MODE" = stop ]; then
+    case "$0" in
+        */*) _dir=${0%/*} ;;
+        *) _dir=. ;;
+    esac
+    if [ -n "$PROJECT_ROOT" ]; then set -- --project "$PROJECT_ROOT"; else set --; fi
+    case "${OS:-}" in
+        Windows_NT) exec python "$_dir/dockit-stop.py" "$@" ;;
+        *) exec python3 "$_dir/dockit-stop.py" "$@" ;;
+    esac
+fi
 
 if [ -z "$PROJECT_ROOT" ]; then
     PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)

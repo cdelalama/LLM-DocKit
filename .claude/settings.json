@@ -21,8 +21,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'if [ -x scripts/dockit-session-gate.sh ]; then scripts/dockit-session-gate.sh --stop; fi'",
-            "timeout": 10
+            "command": "exec sh \"$CLAUDE_PROJECT_DIR/scripts/dockit-session-gate.sh\" --stop",
+            "timeout": 10,
+            "onFailure": "block",
+            "shell": "bash"
           }
         ]
       }

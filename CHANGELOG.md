@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.5] - 2026-11-22
+
+### Fixed
+
+- Bound each Stop validation to eight seconds and retire its own descendants on
+  completion, cancellation, client exit, or timeout, using a POSIX process group
+  or a native Windows Job Object.
+- Validate all dated history rows in one awk invocation and reduce Trace/output
+  subprocess creation. Preserve first-error detection and normal JSON results.
+- Resolve the same Python interpreter for the supervisor and its validation
+  helpers on Windows. Add cancellation, deadline and concurrent-session tests.
+
 ## [4.21.4] - 2026-11-22
 
 ### Fixed

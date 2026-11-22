@@ -1,3 +1,8 @@
 
 # Byte-identical portable validator for host content pins, including Windows.
 scripts/dockit-workspace.py text eol=lf
+
+# The installed idea validator is pinned by its exact source bytes.
+scripts/dockit-ideas.py text eol=lf
+# POSIX readers count indentation in the project configuration.
+.dockit-config.yml text eol=lf

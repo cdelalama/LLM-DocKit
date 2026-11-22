@@ -33,6 +33,34 @@ only its hook object and drop an enclosing array only if empty. Check
 an edit burst and a deliberately failing explicit closeout on the actual host.
 A source change alone cannot establish host cancellation or retirement.
 
+## Stop process ownership
+
+The Claude Stop hook invokes `scripts/dockit-session-gate.sh --stop` through
+Git Bash/POSIX sh and uses `scripts/dockit-stop.py` as the launcher. Python 3
+must be installed as `python` on native Windows or `python3` on POSIX.
+Claude Code 2.1.295+ is required for `onFailure: block`. A startup failure
+blocks the hook. The validation worker inherits the selected Python executable.
+
+Each call has an eight-second deadline inside the ten-second hook deadline.
+POSIX uses a private session/process group and a guardian pipe. Windows enrolls
+the launcher in a kill-on-close Job Object before creating validation workers
+and watches the caller through Git Bash forwarding processes. Completion,
+client death and timeout retire the owned validation family. These guards do
+not delete project files or enumerate other running validation sessions.
+The internal `--guarded-stop-worker` mode belongs to this launcher.
+
+The real validator retains document failures and Stop recursion protection.
+Explicit manual validation remains available without the short Stop deadline.
+A timeout reports incomplete validation and retires the family. It must not be
+interpreted as a passing documentation check.
+
+Qualification uses `scripts/test-stop-lifecycle.py` for abrupt launcher/client
+loss, deadline, unrelated concurrent session survival and failing-document
+behavior. The native client probe additionally observed all 47 processes in its
+parent Job Object retired after abrupt client exit. That test used a local API
+fixture with the installed Claude client. Adopter acceptance still requires
+checking the installed hooks and interpreter on that host.
+
 ## Required execution contract
 
 Before creation, persist an external private run manifest with project, task,

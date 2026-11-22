@@ -23,6 +23,8 @@ jobs:
         run: scripts/dockit-validate-session.sh --human
       - name: Validator regression tests
         run: scripts/test-validator.sh
+      - name: Stop process lifecycle regressions
+        run: python3 -B scripts/test-stop-lifecycle.py
       - name: Delivery behavior tests
         run: scripts/test-delivery.sh
 

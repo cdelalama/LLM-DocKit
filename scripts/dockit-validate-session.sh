@@ -128,6 +128,16 @@ add_result() {
         return
     fi
 
+    if [ "$OUTPUT_MODE" = human ]; then
+        [ "$_skipped" = true ] && _status=SKIP
+        if [ -n "$RESULTS" ]; then
+            RESULTS="$RESULTS
+"
+        fi
+        RESULTS="$RESULTS  [$_status] $_name: $_message"
+        return
+    fi
+
     if [ -n "$RESULTS" ]; then
         RESULTS="$RESULTS,"
     fi
@@ -331,38 +341,21 @@ check_history_entry() {
         return
     fi
 
-    _format_error=""
-    _order_error=""
-    _prev_date=""
-    _old_ifs="$IFS"
-    IFS='
-'
-    for _entry in $_entries; do
-        _date=$(printf '%s\n' "$_entry" | cut -d'|' -f1)
-        _format=$(printf '%s\n' "$_entry" | cut -d'|' -f2)
-        _line=$(printf '%s\n' "$_entry" | cut -d'|' -f3)
+    # Check every parsed row in one process, preserving the first violation.
+    _error=$(printf '%s\n' "$_entries" | awk -F'|' -v format="$_history_format" '
+        format != "any" && $2 != format {
+            print "line " $3 " uses " $2 " format but history_format=" format
+            exit
+        }
+        NR > 1 && $1 > prev {
+            print "line " $3 " has date " $1 " after newer entry " prev "; HISTORY.md must be newest-first"
+            exit
+        }
+        { prev = $1 }
+    ')
 
-        if [ "$_history_format" = "dash" ] && [ "$_format" != "dash" ]; then
-            _format_error="line $_line uses no-dash format but history_format=dash"
-            break
-        fi
-        if [ "$_history_format" = "no-dash" ] && [ "$_format" != "no-dash" ]; then
-            _format_error="line $_line uses dash format but history_format=no-dash"
-            break
-        fi
-
-        if [ -n "$_prev_date" ] && awk -v prev="$_prev_date" -v curr="$_date" 'BEGIN { exit (curr > prev) ? 0 : 1 }'; then
-            _order_error="line $_line has date $_date after newer entry $_prev_date; HISTORY.md must be newest-first"
-            break
-        fi
-        _prev_date="$_date"
-    done
-    IFS="$_old_ifs"
-
-    if [ -n "$_format_error" ]; then
-        add_result "history-entry" "FAIL" "$_format_error"
-    elif [ -n "$_order_error" ]; then
-        add_result "history-entry" "FAIL" "$_order_error"
+    if [ -n "$_error" ]; then
+        add_result "history-entry" "FAIL" "$_error"
     else
         add_result "history-entry" "PASS" "HISTORY.md first dated entry is $_expected_date ($_expected_label); format $_first_format accepted by history_format=$_history_format; dated entries are newest-first"
     fi
@@ -1111,12 +1104,12 @@ check_trace_protocol() {
         _history_entries=$(awk -v since="$_trace_since" '
             /^- [0-9]{4}-[0-9]{2}-[0-9]{2} - / {
                 d = substr($0, 3, 10)
-                if (d >= since) print d "|" $0
+                if (d >= since && index($0, "`")) print d "|" $0
                 next
             }
             /^[0-9]{4}-[0-9]{2}-[0-9]{2} - / {
                 d = substr($0, 1, 10)
-                if (d >= since) print d "|" $0
+                if (d >= since && index($0, "`")) print d "|" $0
             }
         ' "$HISTORY")
 
@@ -1124,8 +1117,8 @@ check_trace_protocol() {
         IFS='
 '
         for _history_record in $_history_entries; do
-            _date=$(printf '%s\n' "$_history_record" | cut -d'|' -f1)
-            _entry=$(printf '%s\n' "$_history_record" | cut -d'|' -f2-)
+            _date=${_history_record%%|*}
+            _entry=${_history_record#*|}
             _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
             [ -z "$_entry_hashes" ] && continue
 
@@ -1248,13 +1241,22 @@ check_handoff_shape() {
     else add_result "handoff-shape" "PASS" "Size within advisory threshold; $_hs_content"; fi
 }
 
+# Stop provides its verified interpreter. Manual callers select the native
+# Python name on Windows, where python3 may be a Microsoft Store alias.
+if [ -z "${DOCKIT_PYTHON:-}" ]; then
+    case "${OS:-}" in
+        Windows_NT) DOCKIT_PYTHON=python ;;
+        *) DOCKIT_PYTHON=python3 ;;
+    esac
+fi
+
 check_runtime_lifecycle() {
     if ! should_run "runtime-lifecycle"; then return; fi
-    if ! command -v python3 >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-runtime.py" ]; then
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-runtime.py" ]; then
         add_result "runtime-lifecycle" "WARN" "Runtime lifecycle checker unavailable; coverage unknown"
         return
     fi
-    if _runtime_result=$(python3 "$PROJECT_ROOT/scripts/dockit-runtime.py" --project "$PROJECT_ROOT" --human 2>&1); then
+    if _runtime_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-runtime.py" --project "$PROJECT_ROOT" --human 2>&1); then
         add_result "runtime-lifecycle" "PASS" "$_runtime_result"
     else
         add_result "runtime-lifecycle" "WARN" "$_runtime_result"
@@ -1265,11 +1267,11 @@ check_work_records() {
     if ! should_run "work-records"; then return; fi
     # Optional records require Python only in projects adopting this contract.
     if [ ! -d "$PROJECT_ROOT/docs/llm/work" ]; then return; fi
-    if ! command -v python3 >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-workspace.py" ]; then
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-workspace.py" ]; then
         add_result "work-records" "FAIL" "Work records adopted but Python 3 or the DocKit workspace helper is missing; install the reviewed helper before completing adoption"
         return
     fi
-    if _work_result=$(python3 "$PROJECT_ROOT/scripts/dockit-workspace.py" --project "$PROJECT_ROOT" 2>&1); then
+    if _work_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-workspace.py" --project "$PROJECT_ROOT" 2>&1); then
         add_result "work-records" "PASS" "$_work_result"
     else
         add_result "work-records" "FAIL" "$_work_result"
@@ -1285,7 +1287,7 @@ check_idea_continuity() {
         skip_result "idea-continuity" "Not adopted; no idea index in working tree or recent history"
         return
     fi
-    if ! command -v python3 >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-ideas.py" ]; then
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-ideas.py" ]; then
         add_result "idea-continuity" "FAIL" "Idea continuity adopted but Python 3 or pinned helper is missing"
         return
     fi
@@ -1293,7 +1295,7 @@ check_idea_continuity() {
     if [ -n "${DOCKIT_IDEA_BASELINE:-}" ]; then set -- "$@" --baseline "$DOCKIT_IDEA_BASELINE"; fi
     if [ -n "${DOCKIT_IDEA_PROJECTS:-}" ]; then set -- "$@" --projects "$DOCKIT_IDEA_PROJECTS"; fi
     _ideas_rc=0
-    _ideas_result=$(python3 "$PROJECT_ROOT/scripts/dockit-ideas.py" "$@" 2>&1) || _ideas_rc=$?
+    _ideas_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-ideas.py" "$@" 2>&1) || _ideas_rc=$?
     case "$_ideas_rc" in
         0) add_result "idea-continuity" "PASS" "$_ideas_result";;
         3) add_result "idea-continuity" "WARN" "$_ideas_result";;
@@ -1350,15 +1352,7 @@ else
     fi
     echo ""
 
-    # Print each result from JSON (simple approach: re-extract from accumulated data)
-    echo "$RESULTS" | sed 's/},{/}\n{/g' | while IFS= read -r entry; do
-        name=$(printf '%s' "$entry" | sed 's/.*"name":"\([^"]*\)".*/\1/')
-        status=$(printf '%s' "$entry" | sed 's/.*"status":"\([^"]*\)".*/\1/')
-        message=$(printf '%s' "$entry" | sed 's/.*"message":"\([^"]*\)".*/\1/' | sed 's/\\"/"/g')
-
-        if printf '%s' "$entry" | grep -q '"skipped":true'; then status=SKIP; fi
-        printf '  [%s] %s: %s\n' "$status" "$name" "$message"
-    done
+    [ -z "$RESULTS" ] || printf '%s\n' "$RESULTS"
 fi
 
 # ── Exit code ────────────────────────────────────────────────────────────────

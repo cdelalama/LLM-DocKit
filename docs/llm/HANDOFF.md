@@ -1,18 +1,24 @@
-## Validation process lifecycle - 2026-11-22
+## Bounded Stop validation candidate - 2026-11-22
 
-Last Updated: 2026-11-22 - Codex. The scaffold drops the per-edit history
-reminder and streams the session diff without a scratch copy. Stop and explicit
-closeout keep their existing validation. Adopter installation and native
-parent-death acceptance remain open.
+Last Updated: 2026-11-22 - Codex. Version 4.21.5 is prepared in an isolated
+worktree. Per-edit validation is absent. Stop has an eight-second owned
+process-tree budget. History ordering is checked in one awk pass. Linux and
+native Windows cancellation tests pass, including an actual Claude client
+dispatch and zero active processes in an observation-only parent Job Object
+after forced client exit. A real full Stop with the three Python helpers
+finished in 1.23 seconds on Windows. DEV smoke passes 95 cases; its scaffold
+case is refused by host admission policy. Exact Opus 5.5/high source review is GO with strict native capture.
+Carlos explicitly authorized publication and installation on 2026-11-22.
+Publication and affected-host adoption are in progress.
 
 ### Open work - next concrete step
 
-Apply the scoped hook change on the affected host, measure an edit burst and
-interrupt a Stop and an explicit closeout. Inspect the full process trees and
-work directories. See docs/RUNTIME_LIFECYCLE.md. Reconcile the separate
-Windows validator optimization with this change before adopting both.
-New and existing non-empty baseline slots accumulate per worktree until session
-end can be verified. Cancellation containment also needs native qualification.
+Publish the reviewed candidate in `scripts/dockit-stop.py`,
+`scripts/dockit-session-gate.sh`, `scripts/dockit-validate-session.sh` and
+`.claude/settings.json`. Then apply exact selective adoption to affected hosts
+and verify normal Stop plus cancellation. See `docs/RUNTIME_LIFECYCLE.md`.
+The OCTA incident is active and local coordination is blocked by the app's
+active-writer error. Baseline custody and older work below retain their state.
 
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
@@ -165,7 +171,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.4 -->
+<!-- doc-version: 4.21.5 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -306,7 +312,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-11-22 - Codex
-- Current source version: 4.21.4
+- Current source version: 4.21.5
 - Owner: Carlos
 - Session focus: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
 - Source change prepared. Adopter installation and native cancellation checks remain open.
