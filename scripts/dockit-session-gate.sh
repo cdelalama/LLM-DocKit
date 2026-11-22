@@ -67,7 +67,7 @@ SESSION_ID=$(json_string_field session_id)
 SOURCE=$(json_string_field source)
 
 case "$SESSION_ID" in
-    ""|*[!A-Za-z0-9._-]*) SESSION_ID="" ;;
+    ""|.|..|*[!A-Za-z0-9._-]*) SESSION_ID="" ;;
 esac
 
 baseline_root() {
@@ -90,24 +90,34 @@ prune_baselines() {
         ""|*[!0-9]*) return 0 ;;
     esac
     for _slot in "$BASELINE_ROOT"/*; do
-        [ -d "$_slot" ] || continue
+        [ -d "$_slot" ] && [ ! -L "$_slot" ] || continue
+        # A retained session must not launch find/grep on each new startup.
+        [ ! -f "$_slot/state" ] || continue
+        for _entry in "$_slot"/* "$_slot"/.[!.]* "$_slot"/..?*; do
+            if [ -e "$_entry" ] || [ -L "$_entry" ]; then continue 2; fi
+        done
         if find "$_slot" -prune -mtime "+$BASELINE_MAX_AGE_DAYS" -print 2>/dev/null \
             | grep -q .; then
-            rm -rf "$_slot"
+            # Age does not identify a finished session. Only an empty, real
+            # directory can be retired without classifying its contents.
+            [ ! -L "$_slot" ] && rmdir "$_slot" 2>/dev/null || :
         fi
     done
 }
 
 tracked_diff_hash() {
-    _tmp_diff=$(mktemp "${TMPDIR:-/tmp}/dockit-session-diff.XXXXXX")
-    if git -C "$PROJECT_ROOT" diff HEAD --binary --no-ext-diff >"$_tmp_diff" 2>/dev/null; then
-        git -C "$PROJECT_ROOT" hash-object --stdin <"$_tmp_diff"
-        _rc=0
-    else
-        _rc=1
-    fi
-    rm -f "$_tmp_diff"
-    return "$_rc"
+    # Stream arbitrary diff bytes, including binary patches. The side channel
+    # marks producer failure even when hash-object successfully reads EOF.
+    _digest=$(
+        {
+            { git -C "$PROJECT_ROOT" diff HEAD --binary --no-ext-diff 2>/dev/null 3>&- || printf '!' >&3; } |
+                git -C "$PROJECT_ROOT" hash-object --stdin 2>/dev/null 3>&-
+        } 3>&1
+    ) || return 1
+    case "$_digest" in
+        ""|*[!0-9a-f]*) return 1 ;;
+    esac
+    printf '%s\n' "$_digest"
 }
 
 write_baseline() {

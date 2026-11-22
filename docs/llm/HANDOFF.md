@@ -1,3 +1,19 @@
+## Validation process lifecycle - 2026-11-22
+
+Last Updated: 2026-11-22 - Codex. The scaffold drops the per-edit history
+reminder and streams the session diff without a scratch copy. Stop and explicit
+closeout keep their existing validation. Adopter installation and native
+parent-death acceptance remain open.
+
+### Open work - next concrete step
+
+Apply the scoped hook change on the affected host, measure an edit burst and
+interrupt a Stop and an explicit closeout. Inspect the full process trees and
+work directories. See docs/RUNTIME_LIFECYCLE.md. Reconcile the separate
+Windows validator optimization with this change before adopting both.
+New and existing non-empty baseline slots accumulate per worktree until session
+end can be verified. Cancellation containment also needs native qualification.
+
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
 Last Updated: 2026-11-20 - Codex.
@@ -149,7 +165,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.1 -->
+<!-- doc-version: 4.21.3 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -289,14 +305,12 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-01 - Codex
-- Current source version: 4.20.5
+- Last Updated: 2026-11-22 - Codex
+- Current source version: 4.21.3
 - Owner: Carlos
-- Session focus: retain DF-064/DF-065 feedback without changing behavior or priorities.
-- Intake state: exact Opus 5.5/high SOURCE_GO; documentary checks pass.
-  No fix or downstream rollout; the normal source publication records this intake.
-- Dossier assessment: no_change for technical intake only; no accepted product
-  milestone, roadmap priority or runtime changed. Existing recovery limits remain.
+- Session focus: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
+- Source change prepared. Adopter installation and native cancellation checks remain open.
+- Dossier assessment: refresh the local operator view on publication; shared recovery hold remains.
 - Earlier dated operational observations below are retained, not reverified here.
 - Dossier: identity llm-dockit, tool 1.1.0; see `docs/operations/DOSSIER.md`.
   Native L1-L3 are preserved in shared S1-S3; connected Portal reader and

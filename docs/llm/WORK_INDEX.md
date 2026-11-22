@@ -25,3 +25,5 @@ This index describes retained work, not permission to delete it.
 - [house-docs-init-repair-20261019](work/house-docs-init-repair-20261019.json): closed; Repair foreign template idea state blocking the authorized House Docs delivery
 
 - [runtime-lifecycle-20261120](work/runtime-lifecycle-20261120.json): active; shared disposable runtime correction and measured fleet rollout.
+
+- [validation-lifecycle-20261122](work/validation-lifecycle-20261122.json): pending-integration; verify native cancellation and adopter installation.

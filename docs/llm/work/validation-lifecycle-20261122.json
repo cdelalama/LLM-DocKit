@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "validation-lifecycle-20261122",
+  "project": "LLM-DocKit",
+  "branch": "work/validation-lifecycle-20261122",
+  "purpose": "Limit validation fan-out and safely retire transient resources",
+  "state": "pending-integration",
+  "next_step": "Qualify effective adopter hooks, interrupted Stop and explicit closeout on native hosts.",
+  "artifacts": [
+    "docs/RUNTIME_LIFECYCLE.md"
+  ]
+}

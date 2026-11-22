@@ -506,13 +506,17 @@ else
     fi
 
     mkdir -p "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline"
-    touch -t 200001010000 "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline"
+    SLOTS="$GATE_REPO/.git/.dockit/session-baselines"
+    mkdir -p "$SLOTS/old-in-use"
+    printf 'retain\n' >"$SLOTS/old-in-use/state"
+    printf 'retain\n' >"$SLOTS/old-in-use/unrelated"
+    touch -t 200001010000 "$SLOTS/old-in-use" "$SLOTS/stale-baseline"
     printf '%s\n' '{"session_id":"prune-trigger","source":"startup"}' \
         | DOCKIT_BASELINE_MAX_AGE_DAYS=7 "$GATE_REPO/scripts/dockit-session-gate.sh" --start --project "$GATE_REPO" >"$OUT" 2>&1
-    if [ ! -d "$GATE_REPO/.git/.dockit/session-baselines/stale-baseline" ]; then
-        note_pass "session baseline writer prunes entries older than seven days"
+    if [ ! -d "$SLOTS/stale-baseline" ] && [ -f "$SLOTS/old-in-use/state" ] && [ -f "$SLOTS/old-in-use/unrelated" ]; then
+        note_pass "session baseline writer retires only empty expired slots"
     else
-        note_fail "session baseline writer prunes entries older than seven days"
+        note_fail "session baseline writer retires only empty expired slots"
     fi
 fi
 
