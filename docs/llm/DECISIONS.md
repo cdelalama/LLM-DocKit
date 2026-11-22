@@ -1332,3 +1332,10 @@ owns host health and bounded cleanup; Sentinel observes without deleting.
 Migration starts advisory with explicit coverage gaps. Historical records,
 unknown objects and production data are preserved. Installing rules does not
 prove runtime producer adoption or implement background garbage collection.
+
+### D-033 clarification on validation resources, 2026-11-22
+
+Carlos requires tasks to retire the disposable processes and temporary files
+they create while preserving important data. This includes validation hooks.
+Producer owners verify retirement, preserve required evidence and reconcile
+interrupted runs. The qualification procedure is in docs/RUNTIME_LIFECYCLE.md.

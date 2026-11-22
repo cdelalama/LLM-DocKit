@@ -86,7 +86,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | .git/.dockit/ | Auto-generated sync/hook runtime (state, lock, backups, session baselines) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
-| .claude/settings.json | Claude Code hook configuration (SessionStart, Stop, PostToolUse, PreCompact) | Claude Code only |
+| .claude/settings.json | Claude Code hook configuration (SessionStart, Stop, PreCompact) | Claude Code only |
 | .claude/rules/ | Path-triggered rules for Claude Code | Claude Code only |
 | .claude/skills/ | Custom slash commands for Claude Code | Claude Code only |
 | .github/workflows/doc-validation.yml | CI validation for PRs | Recommended |

@@ -154,8 +154,18 @@ should_run() {
 }
 
 tracked_diff_hash() {
-    git -C "$PROJECT_ROOT" diff HEAD --binary --no-ext-diff 2>/dev/null \
-        | git -C "$PROJECT_ROOT" hash-object --stdin 2>/dev/null
+    # Stream arbitrary diff bytes, including binary patches. The side channel
+    # marks producer failure even when hash-object successfully reads EOF.
+    _digest=$(
+        {
+            { git -C "$PROJECT_ROOT" diff HEAD --binary --no-ext-diff 2>/dev/null 3>&- || printf '!' >&3; } |
+                git -C "$PROJECT_ROOT" hash-object --stdin 2>/dev/null 3>&-
+        } 3>&1
+    ) || return 1
+    case "$_digest" in
+        ""|*[!0-9a-f]*) return 1 ;;
+    esac
+    printf '%s\n' "$_digest"
 }
 
 is_zero_diff_read_only_session() {

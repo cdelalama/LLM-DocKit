@@ -27,18 +27,6 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "sh -c 'if ! scripts/dockit-validate-session.sh --json --quiet --check handoff-date --check history-entry >/dev/null 2>&1; then printf \"{\\\"additionalContext\\\":\\\"Reminder: docs/llm/HANDOFF.md and/or docs/llm/HISTORY.md need updating for today.\\\"}\"; fi'",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "PreCompact": [
       {
         "hooks": [

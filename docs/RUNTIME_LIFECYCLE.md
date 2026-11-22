@@ -5,6 +5,34 @@ creating test containers, temporary readers, clones or snapshots. A Dossier is a
 curated project view and durable records; its helper container is not the record.
 Retaining evidence does not require retaining successful disposable runtimes.
 
+## Validation processes and temporary files
+
+Each hook or command owns its disposable children and scratch files. Prefer
+streaming and a single explicit closeout. An ordinary edit must not start a
+history scan. Run the full validator at the established closeout and propagate
+its verdict. A timeout, cancellation or missing result leaves the check incomplete.
+
+Before adding or enabling a producer, test success, failure, cancellation and
+loss of its parent on each supported host. Verify that the run has no surviving
+children or scratch files after each test. Concurrent sessions and linked
+worktrees must preserve each other's work. When the OS cannot guarantee cleanup
+after a crash, retain the exact run identity for reconciliation before a retry.
+Reuse existing evidence for a normal hook; avoid a persistent receipt per edit.
+If ownership is ambiguous, report the residue and suspend that producer.
+Cleanup may remove only verified disposable resources of that run. Preserve
+user files, active baselines, backups, review evidence and unknown objects.
+
+Session startup can retire empty expired slot directories. All slots containing state remain available for resume and accumulate in the
+worktree Git directory under .dockit/session-baselines until session-end
+evidence is available. Startup skips their contents without launching a process.
+
+Existing adopters should remove only the DocKit history reminder from their
+project, local and user Write/Edit hook settings. Select the command running
+dockit-validate-session.sh with both handoff-date and history-entry. Remove
+only its hook object and drop an enclosing array only if empty. Check
+an edit burst and a deliberately failing explicit closeout on the actual host.
+A source change alone cannot establish host cancellation or retirement.
+
 ## Required execution contract
 
 Before creation, persist an external private run manifest with project, task,

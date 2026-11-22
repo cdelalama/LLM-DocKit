@@ -4,6 +4,19 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.4] - 2026-11-22
+
+### Fixed
+
+- The initializer test fixture now reuses a committed candidate when its staged tree is already current. All host-policy assertions still run.
+
+## [4.21.3] - 2026-11-22
+
+### Changed
+
+- Version 4.21.2 remains reserved for the separate Windows performance candidate.
+- Avoid running history validation after every edit. Stream session baseline diffs and require producers to account for transient processes and files.
+
 ## [4.21.1] - 2026-11-20
 
 ### Changed

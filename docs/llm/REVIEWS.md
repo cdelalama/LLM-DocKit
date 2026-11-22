@@ -1,3 +1,15 @@
+## 2026-11-22 - Validation lifecycle source review
+
+Codex authored the change. Exact claude-opus-5-5/high, firstParty, reviewed
+the staged source and operator view. R2 requested a constant-process startup
+path for retained slots, the indexed task record and current handoff status.
+R3 granted SOURCE_GO for tree 4c6f8dfb485bca4c69d0e46ccb4ae5391431dcd2,
+with main conditional on the hosted suite. Caller-side native captures for
+the advisor and both source rounds were verified. Adopter installation and
+native cancellation remain open. Local documentary validation passed with
+three advisories. The host suite recorded 95 passes and one initializer
+fixture rejected by host admission. The portable fixture must execute in CI.
+
 ## 2026-11-20 - Disposable runtime lifecycle
 
 Author: Codex. Exact claude-opus-5-5 at high effort, native session

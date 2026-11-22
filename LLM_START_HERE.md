@@ -1,3 +1,19 @@
+## Validation process lifecycle - 2026-11-22
+
+Last Updated: 2026-11-22 - Codex. The scaffold drops the per-edit history
+reminder and streams the session diff without a scratch copy. Stop and explicit
+closeout keep their existing validation. Adopter installation and native
+parent-death acceptance remain open.
+
+### Open work - next concrete step
+
+Apply the scoped hook change on the affected host, measure an edit burst and
+interrupt a Stop and an explicit closeout. Inspect the full process trees and
+work directories. See docs/RUNTIME_LIFECYCLE.md. Reconcile the separate
+Windows validator optimization with this change before adopting both.
+New and existing non-empty baseline slots accumulate per worktree until session
+end can be verified. Cancellation containment also needs native qualification.
+
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
 Last Updated: 2026-11-20 - Codex.
@@ -79,7 +95,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.1 -->
+<!-- doc-version: 4.21.4 -->
 
 ## Idea continuity adoption - 2026-10-07
 
@@ -196,6 +212,9 @@ never inferred from missing records. Use scripts/dockit-runtime.py --strict for
 runtime closeout. Do not delete unknown objects, data volumes, images or historical
 snapshots by age. DocKit checks declarations; host reconciliation finds undeclared
 objects. Installing this rule does not install a garbage collector.
+Validation commands also own their children and scratch files. Avoid per-edit
+history scans. Verify retirement on success, failure and cancellation and
+reconcile an interrupted run before retrying. Follow docs/RUNTIME_LIFECYCLE.md.
 <!-- DOCKIT-TEMPLATE:END runtime-lifecycle -->
 
 <!-- DOCKIT-TEMPLATE:START doc-update-rules -->
