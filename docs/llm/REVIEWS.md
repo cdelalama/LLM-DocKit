@@ -1194,3 +1194,32 @@ blockers; Home publication/readback/recovery remains required before claiming
 shared delivery. Source-only receipts may publish after documentation/explicit
 idea checks and exact final CI; no recursive capture. Runtime acceptance remains
 open. Native session a1ccb565-36c3-4c72-8680-30a74394efe5; hook outcome unknown.
+
+## 2026-11-22 - Bounded Stop lifecycle and validation process count
+
+Exact claude-opus-5-5/high returned SOURCE_GO. Effective canonical model
+metadata and high-effort request verified in native session
+d651d657-d715-46d8-84f9-92a49d643382. Command used safe-mode, plan permission,
+empty tools, no Chrome, explicit model/effort, print and JSON output.
+Reviewed the isolated 4.21.5 working-tree diff based on e55706e, including
+supervisor, shell gate, one-pass history, shared Python selection and docs.
+Reviewed patch SHA256
+55c5243fbc5ffa8b8388934dc25cb5b34147b4e3e5e883494b65c53f60b91e09.
+The reviewer required verification of existing Trace backtick extraction and
+history-format normalization. Both conditions were verified in source.
+
+Strict CAP-001 v2 accepted manifest
+9cdcd799f6f59abba77f2a0459e03d3d71b36dc0bb151572b08e6adbecc1c942.
+Earlier timed-out attempt is retained with its original packet. Review evidence
+is private and retained separately from disposable test directories.
+
+Linux and native Windows each passed four lifecycle cases. The actual Windows
+Claude client dispatched the configured hook against a synthetic local API.
+Its observation-only outer Job Object reported 47 total processes and zero
+active after forced client exit. The final real-validator fixture completed
+Stop in 1.23 seconds, with all three Python helpers executing successfully.
+DEV smoke had 95 passes and one host-policy refusal for the residue-smoke
+scaffold. Independent reproduction confirmed rejection before target creation.
+The additional CI lifecycle step and these final execution receipts do not
+change the reviewed supervisor behavior. Publication and installation remain
+authorized by Carlos on 2026-11-22; installation requires host readback.
