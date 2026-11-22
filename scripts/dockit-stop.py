@@ -10,8 +10,8 @@ import sys
 import time
 
 POLL = 0.05
-# Leave time to return a blocking result before the client's ten-second timeout.
-BUDGET = 8.0
+# Leave time to return a blocking result before the client's twenty-second timeout.
+BUDGET = 15.0
 
 
 def fail(message):

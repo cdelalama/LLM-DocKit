@@ -109,13 +109,12 @@ yaml_info_version() {
     ' "$_file"
 }
 
-# Parse manifest targets to temp file (avoids subshell variable scoping)
-TMPFILE=$(mktemp)
-trap 'rm -f "$TMPFILE"' EXIT
-grep '^- path:' "$MANIFEST" | sed 's/^- path: *\([^ ]*\) *marker: *\([^ ]*\).*/\1 \2/' > "$TMPFILE"
+# Keep the small manifest in this invocation; cancellation leaves no scratch file.
+TARGETS=$(grep '^- path:' "$MANIFEST" | sed 's/^- path: *\([^ ]*\) *marker: *\([^ ]*\).*/\1 \2/')
 
 # Validate each target
 while read -r filepath markertype; do
+    [ -n "$filepath$markertype" ] || continue
     # Skip if file doesn't exist
     if [ ! -f "$filepath" ]; then
         echo "WARN: $filepath not found, skipping"
@@ -139,7 +138,15 @@ while read -r filepath markertype; do
             CHECKED=$((CHECKED + 1))
             ;;
         html-comment)
-            FOUND=$(grep -o '<!-- doc-version: [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]* -->' "$filepath" 2>/dev/null | head -1 | sed 's/<!-- doc-version: \(.*\) -->/\1/')
+            FOUND=$(awk '
+                match($0, /<!-- doc-version: [0-9]+\.[0-9]+\.[0-9]+ -->/) {
+                    value = substr($0, RSTART, RLENGTH)
+                    sub(/^<!-- doc-version: /, "", value)
+                    sub(/ -->$/, "", value)
+                    print value
+                    exit
+                }
+            ' "$filepath" 2>/dev/null || true)
             if [ -z "$FOUND" ]; then
                 echo "DRIFT: $filepath missing <!-- doc-version: --> marker"
                 ERRORS=$((ERRORS + 1))
@@ -199,7 +206,9 @@ while read -r filepath markertype; do
             CHECKED=$((CHECKED + 1))
             ;;
     esac
-done < "$TMPFILE"
+done <<EOF_TARGETS
+$TARGETS
+EOF_TARGETS
 
 # Summary
 if [ "$ERRORS" -gt 0 ]; then

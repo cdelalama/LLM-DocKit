@@ -4,6 +4,20 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.7] - 2026-11-22
+
+### Fixed
+
+- Trim configuration indentation inside the shell instead of launching a
+  process for every line on repeated configuration reads. Preserve all checks
+  and bounded Stop process ownership.
+- Read each HTML version marker in one process and hold the small manifest
+  in the invocation rather than creating a scratch file.
+- Set a measured fifteen-second internal budget inside a twenty-second hook
+  timeout, preserving cleanup and incomplete status on timeout.
+- Correct the 4.21.6 adoption status: native OCTA still exceeded the deadline,
+  with zero surviving owned children. Its automatic Stop remained suspended.
+
 ## [4.21.6] - 2026-11-22
 
 ### Fixed
@@ -14,7 +28,8 @@ This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
   immutable-content caching to 256 entries and 16 MiB. Reap readers on both
   success and failure. Mutable worktree and HEAD reads stay uncached.
 - Normalize the supervisor's Python path for POSIX shell lookup on Windows.
-  Actual Home Infra Stop now completes inside its eight-second deadline.
+  The DEV Home Infra probe completed within its eight-second deadline; native
+  OCTA later exceeded it, requiring the 4.21.7 follow-up.
 
 ## [4.21.5] - 2026-11-22
 

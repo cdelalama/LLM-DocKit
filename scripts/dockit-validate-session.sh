@@ -233,7 +233,10 @@ _read_top_level_value() {
     [ -f "$CONFIG_FILE" ] || return
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         [ "$_i" -eq 0 ] || continue
         case "$_s" in
@@ -423,7 +426,10 @@ _read_ext_path() {
     _in=false
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         if [ "$_i" -eq 0 ]; then
             [ "$_s" = "external_context:" ] && _in=true || _in=false
@@ -440,7 +446,10 @@ _read_ext_read_files() {
     _in=false; _in_read=false
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         if [ "$_i" -eq 0 ]; then
             [ "$_s" = "external_context:" ] && { _in=true; _in_read=false; } || { _in=false; _in_read=false; }
@@ -462,7 +471,10 @@ _read_ext_triggers() {
     _in=false; _in_trig=false
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         if [ "$_i" -eq 0 ]; then
             [ "$_s" = "external_context:" ] && { _in=true; _in_trig=false; } || { _in=false; _in_trig=false; }
@@ -740,7 +752,10 @@ _read_orientation_drift_value() {
     _in=false
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         if [ "$_i" -eq 0 ]; then
             [ "$_s" = "orientation_drift:" ] && _in=true || _in=false
@@ -763,7 +778,10 @@ _read_orientation_drift_docs() {
     _in_docs=false
     while IFS= read -r _line || [ -n "$_line" ]; do
         case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
+        case "$_line" in
+            *\\*|-*) _s=$(echo "$_line" | sed 's/^ *//') ;;
+            *) _s=${_line#"${_line%%[! ]*}"} ;;
+        esac
         _i=$(( ${#_line} - ${#_s} ))
         if [ "$_i" -eq 0 ]; then
             [ "$_s" = "orientation_drift:" ] && _in=true || _in=false

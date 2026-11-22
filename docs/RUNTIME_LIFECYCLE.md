@@ -41,7 +41,11 @@ must be installed as `python` on native Windows or `python3` on POSIX.
 Claude Code 2.1.295+ is required for `onFailure: block`. A startup failure
 blocks the hook. The validation worker inherits the selected Python executable.
 
-Each call has an eight-second deadline inside the ten-second hook deadline.
+Each call has a fifteen-second deadline inside the twenty-second hook deadline.
+The earlier eight-second budget rejected real OCTA closes despite process
+retirement. The measured Windows overhead requires margin; the deadline still
+returns incomplete and retires the owned family. This does not waive checks or
+restart repeated per-edit scans.
 POSIX uses a private session/process group and a guardian pipe. Windows enrolls
 the launcher in a kill-on-close Job Object before creating validation workers
 and watches the caller through Git Bash forwarding processes. Completion,

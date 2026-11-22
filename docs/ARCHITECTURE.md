@@ -1,4 +1,4 @@
-<!-- doc-version: 4.21.6 -->
+<!-- doc-version: 4.21.7 -->
 # <PROJECT_NAME> Architecture (Optional)
 
 > Version: 0.1.0-draft
