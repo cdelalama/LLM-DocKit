@@ -4,6 +4,18 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.6] - 2026-11-22
+
+### Fixed
+
+- Batch durable Trace parsing, commit metadata and ancestry reads in one
+  invocation-local Python helper. Historical checks keep their existing rules.
+- Reuse one Git object reader per repository during idea validation and bound
+  immutable-content caching to 256 entries and 16 MiB. Reap readers on both
+  success and failure. Mutable worktree and HEAD reads stay uncached.
+- Normalize the supervisor's Python path for POSIX shell lookup on Windows.
+  Actual Home Infra Stop now completes inside its eight-second deadline.
+
 ## [4.21.5] - 2026-11-22
 
 ### Fixed

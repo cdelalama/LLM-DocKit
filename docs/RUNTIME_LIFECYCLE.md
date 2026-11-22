@@ -61,6 +61,18 @@ parent Job Object retired after abrupt client exit. That test used a local API
 fixture with the installed Claude client. Adopter acceptance still requires
 checking the installed hooks and interpreter on that host.
 
+Trace uses `scripts/dockit-trace-check.py` adjacent to the validator.
+It resolves Git objects and metadata in batches, then checks the full history.
+Idea continuity owns one Git object reader per referenced repository during
+validation, reaps it in a finally block, and retains at most 256 immutable
+historical texts totaling 16 MiB per checker. These caches exist only in memory
+during the invocation. Worktree and mutable HEAD reads use the normal route.
+
+Adoption of this follow-up includes both helpers and explicitly updating the
+idea index's validator_sha256 to the exact installed idea helper. Verify full
+Stop on the actual adopted repository before reenabling it. Synthetic fixtures
+alone did not reveal the cost of large real histories in version 4.21.5.
+
 ## Required execution contract
 
 Before creation, persist an external private run manifest with project, task,

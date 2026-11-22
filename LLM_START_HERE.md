@@ -1,24 +1,28 @@
-## Bounded Stop validation candidate - 2026-11-22
+## Bounded validation follow-up - 2026-11-22
 
-Last Updated: 2026-11-22 - Codex. Version 4.21.5 is prepared in an isolated
-worktree. Per-edit validation is absent. Stop has an eight-second owned
-process-tree budget. History ordering is checked in one awk pass. Linux and
-native Windows cancellation tests pass, including an actual Claude client
-dispatch and zero active processes in an observation-only parent Job Object
-after forced client exit. A real full Stop with the three Python helpers
-finished in 1.23 seconds on Windows. DEV smoke passes 95 cases; its scaffold
-case is refused by host admission policy. Exact Opus 5.5/high source review is GO with strict native capture.
-Carlos explicitly authorized publication and installation on 2026-11-22.
-Publication and affected-host adoption are in progress.
+Last Updated: 2026-11-22 - Codex. Version 4.21.5 is published at
+427b8a0dfd1d4f24b5bce7bb3d5a303c8ce9c472 with 96 validator regressions and four
+lifecycle tests passing in hosted CI. Its native cancellation guard works.
+Actual Home Infra and Barcience Stop exceeded eight seconds, so their automatic
+Stop hooks remain suspended during repair.
+
+Version 4.21.6 batches Trace and idea Git reads without persistent caches.
+Trace takes about 0.9 seconds on actual Home Infra; idea continuity 2.4 seconds.
+A fresh full Home Infra Stop finishes in 5.458 seconds on DEV. Existing
+historical validation and mutable-file checks remain enforced.
 
 ### Open work - next concrete step
 
-Publish the reviewed candidate in `scripts/dockit-stop.py`,
-`scripts/dockit-session-gate.sh`, `scripts/dockit-validate-session.sh` and
-`.claude/settings.json`. Then apply exact selective adoption to affected hosts
-and verify normal Stop plus cancellation. See `docs/RUNTIME_LIFECYCLE.md`.
-The OCTA incident is active and local coordination is blocked by the app's
-active-writer error. Baseline custody and older work below retain their state.
+Review and publish `scripts/dockit-trace-check.py`, the integration in
+`scripts/dockit-validate-session.sh`, and `scripts/dockit-ideas.py`.
+Then qualify and restore the Stop hooks on OCTA and DEV using
+`docs/RUNTIME_LIFECYCLE.md`. Adoption includes the idea helper's exact
+validator_sha256 in `docs/llm/IDEA_INDEX.json`.
+
+OCTA containment removed 80 verified orphan processes; six others had exited.
+A 305-second observation found zero orphans and unidentified shells. Carlos
+confirmed normal responsiveness and Alt+Tab recovered. Historical work and
+baseline custody below retain their recorded states.
 
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
@@ -101,7 +105,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.5 -->
+<!-- doc-version: 4.21.6 -->
 
 ## Idea continuity adoption - 2026-10-07
 

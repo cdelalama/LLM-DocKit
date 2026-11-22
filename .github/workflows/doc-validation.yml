@@ -25,6 +25,8 @@ jobs:
         run: scripts/test-validator.sh
       - name: Stop process lifecycle regressions
         run: python3 -B scripts/test-stop-lifecycle.py
+      - name: Trace batch regressions
+        run: python3 -B scripts/test-trace-check.py
       - name: Delivery behavior tests
         run: scripts/test-delivery.sh
 

@@ -1,3 +1,26 @@
+## 2026-11-22 - Real-owner Stop budget follow-up (4.21.6)
+
+Author: Codex. Exact claude-opus-5-5, high effort, reviewed the final
+implementation and operator view. Round 4 SOURCE_GO; native session
+70f331fe-0b17-48f9-8906-3a4163c39482, result is_error=false, strict capture
+accepted with manifest
+f3e3ef4d588789cb2e7d41e9460ef7d99a76db00a70b78470119fe8742595405.
+The earlier hold is resolved by disabling Git signature display for machine
+metadata, failing closed on reference listing errors, and confirming the
+project-path/interpreter guards. Six Trace regressions and 18 existing Trace
+cases pass; ten old/new differential cases match. Idea tests total 18 passes.
+Final native Windows fixture: full Stop 2.44s, 11 checks, zero failures.
+Actual DEV Home Infra Stop: 5.458s. These are bounded observations, not a
+guarantee for every machine or cold filesystem cache.
+
+Publication requires green CI. OCTA Home Infra and Barcience require actual
+Stop under eight seconds and no surviving owned process family before their
+corrected hooks are enabled. Legacy automatic hooks remain held elsewhere
+until separately qualified. Nonblocking follow-ups: improve GitObjects
+EOF/BrokenPipe diagnostics and add invalid-UTF8 historical revision parity.
+Native review materials remain private. Carlos authorized publication and
+installation of the repair; photos, backups and the NAS remain excluded.
+
 ## 2026-11-22 - Validation lifecycle source review
 
 Codex authored the change. Exact claude-opus-5-5/high, firstParty, reviewed

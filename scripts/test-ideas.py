@@ -54,6 +54,44 @@ class Continuity(unittest.TestCase):
     def fails(self, word):
         with self.assertRaisesRegex(ideas.Invalid, word): self.check()
 
+    def test_pinned_cache_preserves_mutable_reads_and_newlines(self):
+        self.git('config', 'core.autocrlf', 'false')
+        target = self.root / 'docs/newlines.txt'
+        target.write_bytes(b'first\r\nsecond\rthird\n')
+        self.git('add', '.'); self.git('commit', '-qm', 'newline source')
+        revision = self.git('rev-parse', 'HEAD').strip()
+        checker = ideas.Checker(self.root, self.base)
+        expected = self.git('show', revision + ':docs/newlines.txt')
+        self.assertEqual(expected, 'first\nsecond\nthird\n')
+        self.assertEqual(checker.read(self.root, 'docs/newlines.txt', revision), expected)
+        self.assertEqual(checker.read(self.root, 'docs/newlines.txt', revision), expected)
+        target.write_text('changed')
+        self.assertEqual(checker.read(self.root, 'docs/newlines.txt'), 'changed')
+        self.assertEqual(checker.read(self.root, 'docs/newlines.txt', revision), expected)
+        self.assertEqual(checker.git(self.root, 'show', 'HEAD:docs/newlines.txt'), expected)
+        self.git('add', '.'); self.git('commit', '-qm', 'mutable HEAD changed')
+        self.assertEqual(checker.git(self.root, 'show', 'HEAD:docs/newlines.txt'), 'changed')
+        readers = list(checker._objects.values())
+        self.assertTrue(readers)
+        self.assertEqual(checker.run()['status'], 'pass')
+        self.assertTrue(all(reader.process.poll() is not None for reader in readers))
+        self.assertFalse(checker._objects)
+        self.assertFalse(checker._pinned_reads)
+        self.assertEqual(checker.run()['status'], 'pass')
+        self.assertFalse(checker._objects)
+
+    def test_object_reader_is_reaped_after_invalid_input(self):
+        checker = ideas.Checker(self.root, self.base)
+        checker.read(self.root, 'docs/source.md', self.base)
+        readers = list(checker._objects.values())
+        self.assertTrue(readers)
+        self.write(ideas.INDEX, '{')
+        with self.assertRaises(ValueError):
+            checker.run()
+        self.assertTrue(all(reader.process.poll() is not None for reader in readers))
+        self.assertFalse(checker._objects)
+        self.assertFalse(checker._pinned_reads)
+
     def test_valid_and_explicit_baseline(self):
         result = self.check(); self.assertEqual(result['status'], 'pass'); self.assertEqual(result['baseline_mode'], 'explicit')
 

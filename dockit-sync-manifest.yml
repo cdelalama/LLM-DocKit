@@ -41,6 +41,7 @@ files:
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
 - path: scripts/dockit-session-gate.sh strategy: copy
 - path: scripts/dockit-stop.py strategy: copy
+- path: scripts/dockit-trace-check.py strategy: copy
 - path: scripts/dockit-install-codex-hook.sh strategy: copy
 
 # --- Claude Code hooks (copy: needed by .claude/settings.json hooks) ---
