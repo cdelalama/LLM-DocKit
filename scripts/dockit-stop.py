@@ -184,7 +184,9 @@ def main():
                 shell = str(bundled)
     if not shell or not gate.is_file():
         return fail("shell or session gate unavailable")
-    os.environ["DOCKIT_PYTHON"] = sys.executable
+    if not sys.executable:
+        return fail("Python executable unavailable")
+    os.environ["DOCKIT_PYTHON"] = Path(sys.executable).as_posix()
     command = [shell, str(gate), "--guarded-stop-worker", *sys.argv[1:]]
     try:
         deadline = time.monotonic() + BUDGET

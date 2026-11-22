@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "LLM-DocKit",
-  "validator_sha256": "a77a3b10a4b3e013645a2e8545566379690395fdc30a3c77878377c65c0d0739",
+  "validator_sha256": "81030354b0dcc0c08b34979f52716ae577f8b1df8d283f558f0c27239c4b3a1b",
   "registers": [
     {
       "path": "docs/llm/DECISIONS.md",

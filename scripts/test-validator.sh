@@ -163,6 +163,7 @@ init_gate_repo() {
     cp "$VALIDATOR" "$_repo/scripts/dockit-validate-session.sh"
     cp "$SESSION_GATE" "$_repo/scripts/dockit-session-gate.sh"
     cp "$PROJECT_ROOT/scripts/dockit-stop.py" "$_repo/scripts/dockit-stop.py"
+    cp "$PROJECT_ROOT/scripts/dockit-trace-check.py" "$_repo/scripts/dockit-trace-check.py"
     cp "$CHECK_VERSION" "$_repo/scripts/check-version-sync.sh"
     chmod +x "$_repo/scripts/dockit-validate-session.sh" \
         "$_repo/scripts/dockit-session-gate.sh" \

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate project-owned idea continuity; never infer semantic completeness."""
 import argparse
+from collections import OrderedDict
 import hashlib
 import json
 from pathlib import Path
@@ -41,6 +42,41 @@ def git(root, *args, optional=False):
             return None
         raise Invalid("Git read failed: " + " ".join(args))
     return result.stdout
+
+
+class GitObjects:
+    """One bounded-lifetime reader for immutable objects in a single repository."""
+    def __init__(self, root):
+        self.process = subprocess.Popen(
+            ["git", "-C", str(root), "cat-file", "--batch"],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+
+    def get(self, expression):
+        process = self.process
+        process.stdin.write(expression.encode("utf-8") + b"\n")
+        process.stdin.flush()
+        header = process.stdout.readline()
+        if header.endswith(b" missing\n"):
+            return None
+        fields = header.split()
+        require(len(fields) == 3 and fields[2].isdigit(), "Invalid Git object response")
+        size = int(fields[2])
+        content = process.stdout.read(size)
+        require(len(content) == size and process.stdout.read(1) == b"\n",
+                "Incomplete Git object response")
+        return fields[1], content
+
+    def close(self):
+        for stream in (self.process.stdin, self.process.stdout):
+            try:
+                stream.close()
+            except OSError:
+                pass  # A broken pipe must not skip reaping this process.
+        try:
+            self.process.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+            self.process.wait()
 
 
 def relative(path):
@@ -86,25 +122,80 @@ class Checker:
         self.root = Path(root).resolve()
         self.projects = projects or {}
         self.warnings = []
+        # Only pinned historical content is reused within this checker. A new
+        # checker and every mutable working-tree/HEAD read start fresh.
+        self._pinned_reads = OrderedDict()
+        self._pinned_read_bytes = 0
+        self._objects = {}
         self.requested_baseline = baseline
         self.baseline_mode = "explicit" if baseline else "inferred"
         self.baseline = None
         if baseline:
-            self.baseline = git(self.root, "rev-parse", "--verify", "--end-of-options",
+            self.baseline = self.git(self.root, "rev-parse", "--verify", "--end-of-options",
                                 baseline + "^{commit}").strip()
         else:
-            head = git(self.root, "rev-parse", "--verify", "HEAD", optional=True)
+            head = self.git(self.root, "rev-parse", "--verify", "HEAD", optional=True)
             if head:
                 # HEAD catches working-tree deletions; its parent also protects
                 # an index deleted in the most recent committed change.
-                clean = git(self.root, "status", "--porcelain", optional=True) == ""
-                parent = git(self.root, "rev-parse", "--verify", "HEAD^", optional=True)
+                clean = self.git(self.root, "status", "--porcelain", optional=True) == ""
+                parent = self.git(self.root, "rev-parse", "--verify", "HEAD^", optional=True)
                 self.baseline = (parent if clean and parent else head).strip()
                 if clean and not parent:
                     self.warnings.append("Root commit has no predecessor; historical baseline unknown")
             else:
                 self.warnings.append("Baseline unknown; structural inspection only")
             self.warnings.append("Inferred baseline; publication requires an explicit reviewed start revision")
+
+    def git(self, root, *args, optional=False):
+        expression = None
+        is_commit = False
+        if len(args) == 2 and args[0] == "show" and re.match(r"^[0-9a-f]{7,40}:", args[1]):
+            expression = args[1]
+        elif (len(args) == 3 and args[:2] == ("cat-file", "-e")
+              and re.fullmatch(r"[0-9a-f]{7,40}\^\{commit\}", args[2])):
+            expression, is_commit = args[2], True
+        # Preserve the original command for mutable refs, unusual path syntax,
+        # and object types whose git-show representation is not blob content.
+        if expression is None or "\n" in expression or "\r" in expression:
+            return git(root, *args, optional=optional)
+        root = Path(root).resolve()
+        if root not in self._objects:
+            self._objects[root] = GitObjects(root)
+        result = self._objects[root].get(expression)
+        if result is None:
+            if optional:
+                return None
+            raise Invalid("Git read failed: " + " ".join(args))
+        kind, content = result
+        if is_commit:
+            require(kind == b"commit", "Reference is not a commit")
+            return ""
+        if kind != b"blob":
+            return git(root, *args, optional=optional)
+        return content.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
+
+    def read(self, root, path, revision=None):
+        if not revision:
+            return read(root, path)
+        key = (Path(root).resolve(), path, revision)
+        if key in self._pinned_reads:
+            self._pinned_reads.move_to_end(key)
+            return self._pinned_reads[key]
+        relative(path)
+        require(bool(re.fullmatch(r"[0-9a-f]{7,40}", revision)), "References require a pinned commit")
+        self.git(root, "cat-file", "-e", revision + "^{commit}")
+        content = self.git(root, "show", revision + ":" + path)
+        size = sys.getsizeof(content)
+        limit = 16 * 1024 * 1024
+        if size <= limit:
+            while self._pinned_reads and (self._pinned_read_bytes + size > limit
+                                          or len(self._pinned_reads) >= 256):
+                _, previous = self._pinned_reads.popitem(last=False)
+                self._pinned_read_bytes -= sys.getsizeof(previous)
+            self._pinned_reads[key] = content
+            self._pinned_read_bytes += size
+        return content
 
     def ref(self, value):
         require(isinstance(value, dict), "Reference must be an object")
@@ -120,7 +211,7 @@ class Checker:
                 self.warnings.append("Unresolved cross-project reference: " + project + ":" + value["path"])
                 return
             root = Path(self.projects[project]).resolve()
-        content = read(root, value["path"], value.get("revision"))
+        content = self.read(root, value["path"], value.get("revision"))
         if "contains" in value:
             require(value["contains"] in content, "Missing anchor in " + value["path"] + ": " + value["contains"])
 
@@ -136,20 +227,20 @@ class Checker:
         require(nonempty(register["pattern"]) and len(register["pattern"]) <= 200, "Invalid register pattern")
         pattern = re.compile(register["pattern"], re.MULTILINE)
         require(pattern.groups == 1, "Register pattern needs one identity group")
-        content = (git(self.root, "show", revision + ":" + register["path"])
+        content = (self.git(self.root, "show", revision + ":" + register["path"])
                    if revision else read(self.root, register.get("moved_to", register["path"])))
         return set(pattern.findall(content))
 
     def template_import(self, data, old_text):
         """Recognize only registered contaminated births; preserve every old byte."""
         receipt_path = self.root / REPAIR
-        receipt_history = git(self.root, "log", "--full-history", "--format=%H", "HEAD", "--", REPAIR, optional=True)
+        receipt_history = self.git(self.root, "log", "--full-history", "--format=%H", "HEAD", "--", REPAIR, optional=True)
         require(receipt_path.exists() or not receipt_history, "Template repair receipt disappeared")
         if not receipt_path.exists():
             return old_text, set()
         receipt = load(read(self.root, REPAIR))
         require(set(receipt) == {"schema", "root", "admission", "project", "template_revision", "policy_revision", "review_manifest_sha256", "files"}, "Invalid template repair receipt")
-        roots = git(self.root, "rev-list", "--max-parents=0", "HEAD").splitlines()
+        roots = self.git(self.root, "rev-list", "--max-parents=0", "HEAD").splitlines()
         require(len(roots) == 1 and receipt["root"] == roots[0], "Repair requires the single registered root")
         spec = TEMPLATE_IMPORTS.get(roots[0])
         require(spec is not None, "Unregistered template import; no automatic exception")
@@ -164,11 +255,11 @@ class Checker:
         require(contract["project"]["name"] == data["project"] and contract["origin"]["created_by"] == "ForgeOS" and contract["origin"]["workflow"] == "/new-homelab-project" and contract["birth"]["retrofit"] is False, "Only independently registered new creation is eligible")
         current_contract = load(read(self.root, contract_path))
         require(current_contract["project"]["name"] == data["project"] and current_contract["birth"]["retrofit"] is False, "Current birth identity changed")
-        transitions = git(self.root, "log", "--full-history", "--format=%H", "--diff-filter=A", "HEAD", "--", REPAIR).splitlines()
+        transitions = self.git(self.root, "log", "--full-history", "--format=%H", "--diff-filter=A", "HEAD", "--", REPAIR).splitlines()
         require(len(transitions) <= 1, "Multiple repair transitions")
         transition = transitions[0] if transitions else None
-        parent = git(self.root, "rev-parse", transition + "^" ).strip() if transition else git(self.root, "rev-parse", "HEAD").strip()
-        require(git(self.root, "rev-list", "--count", spec["admission"] + ".." + parent).strip() == "0" and parent == spec["admission"], "Repair must be the first change after registered admission")
+        parent = self.git(self.root, "rev-parse", transition + "^" ).strip() if transition else self.git(self.root, "rev-parse", "HEAD").strip()
+        require(self.git(self.root, "rev-list", "--count", spec["admission"] + ".." + parent).strip() == "0" and parent == spec["admission"], "Repair must be the first change after registered admission")
         require(self.baseline is not None, "Repair requires a known baseline")
         born = load(read(self.root, INDEX, roots[0]))
         require(born["project"] == "LLM-DocKit", "Birth did not import template identity")
@@ -178,7 +269,7 @@ class Checker:
         for path, expected in spec["files"].items():
             born_bytes = exact_bytes(self.root, path, roots[0])
             require(hashlib.sha256(born_bytes).hexdigest() == expected, "Registered birth hash mismatch: " + path)
-            changes = git(self.root, "log", "--format=%H", roots[0] + ".." + parent, "--", path).strip()
+            changes = self.git(self.root, "log", "--format=%H", roots[0] + ".." + parent, "--", path).strip()
             require(not changes, "Imported record changed before repair: " + path)
             archive_path = ARCHIVE + path
             require(hashlib.sha256(exact_bytes(self.root, archive_path)).hexdigest() == expected, "Frozen archive changed: " + path)
@@ -189,15 +280,15 @@ class Checker:
                 removed.add(path)
         if transition:
             require(read(self.root, REPAIR) == read(self.root, REPAIR, transition), "Frozen repair receipt changed")
-            actual_deleted = set(git(self.root, "diff", "--no-renames", "--name-only", "--diff-filter=D", parent, transition).splitlines())
+            actual_deleted = set(self.git(self.root, "diff", "--no-renames", "--name-only", "--diff-filter=D", parent, transition).splitlines())
         else:
-            actual_deleted = set(git(self.root, "diff", "HEAD", "--no-renames", "--name-only", "--diff-filter=D").splitlines())
+            actual_deleted = set(self.git(self.root, "diff", "HEAD", "--no-renames", "--name-only", "--diff-filter=D").splitlines())
         require(actual_deleted == removed, "Repair deleted files outside the exact imported work set")
         # The admission may already own real decisions even though its index
         # is foreign. Preserve their IDs across this one-time identity repair.
         boundary = load(read(self.root, INDEX, transition)) if transition else data
         for register in born["registers"] + boundary["registers"]:
-            prior = git(self.root, "show", spec["admission"] + ":" + relative(register["path"]), optional=True)
+            prior = self.git(self.root, "show", spec["admission"] + ":" + relative(register["path"]), optional=True)
             if prior is None:
                 continue  # A genuinely new child register has no prior IDs.
             pattern = re.compile(register["pattern"], re.MULTILINE)
@@ -217,19 +308,29 @@ class Checker:
                 old_text = None
         else:
             require(transition is not None, "Unpublished repair needs the reviewed admission baseline")
-            require(git(self.root, "merge-base", self.baseline, transition).strip() == transition, "Baseline predates the registered repair")
+            require(self.git(self.root, "merge-base", self.baseline, transition).strip() == transition, "Baseline predates the registered repair")
             removed = set()
         self.repair_transition = transition or "working-tree-candidate"
         return old_text, removed
 
     def run(self):
-        old_text = git(self.root, "show", self.baseline + ":" + INDEX, optional=True) if self.baseline else None
+        try:
+            return self._run()
+        finally:
+            for objects in self._objects.values():
+                objects.close()
+            self._objects.clear()
+            self._pinned_reads.clear()
+            self._pinned_read_bytes = 0
+
+    def _run(self):
+        old_text = self.git(self.root, "show", self.baseline + ":" + INDEX, optional=True) if self.baseline else None
         path = self.root / INDEX
         if not path.exists():
             # Even an explicit baseline before adoption must not hide a latest
             # committed index that the working tree deleted.
-            head_text = git(self.root, "show", "HEAD:" + INDEX, optional=True)
-            parent_text = git(self.root, "show", "HEAD^:" + INDEX, optional=True)
+            head_text = self.git(self.root, "show", "HEAD:" + INDEX, optional=True)
+            parent_text = self.git(self.root, "show", "HEAD^:" + INDEX, optional=True)
             require(not old_text and not head_text and not parent_text, "Adopted idea index was deleted")
             return {"status": "not_adopted", "baseline": self.baseline, "warnings": self.warnings}
         data = load(read(self.root, INDEX))
@@ -341,7 +442,7 @@ class Checker:
         # their historical meaning; closing documentation never closes ideas.
         work = self.root / "docs/llm/work"
         if self.baseline:
-            old_tasks = git(self.root, "ls-tree", "-r", "--name-only", self.baseline, "docs/llm/work")
+            old_tasks = self.git(self.root, "ls-tree", "-r", "--name-only", self.baseline, "docs/llm/work")
             for old_task in old_tasks.splitlines():
                 if old_task.endswith(".json") and old_task not in archived_tasks:
                     require((self.root / old_task).is_file(), "Task record disappeared: " + old_task)
@@ -351,7 +452,7 @@ class Checker:
             if value.get("state") != "closed":
                 continue
             name = task.relative_to(self.root).as_posix()
-            before = git(self.root, "show", self.baseline + ":" + name, optional=True) if self.baseline else None
+            before = self.git(self.root, "show", self.baseline + ":" + name, optional=True) if self.baseline else None
             if not before or load(before).get("state") != "closed":
                 require(name in reconciliations, "Newly closed task lacks idea reconciliation: " + name)
         return {"status": "warning" if self.warnings else "pass", "project": self.project,

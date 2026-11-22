@@ -1,7 +1,7 @@
 #!/bin/sh
 # dockit-validate-session.sh -- Validate LLM documentation state.
 #
-# Portable POSIX sh. Zero external dependencies.
+# Portable POSIX sh. Python 3 is required for adopted Trace/workspace/idea checks.
 # Designed as the single entry point for all enforcement drivers
 # (Claude Code hooks, pre-commit, CI, manual).
 #
@@ -489,26 +489,24 @@ _read_ext_triggers() {
 # onboarding and can be disabled independently by setting enabled: false.
 
 _read_trace_value() {
-    _key="$1"
     [ -f "$CONFIG_FILE" ] || return
-    _in=false
-    while IFS= read -r _line || [ -n "$_line" ]; do
-        case "$_line" in ""|\#*) continue ;; esac
-        _s=$(echo "$_line" | sed 's/^ *//')
-        _i=$(( ${#_line} - ${#_s} ))
-        if [ "$_i" -eq 0 ]; then
-            [ "$_s" = "trace_protocol:" ] && _in=true || _in=false
-            continue
-        fi
-        if [ "$_in" = true ] && [ "$_i" -eq 2 ]; then
-            case "$_s" in
-                "$_key":*)
-                    echo "$_s" | sed "s/^$_key: *//; s/^\"//; s/\"$//"
-                    return
-                    ;;
-            esac
-        fi
-    done < "$CONFIG_FILE"
+    awk -v key="$1" '
+        {
+            if ($0 == "" || substr($0, 1, 1) == "#") next
+            line = $0
+            sub(/^ */, "", line)
+            indent = length($0) - length(line)
+            if (indent == 0) { active = (line == "trace_protocol:"); next }
+            if (active && indent == 2 && index(line, key ":") == 1) {
+                value = substr(line, length(key) + 2)
+                sub(/^ */, "", value)
+                sub(/^"/, "", value)
+                sub(/"$/, "", value)
+                print value
+                exit
+            }
+        }
+    ' "$CONFIG_FILE"
 }
 
 _trace_enabled_for_validation() {
@@ -560,71 +558,6 @@ _detect_trace_upstream_branch() {
     fi
 }
 
-_trace_append_error() {
-    _trace_errors="${_trace_errors}; $1"
-}
-
-_trace_append_warning() {
-    _trace_warnings="${_trace_warnings}; $1"
-}
-
-_trace_hashes_from_text() {
-    grep -oE '`[0-9A-Fa-f]{7,40}`' 2>/dev/null | tr -d '`' | tr 'A-F' 'a-f' | sort -u || true
-}
-
-_trace_validate_commit() {
-    _hash="$1"
-    _context="$2"
-    _text="$3"
-    _require_subject_time="$4"
-    _upstream_branch="$5"
-
-    if ! git -C "$PROJECT_ROOT" cat-file -e "$_hash^{commit}" 2>/dev/null; then
-        _trace_append_error "$_context references commit $_hash, but git cannot resolve it"
-        return
-    fi
-
-    _short=$(git -C "$PROJECT_ROOT" rev-parse --short=7 "$_hash" 2>/dev/null || true)
-    if [ -n "$_short" ] && ! printf '%s\n' "$_text" | grep -qF "$_short"; then
-        _trace_append_error "$_context references $_hash but does not contain canonical short hash $_short"
-    fi
-
-    if [ "$_require_subject_time" = true ]; then
-        _subject=$(git -C "$PROJECT_ROOT" show -s --format=%s "$_hash" 2>/dev/null || true)
-        _commit_time_seconds=$(TZ=UTC git -C "$PROJECT_ROOT" show -s --format=%cd --date=format-local:'%Y-%m-%d %H:%M:%S UTC' "$_hash" 2>/dev/null || true)
-        _commit_time_minutes=$(TZ=UTC git -C "$PROJECT_ROOT" show -s --format=%cd --date=format-local:'%Y-%m-%d %H:%M UTC' "$_hash" 2>/dev/null || true)
-        if [ -n "$_subject" ] && ! printf '%s\n' "$_text" | grep -qF "$_subject"; then
-            _trace_append_error "$_context target $_short is missing commit subject: $_subject"
-        fi
-        if [ -n "$_commit_time_seconds" ] \
-            && ! printf '%s\n' "$_text" | grep -qF "$_commit_time_seconds" \
-            && ! printf '%s\n' "$_text" | grep -qF "$_commit_time_minutes"; then
-            _trace_append_error "$_context target $_short is missing commit time: $_commit_time_seconds (or $_commit_time_minutes)"
-        fi
-    fi
-
-    _upstream_ref="refs/remotes/origin/$_upstream_branch"
-    if git -C "$PROJECT_ROOT" show-ref --verify --quiet "$_upstream_ref" 2>/dev/null; then
-        if git -C "$PROJECT_ROOT" merge-base --is-ancestor "$_hash" "$_upstream_ref" 2>/dev/null; then
-            return
-        fi
-
-        _on_remote=false
-        _remote_refs=$(git -C "$PROJECT_ROOT" for-each-ref --format='%(refname)' refs/remotes/origin 2>/dev/null || true)
-        for _ref in $_remote_refs; do
-            case "$_ref" in */HEAD) continue ;; esac
-            if git -C "$PROJECT_ROOT" merge-base --is-ancestor "$_hash" "$_ref" 2>/dev/null; then
-                _on_remote=true
-                _trace_append_warning "$_context target $_short is on remote ref $_ref, not origin/$_upstream_branch"
-                break
-            fi
-        done
-
-        if [ "$_on_remote" = false ]; then
-            _trace_append_error "$_context target $_short is not an ancestor of origin/$_upstream_branch or any origin/* remote ref"
-        fi
-    fi
-}
 
 check_external_context() {
     if ! should_run "external-context"; then return; fi
@@ -1045,8 +978,6 @@ check_trace_protocol() {
         return
     fi
 
-    _trace_errors=""
-    _trace_warnings=""
     _trace_since=$(_read_trace_value since)
     if [ -z "$_trace_since" ]; then
         _trace_since=$(_infer_trace_since)
@@ -1057,129 +988,23 @@ check_trace_protocol() {
     fi
 
     _trace_upstream=$(_detect_trace_upstream_branch)
-
-    if [ ! -f "$HANDOFF" ]; then
-        _trace_append_error "HANDOFF.md not found"
-    else
-        _anchor=$(awk '
-            /^##[[:space:]]+Trace Anchor[[:space:]]*$/ { capture = 1; next }
-            capture && /^##[[:space:]]+/ { exit }
-            capture { print }
-        ' "$HANDOFF")
-
-        if [ -z "$_anchor" ]; then
-            _trace_append_error "HANDOFF.md is missing required ## Trace Anchor section"
-        else
-            if ! printf '%s\n' "$_anchor" | grep -qE 'Role:[[:space:]]*(executor|auditor|advisor)'; then
-                _trace_append_error "Trace Anchor missing Role: executor|auditor|advisor"
-            fi
-            if ! printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target|Trace target|Subject):'; then
-                _trace_append_error "Trace Anchor missing Trace target/Subject"
-            fi
-            if ! printf '%s\n' "$_anchor" | grep -qE '(State verified|Repo state):'; then
-                _trace_append_error "Trace Anchor missing State verified/Repo state"
-            fi
-            if ! printf '%s\n' "$_anchor" | grep -qE 'Validation:'; then
-                _trace_append_error "Trace Anchor missing Validation"
-            fi
-            if ! printf '%s\n' "$_anchor" | grep -qE '(Next gate|Next):'; then
-                _trace_append_error "Trace Anchor missing Next gate/Next"
-            fi
-
-            _anchor_hashes=$(printf '%s\n' "$_anchor" | _trace_hashes_from_text)
-            for _hash in $_anchor_hashes; do
-                _trace_validate_commit "$_hash" "HANDOFF Trace Anchor" "$_anchor" true "$_trace_upstream"
-            done
-
-            if _trace_reject_current_anchor_label \
-                && printf '%s\n' "$_anchor" | grep -qE '(Current target|Current audit target):'; then
-                _trace_append_error "trace_protocol.reject_current_anchor_label=true disallows HANDOFF Trace Anchor labels that imply currency; use Subject: or Trace target: instead"
-            fi
-        fi
+    _trace_dir=$(CDPATH= cd "$(dirname "$0")" && pwd)
+    _trace_helper="$_trace_dir/dockit-trace-check.py"
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$_trace_helper" ]; then
+        add_result "trace-protocol" "FAIL" "Trace checker or Python 3 unavailable; install the matching DocKit helper"
+        return
     fi
-
-    if [ ! -f "$HISTORY" ]; then
-        _trace_append_error "HISTORY.md not found"
-    else
-        _history_entries=$(awk -v since="$_trace_since" '
-            /^- [0-9]{4}-[0-9]{2}-[0-9]{2} - / {
-                d = substr($0, 3, 10)
-                if (d >= since && index($0, "`")) print d "|" $0
-                next
-            }
-            /^[0-9]{4}-[0-9]{2}-[0-9]{2} - / {
-                d = substr($0, 1, 10)
-                if (d >= since && index($0, "`")) print d "|" $0
-            }
-        ' "$HISTORY")
-
-        _old_ifs="$IFS"
-        IFS='
-'
-        for _history_record in $_history_entries; do
-            _date=${_history_record%%|*}
-            _entry=${_history_record#*|}
-            _entry_hashes=$(printf '%s\n' "$_entry" | _trace_hashes_from_text)
-            [ -z "$_entry_hashes" ] && continue
-
-            if ! printf '%s\n' "$_entry" | grep -qE 'Trace: role=(executor|auditor|advisor); commits=[^;]+;( external=[^;]+;)? state=[^;]+; validation=[^;]+; next=.+'; then
-                _trace_append_error "HISTORY entry $_date references backticked commit hash(es) but lacks inline Trace footer"
-                continue
-            fi
-
-            _commits_field=$(printf '%s\n' "$_entry" | sed 's/.*Trace: role=[^;]*; commits=\([^;]*\); state=.*/\1/')
-            case "$_commits_field" in
-                *'; external='*) _commits_field=$(printf '%s\n' "$_entry" | sed 's/.*Trace: role=[^;]*; commits=\([^;]*\); external=.*/\1/') ;;
-            esac
-            _commits_csv=",$(printf '%s' "$_commits_field" | tr -d ' '),"
-
-            _external_field=$(printf '%s\n' "$_entry" | sed -n 's/.*; external=\([^;]*\); state=.*/\1/p')
-            _external_hashes=""
-            if [ -n "$_external_field" ]; then
-                _saved_ifs="$IFS"
-                IFS=','
-                for _external_ref in $_external_field; do
-                    _external_ref=$(printf '%s' "$_external_ref" | tr -d ' ')
-                    if ! printf '%s\n' "$_external_ref" | grep -qE '^[A-Za-z0-9._/-]+@[0-9A-Fa-f]{7,40}$'; then
-                        _trace_append_error "HISTORY entry $_date has invalid external= reference $_external_ref (expected repo@hash)"
-                        continue
-                    fi
-                    _external_hash=$(printf '%s' "${_external_ref##*@}" | tr 'A-F' 'a-f')
-                    if ! printf '%s\n' "$_entry_hashes" | grep -qxF "$_external_hash"; then
-                        _trace_append_error "HISTORY entry $_date external= declares $_external_ref but the exact hash is not backtick-quoted in the entry"
-                    fi
-                    _external_hashes="$_external_hashes $_external_hash"
-                done
-                IFS="$_saved_ifs"
-            fi
-
-            for _hash in $_entry_hashes; do
-                if printf '%s\n' "$_external_hashes" | tr ' ' '\n' | grep -qxF "$_hash"; then
-                    case "$_commits_csv" in
-                        *,"$_hash",*) _trace_append_error "HISTORY entry $_date declares $_hash as both local commits= and external=" ;;
-                    esac
-                    continue
-                fi
-                _short=$(cd "$PROJECT_ROOT" && git rev-parse --short=7 "$_hash" 2>/dev/null || printf '%s' "$_hash")
-                case "$_commits_csv" in
-                    *,"$_hash",*|*,"$_short",*) ;;
-                    *) _trace_append_error "HISTORY Trace footer commits= does not include referenced hash $_hash" ;;
-                esac
-                _trace_validate_commit "$_hash" "HISTORY Trace footer" "$_entry" false "$_trace_upstream"
-            done
-        done
-        IFS="$_old_ifs"
+    set -- --project "$PROJECT_ROOT" --since "$_trace_since" --upstream "$_trace_upstream"
+    if _trace_reject_current_anchor_label; then set -- "$@" --reject-current; fi
+    if ! _trace_result=$("$DOCKIT_PYTHON" "$_trace_helper" "$@" 2>&1); then
+        add_result "trace-protocol" "FAIL" "Trace checker failed: $_trace_result"
+        return
     fi
-
-    if [ -n "$_trace_errors" ]; then
-        _msg=$(echo "$_trace_errors" | sed 's/^; //')
-        add_result "trace-protocol" "FAIL" "$_msg"
-    elif [ -n "$_trace_warnings" ]; then
-        _msg=$(echo "$_trace_warnings" | sed 's/^; //')
-        add_result "trace-protocol" "WARN" "$_msg"
-    else
-        add_result "trace-protocol" "PASS" "Trace Protocol durable contract satisfied since $_trace_since"
-    fi
+    _trace_status=${_trace_result%%|*}
+    case "$_trace_status" in
+        PASS|WARN|FAIL) add_result "trace-protocol" "$_trace_status" "${_trace_result#*|}" ;;
+        *) add_result "trace-protocol" "FAIL" "Invalid Trace checker result: $_trace_result" ;;
+    esac
 }
 
 # Default size advice is exit-neutral. Content interpretation requires a contract.
