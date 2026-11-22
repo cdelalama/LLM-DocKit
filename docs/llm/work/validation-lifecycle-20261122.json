@@ -5,7 +5,7 @@
   "branch": "work/validation-lifecycle-20261122",
   "purpose": "Limit validation fan-out and safely retire transient resources",
   "state": "pending-integration",
-  "next_step": "Qualify effective adopter hooks, interrupted Stop and explicit closeout on native hosts.",
+  "next_step": "Retain the verified OCTA Home Infra/Barcience and DEV Home Infra adoption receipts; qualify the 66 held legacy OCTA configurations before restoring their hooks. Preserve the historical excluded checkout.",
   "artifacts": [
     "docs/RUNTIME_LIFECYCLE.md"
   ]

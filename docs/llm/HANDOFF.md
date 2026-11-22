@@ -1,37 +1,40 @@
-## Bounded validation native follow-up - 2026-11-22
+## Bounded validation installed and observed - 2026-11-22
 
-Last Updated: 2026-11-22 - Codex. Version 4.21.6 is published at
-dfd54306747c1e0bf7ff74f30653b7a88fc2f6f0 with hosted validation passing.
-Native OCTA Home Infra and Barcience Stop still exceeded eight seconds
-(8.282s and 8.266s), but both owned process families retired completely.
-Both automatic Stop hooks remain suspended. Carlos confirmed normal
-responsiveness and Alt+Tab recovered after containment.
+Last Updated: 2026-11-22 - Codex. DocKit 4.21.7 is published at
+e63eda9e4c403ad9890cc29dd9d429d1777c099e (PR 9). Exact Opus 5.5 high
+SOURCE_GO and hosted validation passed. Home Infra 0.104.10 and Barcience
+0.20.2 published the six matching scripts and restored the twenty-second Stop
+hook with the fifteen-second supervisor. Per-edit validation is removed.
 
-Version 4.21.7 removes per-line subprocesses from repeated configuration
-indentation reads and version-marker pipelines. It retains all validation
-rules, removes the version checker scratch file, and uses a fifteen-second
-internal deadline inside a twenty-second hook timeout for measured Windows
-overhead. Timeout still leaves validation incomplete and retires owned children.
+OCTA Home Infra closed in 8.140s. Barcience first correctly reported its
+existing date errors, then closed in 6.609s after documenting this tooling
+adoption. Four native lifecycle tests passed, including deadline, caller loss
+and cancellation without disturbing a concurrent session. DEV Home Infra
+repeated normal-load closes passed in 4.751s and 5.060s with zero residual
+validators; the earlier 13.397s result remains retained.
 
-Native final-candidate probes completed: OCTA Home Infra allowed in 8.140s;
-Barcience returned its two existing date errors in 6.844s. Both left zero owned
-processes. DEV Home Infra allowed in 13.397s under current load. These are
-observations, not a guarantee of duration under arbitrary load.
+The separate final OCTA observation lasted 305.03s: 22 samples, zero orphan
+candidates, zero unknown shells, zero final validators and 22 taskbar responses.
+The earlier observation during tests had two transient candidate samples that
+disappeared; their origin could not be attributed from retained event logs.
+It is preserved rather than described as uniformly clean. These are measured
+windows and lifecycle tests, not a guarantee against arbitrary future load.
 
 ### Open work - next concrete step
 
-Review the verified change in `scripts/dockit-validate-session.sh` with the actual
-OCTA Home Infra and Barcience results, complete independent review and CI, then publish
-and restore only qualified Stop hooks using `docs/RUNTIME_LIFECYCLE.md`.
-Install the six matching 4.21.7 scripts, including the fifteen-second
-`scripts/dockit-stop.py` and `scripts/check-version-sync.sh`, together with
-the twenty-second Stop hook settings. Preserve the unchanged idea helper
-validator_sha256 in `docs/llm/IDEA_INDEX.json`.
+Keep the 66 additional OCTA configurations with legacy automatic hooks
+suspended until each adopter qualifies the six scripts and matching settings
+under `docs/RUNTIME_LIFECYCLE.md`. One immutable historical checkout remains
+unchanged and excluded from execution. Manual validation remains available.
+Track remaining adoption in `docs/llm/work/validation-lifecycle-20261122.json`.
+Preserve the idea helper validator_sha256 in `docs/llm/IDEA_INDEX.json`.
 
-OCTA containment removed 80 verified orphan processes; six others had exited.
-A 305-second observation found zero orphans and unidentified shells. Other
-legacy automatic hooks remain suspended pending qualification. Historical
-work, evidence and baseline custody below retain their recorded states.
+OCTA's private final receipt SHA256 is
+473ef87876001d0fc968e77d4b64b17a25a667b134738ec17bc794ae6a73c0f6.
+Containment retired 80 verified orphan processes; six others had already exited.
+Test scratch directories were removed. Preimages, review evidence, user files
+and session baselines remain preserved. NAS and photos were not modified.
+Earlier independent project work below retains its recorded state.
 
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
