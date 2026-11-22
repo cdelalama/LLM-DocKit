@@ -26,4 +26,4 @@ This index describes retained work, not permission to delete it.
 
 - [runtime-lifecycle-20261120](work/runtime-lifecycle-20261120.json): active; shared disposable runtime correction and measured fleet rollout.
 
-- [validation-lifecycle-20261122](work/validation-lifecycle-20261122.json): pending-integration; verify native cancellation and adopter installation.
+- [validation-lifecycle-20261122](work/validation-lifecycle-20261122.json): pending-integration; selected OCTA/DEV adopters verified, qualify the 66 held OCTA configurations before restoring hooks.
