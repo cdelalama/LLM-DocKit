@@ -1,30 +1,37 @@
-## Bounded validation follow-up - 2026-11-22
+## Bounded validation native follow-up - 2026-11-22
 
-Last Updated: 2026-11-22 - Codex. Version 4.21.5 is published at
-427b8a0dfd1d4f24b5bce7bb3d5a303c8ce9c472 with 96 validator regressions and four
-lifecycle tests passing in hosted CI. Its native cancellation guard works.
-Actual Home Infra and Barcience Stop exceeded eight seconds, so their automatic
-Stop hooks remain suspended during repair.
+Last Updated: 2026-11-22 - Codex. Version 4.21.6 is published at
+dfd54306747c1e0bf7ff74f30653b7a88fc2f6f0 with hosted validation passing.
+Native OCTA Home Infra and Barcience Stop still exceeded eight seconds
+(8.282s and 8.266s), but both owned process families retired completely.
+Both automatic Stop hooks remain suspended. Carlos confirmed normal
+responsiveness and Alt+Tab recovered after containment.
 
-Version 4.21.6 batches Trace and idea Git reads without persistent caches.
-Trace takes about 0.9 seconds on actual Home Infra; idea continuity 2.4 seconds.
-A fresh full Home Infra Stop finishes in 5.458 seconds on DEV. Existing
-historical validation and mutable-file checks remain enforced. Exact Opus 5.5
-high SOURCE_GO and strict round-4 capture are recorded in
-`docs/llm/REVIEWS.md`; CI and native OCTA adoption remain the next gates.
+Version 4.21.7 removes per-line subprocesses from repeated configuration
+indentation reads and version-marker pipelines. It retains all validation
+rules, removes the version checker scratch file, and uses a fifteen-second
+internal deadline inside a twenty-second hook timeout for measured Windows
+overhead. Timeout still leaves validation incomplete and retires owned children.
+
+Native final-candidate probes completed: OCTA Home Infra allowed in 8.140s;
+Barcience returned its two existing date errors in 6.844s. Both left zero owned
+processes. DEV Home Infra allowed in 13.397s under current load. These are
+observations, not a guarantee of duration under arbitrary load.
 
 ### Open work - next concrete step
 
-Publish the independently reviewed `scripts/dockit-trace-check.py`, the integration in
-`scripts/dockit-validate-session.sh`, and `scripts/dockit-ideas.py`.
-Then qualify and restore the Stop hooks on OCTA and DEV using
-`docs/RUNTIME_LIFECYCLE.md`. Adoption includes the idea helper's exact
+Review the verified change in `scripts/dockit-validate-session.sh` with the actual
+OCTA Home Infra and Barcience results, complete independent review and CI, then publish
+and restore only qualified Stop hooks using `docs/RUNTIME_LIFECYCLE.md`.
+Install the six matching 4.21.7 scripts, including the fifteen-second
+`scripts/dockit-stop.py` and `scripts/check-version-sync.sh`, together with
+the twenty-second Stop hook settings. Preserve the unchanged idea helper
 validator_sha256 in `docs/llm/IDEA_INDEX.json`.
 
 OCTA containment removed 80 verified orphan processes; six others had exited.
-A 305-second observation found zero orphans and unidentified shells. Carlos
-confirmed normal responsiveness and Alt+Tab recovered. Historical work and
-baseline custody below retain their recorded states.
+A 305-second observation found zero orphans and unidentified shells. Other
+legacy automatic hooks remain suspended pending qualification. Historical
+work, evidence and baseline custody below retain their recorded states.
 
 ## Disposable runtime rule verified on published branches - 2026-11-20
 
@@ -177,7 +184,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.6 -->
+<!-- doc-version: 4.21.7 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -318,7 +325,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-11-22 - Codex
-- Current source version: 4.21.6
+- Current source version: 4.21.7
 - Owner: Carlos
 - Session focus: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
 - Source change prepared. Adopter installation and native cancellation checks remain open.

@@ -116,7 +116,7 @@ class StopLifecycle(unittest.TestCase):
 
     def test_deadline(self):
         proc, ports = self.start("timeout")
-        self.assertEqual(proc.wait(timeout=10), 2)
+        self.assertEqual(proc.wait(timeout=17), 2)
         wait_until(lambda: all(map(port_released, ports)))
 
     def test_block_and_no_per_edit_validation(self):

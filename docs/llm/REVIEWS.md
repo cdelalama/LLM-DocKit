@@ -1,3 +1,23 @@
+## 2026-11-22 - Native budget and remaining subprocess reduction (4.21.7)
+
+Exact claude-opus-5-5/high, native session
+2489a64c-1fa5-4e8c-9cdc-429c65020992, granted SOURCE_GO for the final candidate,
+including the measured fifteen-second supervisor/twenty-second hook decision.
+Strict round 6 capture accepted, manifest
+21703c9c0d737dbc065c746a12d8f33f6982bdd2075260ac95fb4588ea459b67.
+Final snapshot bytes match the review. Twenty configuration differential cases,
+three persistent config tests, twelve exact version-check regressions and four
+process lifecycle tests passed. Existing echo-sensitive config behavior and
+unreadable-marker diagnostics are preserved; the version scratch file is gone.
+
+Native OCTA Home Infra: 8.140s ALLOW; Barcience: 6.844s BLOCK for two existing
+date errors; both zero owned survivors. DEV: 13.397s ALLOW, requiring additional
+normal-load measurements because its margin is small. These are observations,
+not universal duration guarantees. Install the 4.21.7 supervisor and twenty-second
+hook setting together. Green hosted CI, controlled restoration and a five-minute
+OCTA observation remain required. No photo, backup, NAS or unrelated data cleanup
+is authorized by this receipt. Review and failed-attempt evidence stay private.
+
 ## 2026-11-22 - Real-owner Stop budget follow-up (4.21.6)
 
 Author: Codex. Exact claude-opus-5-5, high effort, reviewed the final

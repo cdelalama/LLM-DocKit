@@ -22,7 +22,7 @@
           {
             "type": "command",
             "command": "exec sh \"$CLAUDE_PROJECT_DIR/scripts/dockit-session-gate.sh\" --stop",
-            "timeout": 10,
+            "timeout": 20,
             "onFailure": "block",
             "shell": "bash"
           }
