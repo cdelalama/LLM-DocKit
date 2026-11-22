@@ -4,6 +4,12 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.21.4] - 2026-11-22
+
+### Fixed
+
+- The initializer test fixture now reuses a committed candidate when its staged tree is already current. All host-policy assertions still run.
+
 ## [4.21.3] - 2026-11-22
 
 ### Changed

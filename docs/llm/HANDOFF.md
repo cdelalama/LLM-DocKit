@@ -165,7 +165,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.3 -->
+<!-- doc-version: 4.21.4 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -306,7 +306,7 @@ This scoped rollout preserves all prior product work and handoff context below.
 ## Current Status
 
 - Last Updated: 2026-11-22 - Codex
-- Current source version: 4.21.3
+- Current source version: 4.21.4
 - Owner: Carlos
 - Session focus: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
 - Source change prepared. Adopter installation and native cancellation checks remain open.

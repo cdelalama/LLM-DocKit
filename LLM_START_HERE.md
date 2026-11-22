@@ -95,7 +95,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.3 -->
+<!-- doc-version: 4.21.4 -->
 
 ## Idea continuity adoption - 2026-10-07
 

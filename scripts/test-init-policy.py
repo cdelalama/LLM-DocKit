@@ -11,15 +11,25 @@ import unittest
 INIT = Path(__file__).with_name('dockit-init-project.sh')
 
 
+def clone_candidate(source):
+    subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(INIT.parent.parent), str(source)], check=True)
+    for name in ['dockit-init-project.sh', 'dockit-ideas.py']:
+        shutil.copyfile(INIT.with_name(name), source / 'scripts' / name)
+    git = ['git', '-C', str(source)]
+    subprocess.run([*git, 'add', 'scripts'], check=True)
+    staged = subprocess.run([*git, 'diff', '--cached', '--quiet'])
+    if staged.returncode == 1:
+        subprocess.run([*git, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                        'commit', '-qm', 'candidate init'], check=True)
+    else:
+        staged.check_returncode()
+
+
 class InitPolicyTests(unittest.TestCase):
     def test_new_project_has_only_child_idea_identity(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp); source = root / 'source'; target = root / 'new-project'
-            subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(INIT.parent.parent), str(source)], check=True)
-            for name in ['dockit-init-project.sh', 'dockit-ideas.py']:
-                shutil.copyfile(INIT.with_name(name), source / 'scripts' / name)
-            subprocess.run(['git', '-C', str(source), 'add', 'scripts'], check=True)
-            subprocess.run(['git', '-C', str(source), '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'candidate init'], check=True)
+            clone_candidate(source)
             result = subprocess.run(['sh', str(INIT), 'new-project', '--source', str(source), '--target-dir', str(target)], env=dict(os.environ, XDG_CONFIG_HOME=str(root/'no-host-policy')), capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             data = json.loads((target/'docs/llm/IDEA_INDEX.json').read_text())
@@ -38,11 +48,7 @@ class InitPolicyTests(unittest.TestCase):
     def test_linked_worktree_and_nested_copy(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp); source=root/'source'; linked=root/'linked'; target=root/'child'
-            subprocess.run(['git','clone','--quiet','--no-hardlinks',str(INIT.parent.parent),str(source)],check=True)
-            for name in ['dockit-init-project.sh','dockit-ideas.py']:
-                shutil.copyfile(INIT.with_name(name),source/'scripts'/name)
-            subprocess.run(['git','-C',str(source),'add','scripts'],check=True)
-            subprocess.run(['git','-C',str(source),'-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','candidate'],check=True)
+            clone_candidate(source)
             subprocess.run(['git','-C',str(source),'worktree','add','--quiet','--detach',str(linked)],check=True)
             env=dict(os.environ,XDG_CONFIG_HOME=str(root/'no-host-policy'))
             result=subprocess.run(['sh',str(INIT),'child','--source',str(linked),'--target-dir',str(target)],env=env,capture_output=True,text=True)
