@@ -4,6 +4,23 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.22.0] - 2026-11-23
+
+### Added
+
+- `workspace-leftovers` validator check (`scripts/dockit-leftovers.py`, synced):
+  fails when the host ForgeOS ledger shows a closed workspace created under the
+  clean-up rule that is not retired; warns on Git-only merged worktree/branch
+  candidates and legacy closed records. Read-only, offline, NUL-safe parsing,
+  about 1 s on a repository with 389 candidates.
+
+### Changed
+
+- `workspace-ownership` onboarding section and bootstrap notice: work on the
+  default branch in the primary checkout; a task workspace only when another
+  session occupies it, retired in the same session with `task-workspace retire`
+  (Home Infra D-030, Carlos 2026-11-23).
+
 ## [4.21.7] - 2026-11-22
 
 ### Fixed

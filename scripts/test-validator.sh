@@ -1666,6 +1666,41 @@ expect_fail "strict shape catches explicit current-version drift" shape_check
 sed '/<!-- END -->/d' "$TMP_ROOT/shape-clean" > "$SHAPE_REPO/docs/llm/HANDOFF.md"
 expect_fail "strict shape rejects an unclosed active scope" shape_check
 
+# workspace-leftovers: Git-only candidates warn; ledger-closed unretired workspaces fail.
+WL_GIT=git; [ -x /usr/bin/git ] && WL_GIT=/usr/bin/git
+WL_REPO="$TMP_ROOT/leftovers"; init_repo "$WL_REPO"
+cp "$PROJECT_ROOT/scripts/dockit-leftovers.py" "$WL_REPO/scripts/"
+git -C "$WL_REPO" add scripts; git -C "$WL_REPO" commit -qm checker
+git -C "$WL_REPO" branch -M main
+git init -q --bare "$TMP_ROOT/leftovers-origin.git"
+git -C "$WL_REPO" remote add origin "$TMP_ROOT/leftovers-origin.git"
+git -C "$WL_REPO" push -q origin main; git -C "$WL_REPO" fetch -q origin
+WL_LEDGER="$TMP_ROOT/fake-task-workspace"
+printf '#!/bin/sh\nprintf "%%s" "$WL_LEDGER_JSON"\n' > "$WL_LEDGER"; chmod +x "$WL_LEDGER"
+DOCKIT_TASK_WORKSPACE="$WL_LEDGER"; export DOCKIT_TASK_WORKSPACE
+DOCKIT_WORKSPACE_POLICY="$TMP_ROOT/no-policy.json"; export DOCKIT_WORKSPACE_POLICY
+WL_LEDGER_JSON='{"items":{}}'; export WL_LEDGER_JSON
+wl_status() { "$VALIDATOR" --project "${2:-$WL_REPO}" --json --check workspace-leftovers > "$OUT" 2>&1 || true; grep -q "\"status\":\"$1\"" "$OUT"; }
+wl_expect() { if wl_status "$2" "${3:-}"; then note_pass "$1"; else note_fail "$1"; fi; }
+wl_expect "workspace-leftovers passes without leftovers" PASS
+git -C "$WL_REPO" branch merged-leftover
+wl_expect "workspace-leftovers warns on a merged branch" WARN
+git -C "$WL_REPO" branch -D -q merged-leftover
+"$WL_GIT" -C "$WL_REPO" worktree add -q "$TMP_ROOT/leftovers-task" -b work/task main
+wl_expect "workspace-leftovers only warns on a fresh Git-only worktree" WARN
+WL_LEDGER_JSON="{\"items\":{\"task\":{\"path\":\"$TMP_ROOT/leftovers-task\",\"phase\":\"registered\",\"created\":\"2026-11-23T00:00:00Z\",\"record\":{\"state\":\"active\"}}}}"
+wl_expect "workspace-leftovers keeps an active ledger workspace at warning" WARN
+WL_LEDGER_JSON=$(printf '%s' "$WL_LEDGER_JSON" | sed 's/"active"/"closed"/')
+wl_expect "workspace-leftovers fails on a closed unretired workspace" FAIL
+wl_expect "workspace-leftovers lets the closed checkout itself close" WARN "$TMP_ROOT/leftovers-task"
+WL_LEDGER_JSON='{"items":{}}'
+git -C "$TMP_ROOT/leftovers-task" commit -q --allow-empty -m unpublished
+wl_expect "workspace-leftovers ignores unpublished work" PASS
+printf '#!/bin/sh\necho ledger down >&2\nexit 2\n' > "$TMP_ROOT/broken-task-workspace"; chmod +x "$TMP_ROOT/broken-task-workspace"
+DOCKIT_TASK_WORKSPACE="$TMP_ROOT/broken-task-workspace"
+wl_expect "workspace-leftovers warns when the host ledger is unavailable" WARN
+unset DOCKIT_TASK_WORKSPACE WL_LEDGER_JSON DOCKIT_WORKSPACE_POLICY
+
 printf '\nValidator smoke: %d passed, %d failed\n' "$pass_count" "$fail_count"
 
 if [ "$fail_count" -gt 0 ]; then

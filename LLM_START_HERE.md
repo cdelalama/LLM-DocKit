@@ -117,7 +117,7 @@ Dossier assessment: refresh required for the shared CI policy and updater recove
 - Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
 - Next gate: executor source publication, then exact hosted observation when available
 
-<!-- doc-version: 4.21.7 -->
+<!-- doc-version: 4.22.0 -->
 
 ## Idea continuity adoption - 2026-10-07
 
@@ -516,7 +516,7 @@ Every change must be documented. If you are unsure about a rule, ask the user be
 <!-- DOCKIT-TEMPLATE:END footer -->
 
 <!-- DOCKIT-TEMPLATE:START workspace-ownership -->
-### Parent-owned task workspaces
+### Parent-owned task workspaces that clean up behind themselves
 
 The source root contains admitted primary projects. Tasks, experiments, reviews,
 disk investigations and delivery branches belong to an existing project; their
@@ -524,22 +524,30 @@ folder names never make them independent projects. A new top-level project needs
 an explicit operator purpose and `devenv admission add PROJECT` after validating
 its canonical repository. Visibility is independent from lifecycle and sessions.
 
-On managed hosts use `task-workspace create --project OWNER --task ID --purpose
-"Specific result"`. Worktrees live under the host's hidden worktree root and
-host-local locations stay out of portable project records. Start by reading
-`docs/llm/WORK_INDEX.md` when present and `task-workspace status --project .`.
-After adoption or completion, export the validated `docs/llm/work/*.json` records
-and index into a reviewed task checkout, update the parent's handoff/history,
-validate, commit and safely publish. Record a disposition and next step even when
-work is paused or incomplete. An export does not prove publication; verify the
-records against a freshly fetched `refs/remotes/origin/*` reference.
+Work directly on the default branch in the project's primary checkout. Create a
+task workspace only when another session or its uncommitted state occupies that
+checkout: `task-workspace create --project OWNER --task ID --purpose "Specific
+result" --reason "Why the primary cannot be used"` (add `--detach` where the
+project publishes directly to main, such as Home Infra). Worktrees live under the
+host's hidden worktree root; host-local locations stay out of portable records.
+Read `docs/llm/WORK_INDEX.md` when present and `task-workspace status --project .`.
 
-Never infer deletion eligibility from age, a clean Git status, a merged branch,
-or a closed task. Ignored evidence, untracked material and active processes need
-separate custody checks. Preserve unknown, dirty, unpublished and active work.
-Do not create task-named siblings under the source root or auto-admit directories.
-The PATH guard protects supported CLI workflows; direct Git binaries and other
-clients can bypass it, so project admission and reconciliation remain essential.
+Closing a task workspace happens in the same session: publish to the default
+branch, record the closed disposition (export/verify records where the project
+keeps them), then run `task-workspace retire --project OWNER --task ID`. It
+removes the checkout, its local branch and its merged origin branch only after
+verifying a clean, published, unlocked and unused checkout whose ignored files
+are regenerable caches. `task-workspace retire-branches` removes merged branches
+left without a checkout. A task is not finished while a workspace, branch,
+container, temporary directory or test service it created still exists, unless
+its record names an owner, reason and deadline for keeping it. The
+`workspace-leftovers` validator check fails on closed, unretired workspaces.
+
+Retirement never covers unpublished, dirty, active, locked or custody-ambiguous
+work: archive ignored evidence first and preserve unknown objects. Disposable
+runtimes follow `docs/RUNTIME_LIFECYCLE.md`. Do not create task-named siblings
+under the source root or auto-admit directories. The PATH guard protects
+supported CLI workflows; direct Git binaries and other clients can bypass it.
 <!-- DOCKIT-TEMPLATE:END workspace-ownership -->
 
 ## GitHub validation cost discipline

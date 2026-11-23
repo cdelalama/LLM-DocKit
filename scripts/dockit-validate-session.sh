@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, runtime-lifecycle"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, runtime-lifecycle, workspace-leftovers"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -1121,6 +1121,23 @@ check_work_records() {
     fi
 }
 
+check_workspace_leftovers() {
+    if ! should_run "workspace-leftovers"; then return; fi
+    # Agent resources clean up behind themselves (Home Infra D-030). The checker
+    # consults the host ledger even when Git cannot be read.
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-leftovers.py" ]; then
+        add_result "workspace-leftovers" "WARN" "Leftover checker unavailable; coverage unknown"
+        return
+    fi
+    _wl_rc=0
+    _wl_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-leftovers.py" --project "$PROJECT_ROOT" 2>&1) || _wl_rc=$?
+    case "$_wl_rc" in
+        0) add_result "workspace-leftovers" "PASS" "$_wl_result";;
+        3) add_result "workspace-leftovers" "WARN" "$_wl_result";;
+        *) add_result "workspace-leftovers" "FAIL" "$_wl_result";;
+    esac
+}
+
 check_idea_continuity() {
     if ! should_run "idea-continuity"; then return; fi
     _ideas_path="docs/llm/IDEA_INDEX.json"
@@ -1162,6 +1179,7 @@ check_trace_protocol
 check_work_records
 check_runtime_lifecycle
 check_idea_continuity
+check_workspace_leftovers
 
 # ── Output ───────────────────────────────────────────────────────────────────
 

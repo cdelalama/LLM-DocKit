@@ -1,3 +1,16 @@
+## Workspaces clean up behind themselves - 2026-11-23
+
+Last Updated: 2026-11-23 - Claude Code (claude-opus-5-5). DocKit 4.22.0 adds the
+`workspace-leftovers` check and rewrites the `workspace-ownership` section for
+Home Infra D-030: work on the default branch; a task workspace only when another
+session occupies the primary, retired at closeout with ForgeOS `task-workspace
+retire`. Measured: plaud-mirror 0.9s, Home Infra 1.2s (389 Git candidates).
+
+### Open work - next concrete step
+
+Adopt 4.22.0 in each project with `dockit-sync`; plaud-mirror adopts first. This
+repository still has 17 legacy merged leftovers to retire with the ForgeOS tool.
+
 ## Bounded validation installed and observed - 2026-11-22
 
 Last Updated: 2026-11-22 - Codex. DocKit 4.21.7 is published at
@@ -187,7 +200,7 @@ existing admission/source scope; no new disclosure is implied.
 - Validation: focused regressions and exact Opus round 4/5 SOURCE_GO; installation pending
 - Next gate: executor reviews and publishes `README.md`, then verifies installed checks
 
-<!-- doc-version: 4.21.7 -->
+<!-- doc-version: 4.22.0 -->
 
 ## Idea continuity delivery receipt - 2026-10-07
 
@@ -327,10 +340,10 @@ This scoped rollout preserves all prior product work and handoff context below.
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-22 - Codex
-- Current source version: 4.21.7
+- Last Updated: 2026-11-23 - Claude Code (claude-opus-5-5)
+- Current source version: 4.22.0
 - Owner: Carlos
-- Session focus: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
+- Session focus: workspaces clean up behind themselves (Home Infra D-030): `workspace-leftovers` check and retire-at-closeout section. Earlier: limit validation on the edit path and verify safe retirement. DF-064/DF-065 remain open.
 - Source change prepared. Adopter installation and native cancellation checks remain open.
 - Dossier assessment: refresh the local operator view on publication; shared recovery hold remains.
 - Earlier dated operational observations below are retained, not reverified here.

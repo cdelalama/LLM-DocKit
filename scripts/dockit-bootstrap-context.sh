@@ -312,8 +312,10 @@ if [ -d "$PROJECT_ROOT/docs/llm/work" ]; then
 
 Parent-owned work: read docs/llm/WORK_INDEX.md and the relevant docs/llm/work record.
   - Validate with python3 scripts/dockit-workspace.py --project .
-  - Preserve active, paused, pending-integration and retained work. Closed is
-    a recorded disposition, never permission to delete a checkout or evidence.
+  - Work on the default branch in the primary checkout; create a task workspace
+    only when another session occupies it, and retire it in the same session
+    after publication (task-workspace retire). Preserve unpublished, dirty,
+    active and custody-ambiguous work.
   - Use the installed task-workspace status command for live locations when available."
 fi
 

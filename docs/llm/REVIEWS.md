@@ -1,3 +1,31 @@
+## 2026-11-23 - Workspaces clean up behind themselves (Home Infra D-030)
+
+Author: Claude Code, claude-opus-5-5. Independent reviewer: Codex CLI 0.171.0,
+model gpt-6.2-astra (high), read-only sandbox, material supplied inline because
+the sandbox could not run commands. Scope: ForgeOS `task-workspace retire` /
+`retire-branches` / `create --reason --detach`, DocKit `workspace-leftovers`
+(`scripts/dockit-leftovers.py`) and the Home Infra D-030 text.
+
+Twelve rounds. Round 1 could not read the files (sandbox). Rounds 2-11
+returned NO-GO or GO-with-required-fixes with concrete findings, all fixed with
+regressions: origin-advertised default and
+exact OIDs instead of stale local refs; ref-free fetch so dry runs change
+nothing; exact-OID leases and `update-ref --no-deref`; explicit
+`local:/origin:REF=OID` branch selectors; archive refs for superseded HEADs;
+journaled intents with resume bound to the persisted intent and origin URL;
+mount-table, nested-repository, skip-worktree, private-ref, in-progress
+operation, graft/replace and symbolic-ref refusals; project-accredited build
+output; protocol-v2 ref-type evidence; archives for commits reachable only from
+HEAD/branch/remote-tracking reflogs or ORIG_HEAD; signed ignored-tree contents
+and a required reviewed `--plan` digest; private-looking files in caches block;
+Git and ledger evaluated independently in the checker; self-checkout case
+resolved in D-030. Round 12: GO. ForgeOS 46 tests PASS; DocKit smoke 103 PASS /
+1 pre-existing host-admission FAIL unrelated to this change.
+
+Residuals, documented: a non-cooperating writer could write between the final
+HEAD/signature read and `git worktree remove` (commits stay recoverable with
+fsck until gc); Git push cannot condition on ref type in the final instant.
+
 ## 2026-11-22 - Native budget and remaining subprocess reduction (4.21.7)
 
 Exact claude-opus-5-5/high, native session

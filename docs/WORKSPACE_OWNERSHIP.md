@@ -23,8 +23,27 @@ section into reviewed consumer checkouts and verifies hashes instead of weakenin
 Git checks or claiming that sync state changed.
 
 Run `python3 scripts/test-work-records.py` and `scripts/test-validator.sh`.
-The schema records custody/disposition, not approval to delete files. Missing
-records are surfaced by ForgeOS adoption/status; the validator cannot enumerate
-host worktrees from portable documentation alone.
+The schema records custody/disposition; a closed record alone is not approval to
+delete files. Missing records are surfaced by ForgeOS adoption/status.
+
+## Workspaces clean up behind themselves (2026-11-23)
+
+Authority: Carlos, 2026-11-23 (Home Infra agent resource lifecycle). Agents work
+on the default branch in the primary checkout. A task workspace exists only while
+another session or its uncommitted state occupies that checkout, and its creating
+session retires it at closeout: publish, record the closed disposition, then
+`task-workspace retire`. ForgeOS performs the custody checks (clean, published,
+unlocked, unused, regenerable ignored caches only) and keeps a ledger receipt.
+Merged branches left without a checkout go through `task-workspace retire-branches`.
+
+The `workspace-leftovers` validator check (`scripts/dockit-leftovers.py`) is
+read-only and offline. It fails only when the host ForgeOS ledger shows a closed
+workspace created under this rule that is still not retired. Git-only evidence (a
+linked worktree, local or origin branch already contained in the fetched origin
+default branch and not checked out) warns, because Git cannot distinguish a
+fresh active workspace from a forgotten one. Legacy closed records warn until
+their owner retires them. A session running inside its own closed task checkout
+cannot remove it; it warns and the checkout is retired from the primary after
+the session ends. Without a ledger the check reports Git candidates only.
 
 Export requires a clean adopted/created output checkout containing the exact pinned DocKit helper, before creating any record or index. This prevents incomplete contract adoption from breaking session gates. Fixture tests use native Git within isolated temporary roots and remain runnable with the managed PATH guard installed.
