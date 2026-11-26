@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "docs/dockit-ecosystem-consensus-20260929",
   "id": "wt_592e417f602230b2",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Carlos authorized publishing inherited work and cleanup on 2026-11-26. Preserve original 566343d on origin and import its exact docs/archive/DOCKIT_ECOSYSTEM_CONSENSUS_2026-09-29.md as dated advisory history in main, then retire with that published integration commit as --superseded-by and remote HEAD archival. Source publication is not implementation of its historical recommendations or closure of DF-058.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: docs/dockit-ecosystem-consensus-20260929",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

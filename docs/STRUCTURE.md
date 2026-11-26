@@ -82,7 +82,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
 | scripts/dockit-install-codex-hook.sh | Installs the Codex CLI SessionStart onboarding hook | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |
-| .dockit-config.yml | Human-managed sync/config file (adoption_mode, exclude_sections, external_context, trace_protocol) | Downstream + new scaffolds |
+| .dockit-config.yml | Human-managed sync/config file (adoption_mode, exclude_sections, external_context, trace_protocol, residue_allow) | Downstream + new scaffolds |
 | .git/.dockit/ | Auto-generated sync/hook runtime (state, lock, backups, session baselines) | Downstream only, inside .git/ |
 | src/ | Application or library source code | Optional |
 | tests/ | Automated tests | Optional |
@@ -127,6 +127,11 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 - `scripts/dockit-workspace.py`: canonical DocKit portable work-record validation.
 - `scripts/test-work-records.py`: portable record and linked-checkout regression.
 
+## Leave no residue - 2026-11-26
+
+- `docs/LEAVE_NO_RESIDUE.md`: general clean-up rule (D-034), synced downstream.
+- `scripts/dockit-leftovers.py`: `workspace-leftovers` check, including residue file names.
+
 ## Operator clarity - 2026-10-01
 
 `docs/OPERATOR_CLARITY.md` owns operator wording and roadmap continuity.
@@ -140,3 +145,13 @@ receipt: `docs/operations/DOSSIER.md`. Both are source-owned, never a downstream
 - `README.md`: current project-intake correction and owner-specific evidence boundary.
 
 CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cost boundaries.
+
+## Publication and client presentation
+
+- `docs/PUBLICATION_CLOSEOUT.md` / `scripts/dockit-publication.py`: offline
+  advisory and explicit live post-push verification; no automatic publisher.
+- `docs/AGENT_ROLES.md`: model-independent role/provenance ownership.
+- `docs/integrations/ORCA.md` / `scripts/dockit-trace-render.py`: static HTML
+  capability adapter with compatible text fallback.
+- `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`: source-only
+  execution/retirement receipt; previous owner state retained under `docs/archive`.

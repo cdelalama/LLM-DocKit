@@ -1339,3 +1339,71 @@ Carlos requires tasks to retire the disposable processes and temporary files
 they create while preserving important data. This includes validation hooks.
 Producer owners verify retirement, preserve required evidence and reconcile
 interrupted runs. The qualification procedure is in docs/RUNTIME_LIFECYCLE.md.
+
+## D-034 - Leave no residue is the general rule above runtime and workspace clean-up
+
+Date: 2026-11-26. Authority: Carlos, 2026-11-26, after the November NAS storage
+incident caused largely by accumulated leftovers: any task or action that
+generates garbage cleans it up, in runtime, files, backups, documentation and
+records. Author: Claude Code (claude-fable-5-2). A task is not done while
+something it created only in order to do the work still exists; the seven points
+live in docs/LEAVE_NO_RESIDUE.md and in the `leave-no-residue` section, placed
+first under Critical Rules. D-033 (disposable runtime) and the
+workspace-ownership section (Home Infra D-030) remain the detailed contracts for
+their subjects.
+
+This is revision 2. An independent Codex review rejected revision 1 because it
+ordered agents to expire copies, remove old versions and reduce evidence, which
+can destroy a rollback or the original that proves an incident. Accepted:
+removal is limited to what the task itself created and is authorized to remove,
+verified gone; custody, backup, rollback and history obligations prevail;
+evidence, backups, data volumes, other sessions' work, user data and objects of
+unknown origin are reported, never deleted or shrunk to tidy up. Removing
+superseded image versions after a deployment is not part of the rule; it belongs
+to each host's deploy procedure with stated preconditions. Revision 2 awaits its
+own independent review (docs/llm/REVIEWS.md).
+
+Mechanical support is deliberately small: workspace-leftovers warns on
+backup/temporary file names in the checkout and never deletes. Host counting and
+creation limits belong to Home Infra. Rejected: a blocking check (name patterns
+cannot tell a fixture from a leftover) and a long policy (bloat is the complaint).
+Installing the rule neither cleans existing leftovers nor proves fleet adoption.
+
+
+## D-035 - Publish authorized work before reporting completion
+
+Date: 2026-11-26. Authority: Carlos explicitly ordered resolving inherited
+pending edits, publication and cleanup: work must not be left in limbo.
+Implementation, validation, review, commit, ordinary push and default-branch
+integration belong to the executing session. Preserve concurrent work, history,
+credentials and owner-specific safeguards. A concrete blocker remains explicit;
+never relabel local work as delivered. See docs/PUBLICATION_CLOSEOUT.md.
+The offline session check warns before commit; the explicit live post-push
+checker requires a clean checkout equal to origin's advertised default HEAD.
+Neither commits automatically, creates a scheduler or grants new access.
+ForgeOS retains guarded custody/retirement and projects retain review authority.
+
+## D-036 - Roles are independent from models, clients and accounts
+
+Date: 2026-11-26. Authority: Carlos accepted the analysis with Gemini Neon and
+exact Opus5.5/high and instructed implementation. Keep executor/auditor/advisor
+as reusable roles. DocKit owns vocabulary/provenance, ForgeOS assigns available
+agents/accounts, and each project declares scope and required checks. Two
+ChatGPT accounts are not independent model families. Actual model metadata is
+recorded when evidenced, otherwise unknown. No credentials enter Trace; no
+new fixed brand-role map or central account registry is added to DocKit.
+See docs/AGENT_ROLES.md. This implements documentation boundaries, not an
+orchestrator or proof of every client's hooks. D-009/D-011/D-024 remain intact.
+
+## D-037 - Render Trace for the client's declared capability
+
+Date: 2026-11-26. Authority: Carlos confirmed tested Orca HTML support and
+explicitly requested static HTML there, text for tools without the capability.
+One captured Trace state feeds compatible text or bounded static HTML. The
+Orca adapter uses the existing chat-owned directory, immutable filenames and
+orca-visual presentation. No network, polling, container, external script or
+secret is needed. Retain delivered artifacts with their chat; they are useful
+outputs, not throwaway scaffolding. Failure to render falls back to text.
+Durable HANDOFF/HISTORY semantics remain unchanged; optional provenance grants
+no authority. See docs/integrations/ORCA.md. Source availability, actual client
+readback and fleet adoption are separate observations.

@@ -1,3 +1,20 @@
+## Source maintainer context
+
+LLM-DocKit is a reusable documentation and session-control scaffold, not a live
+multi-agent orchestrator. Its components are initializer, selective synchronizer,
+version management, session hooks, portable validators, durable project records
+and Trace renderers. Scripts are native shell/Python; no application container is
+required to inspect documents or emit a Trace. ForgeOS owns runtime orchestration,
+account routing, capture and guarded workspace retirement. Adopting projects own
+real runtime, integration and intended-user acceptance (D-009/D-011).
+
+README.md, docs/PROJECT_CONTEXT.md and docs/ARCHITECTURE.md are intentionally
+starter templates. This source-only guide and docs/llm/HANDOFF.md describe DocKit
+itself. The initializer removes this guide and resets owner records, so source
+owner state must not be copied into a new project's identity. Current source work
+is in docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md; historical statuses
+are archived rather than presented as competing next steps.
+
 # How to Use This Scaffold
 
 This guide walks you through setting up a new project using LLM-DocKit.
@@ -416,7 +433,7 @@ policy always wins over the fleet default and should be made explicit through
 ls /path/to/project/.git/.dockit/backups/
 
 # Restore a specific backup
-scripts/dockit-sync.sh --restore 20260222_163000 --project /path/to/project
+scripts/dockit-sync.sh --restore 20260222_163000.XXXXXX --project /path/to/project
 ```
 
 ### Full CLI Reference
@@ -689,3 +706,5 @@ validate the pinned shared tool, and capture curated changes outside Git.
 Include the latest checked local revision/link in Trace; no new capture is
 required when content has not changed. Server publication remains unavailable
 until D1. This source candidate installs no hooks and migrates no existing outbox.
+
+Use the full backup directory basename reported by sync (including its unique suffix) with --restore; do not truncate it to the timestamp. The managed commit-policy example above is historical: current closeout follows docs/PUBLICATION_CLOSEOUT.md and requires actual authorized publication.

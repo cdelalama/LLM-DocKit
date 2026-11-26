@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, runtime-lifecycle, workspace-leftovers"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, runtime-lifecycle, workspace-leftovers, publication-state"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -1124,7 +1124,8 @@ check_work_records() {
 check_workspace_leftovers() {
     if ! should_run "workspace-leftovers"; then return; fi
     # Agent resources clean up behind themselves (Home Infra D-030). The checker
-    # consults the host ledger even when Git cannot be read.
+    # consults the host ledger even when Git cannot be read. It also warns on
+    # backup/temporary files left in the tree (docs/LEAVE_NO_RESIDUE.md, D-034).
     if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-leftovers.py" ]; then
         add_result "workspace-leftovers" "WARN" "Leftover checker unavailable; coverage unknown"
         return
@@ -1136,6 +1137,19 @@ check_workspace_leftovers() {
         3) add_result "workspace-leftovers" "WARN" "$_wl_result";;
         *) add_result "workspace-leftovers" "FAIL" "$_wl_result";;
     esac
+}
+
+check_publication_state() {
+    if ! should_run "publication-state"; then return; fi
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-publication.py" ]; then
+        add_result "publication-state" "WARN" "Publication checker unavailable; final remote publication unverified"
+        return
+    fi
+    if _publication_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-publication.py" --project "$PROJECT_ROOT" --human 2>&1); then
+        add_result "publication-state" "PASS" "$_publication_result"
+    else
+        add_result "publication-state" "WARN" "$_publication_result"
+    fi
 }
 
 check_idea_continuity() {
@@ -1180,6 +1194,7 @@ check_work_records
 check_runtime_lifecycle
 check_idea_continuity
 check_workspace_leftovers
+check_publication_state
 
 # ── Output ───────────────────────────────────────────────────────────────────
 

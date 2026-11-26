@@ -1,3 +1,17 @@
+# Current source roadmap - 2026-11-26
+
+Current release work is the integrated 4.23.0 candidate in docs/llm/HANDOFF.md:
+publication closeout, guarded legacy retirement, model-independent roles and
+Orca Trace. Execute and verify docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md.
+Earlier priorities remain separate; source completion does not accept a runtime.
+
+The earlier roadmap below is retained as dated DF-058/distribution history.
+Its D-020 model fallback is superseded by D-024; exact Opus5.5/high and the
+current independent-review policy govern new work. No historical deployment,
+full-fleet adoption or pending acceptance is silently promoted by this correction.
+
+---
+
 # LLM-DocKit Roadmap
 
 This roadmap is source-specific. Current work is in `docs/llm/HANDOFF.md`;

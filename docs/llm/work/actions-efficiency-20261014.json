@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "work/actions-efficiency-20261014",
   "id": "actions-efficiency-20261014",
-  "next_step": "Verify reviewed source on public standard runners; retain shared Dossier publication and existing product gates separately.",
+  "next_step": "Source and public-runner validation were published at 71a7d2a. Carlos authorized cleanup on 2026-11-26; retire this clean integrated checkout with the guarded tool. Preserve docs/CI_EFFICIENCY.md, historical run receipts and separately owned Dossier recovery gates.",
   "project": "LLM-DocKit",
   "purpose": "Reduce redundant GitHub Actions validation while retaining release checks",
   "schema": 1,
-  "state": "pending-integration"
+  "state": "closed"
 }

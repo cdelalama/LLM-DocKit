@@ -2,7 +2,7 @@
   "artifacts": [],
   "branch": "work/operator-clarity-20261001",
   "id": "operator-clarity-20261001",
-  "next_step": "Apply the shared clarity rule during ordinary work; retain original priorities and separate device/runtime acceptance.",
+  "next_step": "Source and scoped installation receipts were published at 311fd93. Carlos authorized checkout cleanup on 2026-11-26; retire with the guarded tool. Continue the operator-clarity rule in ordinary work and preserve original project priorities, device acceptance and private review evidence.",
   "project": "LLM-DocKit",
   "purpose": "Make operator roadmaps actionable, preserve branch continuity and publish the shared clarity protocol",
   "schema": 1,

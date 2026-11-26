@@ -28,7 +28,11 @@ files:
 - path: scripts/dockit-workspace.py strategy: copy
 - path: scripts/dockit-runtime.py strategy: copy
 - path: scripts/dockit-leftovers.py strategy: copy
+- path: scripts/dockit-publication.py strategy: copy
+- path: docs/PUBLICATION_CLOSEOUT.md strategy: copy
+- path: docs/AGENT_ROLES.md strategy: copy
 - path: docs/RUNTIME_LIFECYCLE.md strategy: copy
+- path: docs/LEAVE_NO_RESIDUE.md strategy: copy
 - path: scripts/dockit-ideas.py strategy: copy
 - path: docs/IDEA_CONTINUITY.md strategy: copy
 - path: docs/llm/IDEA_INDEX.json strategy: skip
@@ -39,6 +43,7 @@ files:
 - path: scripts/test-delivery.sh strategy: copy
 - path: scripts/test-validator.sh       strategy: copy
 - path: scripts/dockit-trace-status.sh  strategy: copy
+- path: scripts/dockit-trace-render.py strategy: copy
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
 - path: scripts/dockit-session-gate.sh strategy: copy
 - path: scripts/dockit-stop.py strategy: copy
@@ -62,6 +67,7 @@ files:
 # --- Docs integrations (copy: shared operator/tool guidance) ---
 - path: docs/DELIVERY_CONTRACT.md strategy: copy
 - path: docs/integrations/CODEX.md        strategy: copy
+- path: docs/integrations/ORCA.md strategy: copy
 
 # --- Skip: project-specific content ---
 - path: VERSION                           strategy: skip

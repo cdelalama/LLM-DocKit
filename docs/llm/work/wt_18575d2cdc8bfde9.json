@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "feat/dossier-discovery",
   "id": "wt_18575d2cdc8bfde9",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Original f678dfb Dossier-discovery source was incorporated by published 5a2bba1; bootstrap, discovery-test and HOW_TO_USE bytes match. Carlos authorized inherited publication/cleanup on 2026-11-26. Retire with --superseded-by 5a2bba147d545ab6bce0ecd7362853b0098720a1 and an attributed reason; the guarded tool must archive original HEAD on origin before removing its branch. Preserve historical review evidence.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: feat/dossier-discovery",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

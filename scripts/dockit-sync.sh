@@ -319,8 +319,10 @@ release_lock() {
 create_backup_dir() {
     _project_root="$1"
     _ts=$(date +%Y%m%d_%H%M%S)
-    BACKUP_DIR="$_project_root/.git/$DOCKIT_DIR_NAME/backups/$_ts"
-    mkdir -p "$BACKUP_DIR"
+    _backups_root="$_project_root/.git/$DOCKIT_DIR_NAME/backups"
+    mkdir -p "$_backups_root"
+    # Never truncate a previous run's manifest when two applies share a second.
+    BACKUP_DIR=$(mktemp -d "$_backups_root/$_ts.XXXXXX")
     BACKUP_MANIFEST="$BACKUP_DIR/backup-manifest.txt"
     : > "$BACKUP_MANIFEST"
 }
@@ -397,23 +399,17 @@ restore_backup() {
     rollback "$_project_root" "$_backup_dir"
 }
 
-# Keep only the 5 most recent backups
+# Retire only this run's empty scaffold. Earlier backups have unknown custody;
+# successful sync is not authority to erase another run's rollback evidence.
 cleanup_backups() {
-    _project_root="$1"
-    _backups_dir="$_project_root/.git/$DOCKIT_DIR_NAME/backups"
-
-    if [ ! -d "$_backups_dir" ]; then
-        return
-    fi
-
-    # List dirs sorted newest first, remove from 6th onwards
-    _count=0
-    for _d in $(ls -1t "$_backups_dir" 2>/dev/null); do
-        _count=$((_count + 1))
-        if [ "$_count" -gt 5 ]; then
-            rm -rf "$_backups_dir/$_d"
+    if [ -n "$BACKUP_DIR" ] && [ -f "$BACKUP_MANIFEST" ]; then
+        if [ ! -s "$BACKUP_MANIFEST" ]; then
+            rm -f "$BACKUP_MANIFEST"
+            rmdir "$BACKUP_DIR" || warn "This run's empty backup directory contains unexpected material; retained: $BACKUP_DIR"
+        else
+            warn "Rollback backup retained: $BACKUP_DIR; owner: adopter; review at acceptance of this sync. Earlier backups are unchanged; retirement requires the owner's custody decision."
         fi
-    done
+    fi
 }
 
 # ============================================================================
@@ -836,6 +832,191 @@ sync_copy() {
     report_entry "$_relpath" "UPDATED" "template changed"
 }
 
+# Write DST as the copy of SRC that section-merge reads, and set SM_EOL to the
+# line-ending style to write back. A file with LF template markers is read as
+# it is (SM_EOL=lf), exactly as before. A file whose lines all end in CRLF, or
+# whose template markers do, is read without the CR so that markers and headings
+# compare independently of line endings; SM_EOL then names its prevailing style.
+section_merge_view() {
+    _smv_src="$1"
+    _smv_dst="$2"
+    _smv_cr=$(printf '\r')
+    SM_EOL=lf
+    cp "$_smv_src" "$_smv_dst"
+    _smv_cr_lines=$(grep -c "$_smv_cr\$" "$_smv_src" 2>/dev/null) || true
+    [ "$_smv_cr_lines" = "0" ] && return 0
+    _smv_lines=$(awk 'END { print NR }' "$_smv_src")
+    if [ "$_smv_cr_lines" != "$_smv_lines" ] \
+        && ! grep -q "^<!-- DOCKIT-TEMPLATE:[A-Z]* .* -->$_smv_cr\$" "$_smv_src" 2>/dev/null; then
+        return 0
+    fi
+    sed "s/$_smv_cr\$//" "$_smv_src" > "$_smv_dst"
+    [ "$((_smv_cr_lines * 2))" -ge "$_smv_lines" ] && SM_EOL=crlf
+    if [ "$_smv_cr_lines" != "$_smv_lines" ]; then
+        warn "Mixed line endings around template markers in $_smv_src; a changed file is written with $SM_EOL endings"
+    fi
+    return 0
+}
+
+# Decide whether the line equal to TEXT (trailing blanks ignored) in FILE can
+# anchor an inserted section. Prints its line number, or "0 <reason>".
+# Deliberately not a Markdown parser: the heading must occur exactly once among
+# all raw lines, and any doubt about what precedes it is a refusal, so the
+# caller falls back to the footer placement.
+anchor_line() {
+    DOCKIT_TEXT="$2" awk '
+        function refuse(why) { if (reason == "") reason = why }
+        {
+            line = $0
+            sub(/[ \t]+$/, "", line)
+            if (line == ENVIRON["DOCKIT_TEXT"]) {
+                count++
+                if (count == 1) {
+                    at = NR
+                    if (fence_len) refuse("it follows a code fence that is not closed")
+                    if (comment_open) refuse("it follows an HTML comment that is not closed")
+                    if (depth) refuse("it is inside a managed section")
+                    if (NR > 1 && previous != "") refuse("it is not preceded by a blank line")
+                }
+            }
+            if (count) next
+            previous = line
+
+            # Code fences: only plain fence lines, opened and closed in pairs.
+            if (index(line, "```") || index(line, "~~~")) {
+                text = line
+                n = 0
+                while (n < 3 && substr(text, 1, 1) == " ") { text = substr(text, 2); n++ }
+                mark = substr(text, 1, 1)
+                n = 0
+                while (substr(text, n + 1, 1) == mark) n++
+                rest = substr(text, n + 1)
+                if ((mark != "`" && mark != "~") || n < 3 || index(rest, "`") || index(rest, "~"))
+                    refuse("line " NR " has a code fence marker that is not a plain fence line")
+                else if (!fence_len) { fence_mark = mark; fence_len = n }
+                else if (mark == fence_mark && n >= fence_len && rest == "") fence_len = 0
+                else refuse("line " NR " has a fence marker inside an open code fence")
+            }
+
+            # HTML that can hold literal text.
+            lower = tolower(line)
+            if (lower ~ /<(pre|code|script|style|textarea|xmp)/ || index(line, "<?") || index(lower, "<![cdata["))
+                refuse("line " NR " has an HTML element that can hold literal text")
+            text = line
+            while (1) {
+                if (!comment_open) {
+                    i = index(text, "<!--"); if (!i) break
+                    text = substr(text, i + 4); comment_open = 1
+                } else {
+                    i = index(text, "-->"); if (!i) break
+                    text = substr(text, i + 3); comment_open = 0
+                }
+            }
+
+            # Managed sections: a depth counter; nesting or a stray END is doubt.
+            if (line ~ /<!-- DOCKIT-[A-Z-]+:START/) {
+                if (depth) refuse("line " NR " opens a managed section inside another")
+                depth++
+            } else if (line ~ /<!-- DOCKIT-[A-Z-]+:END/) {
+                if (depth) depth--
+                else refuse("line " NR " closes a managed section that is not open")
+            }
+        }
+        END {
+            if (count != 1) print "0 it occurs " count + 0 " times (exactly one needed)"
+            else if (reason != "") print "0 " reason
+            else print at
+        }
+    ' "$1"
+}
+
+# A fallback is not permission to insert into an unfinished example/comment.
+# Check the insertion point (0 means EOF), independently of anchor ambiguity.
+insertion_context_safe() {
+    awk -v stop="$2" '
+        {
+            if (stop && NR == stop) exit
+            line = $0
+            sub(/[ \t]+$/, "", line)
+            lower = tolower(line)
+            if (fence_len) {
+                text = line; spaces = 0
+                while (spaces < 3 && substr(text, 1, 1) == " ") { text = substr(text, 2); spaces++ }
+                n = 0; while (substr(text, n + 1, 1) == fence_mark) n++
+                if (n >= fence_len && substr(text, n + 1) == "") fence_len = 0
+                next
+            }
+            if (raw_tag != "") {
+                if (lower ~ ("</" raw_tag "[ \t]*>")) raw_tag = ""
+                next
+            }
+            if (raw_end != "") {
+                if (index(line, raw_end)) raw_end = ""
+                next
+            }
+            # Remove complete comments before considering Markdown fences.
+            text = line; outside = ""
+            while (1) {
+                if (comment_open) {
+                    at = index(text, "-->")
+                    if (!at) { text = ""; break }
+                    text = substr(text, at + 3); comment_open = 0
+                } else {
+                    at = index(text, "<!--")
+                    if (!at) { outside = outside text; break }
+                    outside = outside substr(text, 1, at - 1)
+                    text = substr(text, at + 4); comment_open = 1
+                }
+            }
+            lower = tolower(outside)
+            if (index(lower, "<![cdata[")) {
+                raw_end = "]]>"
+                if (index(outside, raw_end)) raw_end = ""
+                next
+            }
+            if (index(outside, "<?")) {
+                raw_end = "?>"
+                if (index(outside, raw_end)) raw_end = ""
+                next
+            }
+            if (match(lower, /<(pre|code|script|style|textarea|xmp)([ \t>]|$)/)) {
+                raw_tag = substr(lower, RSTART + 1, RLENGTH - 1)
+                sub(/[ \t>].*$/, "", raw_tag)
+                if (lower ~ ("</" raw_tag "[ \t]*>")) raw_tag = ""
+            }
+            text = outside; spaces = 0
+            while (spaces < 3 && substr(text, 1, 1) == " ") { text = substr(text, 2); spaces++ }
+            mark = substr(text, 1, 1)
+            n = 0; while (substr(text, n + 1, 1) == mark && n < length(text)) n++
+            rest = substr(text, n + 1)
+            # Backticks in the info string make this inline text, not a fence.
+            if ((mark == "`" || mark == "~") && n >= 3 && !(mark == "`" && index(rest, "`"))) {
+                fence_mark = mark; fence_len = n
+            }
+        }
+        END { exit (fence_len || comment_open || raw_tag != "" || raw_end != "") ? 1 : 0 }
+    ' "$1"
+}
+
+# Print the number of the first line equal to TEXT (trailing blanks ignored)
+# that is outside every DOCKIT START/END pair in FILE, or 0. With unbalanced
+# markers every occurrence counts.
+unmanaged_line() {
+    DOCKIT_TEXT="$2" awk '
+        {
+            line = $0
+            sub(/[ \t]+$/, "", line)
+            if (line ~ /<!-- DOCKIT-[A-Z-]+:START/) { if (depth) bad = 1; depth++; next }
+            if (line ~ /<!-- DOCKIT-[A-Z-]+:END/) { if (depth) depth--; else bad = 1; next }
+            if (line == ENVIRON["DOCKIT_TEXT"]) {
+                if (!any) any = NR
+                if (!depth && !free) free = NR
+            }
+        }
+        END { print (bad || depth) ? any + 0 : free + 0 }
+    ' "$1"
+}
+
 # Section-merge strategy: replace content between DOCKIT-TEMPLATE markers
 sync_section_merge() {
     _project_root="$1"
@@ -915,7 +1096,8 @@ sync_section_merge() {
     # Process each template section
     _file_changed=false
     _working_file="$TMPDIR/section_merge_work.md"
-    cp "$_downstream_file" "$_working_file"
+    section_merge_view "$_downstream_file" "$_working_file"
+    _working_eol=$SM_EOL
     _hashes_file="$TMPDIR/section_hashes.txt"
     : > "$_hashes_file"
 
@@ -963,7 +1145,52 @@ sync_section_merge() {
                 _inserted="$TMPDIR/section_inserted_${_sid}.md"
                 _footer_marker="<!-- DOCKIT-TEMPLATE:START footer -->"
 
-                if [ "$_sid" != "footer" ] && grep -q "^$_footer_marker$" "$_working_file" 2>/dev/null; then
+                # A local section that already carries this heading outside any
+                # managed section would be duplicated: report it, insert nothing.
+                _own_heading=$(awk 'NR > 1 && NF { print; exit }' "$_tmpl_block")
+                case "$_own_heading" in
+                    '#'*)
+                        _own=$(unmanaged_line "$_working_file" "$_own_heading")
+                        if [ "$_own" != "0" ]; then
+                            report_entry "$_relpath" "ERROR" "unmarked local section '$_own_heading' at line $_own collides with template section $_sid; merge or remove it, or exclude the section in .dockit-config.yml"
+                            return
+                        fi
+                        ;;
+                esac
+
+                # Keep the template's position only when it is unambiguous: a
+                # section that directly follows a Markdown heading is inserted
+                # after that heading when anchor_line accepts it. Any doubt
+                # keeps the footer placement and says why.
+                _anchor=$(awk -v start="$_start_marker" '
+                    $0 == start { print prev; exit }
+                    NF { prev = $0 }
+                ' "$_template_file")
+                case "$_anchor" in '#'*) ;; *) _anchor="" ;; esac
+                _anchor_line=0
+                if [ -n "$_anchor" ]; then
+                    _found=$(anchor_line "$_working_file" "$_anchor")
+                    case "$_found" in
+                        "0 "*) warn "Section $_sid in $_relpath: not placed under '$_anchor' because ${_found#0 }; using the footer placement instead" ;;
+                        *) _anchor_line=$_found ;;
+                    esac
+                fi
+
+                if [ "$_anchor_line" != "0" ]; then
+                    awk -v at="$_anchor_line" -v bfile="$_tmpl_block" '
+                        { print }
+                        NR == at {
+                            print ""
+                            while ((getline l < bfile) > 0) print l
+                            close(bfile)
+                        }
+                    ' "$_working_file" > "$_inserted"
+                elif [ "$_sid" != "footer" ] && grep -q "^$_footer_marker$" "$_working_file" 2>/dev/null; then
+                    _footer_line=$(awk -v marker="$_footer_marker" '$0 == marker { print NR; exit }' "$_working_file")
+                    if ! insertion_context_safe "$_working_file" "$_footer_line"; then
+                        report_entry "$_relpath" "ERROR" "cannot insert section $_sid: footer is inside an unclosed code fence, HTML comment or literal element; repair the source context first"
+                        return
+                    fi
                     awk -v marker="$_footer_marker" -v bfile="$_tmpl_block" '
                         $0 == marker && !inserted {
                             while ((getline l < bfile) > 0) print l
@@ -974,6 +1201,10 @@ sync_section_merge() {
                         { print }
                     ' "$_working_file" > "$_inserted"
                 else
+                    if ! insertion_context_safe "$_working_file" 0; then
+                        report_entry "$_relpath" "ERROR" "cannot append section $_sid: file ends inside an unclosed code fence, HTML comment or literal element; repair the source context first"
+                        return
+                    fi
                     {
                         cat "$_working_file"
                         printf '\n'
@@ -1065,7 +1296,11 @@ sync_section_merge() {
     if $_file_changed; then
         if [ "$MODE" = "apply" ]; then
             backup_file "$_project_root" "$_relpath"
-            cp "$_working_file" "$_downstream_file"
+            if [ "$_working_eol" = "crlf" ]; then
+                sed "s/\$/$(printf '\r')/" "$_working_file" > "$_downstream_file"
+            else
+                cp "$_working_file" "$_downstream_file"
+            fi
         fi
         if [ -z "$ONLY_SELECTORS" ]; then
             report_entry "$_relpath" "UPDATED" "sections merged"
@@ -1293,6 +1528,9 @@ do_init_state() {
                 continue
             fi
 
+            _init_view="$TMPDIR/init_view.md"
+            section_merge_view "$_downstream_file" "$_init_view" 2>/dev/null
+
             # Get section IDs from template
             _init_sids="$TMPDIR/init_sids.txt"
             grep '<!-- DOCKIT-TEMPLATE:START ' "$_template_file" 2>/dev/null | \
@@ -1303,14 +1541,14 @@ do_init_state() {
                 _end_marker="<!-- DOCKIT-TEMPLATE:END $_sid -->"
 
                 # Check if downstream has these markers
-                if grep -q "^$_start_marker$" "$_downstream_file" 2>/dev/null && \
-                   grep -q "^$_end_marker$" "$_downstream_file" 2>/dev/null; then
+                if grep -q "^$_start_marker$" "$_init_view" 2>/dev/null && \
+                   grep -q "^$_end_marker$" "$_init_view" 2>/dev/null; then
                     _content="$TMPDIR/init_content_${_sid}.txt"
                     awk -v start="$_start_marker" -v end="$_end_marker" '
                         $0 == start { capture=1; next }
                         $0 == end   { capture=0; next }
                         capture { print }
-                    ' "$_downstream_file" > "$_content"
+                    ' "$_init_view" > "$_content"
                     _hash=$(hash_file "$_content")
                     echo "$_relpath $_sid $_hash" >> "$_hashes_file"
                 fi
@@ -1415,6 +1653,7 @@ sync_project() {
     if $GIT_BRANCH && [ "$MODE" = "apply" ]; then
         if ! create_git_branch "$_project_root"; then
             report_entry "__project__" "ERROR" "failed to create sync branch"
+            cleanup_backups "$_project_root"
             release_lock
             return 1
         fi
@@ -1518,7 +1757,7 @@ sync_project() {
 
     if [ "$MODE" = "apply" ] && ! $_project_failed \
         && { [ "$COUNT_UPDATED" -gt 0 ] || [ "$COUNT_NEW" -gt 0 ]; }; then
-        warn "Sync applied successfully. Review and commit the resulting changes before opening unrelated sessions."
+        warn "Sync applied successfully. Review, validate, commit and publish the resulting changes before declaring the task complete; report any actual publication blocker."
     fi
 
     # Release lock

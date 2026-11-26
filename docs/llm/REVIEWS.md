@@ -1,3 +1,104 @@
+## 2026-11-26 - Integrated 4.23.0 source and Dossier R2
+
+This current verdict supersedes the pending disposition of the earlier inherited
+candidate below; all original NO APTO/NO_GO findings remain historical evidence.
+Codex adopted and corrected the inherited candidate under Carlos's explicit
+authority. Exact `claude-opus-5-5`, high effort, firstParty canonical metadata
+verified in native session `03a1a734-ece6-43ce-9476-82f94a93463e`, returned
+SOURCE_GO conditional on the frozen full smoke, 13 Trace tests, 8 publication
+tests, ordinary documentation checks and the live post-push publication gate.
+R1's backup-fixture and scaffold-contamination blockers are resolved in source.
+The complete test result is recorded in the operation receipt before publication;
+this conditional verdict alone is not a passing test or a published release.
+
+CURATION_GO requires the two exact source-attribution corrections recorded in
+the private draft packet, real published source pins and observed cleanup counts.
+Local capture/readback remains separate from paused shared-reader recovery and
+actual Orca client readback. Preserve all eleven earlier snapshots. The reviewed
+operator view includes all five real-reader sections. No runtime deployment or
+old retirement plan is approved by this verdict.
+
+Strict installed CAP-001 v2 round 2 accepted manifest
+`61be49219eb1d34c0bfc3b511f461b0f8e430793c704815687e2d0fd5fd2ffcd`.
+Hook outcome unknown, zero recorded errors for this explicit round. Source and
+Dossier corrections, exact packet and original native evidence remain in private
+owner custody. Nonblocking limitations include native Windows timeout acceptance
+and a detached descendant retaining a pipe beyond the owned Git process group.
+
+## 2026-11-26 - Leave no residue (D-034, 4.23.0 candidate): NO APTO twice, corrected, round 3 pending
+
+Author: Claude Code, claude-fable-5-2. Candidate: the `leave-no-residue`
+section, `docs/LEAVE_NO_RESIDUE.md`, the residue-file warning in
+`scripts/dockit-leftovers.py` and heading-anchored insertion in
+`scripts/dockit-sync.sh`. No GO exists for it.
+
+Earlier round, on the rule text only, as drafted for Home Infra (revision 1):
+Codex CLI 0.172.0, model gpt-6.2-astra, reasoning effort high (CLI banner),
+instructed read-only. Verdict NO APTO (not fit). Blocking finding on the rule:
+it ordered agents to expire copies, remove versions older than N-1 and reduce
+evidence to a summary, which can destroy a rollback or the original that proves
+an incident; an unreferenced volume may hold data. The author accepted it and
+wrote revision 2 (removal limited to the task's own authorized disposables;
+custody, backup, rollback and history prevail; the deployment step moved to the
+host's deploy procedure). That round's other findings concern Home Infra
+scripts and runbooks and are recorded there.
+
+Round 1 on this candidate: Codex CLI 0.172.0, model gpt-6.2-astra, reasoning
+effort high, session 01a2197f-4b46-72e2-aa59-d67783f1bb93, on the uncommitted
+diff of 21 files against f7b469a (plain text: not a commit of this candidate).
+Verdict NO APTO (not fit), four blockers, all accepted:
+
+1. `scripts/dockit-sync.sh` heading-anchored insertion counted raw lines: the
+   reviewer reproduced the rule landing inside a fenced code example and inside
+   another managed block, where a later update of the outer block would delete
+   it; an unmarked local section with the same heading could be duplicated.
+2. `scripts/dockit-sync.sh` marker detection (older than this candidate, but
+   this release distributes through it): a CRLF file that already carried the
+   section got a second LF copy, kept by the next pass.
+3. `scripts/dockit-leftovers.py`: a finding such as a non-ASCII `.tmp` name
+   returned 3 under UTF-8 and 1 under `PYTHONIOENCODING=ascii` (the validator
+   turned the encoding error into FAIL); `text=True` could lose all coverage on
+   a name with undecodable bytes.
+4. `scripts/dockit-leftovers.py`: the warning said "remove them", against the
+   rule's custody point for files of other or unknown origin.
+
+Improvements raised: quoted allow-list paths containing " #" were truncated; the
+Git listing was loaded whole. The reviewer found the rule text, CHANGELOG,
+HANDOFF, HISTORY and D-034 consistent by reading and did not rerun the suite.
+
+Author's corrections, not yet reviewed: anchor accepted only outside fenced code
+blocks and managed marker pairs, exactly once, otherwise footer placement with a
+warning; a same-heading unmarked local section is an ERROR, nothing inserted;
+CRLF files are compared without the CR and written back as CRLF; file names are
+read as bytes, streamed, escaped on output; the warning asks for origin and
+authorization first; quoted allow-list paths. Smoke after corrections: 119 PASS /
+1 pre-existing host-admission FAIL.
+
+Round 2 on this candidate: same CLI, model and effort, session
+01a21998-a7f5-75f0-8018-3655a43d4bbd, on the corrected uncommitted diff.
+Verdict NO APTO (not fit): blockers 2, 3 and 4 resolved, blocker 1 still open.
+The reviewer reproduced the rule landing inside an example again: a line of
+inline code delimited by three backticks, then an unlabelled fence holding the
+heading (two applies returned 0); the heading inside `<pre>`; and the outer
+context lost when a nested managed block closed. Improvement: the same-heading
+conflict should count only unmanaged occurrences (a false conflict was
+reproduced with the title inside managed content) and stay an ERROR. Verified by
+the reviewer as unchanged: an LF file with every section byte-identical,
+`--init-state`, the partial adopter, both CRLF cases.
+
+Author's corrections after round 2, not yet reviewed: the fence tracker is
+replaced by a deliberately conservative rule, not a Markdown parser. The section
+goes under the heading only when the heading occurs exactly once among all raw
+lines, is preceded by a blank line, and nothing before it raises doubt: only
+plain, paired fence lines; no pre, code, script, style, textarea or xmp element,
+processing instruction or CDATA; no HTML comment left open; managed markers
+balanced without nesting, at depth zero. Anything else keeps the footer
+placement with a warning that names the reason. The conflict check counts
+unmanaged occurrences only. Smoke after corrections: 129 PASS / 1 pre-existing
+host-admission FAIL.
+
+Open: round 3 on the corrected candidate. This entry records no GO.
+
 ## 2026-11-23 - Workspaces clean up behind themselves (Home Infra D-030)
 
 Author: Claude Code, claude-opus-5-5. Independent reviewer: Codex CLI 0.171.0,
@@ -1294,3 +1395,22 @@ scaffold. Independent reproduction confirmed rejection before target creation.
 The additional CI lifecycle step and these final execution receipts do not
 change the reviewed supervisor behavior. Publication and installation remain
 authorized by Carlos on 2026-11-22; installation requires host readback.
+
+## 2026-11-26 - Orca/publication source R1 and retirement repair R1
+
+Exact `claude-opus-5-5`, high effort, firstParty canonical model verified in
+native sessions `03a1a734-ece6-43ce-9476-82f94a93463e` (DocKit) and
+`2d0c5b63-0bea-43f2-a035-bbf08b464830` (bounded ForgeOS repair).
+Both returned NO_GO with actionable findings; neither is publication approval.
+DocKit required an accurate no-change backup fixture and removal of its owner
+receipt from new scaffolds. ForgeOS required disabling automatic Git maintenance
+before custody, independent obstruction fixtures and stronger dry-run/resume
+checks. Corrections and exact final qualification remain required.
+
+Strict installed CAP-001 v2 captures accepted: DocKit manifest
+`26d17459490e73640c9624f88d42038d9a39e21aa98054d6d7cd48eb1db8a96a`;
+ForgeOS manifest
+`e04edba3ba1b7eb6507f9015de039b3fc5a1747078eb9b9c46b7540b5f01110a`.
+Hook outcome unknown, zero recorded errors for these explicit rounds. Original
+packets and native evidence remain in private owner custody; no raw transcript
+is copied into the repository or Dossier. Final approval is recorded separately.

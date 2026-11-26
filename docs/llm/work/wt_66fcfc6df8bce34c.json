@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "docs/opus-5-5-default",
   "id": "wt_66fcfc6df8bce34c",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Exact Opus-default policy source at 361b393 is integrated in main. Carlos authorized cleanup on 2026-11-26; retire the clean checkout with the guarded tool. Preserve D-024, original review provenance and explicit per-client installation limits; retirement does not prove every running client adopted the default.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: docs/opus-5-5-default",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

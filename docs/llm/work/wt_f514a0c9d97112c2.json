@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "",
   "id": "wt_f514a0c9d97112c2",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Carlos authorized bounded cleanup on 2026-11-26. Source work is complete: original 5a2bba147d545ab6bce0ecd7362853b0098720a1 is published in main and the checkout is already absent. Retire only after the reviewed ForgeOS 0.50.1 repair passes all qualification, is published and installed: reconcile this exact published record, inspect a fresh retire --missing plan, preserve administrative bytes and reflog custody, then apply its digest. This record does not claim the remaining Git registration is removed. Never run broad prune or recreate a checkout to hide the gap.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: 5a2bba147d545ab6bce0ecd7362853b0098720a1",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

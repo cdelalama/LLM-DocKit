@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/model-roles-20261120",
+  "id": "model-roles-20261120",
+  "next_step": "This empty task checkout contains no commits beyond its a8ce979 creation baseline. Carlos authorized consolidation on 2026-11-26: close and retire the checkout, while the current primary session implements the accepted DocKit role/provenance boundary and ForgeOS routing ownership. Checkout closure is not implementation or agent/client acceptance.",
+  "project": "LLM-DocKit",
+  "purpose": "Write the multi-model role policy after formal consensus",
+  "schema": 1,
+  "state": "closed"
+}

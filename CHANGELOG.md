@@ -4,6 +4,66 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.23.0] - 2026-11-26
+
+This release completes the previously unshipped 4.23.0 candidate under the
+operator's explicit authorization; no published release was overwritten.
+
+### Added
+
+- Capability-based static Orca Trace, Spanish/English presentation and optional
+  provenance with compatible terminal text and safe fallback.
+- Publication closeout contract and read-only checker: offline advisory during
+  work, explicit live default-branch verification after push.
+- Model-independent roles separating family, exact model, client, account and task.
+
+### Changed
+
+- Replace competing owner next-step lists with one current handoff; preserve
+  exact earlier owner snapshots and the unpublished ecosystem consensus report.
+- Reconcile legacy task records for guarded retirement without accepting separate
+  product/runtime work. Preserve retained evidence and unknown custody.
+
+### Inherited candidate additions
+
+- `leave-no-residue` onboarding section, first under Critical Rules, and its
+  canonical document `docs/LEAVE_NO_RESIDUE.md` (synced): a task is not done
+  while something it created only in order to do the work still exists (D-034,
+  Carlos 2026-11-26). Removal is limited to what the task itself created and is
+  authorized to remove; custody, backup, rollback and history obligations
+  prevail, and anything else is reported, not deleted. General principle above
+  `docs/RUNTIME_LIFECYCLE.md` and the `workspace-ownership` section.
+- `workspace-leftovers` also warns, never fails, on backup/temporary files in
+  the checkout that are tracked, or untracked and not git-ignored (`*.bak`,
+  `*.orig`, `*.rej`, `*.tmp`, `*~`, `*.swp`, `*.before`, `*.before-*`,
+  `*.incomplete-*`). The warning asks for origin and authorization before any
+  removal. Allow-list a kept file by exact path under `residue_allow:` in
+  `.dockit-config.yml`. Read-only; nothing is deleted; file names of any
+  encoding are reported without failing the check.
+
+### Inherited candidate changes
+
+- `dockit-sync` inserts a missing section directly under the Markdown heading it
+  follows in the template only when that is unambiguous: the heading occurs
+  exactly once, follows a blank line, and nothing before it raises doubt (only
+  plain paired code fences, no literal-text HTML element, no open HTML comment,
+  balanced managed markers). Any doubt keeps the footer placement, with a
+  warning naming the reason. No earlier section follows a heading, so only
+  `leave-no-residue` is placed differently.
+- `dockit-sync` no longer inserts a missing section when the file already has a
+  local section with the same heading outside managed markers: it reports an
+  ERROR naming the line, so the owner merges, removes or excludes it.
+
+### Fixed
+
+- Preserve sync rollback generations; use unique backup directories and remove
+  only the current run's empty scaffold on no-change or branch failure.
+- Exclude source-owner delivery receipts from newly initialized projects.
+- `dockit-sync` section-merge on CRLF files: markers were not recognised, so
+  every section was appended again in LF. A file whose lines, or whose template
+  markers, end in CRLF is now compared without the CR and written back as CRLF.
+  Files with LF markers are read and written exactly as before.
+
 ## [4.22.0] - 2026-11-23
 
 ### Added

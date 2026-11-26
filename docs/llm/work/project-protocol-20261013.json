@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "work/project-protocol-20261013",
   "id": "project-protocol-20261013",
-  "next_step": "Finish reviewed protocol source, DEV installation and PriceBuddy admission; retain explicit runtime acceptance gaps.",
+  "next_step": "Source, DEV installation and bounded Dossier receipt were published at 350d053. Carlos authorized checkout cleanup on 2026-11-26; retire this integrated checkout. PriceBuddy and each adopter retain their own runtime/login/Sentinel acceptance and the later per-application authentication owner decision; this closure does not accept them.",
   "project": "LLM-DocKit",
   "purpose": "Add neutral host intake policy hook to prevent implicit ecosystem bypass",
   "schema": 1,
-  "state": "active"
+  "state": "closed"
 }

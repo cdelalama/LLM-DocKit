@@ -190,6 +190,9 @@ rm -f docs/EXTERNAL_CONTEXT_PLUGIN_PLAN.md
 rm -f docs/ROADMAP.md
 # Dossier identity and custody instructions belong to the source project only.
 rm -f .forgeos/dossier.json docs/operations/DOSSIER.md
+# These are source-owner receipts, never a new project's delivery evidence.
+rm -f docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json
+rm -f docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md
 if [ -d .forgeos ]; then rmdir .forgeos 2>/dev/null || :; fi
 rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh

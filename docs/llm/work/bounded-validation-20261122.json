@@ -1,0 +1,10 @@
+{
+  "artifacts": [],
+  "branch": "work/bounded-validation-20261122",
+  "id": "bounded-validation-20261122",
+  "next_step": "Source and measured OCTA/DEV recovery receipts were published at 5afe360. Carlos authorized cleanup on 2026-11-26; retire this integrated checkout. Qualifying the remaining 66 held OCTA configurations remains open under validation-lifecycle-20261122 and docs/RUNTIME_LIFECYCLE.md; no fleet acceptance follows.",
+  "project": "LLM-DocKit",
+  "purpose": "Fix validation fan-out and Stop process-tree retirement in an isolated unpublished candidate",
+  "schema": 1,
+  "state": "closed"
+}

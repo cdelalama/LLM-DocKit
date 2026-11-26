@@ -24,7 +24,10 @@ TODAY=$(date +%Y-%m-%d)
 cleanup() {
     rm -rf "$TMP_ROOT"
 }
-trap cleanup EXIT HUP INT TERM
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 pass_count=0
 fail_count=0
@@ -832,10 +835,10 @@ TRACE_STATUS_REPO="$TMP_ROOT/trace-status"
 init_repo "$TRACE_STATUS_REPO"
 TRACE_STATUS_HASH=$(git -C "$TRACE_STATUS_REPO" rev-parse --short=7 HEAD)
 expect_pass "trace-status emits current HEAD and clean repo state" \
-    sh -c "'$TRACE_STATUS' --project '$TRACE_STATUS_REPO' --role executor --subject smoke --validation smoke-pass --next operator >'$OUT' && grep -q 'HEAD=$TRACE_STATUS_HASH' '$OUT' && grep -q 'Repo state: .*clean' '$OUT'"
+    sh -c "'$TRACE_STATUS' --format text --project '$TRACE_STATUS_REPO' --role executor --subject smoke --validation smoke-pass --next operator >'$OUT' && grep -q 'HEAD=$TRACE_STATUS_HASH' '$OUT' && grep -q 'Repo state: .*clean' '$OUT'"
 
 expect_pass "trace-status accepts advisor role" \
-    sh -c "'$TRACE_STATUS' --project '$TRACE_STATUS_REPO' --role advisor --subject smoke --validation smoke-pass --next operator >'$OUT' && grep -q 'Role: advisor' '$OUT'"
+    sh -c "'$TRACE_STATUS' --format text --project '$TRACE_STATUS_REPO' --role advisor --subject smoke --validation smoke-pass --next operator >'$OUT' && grep -q 'Role: advisor' '$OUT'"
 
 cat >"$TRACE_REPO/docs/llm/HISTORY.md" <<EOF
 # History
@@ -992,6 +995,145 @@ else
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-sync inserts missing full-adopter sections before footer"
     fi
+
+    # Placement of a newly added section, line endings and repeated syncs.
+    sync_fixture() {
+        _sf_repo="$TMP_ROOT/$1"; _sf_eol="$2"; shift 2
+        init_sync_section_repo "$_sf_repo" "with-footer"
+        printf "%s$_sf_eol" "$@" '<!-- DOCKIT-TEMPLATE:START footer -->' '---' 'Old footer text.' \
+            '<!-- DOCKIT-TEMPLATE:END footer -->' >"$_sf_repo/LLM_START_HERE.md"
+        git -C "$_sf_repo" commit -qam fixture
+    }
+    sync_twice() {
+        "$SYNC_TOOL" --init-state --project "$1" >"$OUT" 2>&1 \
+            && "$SYNC_TOOL" --apply --only LLM_START_HERE.md --project "$1" >"$OUT.first" 2>&1 \
+            && "$SYNC_TOOL" --apply --only LLM_START_HERE.md --project "$1" >"$OUT" 2>&1 \
+            && ! grep -q 'CONFLICT\|ERROR' "$OUT.first" "$OUT"
+    }
+    # One leave-no-residue section, at RELATION to the first line matching ANCHOR.
+    sync_rule_once() {
+        tr -d '\r' <"$1/LLM_START_HERE.md" | awk -v anchor="$2" -v relation="$3" '
+            $0 == anchor && !at { at = NR }
+            /^<!-- DOCKIT-TEMPLATE:START leave-no-residue -->$/ { rule = NR; rules++ }
+            /^<!-- DOCKIT-TEMPLATE:END checklist -->$/ { checklist_end = NR }
+            /^<!-- DOCKIT-TEMPLATE:START footer -->$/ { footer = NR; footers++ }
+            END {
+                ok = (rules == 1 && footers == 1 && at > 0 && rule < footer)
+                if (relation == "under") ok = ok && rule == at + 2
+                if (relation == "after") ok = ok && rule > at + 2
+                if (relation == "past-checklist") ok = ok && rule > checklist_end
+                exit !ok
+            }'
+    }
+    sync_case() { if eval "$2"; then note_pass "$1"; else cat "$OUT.first" "$OUT" >"$OUT.tmp" 2>/dev/null; mv "$OUT.tmp" "$OUT"; note_fail "$1"; fi; }
+    SYNC_CR=$(printf '\r')
+    SYNC_HEADING='## Critical Rules (Non-Negotiable)'
+    SYNC_FALLBACK='using the footer placement instead'
+
+    sync_fixture sync-anchor-lf '\n' '# Guide' '' "$SYNC_HEADING" '' '### Language Policy' '- Local rule.' ''
+    sync_case "dockit-sync inserts a heading-anchored section under its heading, once after two LF syncs" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" under && ! grep -q "$SYNC_CR" "$_sf_repo/LLM_START_HERE.md"'
+
+    SYNC_LF_RESULT="$_sf_repo/LLM_START_HERE.md"
+    sync_fixture sync-backup-retention '\n' '# Guide' '' "$SYNC_HEADING" ''
+    _backup_root="$_sf_repo/.git/.dockit/backups"
+    for _old in 1 2 3 4 5 6 7; do
+        mkdir -p "$_backup_root/old-$_old"
+        printf 'custody-%s\n' "$_old" > "$_backup_root/old-$_old/backup-manifest.txt"
+    done
+    sync_backups_preserved() {
+        sync_twice "$_sf_repo" || return 1
+        for _old in 1 2 3 4 5 6 7; do
+            [ "$(cat "$_backup_root/old-$_old/backup-manifest.txt")" = "custody-$_old" ] || return 1
+        done
+        # Select only the section-merge file: full-sync YAML normalization is
+        # separately tested and can legitimately change on its second apply.
+        # First apply retains its real rollback; the unchanged second apply
+        # removes only its own empty directory, not that first backup.
+        [ "$(find "$_backup_root" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = 8 ] \
+            && grep -q 'Rollback backup retained:' "$OUT.first"
+    }
+    sync_case "dockit-sync preserves all previous backups and retires its own no-change scaffold" sync_backups_preserved
+
+    sync_fixture sync-crlf-present '\r\n' '# placeholder'
+    sed "s/\$/$SYNC_CR/" "$SYNC_LF_RESULT" >"$_sf_repo/LLM_START_HERE.md"
+    git -C "$_sf_repo" commit -qam "CRLF file that already carries every section"
+    sync_case "dockit-sync keeps one section and CRLF endings when a CRLF file already carries it" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" under && ! grep -qv "$SYNC_CR\$" "$_sf_repo/LLM_START_HERE.md" && git -C "$_sf_repo" diff --quiet -- LLM_START_HERE.md'
+
+    sync_fixture sync-crlf-missing '\r\n' '# Guide' '' "$SYNC_HEADING" '' '### Language Policy' '- Local rule.' ''
+    sync_case "dockit-sync inserts one CRLF section under its heading after two CRLF syncs" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" under && ! grep -qv "$SYNC_CR\$" "$_sf_repo/LLM_START_HERE.md"'
+
+    sync_fixture sync-anchor-fence '\n' '# Guide' '' '```markdown' "$SYNC_HEADING" '```' '' 'Local prose.' ''
+    sync_case "dockit-sync does not anchor on a heading inside a code block and says so" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" after && grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+
+    sync_fixture sync-anchor-managed '\n' '# Guide' '' '<!-- DOCKIT-TEMPLATE:START checklist -->' "$SYNC_HEADING" \
+        '<!-- DOCKIT-TEMPLATE:END checklist -->' ''
+    sync_case "dockit-sync does not anchor on a heading inside another managed section and says so" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "<!-- DOCKIT-TEMPLATE:START checklist -->" past-checklist && grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+
+    sync_fixture sync-anchor-twice '\n' '# Guide' '' "$SYNC_HEADING" '' "$SYNC_HEADING" ''
+    sync_case "dockit-sync does not anchor on a heading that occurs twice and says so" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" after && grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+
+    # Doubt about what precedes the heading keeps the footer placement.
+    sync_fallback_case() {
+        _sfc_name="$1"; _sfc_repo="$2"; shift 2
+        sync_fixture "$_sfc_repo" '\n' "$@"
+        sync_case "dockit-sync keeps the footer placement: $_sfc_name" \
+            'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" after && grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+    }
+    sync_fallback_case "inline triple backticks before a fenced example" sync-anchor-inline \
+        '# Guide' '' '``` inline code ```' '' '```' "$SYNC_HEADING" '```' ''
+    sync_fallback_case "heading inside <pre>" sync-anchor-pre '# Guide' '' '<pre>' '' "$SYNC_HEADING" '' '</pre>' ''
+    sync_fallback_case "heading inside an HTML comment closed before the footer" sync-anchor-comment '# Guide' '' '<!-- draft' '' "$SYNC_HEADING" '' 'Local prose.' '-->' ''
+    sync_fallback_case "heading inside a tilde fence" sync-anchor-tilde '# Guide' '' '~~~' '' "$SYNC_HEADING" '' '~~~' ''
+    sync_fallback_case "heading not preceded by a blank line" sync-anchor-tight '# Guide' '' '<div>' "$SYNC_HEADING" '</div>' ''
+    sync_fixture sync-anchor-nested '\n' '# Guide' '' '<!-- DOCKIT-TEMPLATE:START checklist -->' \
+        '<!-- DOCKIT-TEMPLATE:START do-not-touch -->' '<!-- DOCKIT-TEMPLATE:END do-not-touch -->' '' "$SYNC_HEADING" '' \
+        '<!-- DOCKIT-TEMPLATE:END checklist -->' ''
+    sync_case "dockit-sync keeps the footer placement: heading after a nested managed section closes" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "<!-- DOCKIT-TEMPLATE:START checklist -->" past-checklist && grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+
+    sync_unsafe_footer_case() {
+        _suf_label="$1"; _suf_open="$2"
+        sync_fixture "sync-unsafe-$_suf_label" '\n' '# Guide' '' "$_suf_open" '' "$SYNC_HEADING" ''
+        sync_case "dockit-sync refuses a footer inside an unclosed $_suf_label without changing source" \
+            '"$SYNC_TOOL" --init-state --project "$_sf_repo" >"$OUT.first" 2>&1 && ! "$SYNC_TOOL" --apply --project "$_sf_repo" >"$OUT" 2>&1 && grep -q "footer is inside an unclosed" "$OUT" && git -C "$_sf_repo" diff --quiet -- LLM_START_HERE.md'
+    }
+    sync_unsafe_footer_case comment '<!-- draft'
+    sync_unsafe_footer_case fence '```markdown'
+    sync_unsafe_footer_case literal '<pre>'
+    sync_unsafe_footer_case cdata '<![CDATA['
+    sync_unsafe_footer_case processing '<?draft'
+
+    sync_fixture sync-anchor-paired '\n' '<!-- doc-version: 1.0.0 -->' '# Guide' '' '```sh' 'echo one' '```' '' '~~~' 'two' '~~~' '' \
+        "$SYNC_HEADING" '' '### Language Policy' ''
+    sync_case "dockit-sync still anchors after closed fences and a closed comment" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" under && ! grep -qF "$SYNC_FALLBACK" "$OUT.first"'
+
+    sync_fixture sync-lf-present '\n' '# placeholder'
+    cp "$SYNC_LF_RESULT" "$_sf_repo/LLM_START_HERE.md"
+    git -C "$_sf_repo" commit -qam "LF file that already carries every section"
+    sync_case "dockit-sync leaves an LF file that carries every section byte-identical" \
+        'sync_twice "$_sf_repo" && git -C "$_sf_repo" diff --quiet -- LLM_START_HERE.md'
+
+    sync_fixture sync-managed-title '\n' '# Guide' '' '<!-- DOCKIT-TEMPLATE:START checklist -->' '### Leave no residue' \
+        '<!-- DOCKIT-TEMPLATE:END checklist -->' '' "$SYNC_HEADING" ''
+    sync_case "dockit-sync does not report a conflict for the title inside managed content" \
+        'sync_twice "$_sf_repo" && sync_rule_once "$_sf_repo" "$SYNC_HEADING" under'
+
+    sync_fixture sync-partial-local '\n' '# Guide' '' "$SYNC_HEADING" '' '### Leave no residue' 'Local wording.' ''
+    printf 'adoption_mode: partial\n' >"$_sf_repo/.dockit-config.yml"
+    git -C "$_sf_repo" commit -qam "partial adopter with its own rule"
+    sync_case "dockit-sync leaves a partial adopter's local rule alone and updates its footer" \
+        'sync_twice "$_sf_repo" && ! grep -q "DOCKIT-TEMPLATE:START leave-no-residue" "$_sf_repo/LLM_START_HERE.md" && grep -qx "Local wording." "$_sf_repo/LLM_START_HERE.md" && ! grep -q "Old footer text." "$_sf_repo/LLM_START_HERE.md"'
+
+    sync_fixture sync-local-rule '\n' '# Guide' '' "$SYNC_HEADING" '' '### Leave no residue' 'Local wording.' ''
+    sync_case "dockit-sync reports an unmarked local section instead of duplicating it" \
+        '"$SYNC_TOOL" --init-state --project "$_sf_repo" >"$OUT.first" 2>&1 && ! "$SYNC_TOOL" --apply --project "$_sf_repo" >"$OUT" 2>&1 && grep -q "ERROR .*unmarked local section .### Leave no residue. at line 5" "$OUT" && ! grep -q "DOCKIT-TEMPLATE:START leave-no-residue" "$_sf_repo/LLM_START_HERE.md" && git -C "$_sf_repo" diff --quiet -- LLM_START_HERE.md'
 
     SYNC_APPEND_REPO="$TMP_ROOT/sync-append"
     init_sync_section_repo "$SYNC_APPEND_REPO" "without-footer"
@@ -1360,6 +1502,24 @@ Local project review constraint retained by the conflict test.' "$SYNC_MISSING_R
         note_fail "dockit-sync preserves selective naming after branch collision"
     fi
 
+    SYNC_BRANCH_FAILURE_REPO="$TMP_ROOT/sync-branch-failure"
+    init_sync_section_repo "$SYNC_BRANCH_FAILURE_REPO" "with-footer"
+    "$SYNC_TOOL" --init-state --project "$SYNC_BRANCH_FAILURE_REPO" >"$OUT" 2>&1
+    # A fixture-owned ref lock makes ordinary Git refuse branch creation. Do not
+    # replace or bypass the installed Git launcher to simulate that failure.
+    SYNC_BRANCH_LOCK="$SYNC_BRANCH_FAILURE_REPO/.git/refs/heads/dockit-sync-${DOCKIT_VERSION}-selective.lock"
+    printf 'synthetic branch contention\n' > "$SYNC_BRANCH_LOCK"
+    if ! "$SYNC_TOOL" --apply --git-branch --project "$SYNC_BRANCH_FAILURE_REPO" \
+            --only LLM_START_HERE.md:independent-review-policy >"$OUT" 2>&1 \
+        && grep -q 'failed to create sync branch' "$OUT" \
+        && [ "$(find "$SYNC_BRANCH_FAILURE_REPO/.git/.dockit/backups" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = 0 ] \
+        && [ ! -e "$SYNC_BRANCH_FAILURE_REPO/.git/.dockit/sync.lock" ]; then
+        note_pass "dockit-sync retires its empty backup scaffold when branch creation fails"
+    else
+        note_fail "dockit-sync retires its empty backup scaffold when branch creation fails"
+    fi
+    rm -f "$SYNC_BRANCH_LOCK"
+
     SYNC_PREFLIGHT_REPO="$TMP_ROOT/sync-only-preflight"
     init_sync_versioned_doc_repo "$SYNC_PREFLIGHT_REPO"
     cp "$CHECK_VERSION" "$SYNC_PREFLIGHT_REPO/scripts/check-version-sync.sh"
@@ -1588,12 +1748,39 @@ else
     SCAFFOLD_PARENT="$TMP_ROOT/init"
     mkdir -p "$SCAFFOLD_PARENT"
     SCAFFOLD_REPO="$SCAFFOLD_PARENT/residue-smoke"
-    if "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
+    # A synthetic scaffold is not a real host admission. Exercise the public
+    # host-policy boundary with an isolated test host configuration, never the
+    # operator's live admission registry or a production bypass flag.
+    INIT_CONFIG="$TMP_ROOT/init-config"
+    mkdir -p "$INIT_CONFIG/llm-dockit"
+    cat > "$INIT_CONFIG/llm-dockit/init-policy" <<'POLICY'
+#!/bin/sh
+exit 1
+POLICY
+    chmod +x "$INIT_CONFIG/llm-dockit/init-policy"
+    if XDG_CONFIG_HOME="$INIT_CONFIG" "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke \
+        --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1; then
+        note_fail "dockit-init refuses a rejecting host policy before target creation"
+    elif [ ! -e "$SCAFFOLD_REPO" ] && grep -q 'host intake policy rejected' "$OUT"; then
+        note_pass "dockit-init refuses a rejecting host policy before target creation"
+    else
+        note_fail "dockit-init refuses a rejecting host policy before target creation"
+    fi
+    cat > "$INIT_CONFIG/llm-dockit/init-policy" <<'POLICY'
+#!/bin/sh
+# Permit exactly this test's named fixture and target; no wildcard admission.
+[ "$#" -eq 4 ] && [ "$1" = --project-name ] && [ "$2" = residue-smoke ] \
+    && [ "$3" = --target-dir ] && [ "$4" = "$DOCKIT_TEST_INIT_TARGET" ]
+POLICY
+    if XDG_CONFIG_HOME="$INIT_CONFIG" DOCKIT_TEST_INIT_TARGET="$SCAFFOLD_REPO" \
+        "$INIT_SOURCE/scripts/dockit-init-project.sh" residue-smoke --target-dir "$SCAFFOLD_REPO" --source "$INIT_SOURCE" >"$OUT" 2>&1 \
         && [ ! -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md" ] \
         && [ ! -f "$SCAFFOLD_REPO/docs/ROADMAP.md" ] \
         && [ ! -d "$SCAFFOLD_REPO/docs/archive" ] \
         && [ ! -e "$SCAFFOLD_REPO/.forgeos/dossier.json" ] \
         && [ ! -e "$SCAFFOLD_REPO/docs/operations/DOSSIER.md" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md" ] \
         && ! grep -q handoff_active_start "$SCAFFOLD_REPO/.dockit-config.yml" \
         && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
         && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \
@@ -1683,6 +1870,38 @@ WL_LEDGER_JSON='{"items":{}}'; export WL_LEDGER_JSON
 wl_status() { "$VALIDATOR" --project "${2:-$WL_REPO}" --json --check workspace-leftovers > "$OUT" 2>&1 || true; grep -q "\"status\":\"$1\"" "$OUT"; }
 wl_expect() { if wl_status "$2" "${3:-}"; then note_pass "$1"; else note_fail "$1"; fi; }
 wl_expect "workspace-leftovers passes without leftovers" PASS
+# Residue files (docs/LEAVE_NO_RESIDUE.md) warn when tracked, or untracked and not ignored.
+wl_note() { if wl_status "$2" && grep -qF "$3" "$OUT"; then note_pass "$1"; else note_fail "$1"; fi; }
+git -C "$WL_REPO" config core.excludesFile /dev/null
+: > "$WL_REPO/notes.md.bak"
+wl_note "workspace-leftovers warns on an untracked residue file" WARN '1 backup/temporary file(s) left in the tree: notes.md.bak;'
+printf '*.bak\n' > "$WL_REPO/.git/info/exclude"
+wl_expect "workspace-leftovers does not report an ignored residue file" PASS
+git -C "$WL_REPO" add -f notes.md.bak
+wl_note "workspace-leftovers warns on a tracked residue file" WARN '1 backup/temporary file(s) left in the tree: notes.md.bak;'
+: > "$WL_REPO/odd #1.bak"; git -C "$WL_REPO" add -f "odd #1.bak"
+printf 'residue_allow:\n  - notes.md.bak  # fixture kept on purpose\n  - "odd #1.bak"  # quoted path containing " #"\n' > "$WL_REPO/.dockit-config.yml"
+wl_expect "workspace-leftovers accepts allow-listed residue files, including a quoted path" PASS
+for _wl_name in a.orig b.rej c.tmp 'd~' e.swp f.before g.before-20261126 h.incomplete-1 plain.md; do : > "$WL_REPO/$_wl_name"; done
+wl_note "workspace-leftovers matches each residue pattern and only those" WARN '8 backup/temporary file(s) left in the tree: a.orig, b.rej, c.tmp, d~, e.swp (+3 more);'
+wl_note "workspace-leftovers asks for origin before removal" WARN 'check origin and authorization first: remove only what this task created'
+git -C "$WL_REPO" rm -q --cached notes.md.bak "odd #1.bak"
+( cd "$WL_REPO" && rm -f notes.md.bak "odd #1.bak" a.orig b.rej c.tmp 'd~' e.swp f.before g.before-20261126 h.incomplete-1 plain.md .dockit-config.yml )
+: > "$WL_REPO/.git/info/exclude"
+# File names must never turn the warning into a failure, whatever the output encoding.
+WL_UTF8_NAME=$(printf 'caf\303\251.tmp'); : > "$WL_REPO/$WL_UTF8_NAME"
+PYTHONIOENCODING=ascii; export PYTHONIOENCODING
+wl_note "workspace-leftovers warns on a non-ASCII name under an ASCII output encoding" WARN '1 backup/temporary file(s) left in the tree: caf'
+unset PYTHONIOENCODING
+rm -f "$WL_REPO/$WL_UTF8_NAME"
+WL_RAW_NAME=$(printf 'raw\377.tmp')
+if ( : > "$WL_REPO/$WL_RAW_NAME" ) 2>/dev/null && [ -e "$WL_REPO/$WL_RAW_NAME" ]; then
+    wl_note "workspace-leftovers warns on a file name that is not valid UTF-8" WARN '1 backup/temporary file(s) left in the tree: raw'
+    rm -f "$WL_REPO/$WL_RAW_NAME"
+else
+    note_pass "undecodable file name case skipped (filesystem rejects the name)"
+fi
+wl_expect "workspace-leftovers passes again once residue files are removed" PASS
 git -C "$WL_REPO" branch merged-leftover
 wl_expect "workspace-leftovers warns on a merged branch" WARN
 git -C "$WL_REPO" branch -D -q merged-leftover

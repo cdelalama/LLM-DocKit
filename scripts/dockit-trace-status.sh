@@ -13,6 +13,15 @@ VALIDATION="<fill validation>"
 NEXT_GATE="<fill next gate>"
 GATE="next-slice"
 NOTE=""
+FORMAT="auto"
+CLIENT=""
+MODEL=""
+MODEL_FAMILY=""
+ACCOUNT=""
+SESSION=""
+TASK=""
+DOSSIER=""
+LANGUAGE="en"
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -50,6 +59,21 @@ while [ $# -gt 0 ]; do
             NOTE="${2:-}"
             shift 2
             ;;
+        --format|--client|--model|--model-family|--account|--session|--task|--dossier|--language)
+            [ "$#" -ge 2 ] && [ -n "$2" ] || { echo "ERROR: $1 requires a value" >&2; exit 2; }
+            case "$1" in
+                --format) FORMAT=$2 ;;
+                --client) CLIENT=$2 ;;
+                --model) MODEL=$2 ;;
+                --model-family) MODEL_FAMILY=$2 ;;
+                --account) ACCOUNT=$2 ;;
+                --session) SESSION=$2 ;;
+                --task) TASK=$2 ;;
+                --dossier) DOSSIER=$2 ;;
+                --language) LANGUAGE=$2 ;;
+            esac
+            shift 2
+            ;;
         --help|-h)
             cat <<'EOF'
 Usage: scripts/dockit-trace-status.sh [options]
@@ -62,6 +86,22 @@ Options:
   --next TEXT          Next gate text
   --gate TEXT          Resulting-state gate value (default: next-slice)
   --note TEXT          Optional short note appended to Resulting state
+  --format FORMAT      auto (default), text, html, or json
+  --client TEXT        Optional observed client identity
+  --model TEXT         Optional verified actual model; unknown when unverified
+  --model-family TEXT  Optional observed model family (not an account)
+  --account TEXT       Optional opaque, non-secret account alias
+  --session TEXT       Optional non-secret session identity
+  --task TEXT          Optional task identity
+  --dossier TEXT       Optional last checked Dossier status (no network probe)
+  --language LANG      HTML labels: en (default) or es; text is unchanged
+
+auto writes static HTML only when ORCA_CHAT_SCRATCH_DIR names an existing
+directory; stdout then contains the Orca visual directive. Missing capability,
+renderer, Python, size overflow or a write failure falls back to ordinary text.
+html requires the same declared Orca capability and also falls back to text.
+json emits the same snapshot as structured data (Python 3 required).
+Never supply credentials or private account addresses in any field.
 EOF
             exit 0
             ;;
@@ -75,6 +115,15 @@ done
 case "$ROLE" in
     executor|auditor|advisor) ;;
     *) echo "ERROR: --role must be executor, auditor, or advisor" >&2; exit 2 ;;
+esac
+case "$LANGUAGE" in
+    en|es) ;;
+    *) echo "ERROR: --language must be en or es" >&2; exit 2 ;;
+esac
+
+case "$FORMAT" in
+    auto|text|html|json) ;;
+    *) echo "ERROR: --format must be auto, text, html, or json" >&2; exit 2 ;;
 esac
 
 if [ -z "$PROJECT_ROOT" ]; then
@@ -144,6 +193,7 @@ if [ -n "$NOTE" ]; then
     RESULT_NOTE="; $NOTE"
 fi
 
+trace_text() {
 cat <<EOF
 Trace
 Role: $ROLE
@@ -154,3 +204,45 @@ Repo state: $REPO_STATE
 Validation: $VALIDATION
 Next gate: $NEXT_GATE
 EOF
+    [ -z "$CLIENT" ] || printf 'Client: %s\n' "$CLIENT"
+    [ -z "$MODEL" ] || printf 'Model: %s\n' "$MODEL"
+    [ -z "$MODEL_FAMILY" ] || printf 'Model family: %s\n' "$MODEL_FAMILY"
+    [ -z "$ACCOUNT" ] || printf 'Account: %s\n' "$ACCOUNT"
+    [ -z "$SESSION" ] || printf 'Session: %s\n' "$SESSION"
+    [ -z "$TASK" ] || printf 'Task: %s\n' "$TASK"
+    [ -z "$DOSSIER" ] || printf 'Dossier: %s\n' "$DOSSIER"
+    return 0
+}
+
+# Read-only Git/time collection above happens once. Rendering never recollects
+# facts, starts a service, or creates a scratch directory. Plain terminals keep
+# the existing shell-only path and exact default text shape.
+if [ "$FORMAT" = text ] || { [ "$FORMAT" = auto ] && [ -z "${ORCA_CHAT_SCRATCH_DIR:-}" ]; }; then
+    trace_text
+    exit 0
+fi
+RENDERER=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)/dockit-trace-render.py
+TRACE_PYTHON=""
+if command -v python3 >/dev/null 2>&1; then TRACE_PYTHON=python3
+elif command -v python >/dev/null 2>&1 && python -c 'import sys; sys.exit(sys.version_info.major != 3)' 2>/dev/null; then TRACE_PYTHON=python
+fi
+if [ -z "$TRACE_PYTHON" ] || [ ! -f "$RENDERER" ]; then
+    if [ "$FORMAT" = json ]; then
+        echo "ERROR: JSON Trace requires Python 3 and dockit-trace-render.py" >&2
+        exit 2
+    fi
+    echo "Trace HTML unavailable: missing Python 3 or renderer; using text." >&2
+    trace_text
+    exit 0
+fi
+if "$TRACE_PYTHON" -B "$RENDERER" --format "$FORMAT" --language "$LANGUAGE" \
+    --role="$ROLE" --sent="$LOCAL_STAMP $LOCAL_TZ ($UTC_STAMP)" \
+    --subject="$SUBJECT" --resulting-state="HEAD=$HEAD_SHORT; version=$VERSION; gate=$GATE$RESULT_NOTE" \
+    --repo-state="$REPO_STATE" --validation="$VALIDATION" --next="$NEXT_GATE" \
+    --client="$CLIENT" --model="$MODEL" --model-family="$MODEL_FAMILY" \
+    --account="$ACCOUNT" --session="$SESSION" --task="$TASK" --dossier="$DOSSIER"; then
+    exit 0
+fi
+if [ "$FORMAT" = json ]; then exit 2; fi
+echo "Trace HTML unavailable: renderer failed; using text." >&2
+trace_text

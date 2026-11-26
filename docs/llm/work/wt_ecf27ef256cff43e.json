@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "feat/df058-delivery",
   "id": "wt_ecf27ef256cff43e",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "DF-058 implementation source at 252a313 is integrated in main. Carlos authorized checkout cleanup on 2026-11-26; retire with the guarded tool. Keep docs/archive/DF058_IMPLEMENTATION_2026-09-21.md, the real useful-pilot criterion and separate Riego gardener/off-LAN and adopter-entrypoint gates open.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: feat/df058-delivery",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

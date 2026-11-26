@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "id": "wt_1ab55aa2e16e9906",
+  "project": "LLM-DocKit",
+  "purpose": "Retained task checkout: e5a925978f6c96151625621ecef86dbdf7562897",
+  "state": "closed",
+  "branch": "",
+  "artifacts": [],
+  "next_step": "The detached Cocoscopio toolchain checkout is clean, contains no ignored files and points to e5a9259 already in main. Carlos authorized cleanup on 2026-11-26; adopt this existing checkout in the host ledger, reconcile this exact published record and retire with the guarded tool. Do not remove the enclosing Cocoscopio task or any sibling owner files; this is not Cocoscopio product acceptance."
+}

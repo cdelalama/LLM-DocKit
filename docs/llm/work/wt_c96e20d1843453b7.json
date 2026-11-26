@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "fix/fleet-rollout-20260923",
   "id": "wt_c96e20d1843453b7",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Fleet rollout source and receipt at 4866b59 are integrated in main; origin branch tip is checked independently by the guarded tool. Carlos authorized cleanup on 2026-11-26; retire the checkout and exact integrated branch refs. Preserve per-adopter installation exceptions, physical acceptance and historical fleet evidence.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: fix/fleet-rollout-20260923",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

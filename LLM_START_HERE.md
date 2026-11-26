@@ -1,138 +1,23 @@
-## Bounded validation installed and observed - 2026-11-22
+## DocKit source maintainer context - 2026-11-26
 
-Last Updated: 2026-11-22 - Codex. DocKit 4.21.7 is published at
-e63eda9e4c403ad9890cc29dd9d429d1777c099e (PR 9). Exact Opus 5.5 high
-SOURCE_GO and hosted validation passed. Home Infra 0.104.10 and Barcience
-0.20.2 published the six matching scripts and restored the twenty-second Stop
-hook with the fifteen-second supervisor. Per-edit validation is removed.
-
-OCTA Home Infra closed in 8.140s. Barcience first correctly reported its
-existing date errors, then closed in 6.609s after documenting this tooling
-adoption. Four native lifecycle tests passed, including deadline, caller loss
-and cancellation without disturbing a concurrent session. DEV Home Infra
-repeated normal-load closes passed in 4.751s and 5.060s with zero residual
-validators; the earlier 13.397s result remains retained.
-
-The separate final OCTA observation lasted 305.03s: 22 samples, zero orphan
-candidates, zero unknown shells, zero final validators and 22 taskbar responses.
-The earlier observation during tests had two transient candidate samples that
-disappeared; their origin could not be attributed from retained event logs.
-It is preserved rather than described as uniformly clean. These are measured
-windows and lifecycle tests, not a guarantee against arbitrary future load.
+Source candidate: 4.23.0. Current owner state and next action are in
+`docs/llm/HANDOFF.md`; source architecture is in `HOW_TO_USE.md` under
+"Source maintainer context". README, PROJECT_CONTEXT and ARCHITECTURE below
+are distributable starter templates, not an inventory of DocKit runtime.
+This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Keep the 66 additional OCTA configurations with legacy automatic hooks
-suspended until each adopter qualifies the six scripts and matching settings
-under `docs/RUNTIME_LIFECYCLE.md`. One immutable historical checkout remains
-unchanged and excluded from execution. Manual validation remains available.
-Track remaining adoption in `docs/llm/work/validation-lifecycle-20261122.json`.
-Preserve the idea helper validator_sha256 in `docs/llm/IDEA_INDEX.json`.
+Complete exact independent review, publication and guarded workspace retirement
+for `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. Use
+`scripts/dockit-publication.py --require-published` after pushing. Orca Trace uses
+`scripts/dockit-trace-status.sh --language es`; terminal text remains available.
+Previous source observations are preserved in
+`docs/archive/ONBOARDING_OWNER_STATUS_BEFORE_2026-11-26.md`; they are historical,
+not today's next actions. Existing fleet, DF-058 and recovery obligations remain
+in the current handoff with their owners.
 
-OCTA's private final receipt SHA256 is
-473ef87876001d0fc968e77d4b64b17a25a667b134738ec17bc794ae6a73c0f6.
-Containment retired 80 verified orphan processes; six others had already exited.
-Test scratch directories were removed. Preimages, review evidence, user files
-and session baselines remain preserved. NAS and photos were not modified.
-Earlier independent project work below retains its recorded state.
-
-## Disposable runtime rule verified on published branches - 2026-11-20
-
-Last Updated: 2026-11-20 - Codex.
-
-The canonical rule, advisory checker, validation entry point and orientation
-block match on 45 published default branches, including DocKit itself. This
-includes the ten selective adoptions and four reconciled task records. Three
-inventory entries point to third-party repositories and are outside the owned
-publication set. Four remain open: two paths without a source checkout, one
-missing checkout and one without an admitted parent for a task worktree.
-
-### Open work - next concrete step
-
-Home Infra and DocKit should resolve the four inventory entries. Producer owners
-must separately qualify an actual test, retain its evidence and verify its
-retirement. A source match alone cannot discover undeclared containers. Read
-`docs/RUNTIME_LIFECYCLE.md` and Home Infra's
-`docs/operations/NAS_RUNTIME_FLEET_2026-11-20.json` for the per-project receipt.
-
-### Trace Anchor
-
-Role: executor. State: 45 verified source installations, three third-party origins, four unresolved inventory entries. Evidence: per-repository published source inspection and exact Opus 5.5 high review of the new Dossier fields. Local capture and shared publication have separate receipts.
-
-## Downstream feedback intake - 2026-11-01
-
-Last Updated: 2026-11-01 - Codex. Source version 4.20.5.
-
-Read `docs/DOWNSTREAM_FEEDBACK.md` DF-064 and DF-065. DF-064 retains a reported
-full-sync symptom with a non-reproducing bounded current-source check; DF-065
-confirms that the hook can suppress a failing version-check exit. Both remain
-open. This is documentation intake, not a fix, installation or new priority.
-Earlier product, CI and recovery work keeps its existing state and owner.
-
-## House Docs initializer repair - 2026-10-19
-
-Current work: executor fixes the imported owner-state defect documented in
-`docs/TEMPLATE_IMPORT_REPAIR.md`. Version 4.20.2 source approved; publication and child adoption follow.
-
-### Open work - next concrete step: initializer repair
-
-Publish the independently reviewed `scripts/dockit-init-project.sh` and
-`scripts/dockit-ideas.py`, then apply only the registered House Docs repair. Earlier CI/product/recovery work below retains its owner and state.
-Dossier assessment: refresh required for this correction; the existing shared
-publication hold remains, so retain a reviewed local capture if still applicable.
-
-## CI maintenance published and observed - 2026-10-14
-
-Version4.20.1 at ec952fb9c226cd28b9895ed054871c2e234cbd33 is published.
-The exact implementation passed Idea continuity38629995423, Workspace ownership
-38629995649 and manual Documentation Validation38630123628 on public standard
-runners. This public proof does not reopen private-account allowance or satisfy
-another project's platform tests. No paid usage was enabled.
-Next: executor captures the reviewed local Dossier and verifies its native reader;
-shared publication stays under Home Infra's writer/destination/recovery hold.
-Other project priorities and independent recovery remain separately owned.
-This final receipt does not require another recursive snapshot after that capture.
-
-## GitHub validation efficiency - 2026-10-14
-
-Last Updated: 2026-10-14 - Codex. Source version 4.20.1.
-Read `docs/CI_EFFICIENCY.md`. The requested maintenance removes duplicate branch/PR runs,
-cancels superseded PR checks and preserves exact default-branch checks. Product
-runtime and earlier independent priorities remain unchanged. Source preparation,
-publication and successful hosted observation remain separate; this public repository can use standard hosted runners without consuming the private allowance. No paid usage or automatic retry was enabled.
-
-### Open work - next concrete step: CI maintenance
-
-Executor completes publication of the reviewed workflow list in `docs/CI_EFFICIENCY.md` and its
-owner receipt, then verifies the exact revision on the public standard runners.
-Earlier product work below remains independent; this maintenance does not accept it.
-Dossier assessment: refresh required for the shared CI policy and updater recovery; existing shared-publication hold remains.
-
-### Trace Anchor - CI maintenance
-
-- Role: executor
-- Subject: economical validation preserving existing tests
-- Resulting state: version=4.20.1; source candidate; hosted execution unverified
-- Repo state: isolated task based on 350d05327360166bea78b27112cdc7eae678923e; no primary reset
-- Validation: semantic workflow preservation and owner checks; exact Opus8 source review GO, final execution receipts separate
-- Next gate: executor source publication, then exact hosted observation when available
-
-<!-- doc-version: 4.22.0 -->
-
-## Idea continuity adoption - 2026-10-07
-
-Last Updated: 2026-10-07 - Codex.
-Carlos authorized durable idea continuity across the eight reviewed projects.
-Read `docs/llm/IDEA_INDEX.json` before relevant brainstorming and
-`docs/llm/IDEA_CONTINUITY_2026-10-07.md` for scope, validation and delivery.
-Requests/suggestions retain origins, owners and recall triggers; existing
-decision registers keep sole lifecycle authority. The first historical batch is
-bounded and remaining coverage stays explicit. Product priorities and runtime
-remain as recorded below. Independent exact Opus 5.5/high SOURCE_GO and final eight-project checks pass.
-Source publication and DEV installation are verified. The scoped Dossier/recovery
-delivery receipt is at the top of `docs/llm/HANDOFF.md`; source-only legacy owners
-remain explicit. Exact Opus 5.5/high delivery review is GO; existing priorities stay.
-
+<!-- doc-version: 4.23.0 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 
@@ -156,6 +41,36 @@ Session-start scope:
 - Re-read the full onboarding only when the operator explicitly widens scope or when repo state/doc changes make the prior onboarding stale. In that case begin with `Onboarding loaded (mid-session).`
 
 ## Critical Rules (Non-Negotiable)
+
+<!-- DOCKIT-TEMPLATE:START leave-no-residue -->
+### Leave no residue
+
+A task is not done while something it created only in order to do the work
+still exists. Authority: Carlos, 2026-11-26; `docs/LEAVE_NO_RESIDUE.md`.
+
+1. Residue is what a task makes on the way and nobody will use afterwards: test
+   and qualification containers, images built or pulled for a test, scratch and
+   staging folders, temporary files, restore rehearsals, the task's own copies
+   taken before a change, task branches and worktrees, superseded drafts, raw
+   logs and transport archives.
+2. Know what removes a disposable thing before creating it. Prefer forms that
+   remove themselves (`--rm`, a self-deleting temporary directory, a stream).
+3. Nothing that runs repeatedly may create and destroy a resource per request,
+   poll or read. Use a long-lived process, a native tool or a cache.
+4. Remove only what this task created and is authorized to remove, and verify
+   that it is gone. A copy the task took before a change goes when the change is
+   verified, unless the project's rollback or retention rule keeps it.
+5. Anything kept is written down: what, why, who owns it and until when.
+6. Custody, backup, rollback and history obligations prevail over this rule.
+   Never delete or shrink evidence, backups, data volumes, other sessions' work,
+   user data or objects of unknown origin in order to tidy up: report them. An
+   unreferenced volume may hold data.
+7. Closeout states what the task created, what it removed and what it kept under
+   point 5. "Created nothing disposable" is a valid statement.
+
+Applied by `docs/RUNTIME_LIFECYCLE.md` (runtime) and the `workspace-ownership`
+section (workspaces). `workspace-leftovers` warns on backup/temporary files.
+<!-- DOCKIT-TEMPLATE:END leave-no-residue -->
 
 ### Language Policy
 - Canonical engineering documentation, code identifiers, comments and file names: English.
@@ -258,16 +173,20 @@ reconcile an interrupted run before retrying. Follow docs/RUNTIME_LIFECYCLE.md.
 <!-- DOCKIT-TEMPLATE:END doc-sync-rules -->
 
 <!-- DOCKIT-TEMPLATE:START commit-policy -->
-### Commit Message Policy
-- Every response that includes code or documentation changes must end with suggested commit information:
-  - **Title:** under 72 characters
-  - **Description:** under 200 characters, focused on user impact and why the change matters
-- Format:
-  `
-  ## Commit Info
-  **Title:** <concise title>
-  **Description:** <short explanation of what changed and why>
-  `
+### Publish work before declaring completion
+
+Follow `docs/PUBLICATION_CLOSEOUT.md`. Finished authorized source changes are
+validated, reviewed, committed and published in the same session through the
+owner's ordinary workflow. Do not stop at a suggested commit message or leave
+work uncommitted/unpushed without a concrete blocker and retained handoff.
+A local commit or a task-branch push is not default-branch completion. Preserve
+concurrent work, secrets, signing/review safeguards and history; never force-push
+or publish outside existing authority. Reconcile a refused ordinary push and
+retry. After publication, run `scripts/dockit-publication.py --require-published`
+once, then retire task resources through the owner tool and verify absence.
+Offline `publication-state` warns during work; the live final gate must pass
+before declaring publication complete. Report actual commit and publication,
+checks and retained exceptions rather than only suggesting what to commit.
 <!-- DOCKIT-TEMPLATE:END commit-policy -->
 
 <!-- DOCKIT-TEMPLATE:START version-management -->
@@ -320,6 +239,13 @@ review constraints remain in force. Projects that exclude this section through
 `.dockit-config.yml` must keep the exception and its authority visible.
 The source policy belongs to LLM-DocKit; Claude Code's user `model` setting is a
 separate runtime default and does not prove that project copies were synchronized.
+
+Roles are model-independent: see `docs/AGENT_ROLES.md`. Separate role, family,
+actual/requested model, client, account alias, session and task. Two accounts of
+the same family do not satisfy a required cross-family independent review.
+ForgeOS owns runtime assignment/routing; projects own scope and acceptance.
+Unknown effective model metadata remains unknown, never inferred from an alias.
+
 <!-- DOCKIT-TEMPLATE:END independent-review-policy -->
 
 <!-- DOCKIT-TEMPLATE:START env-policy -->
@@ -418,7 +344,7 @@ Time verification:
   `Sent: unverified client time YYYY-MM-DD HH:MM:SS <claimed-tz>`.
 - Prefer generating the close-out scaffold immediately before sending it:
   ```sh
-  scripts/dockit-trace-status.sh --role executor --subject "<commit/task>" \
+  scripts/dockit-trace-status.sh --format text --role executor --subject "<commit/task>" \
     --validation "<checks>" --next "<next gate>"
   ```
   This prints current HEAD, local/upstream state, worktree cleanliness, version,
@@ -479,6 +405,19 @@ convention with:
 trace_protocol:
   enabled: false
 ```
+
+### Capability-based presentation
+
+Use `scripts/dockit-trace-status.sh` to collect one snapshot. `--format auto`
+(the default) emits a static HTML card when the client provides the writable
+`ORCA_CHAT_SCRATCH_DIR` capability; show the returned `orca-visual` directive.
+Use `--language es` for Spanish operator views. Without the capability, or if
+rendering fails, it returns text; `--format text` explicitly selects the
+compatible terminal form. `docs/integrations/ORCA.md` defines the adapter.
+No container, polling or network is needed. Delivered HTML is retained chat
+history with a fresh filename, not disposable scratch. HANDOFF/HISTORY stay
+textual; neither presentation replaces review provenance or freshness checks.
+
 <!-- DOCKIT-TEMPLATE:END trace-protocol -->
 
 <!-- DOCKIT-TEMPLATE:START delivery-evidence -->

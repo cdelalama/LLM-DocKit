@@ -2,9 +2,9 @@
   "artifacts": [],
   "branch": "feat/dossier-adoption",
   "id": "wt_f1cbeb73311127f3",
-  "next_step": "Review task result, pending source and private evidence with the owning project before relocation or retirement.",
+  "next_step": "Dossier adoption source and local receipt at ee2179c are integrated in main. Carlos authorized checkout cleanup on 2026-11-26; retire with the guarded tool. Preserve .forgeos/dossier.json, native/shared histories and private custody; separate engine/reader/recovery acceptance remains with the owner.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: feat/dossier-adoption",
   "schema": 1,
-  "state": "retained"
+  "state": "closed"
 }

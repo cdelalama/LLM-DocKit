@@ -5,7 +5,7 @@
   ],
   "branch": "work/dossier-language-20260930",
   "id": "dossier-language-20260930",
-  "next_step": "Completed Spanish Dossier delivery; retain checkout and evidence. Independent physical recovery, broader product localization and proposed M0 remain separately owned.",
+  "next_step": "Spanish Dossier source and delivery receipt were published at d7ddea4. Carlos authorized checkout cleanup on 2026-11-26, superseding the old retain-checkout instruction; retire with the guarded tool. Preserve both docs/archive/DOSSIER_LANGUAGE_2026-09-30 artifacts and private evidence. Independent physical recovery and broader localization remain separate.",
   "project": "LLM-DocKit",
   "purpose": "Separate technical documentation language from Spanish operator-facing Dossier content",
   "schema": 1,

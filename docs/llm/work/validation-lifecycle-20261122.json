@@ -4,8 +4,8 @@
   "project": "LLM-DocKit",
   "branch": "work/validation-lifecycle-20261122",
   "purpose": "Limit validation fan-out and safely retire transient resources",
-  "state": "pending-integration",
-  "next_step": "Retain the verified OCTA Home Infra/Barcience and DEV Home Infra adoption receipts; qualify the 66 held legacy OCTA configurations before restoring their hooks. Preserve the historical excluded checkout.",
+  "state": "closed",
+  "next_step": "Source and selected-host adoption receipts are published through 5afe360. Carlos authorized checkout cleanup on 2026-11-26; retire this integrated implementation checkout. Keep the 66 held OCTA configurations suspended until each is qualified under docs/RUNTIME_LIFECYCLE.md; preserve the excluded historical checkout and native evidence. Source-workspace closure does not close fleet qualification.",
   "artifacts": [
     "docs/RUNTIME_LIFECYCLE.md"
   ]

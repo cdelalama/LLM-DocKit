@@ -2,7 +2,7 @@
   "artifacts": [],
   "branch": "work/house-docs-init-repair-20261019",
   "id": "house-docs-init-repair-20261019",
-  "next_step": "House Docs delivery passed with published exact-source consumer evidence. Retain checkout and private evidence; no retirement authorized. Existing owner-wide Dossier/provider limits remain separate.",
+  "next_step": "House Docs delivery and bounded custody receipt were published at 0b2a12d. Carlos authorized checkout cleanup on 2026-11-26, superseding the prior no-retirement instruction; retire with the guarded tool after published record readback. Preserve private evidence and owner-wide Dossier/provider limits; no other child acceptance follows.",
   "project": "LLM-DocKit",
   "purpose": "Repair foreign template idea state blocking the authorized House Docs delivery",
   "schema": 1,

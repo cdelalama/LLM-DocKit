@@ -129,6 +129,54 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier queues unchanged; classify historical runtime separately.",
       "cursor": "Before new disposable runtime and fleet lifecycle closeout."
+    },
+    {
+      "id": "B-leave-no-residue-20261126",
+      "date": "2026-11-26",
+      "sources": [
+        {
+          "path": "docs/LEAVE_NO_RESIDUE.md"
+        }
+      ],
+      "excluded": [
+        "Private incident evidence, host identifiers, raw logs and unrelated work."
+      ],
+      "unknown": [
+        "Existing leftovers in repositories and on hosts; other conversations about clean-up."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier queues unchanged; existing residue is inventoried by its owners.",
+      "cursor": "Before creating anything disposable and at every task closeout."
+    },
+    {
+      "id": "B-orca-publication-closeout-20261126",
+      "date": "2026-11-26",
+      "sources": [
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "contains": "## D-035"
+        },
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "contains": "## D-036"
+        },
+        {
+          "path": "docs/llm/DECISIONS.md",
+          "contains": "## D-037"
+        },
+        {
+          "path": "docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md"
+        }
+      ],
+      "excluded": [
+        "Private credentials, raw advisor transcripts and unrelated concurrent NAS/Dossier implementation."
+      ],
+      "unknown": [
+        "Historical conversations and all-client/all-host adoption beyond the explicit observations."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical backfill and product acceptance remain unchanged.",
+      "cursor": "Recall at publication closeout, agent assignment, Trace client adoption or workspace retirement."
     }
   ],
   "entries": [
@@ -352,6 +400,98 @@
         }
       ],
       "rationale": "Source implementation and inventory are in progress; actual cleanup, producer adoption, monitoring and fleet acceptance remain distinct."
+    },
+    {
+      "id": "REF-D-034-LEAVE-NO-RESIDUE",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Every task removes the residue it creates",
+      "origin": {
+        "date": "2026-11-26",
+        "attribution": "Carlos ordered a rule high in the hierarchy: any task or action that generates garbage cleans it up. Drafted by Claude Code (claude-fable-5-2).",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-034"
+          }
+        ]
+      },
+      "batch": "B-leave-no-residue-20261126",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before creating anything disposable, closing a task or changing clean-up checks.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-034"
+      }
+    },
+    {
+      "id": "REF-D-035",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Publish authorized task work before reporting completion",
+      "origin": {
+        "date": "2026-11-26",
+        "attribution": "Carlos accepted the preceding analysis and explicitly ordered implementation, delegation, cleanup and publication.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-035"
+          }
+        ]
+      },
+      "batch": "B-orca-publication-closeout-20261126",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before claiming completion, assigning agents or rendering Trace.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-035"
+      }
+    },
+    {
+      "id": "REF-D-036",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Separate roles from model family client and account",
+      "origin": {
+        "date": "2026-11-26",
+        "attribution": "Carlos accepted the preceding analysis and explicitly ordered implementation, delegation, cleanup and publication.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-036"
+          }
+        ]
+      },
+      "batch": "B-orca-publication-closeout-20261126",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before claiming completion, assigning agents or rendering Trace.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-036"
+      }
+    },
+    {
+      "id": "REF-D-037",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Static Orca Trace with compatible terminal fallback",
+      "origin": {
+        "date": "2026-11-26",
+        "attribution": "Carlos accepted the preceding analysis and explicitly ordered implementation, delegation, cleanup and publication.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md",
+            "contains": "## D-037"
+          }
+        ]
+      },
+      "batch": "B-orca-publication-closeout-20261126",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "Before claiming completion, assigning agents or rendering Trace.",
+      "ref": {
+        "path": "docs/llm/DECISIONS.md",
+        "contains": "## D-037"
+      }
     }
   ],
   "task_reconciliations": [
@@ -367,6 +507,127 @@
       "ideas": [
         "IDEA-0033",
         "IDEA-0034"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/actions-efficiency-20261014.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/bounded-validation-20261122.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/dossier-language-20260930.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/model-roles-20261120.json",
+      "ideas": [
+        "REF-D-035",
+        "REF-D-036"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/operator-clarity-20261001.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/project-protocol-20261013.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/rolodex-toolchain-20261120.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/validation-lifecycle-20261122.json",
+      "ideas": [
+        "REF-D-035",
+        "RUNTIME-LIFECYCLE-20261120"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_18575d2cdc8bfde9.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_1ab55aa2e16e9906.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_592e417f602230b2.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_66fcfc6df8bce34c.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_aa94ab3e16782f49.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_c96e20d1843453b7.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_ecf27ef256cff43e.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_f1cbeb73311127f3.json",
+      "ideas": [
+        "REF-D-035"
+      ],
+      "no_ideas_reason": null
+    },
+    {
+      "task": "docs/llm/work/wt_f514a0c9d97112c2.json",
+      "ideas": [
+        "REF-D-035"
       ],
       "no_ideas_reason": null
     }

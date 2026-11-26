@@ -2,7 +2,7 @@
   "artifacts": [],
   "branch": "codex/workspace-ownership-20260929",
   "id": "wt_aa94ab3e16782f49",
-  "next_step": "Source implementation is published and the host controls are deployed. Retain this checkout and evidence until a separate custody-reviewed retirement; Home Infra owns the operational receipt and remaining physical relocation decisions.",
+  "next_step": "Workspace source and DEV-control receipt at ae2bd1d are integrated in main. Carlos authorized cleanup on 2026-11-26, superseding the old retain-checkout instruction; retire with the guarded tool. Preserve original evidence and Home Infra operational/physical-relocation obligations.",
   "project": "LLM-DocKit",
   "purpose": "Retained task checkout: codex/workspace-ownership-20260929",
   "schema": 1,
