@@ -139,3 +139,23 @@ The three files were presented inline in this Orca conversation. Carlos's
 selection remains pending. Neon recommends ledger-sheet; Codex's visual
 preference is split-rail for its compact subject/next-actor arrangement. Neither
 recommendation is an operator decision or production-layout change.
+
+## Publication and local closure
+
+4.23.1 source commit `850aeda49cc9fa00643969511bc96cc96f5138a2` was pushed
+normally to main and verified clean against the live remote. Exact independent
+review R2 strict capture manifest: `bd9bb430b8fd2aa45a0418ec25a0730d0f0794e7928dd8e6c73e512b4ee432f5`.
+Local Dossier L13 `local:6c99af3dedf5b5292f0b18e0a4b3568731c88c41460f8ec92fd197eb01cbea13` was captured/exported
+with all12 earlier records and17 historical sources intact. Actual five-section
+Portal component readback passed81 visible assertions; the browser exited and
+its fixture/profile/bundle were removed. This is local delivery; shared Portal,
+permanent reader availability and OCTA adoption are not established.
+
+Retained: published source examples, immutable chat previews, original advisor
+and review evidence, native Windows receipts and browser screenshots. Owner:
+DocKit/Carlos; private evidence custody review2026-12-04, no automatic deletion.
+Removed: owned local test directories, browser/build staging and the temporary
+Windows qualification fixture (absence checked through a second connection).
+No worktree, branch, service, container or image was created for this follow-up.
+The19 earlier secondary worktrees remain retired; only the primary is registered.
+This publication/readback receipt requires no new version or recursive Dossier.

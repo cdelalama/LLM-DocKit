@@ -7,12 +7,13 @@
 - Last Updated: 2026-11-27 - Codex: integrate Barcience input, compare received Neon designs and verify the clock
 - Current source version: 4.23.1
 - Owner: Carlos
-- State: 4.23.1 clock/distribution correction verified; exact Opus R2 review accepted.
+- State: 4.23.1 published at850aeda; exact Opus R2 review accepted.
   All 19 secondary worktrees remain retired.
-- Local Dossier: L12 captured/exported and all five reader sections verified.
+- Local Dossier: L13 captured/exported and all five reader sections verified;
+  all12 earlier revisions preserved.
 - Release evidence: smoke138/138, Trace25/25, native Windows6/6, visual6/6;
   exact Opus5.5/high R2 SOURCE_GO and bounded CURATION_GO accepted.
-  Publication and final hosted checks require exact commit readback.
+  Live publication verified at850aeda; final hosted check receipts live in GitHub Actions.
 - Operator presentation: Carlos requested three static HTML Trace layouts to choose;
   previews do not change the published default until he selects one.
 - Session focus: complete inherited source, publish instead of abandoning edits,
@@ -71,10 +72,11 @@ documentation, actual visual comparison and bounded post-publication curation.
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
 - Publication checker has offline advisory and explicit live post-push modes.
   It never automatically publishes arbitrary dirty work or grants permission.
-- Dossier: L12 local capture/export/readback completed with the pinned1.1.0
-  engine; all11 earlier snapshots preserved. Three new sources pin11e94e0.
-  Revision: local:b01f3d2661f08d7fb729923da3b46e3b73f9ea612f063bbba019de7a627f1299.
-  The actual local export was read through all five Portal reader sections.
+- Dossier: L13 local capture/export/readback completed with the pinned1.1.0
+  engine; all12 earlier snapshots and17 historical sources preserved. Three new
+  sources pin850aeda;20 sources total. Revision: local:6c99af3dedf5b5292f0b18e0a4b3568731c88c41460f8ec92fd197eb01cbea13.
+  All five Portal reader sections passed81 visible assertions; root inspected
+  Ahora/Fuentes and agent inspected the real view. No external requests.
   Permanent4319 and shared Portal remain unavailable/unproven; do not invoke
   the old container-per-read route. Shared recovery stays with its owner.
 
@@ -103,12 +105,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 00:42:38 Europe/Madrid (23:42:38 UTC)
+- Sent: 2026-11-27 00:45:53 Europe/Madrid (23:45:53 UTC)
 - Subject: Barcience input, requested Neon designs and verified Trace clock
-- Resulting state: version=4.23.1; source candidate; production layout unchanged
-- Repo state: main18251ba equals fetched origin; scoped source/docs edits pending publication
+- Resulting state: version=4.23.1; source published; local Dossier L13 verified; layout choice pending
+- Repo state: main850aeda verified clean and equal to live origin before this receipt
 - Validation: Trace25/25 and native SPITFIRE-2 Windows6/6; smoke138/138; exact Opus R2 SOURCE_GO and bounded CURATION_GO accepted
-- Next gate: agent publishes verified source and captures local L13; Carlos selects a layout independently
+- Next gate: Carlos selects a layout; agent applies it; Windows branch/OCTA/shared reader remain separately owned
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

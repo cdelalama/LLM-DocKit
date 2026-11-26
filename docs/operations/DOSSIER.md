@@ -1,6 +1,6 @@
 # LLM-DocKit Dossier adoption
 
-Status (2026-11-27): local L12 capture/export and five-section reader readback
+Status (2026-11-27): local L13 capture/export and five-section reader readback
 verified. Shared NAS/Portal publication is paused/unavailable; permanent local
 reader reachability is unproven. Historical deployment receipts below do not
 establish current availability. Physical independent backup placement remains open.
@@ -206,3 +206,24 @@ local reader evidence is file-based, with no server/container or NAS invocation.
 The engine's aggregate source freshness remains conservative for mixed revisions.
 See ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md for review, custody and cleanup evidence.
 This receipt does not request another capture or extend sharing/runtime acceptance.
+
+
+## L13 local closeout (2026-11-27 local date)
+
+Source4.23.1 published at850aeda49cc9fa00643969511bc96cc96f5138a2;
+exact Opus5.5/high R2 SOURCE_GO/CURATION_GO captured with manifest
+`bd9bb430b8fd2aa45a0418ec25a0730d0f0794e7928dd8e6c73e512b4ee432f5`. Only approved publication/hash substitutions
+were applied to the reviewed curation. Observed2026-11-26T23:43:53Z;
+captured2026-11-26T23:44:18Z. Revision `local:6c99af3dedf5b5292f0b18e0a4b3568731c88c41460f8ec92fd197eb01cbea13`.
+Export SHA-256 `00255c997d1bd118f9f9e1d20d076a9607b317ffb288585e337f20d098a37108`.
+
+All12 prior records and17 historical sources preserved exactly;13 records,
+16 milestones,9 decisions,20 sources now. Three new allowlisted sources pin850aeda.
+The actual local export passed all five published Portal reader sections with
+81 visible assertions, zero external requests and root/agent visual inspection.
+Temporary build/reader/profile artifacts were removed; private receipts,
+review evidence and screenshots remain under the DocKit custody review2026-12-04.
+The aggregate historical-source freshness warning remains; it does not describe
+uncommitted current pins. Permanent local4319 and shared Portal remain
+unavailable/unproven. No server, container, NAS operation or fleet adoption.
+This receipt adds no substantive curation and does not recursively capture.
