@@ -4,16 +4,23 @@ Host locations: run `task-workspace status --project .`.
 
 ## Current reconciliation - 2026-11-26
 
-Carlos authorized publishing inherited work and cleaning eligible workspaces.
-A closed record below closes its source workspace only; it does not accept
-pending product, runtime, fleet, physical or recovery work named in next_step.
-Publish these records, reconcile the host ledger, then use the guarded retirement
-command. No record alone is proof that a checkout has been removed.
+Observed closeout: all 19 secondary Git registrations retired, comprising18
+existing checkout directories and one already missing checkout's administrative
+entry. Only the primary remains. The task's temporary ForgeOS checkout is also
+retired. 17 local branches and 9 remote branches were removed using exact reviewed
+plans. Two superseded original HEADs are archived on origin; six administrative
+files retain original hashes in private custody. No broad prune was used.
 
-The missing temporary checkout has a closed source record; its Git registration
-remains pending qualified, exact administrative-custody retirement. Original histories and native/private evidence stay intact.
-The imported ecosystem-consensus report is dated 2026-09-29 advisory history,
-preserved byte-for-byte from 566343d; it is not a current acceptance or priority.
+The closed records below preserve the published retirement disposition and
+separate product acceptance limits; their original retirement instructions are
+historical, not another outstanding deletion request. Actual host state is in
+the installed ledger; see docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md.
+The active runtime-lifecycle record retains its wider adoption scope.
+
+One published remote branch is deliberately retained: Windows candidate b6a369f
+contains a Git Bash initializer fix not integrated into main. Owner: DocKit
+maintainer; review 2026-12-03; independent review/native Windows qualification or
+explicit discard before retirement. It has no remaining task checkout.
 
 ## Records
 

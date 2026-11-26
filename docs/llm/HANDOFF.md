@@ -7,7 +7,10 @@
 - Last Updated: 2026-11-26 - Codex
 - Current source version: 4.23.0
 - Owner: Carlos
-- State: source validated and independently reviewed; publication and retirement next.
+- State: 4.23.0 published at 45a4346; all 19 secondary worktrees retired.
+- Remaining session closeout: local Dossier capture/readback and final hosted checks.
+- Operator presentation: Carlos requested three static HTML Trace layouts to choose;
+  previews do not change the published default until he selects one.
 - Session focus: complete inherited source, publish instead of abandoning edits,
   deliver static Orca Trace, and retire legacy task workspaces without losing history.
 - Authority: Carlos explicitly approved the analysis and instructed implementation,
@@ -16,14 +19,22 @@
 
 ## Open work - next concrete step
 
-The executing agent publishes the validated, independently reviewed candidate
-and runs `scripts/dockit-publication.py --require-published`.
-It reconciles published `docs/llm/work/` records with the installed ForgeOS
-ledger and retires the exact eligible workspaces. The missing historical entry
-needs the bounded ForgeOS retirement repair; do not broad-prune or discard it.
-Update the receipt in `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`
-after observed retirement. Existing author edits are explicitly adopted by this
-session; unrelated ForgeOS/Home Infra Dossier implementation remains with its owner.
+The executing agent completes the already-reviewed local Dossier refresh, real
+reader readback and receipt in `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`.
+Finish ordinary publication and exact final hosted checks. The 19 historical
+secondary registrations are retired; only the primary checkout remains. The
+17 associated local branches and 9 remote branches were removed through reviewed
+plans. Two original commits are archived remotely and six administrative files
+remain under verified private custody. The task's ForgeOS checkout is also gone.
+
+Preserve the published Windows candidate `b6a369f` on
+`origin/fix/windows-documentary-validation`: it still contains an unintegrated
+Git Bash path-normalization fix in `scripts/dockit-init-project.sh`. Owner: DocKit
+maintainer. Review by 2026-12-03, with independent review and native Windows
+qualification before integration or an explicit discard. Other portions were
+absorbed by 18d64a3/925fa2a; partial supersession is not full integration. This is
+published retained work, not an uncommitted change or a remaining worktree.
+Unrelated ForgeOS/Home Infra Dossier implementation remains with its owner.
 
 ## Current capability and acceptance limits
 
@@ -31,7 +42,8 @@ session; unrelated ForgeOS/Home Infra Dossier implementation remains with its ow
   client, account and task. ForgeOS owns routing; project owners define scope.
 - Trace renders static HTML for an advertised Orca capability, text otherwise;
   `scripts/dockit-trace-status.sh --language es` is the Spanish operator route.
-  Native Orca readback and terminal tests are separate from source publication.
+  Static HTML has been emitted in this Orca chat; terminal tests pass.
+  Carlos is comparing three layouts; selection and final client acceptance remain separate.
 - Leave-no-residue forbids repeated allocation per read/poll. It cannot replace
   actual producer adoption or host health checks. NAS2/Dossier runtime is owned
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
@@ -67,12 +79,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-26 22:50:32 CET (21:50:32 UTC)
+- Sent: 2026-11-26 23:25:03 CET (22:25:03 UTC)
 - Subject: authorized inherited-source publication, Orca Trace and workspace closure
-- Resulting state: version=4.23.0; source candidate; review/publication pending
-- Repo state: published baseline f7b469a; inherited candidate adopted without reset
+- Resulting state: version=4.23.0; source published;19 secondary worktrees retired
+- Repo state: main 45a4346 verified published and clean before this receipt
 - Validation: smoke138/138, Trace13/13, publication8/8; exact Opus R2 SOURCE_GO
-- Next gate: executor completes publication, guarded retirement and Dossier upkeep
+- Next gate: executor completes local Dossier, receipt publication and final hosted checks
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

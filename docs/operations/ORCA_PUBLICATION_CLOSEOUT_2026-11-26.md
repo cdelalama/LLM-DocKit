@@ -3,7 +3,8 @@
 Date: 2026-11-26. Owner: LLM-DocKit. Authority: Carlos explicitly accepted the
 preceding analysis and requested implementation, delegation, cleanup and
 publication of inherited pending changes. Source baseline: f7b469a, 4.22.0.
-Current candidate: 4.23.0, incorporating the never-published 21-file candidate.
+Published source: 4.23.0 at 45a43462ee65005b530fbf235cba7550d81a1be1,
+incorporating the never-published 21-file candidate.
 
 ## Operator view
 
@@ -13,8 +14,9 @@ publicando; una copia local no cuenta como entrega. Los roles son independientes
 del modelo y de la cuenta. Dos cuentas de ChatGPT no sustituyen la revisión por
 otra familia. La retirada de worktrees preserva los commits y las evidencias.
 
-Estado: candidato integrado; pruebas, revisión, publicación y retirada se
-registran abajo por separado. Las correcciones de Dossier en NAS2 continúan en
+Estado: fuente publicada y19 worktrees secundarios retirados. Se han comprobado
+la ausencia de sus rutas, los archivos remotos y la custodia de metadatos.
+La captura local de Dossier se completa por separado. Las correcciones de Dossier en NAS2 continúan en
 su sesión propietaria; esta entrega no las despliega ni reactiva el Portal.
 
 ## Source ownership and adopted work
@@ -32,7 +34,7 @@ su sesión propietaria; esta entrega no las despliega ni reactiva el Portal.
   remain generic. The source's own context is in HOW_TO_USE.md.
 - ForgeOS/Home Infra primary Dossier edits are unrelated and remain preserved.
 
-## Worktree inventory and intended retirement
+## Worktree inventory and observed retirement
 
 Initial Git registration: primary plus19 secondary entries,18 existing and one
 missing. All existing secondary checkouts were clean;16 contained in main.
@@ -53,7 +55,33 @@ private custody and a fresh plan. No record claims actual retirement.
 Before each retirement: publish the exact closed record, reconcile its host
 ledger, inspect the fresh dry-run and apply only its plan digest. Verify paths
 and exact local/remote branches absent. An unavailable or blocked plan remains
-explicit; preserve data and history. Current execution receipt: pending.
+explicit; preserve data and history. Execution complete: all 19 DocKit entries retired; the task-created ForgeOS
+checkout also retired. 17 local and 9 remote branches removed. Root independently
+verified all 20 paths absent, only the DocKit primary registered, and these remote
+archive refs with their original OIDs:
+
+- refs/archive/LLM-DocKit/wt_18575d2cdc8bfde9/head: f678dfb7d5b17284163b1a7c6e37820d84ba60e9.
+- refs/archive/LLM-DocKit/wt_592e417f602230b2/head: 566343dd4dcdfa158b9ac59ffa1d52ff14ceb27e.
+
+Six administrative files retain exact original SHA-256 values and 0600 modes in
+private host custody; the old administrative entry is absent. Only two declared
+Python cache directories were disposable ignored output. No container or image
+was created. Source tool: ForgeOS 0.50.1, ebb4dd2; installed helper SHA-256
+73a0bbe41a5c30b8e1dce373117ae47889d460a408892f95e1b2ab5b212133dc.
+Qualification: 64 tests PASS plus six guard negative controls; exact Opus R2
+SOURCE_GO, accepted CAP-001 manifest
+63df9cad7412b8224617d8c34d420b8a4519993bf78d6ce4581d33a2649fac57.
+
+The process scan retains its declared visibility limits; known-use and all other
+guards ran unchanged. No full-process-visibility claim or privileged bypass.
+
+One remote branch is intentionally retained: fix/windows-documentary-validation
+at b6a369f5f5bbc0a741c825828b703a5ec2aa5af9 remains published but unmerged.
+Its Git Bash source-root normalization is not in the current initializer; other
+parts were superseded by 18d64a3/925fa2a. Owner: DocKit maintainer. Review2026-12-03
+with independent review/native Windows qualification or explicit disposition.
+It is not a stale remote-tracking ref; the absence check refused before any
+mutation. Preserving this original work is required, not failed cleanup.
 
 ## Validation and review
 
@@ -95,7 +123,15 @@ application migration remain Home Infra/ForgeOS/Portal work.
 Native tests own and remove synthetic fixtures. Chat HTML is intentional retained
 output for this chat; it uses fresh filenames and no network/polling/container.
 Original advisor transcripts and CAP-001 evidence remain in private owner custody.
-Review retained private evidence on2026-12-03 or implementation closeout; no
+Review retained private evidence on 2026-12-03 or implementation closeout; no
 automatic deletion of history. Actual workspaces/branches removed and remaining
 exceptions will be recorded after the guarded execution, not inferred from Git
 ancestry or a passing source checker.
+
+## Trace presentation choice
+
+Carlos requested several static HTML formats on 2026-11-26 after confirming Orca
+support. Three chat previews compare compact, field-grid and log layouts with
+the same complete Trace snapshot. No presentation default changes merely because
+a preview exists; retain the published renderer until Carlos selects a format.
+The chat HTML is intentional output and follows chat-lifetime retention.
