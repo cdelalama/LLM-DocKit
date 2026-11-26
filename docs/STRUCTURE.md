@@ -155,3 +155,6 @@ CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cos
   capability adapter with compatible text fallback.
 - `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`: source-only
   execution/retirement receipt; previous owner state retained under `docs/archive`.
+- `docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md` and
+  `docs/operations/trace-html-barcience-2026-11-16/`: downstream HTML Trace
+  prototypes and the OCTA time-zone defect report, input for comparison only.

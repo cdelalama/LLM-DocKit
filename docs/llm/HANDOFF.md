@@ -4,7 +4,7 @@
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-26 - Codex
+- Last Updated: 2026-11-27 - Claude Code (claude-opus-5-5): downstream HTML Trace input recorded; earlier 2026-11-26 - Codex
 - Current source version: 4.23.0
 - Owner: Carlos
 - State: 4.23.0 published at 45a4346; all 19 secondary worktrees retired.
@@ -37,6 +37,15 @@ qualification before integration or an explicit discard. Other portions were
 absorbed by 18d64a3/925fa2a; partial supersession is not full integration. This is
 published retained work, not an uncommitted change or a remaining worktree.
 Unrelated ForgeOS/Home Infra Dossier implementation remains with its owner.
+
+Downstream input to compare before the layout choice (added 2026-11-27, Claude
+Code claude-opus-5-5 at Carlos's request): two HTML Trace prototypes made in a
+barcience-survey Orca chat on 2026-11-16, the proposal from that session, and a
+time-zone defect that still exists in 4.23.0: on OCTA Git Bash
+`scripts/dockit-trace-status.sh` line 154 (`TZ=... date`) labels UTC as
+Europe/Madrid without error (seen: 23:02:32 printed, 00:02:32 real). See
+`docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md`. Not yet fixed
+or reviewed; the button interactivity of prototype 2 is unverified.
 
 ## Current capability and acceptance limits
 

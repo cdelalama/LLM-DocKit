@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace</title>
+<style>
+  body{margin:0;padding:8px;background:var(--background,#fff);color:var(--foreground,#171717);font-family:var(--font-sans,system-ui,sans-serif);font-size:13px}
+  .tr{border:1px solid var(--border,#e5e5e5);border-radius:var(--radius,10px);background:var(--card,#fff);color:var(--card-foreground,#171717);overflow:hidden}
+  .top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border,#e5e5e5)}
+  .role{font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--chart-2,#0d9488);color:#fff}
+  .subj{font-weight:600;flex:1 1 220px}
+  .time{font-family:var(--font-mono,ui-monospace,monospace);font-size:11.5px;color:var(--muted-foreground,#737373)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .cell{padding:9px 12px;border-right:1px solid var(--border,#e5e5e5);border-bottom:1px solid var(--border,#e5e5e5)}
+  .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-foreground,#737373);margin-bottom:3px}
+  .v{line-height:1.4}
+  code{font-family:var(--font-mono,ui-monospace,monospace);font-size:12px;background:var(--muted,#f5f5f5);padding:1px 5px;border-radius:4px}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;margin-right:4px;border:1px solid var(--border,#e5e5e5)}
+  .ok{color:var(--chart-2,#0d9488);border-color:currentColor}
+  .warn{color:var(--chart-4,#d97706);border-color:currentColor}
+  .na{color:var(--muted-foreground,#737373)}
+  .next{padding:10px 12px;background:var(--muted,#f5f5f5);display:flex;gap:8px;align-items:baseline}
+  .next .k{margin:0;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="tr">
+  <div class="top">
+    <span class="role">advisor</span>
+    <span class="subj">Prueba de cabecera Trace en HTML para Orca</span>
+    <span class="time">2026-11-16 22:57:20 CET (21:57:20 UTC)</span>
+  </div>
+  <div class="grid">
+    <div class="cell">
+      <div class="k">Estado resultante</div>
+      <div class="v">HEAD=<code>791db98</code> sin cambios · versión <code>0.20.0</code> · gate <span class="pill na">none</span></div>
+    </div>
+    <div class="cell">
+      <div class="k">Repositorio</div>
+      <div class="v"><code>main</code> = <code>origin/main</code> <span class="pill ok">al día</span><br><span class="pill warn">2 sin seguimiento</span> informe BIM</div>
+    </div>
+    <div class="cell">
+      <div class="k">Validación</div>
+      <div class="v"><span class="pill na">ninguna</span> solo lectura</div>
+    </div>
+  </div>
+  <div class="next">
+    <span class="k">Siguiente</span>
+    <span class="v">Carlos valora el formato; si sirve, se propone el cambio al protocolo Trace en LLM-DocKit.</span>
+  </div>
+</div>
+</body>
+</html>

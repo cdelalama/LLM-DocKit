@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace</title>
+<style>
+  :where(.tr){--tr-a:#6366f1;--tr-b:#06b6d4;--tr-ok:#10b981;--tr-warn:#f59e0b;--tr-off:#94a3b8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:10px;background:var(--background,#fff);color:var(--foreground,#171717);font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);font-size:13.5px}
+  .tr{position:relative;border-radius:16px;padding:1px;background:linear-gradient(120deg,var(--tr-a),var(--tr-b) 60%,var(--tr-ok))}
+  .in{border-radius:15px;background:var(--card,#fff);color:var(--card-foreground,#171717);overflow:hidden}
+  .hero{position:relative;padding:16px 18px 14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+    background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--tr-a) 18%,transparent),transparent 60%),
+               radial-gradient(120% 140% at 100% 0%,color-mix(in srgb,var(--tr-b) 16%,transparent),transparent 60%)}
+  .orb{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px;
+    background:linear-gradient(135deg,var(--tr-a),var(--tr-b));box-shadow:0 6px 18px color-mix(in srgb,var(--tr-a) 40%,transparent)}
+  .ttl{flex:1 1 260px;min-width:0}
+  .eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-foreground,#737373);display:flex;gap:8px;align-items:center}
+  .role{color:var(--tr-a);font-weight:700}
+  .subj{font-size:17px;font-weight:650;margin-top:3px;line-height:1.25}
+  .clock{text-align:right;font-family:var(--font-mono,ui-monospace,Consolas,monospace)}
+  .clock b{display:block;font-size:20px;font-weight:600;letter-spacing:.02em}
+  .clock span{font-size:11px;color:var(--muted-foreground,#737373)}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;padding:0 18px 14px}
+  .st{border:1px solid var(--border,#e5e5e5);border-radius:12px;padding:10px 12px;background:var(--background,#fff);transition:transform .15s,border-color .15s}
+  .st:hover{transform:translateY(-2px);border-color:var(--tr-a)}
+  .st .k{display:flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-foreground,#737373)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
+  .st .v{margin-top:6px;font-weight:600}
+  .st .s{margin-top:2px;font-size:12px;color:var(--muted-foreground,#737373)}
+  code{font-family:var(--font-mono,ui-monospace,Consolas,monospace);font-size:12px;padding:1px 6px;border-radius:6px;background:var(--muted,#f4f4f5)}
+  .next{margin:0 18px 14px;padding:12px 14px;border-radius:12px;display:flex;gap:12px;align-items:center;
+    background:linear-gradient(90deg,color-mix(in srgb,var(--tr-a) 12%,transparent),color-mix(in srgb,var(--tr-b) 8%,transparent))}
+  .next .arrow{font-size:18px;color:var(--tr-a)}
+  .next .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground,#737373)}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--border,#e5e5e5)}
+  button{font:inherit;font-size:12.5px;cursor:pointer;border-radius:999px;padding:6px 13px;border:1px solid var(--border,#e5e5e5);
+    background:var(--secondary,#f4f4f5);color:var(--secondary-foreground,#171717);transition:background .15s,color .15s}
+  button:hover{background:var(--accent,#e4e4e7);color:var(--accent-foreground,#171717)}
+  button.pri{border:0;color:#fff;background:linear-gradient(135deg,var(--tr-a),var(--tr-b))}
+  button.pri:hover{filter:brightness(1.08);color:#fff}
+  .panel{display:none;padding:0 18px 16px}
+  .panel.on{display:block;animation:f .2s ease}
+  @keyframes f{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
+  pre{margin:0;padding:12px;border-radius:10px;background:var(--muted,#f4f4f5);font-family:var(--font-mono,ui-monospace,Consolas,monospace);font-size:12px;white-space:pre-wrap}
+  .toast{position:absolute;right:16px;bottom:16px;padding:7px 12px;border-radius:999px;font-size:12px;background:var(--foreground,#171717);color:var(--background,#fff);opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
+  .chk{display:flex;gap:10px;flex-wrap:wrap}
+  .chk label{display:flex;gap:6px;align-items:center;border:1px solid var(--border,#e5e5e5);border-radius:10px;padding:7px 10px;cursor:pointer}
+  .meter{height:6px;border-radius:999px;background:var(--muted,#f4f4f5);margin-top:10px;overflow:hidden}
+  .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--tr-a),var(--tr-ok));transition:width .25s}
+</style>
+</head>
+<body>
+<div class="tr"><div class="in">
+  <div class="hero">
+    <div class="orb">A</div>
+    <div class="ttl">
+      <div class="eyebrow"><span class="role">Advisor</span>·<span>barcience-survey</span></div>
+      <div class="subj">Prueba 2: cabecera Trace más visual e interactiva</div>
+    </div>
+    <div class="clock"><b>23:03:06</b><span>2026-11-16 CET · 22:03:06 UTC</span></div>
+  </div>
+
+  <div class="steps">
+    <div class="st" style="--c:var(--tr-off)">
+      <div class="k"><span class="dot"></span>Estado resultante</div>
+      <div class="v">Sin cambios</div>
+      <div class="s">HEAD <code>791db98</code> · v<code>0.20.0</code> · gate none</div>
+    </div>
+    <div class="st" style="--c:var(--tr-ok)">
+      <div class="k"><span class="dot"></span>Repositorio</div>
+      <div class="v"><code>main</code> = <code>origin/main</code></div>
+      <div class="s">Al día con el remoto</div>
+    </div>
+    <div class="st" style="--c:var(--tr-warn)">
+      <div class="k"><span class="dot"></span>Pendiente local</div>
+      <div class="v">2 sin seguimiento</div>
+      <div class="s">Informe BIM y sus notas</div>
+    </div>
+    <div class="st" style="--c:var(--tr-off)">
+      <div class="k"><span class="dot"></span>Validación</div>
+      <div class="v">No aplica</div>
+      <div class="s">Solo visual, sin cambios en el repo</div>
+    </div>
+  </div>
+
+  <div class="next">
+    <span class="arrow">➜</span>
+    <div><div class="k">Siguiente paso · Carlos</div>
+    <div>Prueba los botones de abajo y dime cuáles funcionan dentro de Orca.</div></div>
+  </div>
+
+  <div class="bar">
+    <button class="pri" id="bCopy">Copiar Trace en texto</button>
+    <button data-p="pText">Ver versión texto</button>
+    <button data-p="pTest">Prueba interactiva</button>
+    <button id="bTheme">Cambiar acento</button>
+  </div>
+
+  <div class="panel" id="pText"><pre id="txt"></pre></div>
+  <div class="panel" id="pTest">
+    <div class="chk">
+      <label><input type="checkbox"> El diseño me gusta</label>
+      <label><input type="checkbox"> Los botones responden</label>
+      <label><input type="checkbox"> Copiar funciona</label>
+      <label><input type="checkbox"> Se ve bien en el 50"</label>
+    </div>
+    <div class="meter"><i id="m"></i></div>
+    <div class="s" id="mt" style="margin-top:6px;font-size:12px;color:var(--muted-foreground,#737373)">0 de 4</div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div></div>
+
+<script>
+const T=`Trace
+Role: advisor
+Sent: 2026-11-16 23:03:06 CET (22:03:06 UTC)
+Subject: Prueba 2 de cabecera Trace HTML
+Resulting state: HEAD=unchanged (791db98); version=0.20.0; gate=none
+Repo state: main = origin/main; 2 untracked (informe BIM)
+Validation: none (solo visual)
+Next gate: Carlos prueba los botones en Orca`;
+const $=id=>document.getElementById(id);
+$('txt').textContent=T;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1600)}
+$('bCopy').onclick=async()=>{
+  try{await navigator.clipboard.writeText(T);toast('Copiado al portapapeles ✓')}
+  catch(e){
+    try{const a=document.createElement('textarea');a.value=T;document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();toast(ok?'Copiado (modo alternativo) ✓':'El portapapeles está bloqueado')}
+    catch(_){toast('El portapapeles está bloqueado')}
+  }
+};
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=$(b.dataset.p);const on=!p.classList.contains('on');document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));if(on)p.classList.add('on')});
+const pal=[['#6366f1','#06b6d4'],['#ec4899','#f59e0b'],['#10b981','#3b82f6'],['#8b5cf6','#ef4444']];let i=0;
+$('bTheme').onclick=()=>{i=(i+1)%pal.length;const r=document.querySelector('.tr');r.style.setProperty('--tr-a',pal[i][0]);r.style.setProperty('--tr-b',pal[i][1]);toast('Acento '+(i+1)+' de '+pal.length)};
+document.querySelectorAll('.chk input').forEach(c=>c.onchange=()=>{const n=[...document.querySelectorAll('.chk input')].filter(x=>x.checked).length;$('m').style.width=(n*25)+'%';$('mt').textContent=n+' de 4'});
+</script>
+</body>
+</html>
