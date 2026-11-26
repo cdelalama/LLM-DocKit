@@ -16,7 +16,8 @@ otra familia. La retirada de worktrees preserva los commits y las evidencias.
 
 Estado: fuente publicada y19 worktrees secundarios retirados. Se han comprobado
 la ausencia de sus rutas, los archivos remotos y la custodia de metadatos.
-La captura local de Dossier se completa por separado. Las correcciones de Dossier en NAS2 continúan en
+Dossier L12 está capturado, exportado y leído localmente; la entrega compartida
+sigue bloqueada por el lector pausado. Las correcciones de Dossier en NAS2 continúan en
 su sesión propietaria; esta entrega no las despliega ni reactiva el Portal.
 
 ## Source ownership and adopted work
@@ -135,3 +136,34 @@ support. Three chat previews compare compact, field-grid and log layouts with
 the same complete Trace snapshot. No presentation default changes merely because
 a preview exists; retain the published renderer until Carlos selects a format.
 The chat HTML is intentional output and follows chat-lifetime retention.
+
+## Final local Dossier and residue receipt
+
+L12 observed2026-11-26T22:28:25Z, captured22:29:07Z:
+`local:b01f3d2661f08d7fb729923da3b46e3b73f9ea612f063bbba019de7a627f1299`.
+Pinned1.1.0 check/capture/export/trace all exit0. Twelve records exported; the
+eleven preceding snapshots are byte-identical. Three new source references pin
+published11e94e0bc093c7edaf995b06ab6e1ec4bdf325dd; fourteen historical references
+remain pinned to their original commits. Export SHA-256:
+`d54cafeeff77196662c5093aa8961149e7444aeb205c4fef56c6724b81d0841b`.
+
+Actual Portal reader components read the real export locally: Ahora, Hoja de
+ruta, Informes, Decisiones and Fuentes all PASS. Author inspected screenshots;
+independent R2 approved the curation and the precise final factual replacements.
+Both mandatory source-attribution corrections are present. The older engine's
+`may_be_behind_or_working_tree` aggregate is not proof that the three current pins
+are unpublished: the preserved source set intentionally spans historical commits.
+No universal source-freshness claim is made.
+
+The reserved localhost4319 link remains unavailable/unproven as a permanent
+service; file-based reader evidence is separate. Shared delivery is blocked.
+Home Infra published casec34f97d3 still records NAS2 recovered/not closed and
+Portal paused. This task neither resumed Portal nor deployed the new NAS reader.
+
+Seventeen enumerated Dossier staging files were removed after readback; temporary
+browser profiles are absent. Two legacy Python bytecode files for tracked helpers
+were removed from the primary checkout, preserving their source. No container,
+image or service was created. Intentional chat HTML, private review/readback
+evidence, Git history/archives, administrative custody and actual Dossier storage
+remain with their named owners. Review private audit evidence2026-12-03; no
+automatic history deletion. This receipt creates no recursive Dossier snapshot.

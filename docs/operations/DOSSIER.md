@@ -191,3 +191,16 @@ Source is published a010033; full previous content and owner holds retained.
 Current shared backup succeeds at229662bytes; this does not replace the prior
 shared-publisher recovery acceptance. No shared publication or independent
 backup acceptance is claimed. Native reader verification is task-private.
+
+## 2026-11-26 - Local L12 source/workspace closeout
+
+Captured revision `local:b01f3d2661f08d7fb729923da3b46e3b73f9ea612f063bbba019de7a627f1299`
+with pinned offline1.1.0; observed22:28:25Z and captured22:29:07Z. Twelve exported
+records retain all eleven predecessors exactly. Current source references pin
+11e94e0bc093c7edaf995b06ab6e1ec4bdf325dd; historical pins remain intact.
+Check/capture/export/trace and the five real local reader sections passed.
+The permanent localhost4319 link and shared publication remain unavailable; the
+local reader evidence is file-based, with no server/container or NAS invocation.
+The engine's aggregate source freshness remains conservative for mixed revisions.
+See ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md for review, custody and cleanup evidence.
+This receipt does not request another capture or extend sharing/runtime acceptance.

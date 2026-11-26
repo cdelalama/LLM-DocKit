@@ -8,7 +8,8 @@
 - Current source version: 4.23.0
 - Owner: Carlos
 - State: 4.23.0 published at 45a4346; all 19 secondary worktrees retired.
-- Remaining session closeout: local Dossier capture/readback and final hosted checks.
+- Local Dossier: L12 captured/exported and all five reader sections verified.
+- Release evidence: local checks passed; exact final hosted checks live in GitHub Actions.
 - Operator presentation: Carlos requested three static HTML Trace layouts to choose;
   previews do not change the published default until he selects one.
 - Session focus: complete inherited source, publish instead of abandoning edits,
@@ -19,9 +20,10 @@
 
 ## Open work - next concrete step
 
-The executing agent completes the already-reviewed local Dossier refresh, real
-reader readback and receipt in `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`.
-Finish ordinary publication and exact final hosted checks. The 19 historical
+Carlos chooses the static Trace layout from the three Orca previews; the agent
+then applies and validates that selection in `scripts/dockit-trace-render.py`.
+Completed source, cleanup and local Dossier evidence are recorded in
+`docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. The 19 historical
 secondary registrations are retired; only the primary checkout remains. The
 17 associated local branches and 9 remote branches were removed through reviewed
 plans. Two original commits are archived remotely and six administrative files
@@ -49,10 +51,12 @@ Unrelated ForgeOS/Home Infra Dossier implementation remains with its owner.
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
 - Publication checker has offline advisory and explicit live post-push modes.
   It never automatically publishes arbitrary dirty work or grants permission.
-- Dossier: refresh required for this accepted source state. The pinned local
-  offline1.1.0 engine is separate from current ForgeOS1.2.0; preserve history.
-  Shared Portal was paused by its owner; do not invoke the old container-per-read
-  route. Complete feasible local capture and report shared-reader delivery blocked.
+- Dossier: L12 local capture/export/readback completed with the pinned1.1.0
+  engine; all11 earlier snapshots preserved. Three new sources pin11e94e0.
+  Revision: local:b01f3d2661f08d7fb729923da3b46e3b73f9ea612f063bbba019de7a627f1299.
+  The actual local export was read through all five Portal reader sections.
+  Permanent4319 and shared Portal remain unavailable/unproven; do not invoke
+  the old container-per-read route. Shared recovery stays with its owner.
 
 ## Retained work and separate owners
 
@@ -79,12 +83,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-26 23:25:03 CET (22:25:03 UTC)
+- Sent: 2026-11-26 23:32:31 CET (22:32:31 UTC)
 - Subject: authorized inherited-source publication, Orca Trace and workspace closure
 - Resulting state: version=4.23.0; source published;19 secondary worktrees retired
-- Repo state: main 45a4346 verified published and clean before this receipt
+- Repo state: main11e94e0 verified published and clean before this receipt
 - Validation: smoke138/138, Trace13/13, publication8/8; exact Opus R2 SOURCE_GO
-- Next gate: executor completes local Dossier, receipt publication and final hosted checks
+- Next gate: Carlos selects Trace layout; owner gates for Windows/shared reader remain separate
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence
