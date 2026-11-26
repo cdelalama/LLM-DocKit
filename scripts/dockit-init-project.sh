@@ -193,6 +193,10 @@ rm -f .forgeos/dossier.json docs/operations/DOSSIER.md
 # These are source-owner receipts, never a new project's delivery evidence.
 rm -f docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json
 rm -f docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md
+rm -f docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md
+rm -f docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md
+rm -rf docs/operations/trace-html-barcience-2026-11-16
+rm -rf docs/operations/trace-html-neon-2026-11-27
 if [ -d .forgeos ]; then rmdir .forgeos 2>/dev/null || :; fi
 rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh

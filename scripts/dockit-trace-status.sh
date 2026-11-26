@@ -150,9 +150,115 @@ trace_local_timezone() {
     ' "$CONFIG_FILE"
 }
 
+# Capture one UTC instant, then convert it. Git Bash date may ignore named TZ
+# values without failing; matching UTC is not evidence of a bad zone (London
+# in winter is legitimately UTC). Every converter must know the requested zone.
+TRACE_PYTHON=""
+for _python in python3 python; do
+    if command -v "$_python" >/dev/null 2>&1 && "$_python" -c 'import sys; sys.exit(sys.version_info.major != 3)' 2>/dev/null; then
+        TRACE_PYTHON=$_python
+        break
+    fi
+done
+TRACE_POWERSHELL=""
+if [ "${OS:-}" = Windows_NT ]; then
+    for _powershell in powershell.exe pwsh powershell; do
+        if command -v "$_powershell" >/dev/null 2>&1; then
+            TRACE_POWERSHELL=$_powershell
+            break
+        fi
+    done
+fi
+
+trace_epoch_valid() {
+    case "$1" in ''|*[!0-9]*) return 1 ;; esac
+    [ "${#1}" -le 12 ]
+}
+TRACE_EPOCH=$(date -u '+%s' 2>/dev/null || true)
+if ! trace_epoch_valid "$TRACE_EPOCH" && [ -n "$TRACE_PYTHON" ]; then
+    TRACE_EPOCH=$("$TRACE_PYTHON" -c 'import time; print(int(time.time()))' 2>/dev/null || true)
+fi
+if ! trace_epoch_valid "$TRACE_EPOCH" && [ -n "$TRACE_POWERSHELL" ]; then
+    TRACE_EPOCH=$("$TRACE_POWERSHELL" -NoProfile -NonInteractive -Command \
+        '[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()' 2>/dev/null | tr -d '\r')
+fi
+
+trace_python_time() {
+    [ -n "$TRACE_PYTHON" ] || return 1
+    "$TRACE_PYTHON" - "$TRACE_EPOCH" "$LOCAL_TZ" <<'PYTIME'
+import sys
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+instant = datetime.fromtimestamp(int(sys.argv[1]), timezone.utc)
+local = instant.astimezone(ZoneInfo(sys.argv[2]))
+print(local.strftime("%Y-%m-%d %H:%M:%S") + "|" + instant.strftime("%H:%M:%S UTC"))
+PYTIME
+}
+
+trace_powershell_time() {
+    [ -n "$TRACE_POWERSHELL" ] || return 1
+    # Try native IANA resolution first. Windows PowerShell may only know
+    # Windows IDs: explicitly map the default Madrid zone, never invent offsets
+    # or treat other European zones as equivalent. Unknown zones fail closed.
+    DOCKIT_TRACE_EPOCH="$TRACE_EPOCH" DOCKIT_TRACE_ZONE="$LOCAL_TZ" \
+    "$TRACE_POWERSHELL" -NoProfile -NonInteractive -Command '
+$ErrorActionPreference = "Stop"
+try {
+    $name = $env:DOCKIT_TRACE_ZONE
+    try { $zone = [TimeZoneInfo]::FindSystemTimeZoneById($name) }
+    catch {
+        if ($name -eq "Europe/Madrid") { $id = "Romance Standard Time" }
+        elseif ($name -eq "Etc/UTC" -or $name -eq "UTC") { $id = "UTC" }
+        else { throw }
+        $zone = [TimeZoneInfo]::FindSystemTimeZoneById($id)
+    }
+    $utc = [DateTimeOffset]::FromUnixTimeSeconds([long]$env:DOCKIT_TRACE_EPOCH).UtcDateTime
+    $local = [TimeZoneInfo]::ConvertTimeFromUtc($utc, $zone)
+    $culture = [Globalization.CultureInfo]::InvariantCulture
+    $local.ToString("yyyy-MM-dd HH:mm:ss", $culture) + "|" + $utc.ToString("HH:mm:ss", $culture) + " UTC"
+} catch { exit 1 }
+'
+}
+
+trace_date_time() {
+    # Without Python, use date only after a real TZif capability probe. A known
+    # nonzero sentinel catches date implementations silently ignoring TZ. Both
+    # the requested zone and sentinel must be actual system zoneinfo files.
+    case "$LOCAL_TZ" in ''|/*|*..*|*[!A-Za-z0-9_+/-]*) return 1 ;; esac
+    for _tzroot in /usr/share/zoneinfo /usr/share/lib/zoneinfo /var/db/timezone/zoneinfo; do
+        _zone=$_tzroot/$LOCAL_TZ
+        _sentinel=$_tzroot/Etc/GMT-12
+        [ -f "$_zone" ] && [ -f "$_sentinel" ] || continue
+        [ "$(dd if="$_zone" bs=4 count=1 2>/dev/null)" = TZif ] || continue
+        [ "$(dd if="$_sentinel" bs=4 count=1 2>/dev/null)" = TZif ] || continue
+        for _date_style in gnu bsd; do
+            if [ "$_date_style" = gnu ]; then set -- -d '@0'; else set -- -r 0; fi
+            _probe=$(TZ=":$_sentinel" date "$@" '+%Y-%m-%d %H:%M:%S' 2>/dev/null) || continue
+            [ "$_probe" = '1970-01-01 12:00:00' ] || continue
+            if [ "$_date_style" = gnu ]; then set -- -d "@$TRACE_EPOCH"; else set -- -r "$TRACE_EPOCH"; fi
+            _local=$(TZ=":$_zone" date "$@" '+%Y-%m-%d %H:%M:%S' 2>/dev/null) || continue
+            _utc=$(date -u "$@" '+%H:%M:%S UTC' 2>/dev/null) || continue
+            printf '%s|%s\n' "$_local" "$_utc"
+            return 0
+        done
+    done
+    return 1
+}
+
 LOCAL_TZ=$(trace_local_timezone)
-LOCAL_STAMP=$(TZ="$LOCAL_TZ" date '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -u '+%Y-%m-%d %H:%M:%S')
-UTC_STAMP=$(date -u '+%H:%M:%S UTC')
+SENT="unverified client time (clock unavailable; requested zone $LOCAL_TZ)"
+if trace_epoch_valid "$TRACE_EPOCH"; then
+    SENT="unverified client time (UTC epoch $TRACE_EPOCH; requested zone $LOCAL_TZ)"
+    TIME_PAIR=$(trace_python_time 2>/dev/null || trace_powershell_time 2>/dev/null || trace_date_time 2>/dev/null || true)
+    TIME_PAIR=$(printf '%s' "$TIME_PAIR" | tr -d '\r')
+    if printf '%s\n' "$TIME_PAIR" | LC_ALL=C awk '
+        /^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\|[0-9]{2}:[0-9]{2}:[0-9]{2} UTC$/ { valid++; next }
+        { bad = 1 }
+        END { exit !(valid == 1 && !bad) }
+    '; then
+        SENT="${TIME_PAIR%%|*} $LOCAL_TZ (${TIME_PAIR#*|})"
+    fi
+fi
 
 HEAD_FULL=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null || printf 'none')
 if [ "$HEAD_FULL" = "none" ]; then
@@ -197,7 +303,7 @@ trace_text() {
 cat <<EOF
 Trace
 Role: $ROLE
-Sent: $LOCAL_STAMP $LOCAL_TZ ($UTC_STAMP)
+Sent: $SENT
 Subject: $SUBJECT
 Resulting state: HEAD=$HEAD_SHORT; version=$VERSION; gate=$GATE$RESULT_NOTE
 Repo state: $REPO_STATE
@@ -216,16 +322,12 @@ EOF
 
 # Read-only Git/time collection above happens once. Rendering never recollects
 # facts, starts a service, or creates a scratch directory. Plain terminals keep
-# the existing shell-only path and exact default text shape.
+# the exact default text shape, including when Python is unavailable.
 if [ "$FORMAT" = text ] || { [ "$FORMAT" = auto ] && [ -z "${ORCA_CHAT_SCRATCH_DIR:-}" ]; }; then
     trace_text
     exit 0
 fi
 RENDERER=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)/dockit-trace-render.py
-TRACE_PYTHON=""
-if command -v python3 >/dev/null 2>&1; then TRACE_PYTHON=python3
-elif command -v python >/dev/null 2>&1 && python -c 'import sys; sys.exit(sys.version_info.major != 3)' 2>/dev/null; then TRACE_PYTHON=python
-fi
 if [ -z "$TRACE_PYTHON" ] || [ ! -f "$RENDERER" ]; then
     if [ "$FORMAT" = json ]; then
         echo "ERROR: JSON Trace requires Python 3 and dockit-trace-render.py" >&2
@@ -236,7 +338,7 @@ if [ -z "$TRACE_PYTHON" ] || [ ! -f "$RENDERER" ]; then
     exit 0
 fi
 if "$TRACE_PYTHON" -B "$RENDERER" --format "$FORMAT" --language "$LANGUAGE" \
-    --role="$ROLE" --sent="$LOCAL_STAMP $LOCAL_TZ ($UTC_STAMP)" \
+    --role="$ROLE" --sent="$SENT" \
     --subject="$SUBJECT" --resulting-state="HEAD=$HEAD_SHORT; version=$VERSION; gate=$GATE$RESULT_NOTE" \
     --repo-state="$REPO_STATE" --validation="$VALIDATION" --next="$NEXT_GATE" \
     --client="$CLIENT" --model="$MODEL" --model-family="$MODEL_FAMILY" \

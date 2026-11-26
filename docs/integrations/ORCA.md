@@ -35,6 +35,22 @@ email, credential or model family. Two accounts of one model family do not make
 an independent cross-family review. `--dossier` carries the last checked status;
 the renderer never contacts a reader or captures a Dossier.
 
+## Verified clock
+
+Since 4.23.1, the collector reads one UTC epoch and converts that same instant
+for both timestamps. Python zoneinfo is preferred; Windows TimeZoneInfo and
+verified system TZif/date are fallbacks. A missing or ignored timezone produces
+an explicit `unverified client time`, never UTC relabelled as local time.
+Local and UTC equality is legitimate for zero-offset zones. Windows fallback
+supports native zone resolution plus explicit Madrid/UTC mappings; unsupported
+zones remain unverified. No dependency is installed to obtain a clock.
+
+HTML mode emits a visual directive only. Use `--format text` when the receiving
+client needs plain text; do not claim that an exported transcript embeds the
+HTML contents without checking that exporter. Design experiments and their
+acceptance limits are in
+`docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md` in the source repository.
+
 ## Boundaries and retention
 
 The helper renders only when invoked for a substantive turn; there is no timer,

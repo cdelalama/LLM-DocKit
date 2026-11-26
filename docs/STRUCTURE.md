@@ -158,3 +158,8 @@ CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cos
 - `docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md` and
   `docs/operations/trace-html-barcience-2026-11-16/`: downstream HTML Trace
   prototypes and the OCTA time-zone defect report, input for comparison only.
+
+- `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`: source-only integration
+  assessment, design provenance, clock correction and acceptance limits.
+- `docs/operations/trace-html-neon-2026-11-27/`: three source-only Neon-authored
+  static layout examples populated from one fixed historical snapshot.

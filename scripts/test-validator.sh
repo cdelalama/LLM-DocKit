@@ -1739,6 +1739,15 @@ else
     mkdir -p "$INIT_SOURCE/.forgeos" "$INIT_SOURCE/docs/operations"
     printf '{"project_id":"source-only-identity"}\n' > "$INIT_SOURCE/.forgeos/dossier.json"
     printf 'source-only custody instructions\n' > "$INIT_SOURCE/docs/operations/DOSSIER.md"
+    # Seed the exact source-only review paths even before their real artifacts
+    # are published; the initializer must leave this source copy untouched.
+    for _review_file in TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md TRACE_HTML_NEON_REVIEW_2026-11-27.md; do
+        [ -f "$INIT_SOURCE/docs/operations/$_review_file" ] || printf 'source-only review\n' > "$INIT_SOURCE/docs/operations/$_review_file"
+    done
+    for _review_dir in trace-html-barcience-2026-11-16 trace-html-neon-2026-11-27; do
+        mkdir -p "$INIT_SOURCE/docs/operations/$_review_dir"
+        printf 'source-only prototype\n' > "$INIT_SOURCE/docs/operations/$_review_dir/fixture.html"
+    done
     git -C "$INIT_SOURCE" init -q
     git -C "$INIT_SOURCE" config user.email smoke@example.invalid
     git -C "$INIT_SOURCE" config user.name Smoke
@@ -1781,6 +1790,14 @@ POLICY
         && [ ! -e "$SCAFFOLD_REPO/docs/operations/DOSSIER.md" ] \
         && [ ! -e "$SCAFFOLD_REPO/docs/operations/DOSSIER_SHARED_DELIVERY_2026-09-25.json" ] \
         && [ ! -e "$SCAFFOLD_REPO/docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/trace-html-barcience-2026-11-16" ] \
+        && [ ! -e "$SCAFFOLD_REPO/docs/operations/trace-html-neon-2026-11-27" ] \
+        && [ -f "$INIT_SOURCE/docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md" ] \
+        && [ -f "$INIT_SOURCE/docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md" ] \
+        && [ -f "$INIT_SOURCE/docs/operations/trace-html-barcience-2026-11-16/fixture.html" ] \
+        && [ -f "$INIT_SOURCE/docs/operations/trace-html-neon-2026-11-27/fixture.html" ] \
         && ! grep -q handoff_active_start "$SCAFFOLD_REPO/.dockit-config.yml" \
         && [ -f "$SCAFFOLD_REPO/docs/ARCHITECTURE.md.example" ] \
         && grep -q 'docs/ARCHITECTURE.md.example' "$SCAFFOLD_REPO/docs/version-sync-manifest.yml" \

@@ -1,7 +1,9 @@
 # LLM-DocKit Dossier adoption
 
-Status: local capture and shared NAS publication active; connected Portal reader
-available on LAN/WireGuard. Physical independent backup placement remains open.
+Status (2026-11-27): local L12 capture/export and five-section reader readback
+verified. Shared NAS/Portal publication is paused/unavailable; permanent local
+reader reachability is unproven. Historical deployment receipts below do not
+establish current availability. Physical independent backup placement remains open.
 Owner: this repository. User direction: use ForgeOS Dossier for DocKit's own
 project tracking, 2026-09-25. This is not a fleet opt-in.
 

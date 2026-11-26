@@ -4,6 +4,22 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.23.1] - 2026-11-27
+
+### Fixed
+
+- Convert one verified UTC instant to the configured local zone. Handle Git
+  Bash ignoring TZ with zoneinfo/TimeZoneInfo or verified TZif/date; report an
+  unverified clock when conversion is unavailable. Preserve valid UTC+0 zones.
+- Keep source-owned Barcience/Neon Trace notes and prototypes out of newly
+  initialized projects, preserving original evidence in the source repository.
+
+### Documentation
+
+- Integrate the downstream Barcience input and requested Neon design comparison;
+  distinguish rendering, interaction, exported text and operator acceptance.
+  The production layout remains unchanged pending Carlos's selection.
+
 ## [4.23.0] - 2026-11-26
 
 This release completes the previously unshipped 4.23.0 candidate under the

@@ -1,6 +1,6 @@
-## DocKit source maintainer context - 2026-11-26
+## DocKit source maintainer context - 2026-11-27
 
-Source candidate: 4.23.0. Current owner state and next action are in
+Source version: 4.23.1. Current owner state and next action are in
 `docs/llm/HANDOFF.md`; source architecture is in `HOW_TO_USE.md` under
 "Source maintainer context". README, PROJECT_CONTEXT and ARCHITECTURE below
 are distributable starter templates, not an inventory of DocKit runtime.
@@ -8,8 +8,9 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Complete exact independent review, publication and guarded workspace retirement
-for `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. Use
+Integrate the supplied Barcience input and compare actual Neon Trace designs in
+`docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`; publish the independently
+reviewed 4.23.1 clock/distribution patch. The 19 legacy worktrees are retired. Use
 `scripts/dockit-publication.py --require-published` after pushing. Orca Trace uses
 `scripts/dockit-trace-status.sh --language es`; terminal text remains available.
 Previous source observations are preserved in
@@ -17,7 +18,7 @@ Previous source observations are preserved in
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.23.0 -->
+<!-- doc-version: 4.23.1 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 

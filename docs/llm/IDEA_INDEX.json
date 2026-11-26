@@ -177,6 +177,28 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier historical backfill and product acceptance remain unchanged.",
       "cursor": "Recall at publication closeout, agent assignment, Trace client adoption or workspace retirement."
+    },
+    {
+      "id": "B-neon-trace-barcience-20261127",
+      "date": "2026-11-27",
+      "sources": [
+        {
+          "path": "docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md",
+          "revision": "18251ba"
+        },
+        {
+          "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
+        }
+      ],
+      "excluded": [
+        "Raw private prompts, native sessions and unrelated Pixel Fold upstream work."
+      ],
+      "unknown": [
+        "Original cross-chat interactions beyond the supplied note; clipboard behavior and exported transcript contents."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical coverage and owner queues remain unchanged.",
+      "cursor": "Before selecting the Trace layout, adding interactivity or claiming native Windows adoption."
     }
   ],
   "entries": [
@@ -492,6 +514,57 @@
         "path": "docs/llm/DECISIONS.md",
         "contains": "## D-037"
       }
+    },
+    {
+      "id": "IDEA-TRACE-NEON-20261127",
+      "record": "native",
+      "kind": "operator_request",
+      "title": "Neon authors Trace alternatives using Barcience input",
+      "origin": {
+        "date": "2026-11-27",
+        "attribution": "Carlos supplied the Barcience note and requested Neon design; interaction suggestions originate in the supplied Claude advisor note.",
+        "sources": [
+          {
+            "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
+          }
+        ]
+      },
+      "batch": "B-neon-trace-barcience-20261127",
+      "owner": "LLM-DocKit",
+      "state": "in_progress",
+      "recall_trigger": "Before applying a new default Trace layout.",
+      "documentation_refs": [
+        {
+          "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
+        }
+      ],
+      "rationale": "Carlos explicitly requested actual Neon design; comparing proposals does not select the production default.",
+      "authority": "Carlos explicitly requested Neon to author the design in this conversation."
+    },
+    {
+      "id": "IDEA-TRACE-CLIPBOARD-20261127",
+      "record": "native",
+      "kind": "agent_suggestion",
+      "title": "Clipboard and exported text portability from downstream Trace",
+      "origin": {
+        "date": "2026-11-27",
+        "attribution": "Carlos supplied the Barcience note and requested Neon design; interaction suggestions originate in the supplied Claude advisor note.",
+        "sources": [
+          {
+            "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
+          }
+        ]
+      },
+      "batch": "B-neon-trace-barcience-20261127",
+      "owner": "LLM-DocKit",
+      "state": "deferred",
+      "recall_trigger": "When an operator requests copy actions or a client transcript export is qualified.",
+      "documentation_refs": [
+        {
+          "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
+        }
+      ],
+      "rationale": "Clipboard requires qualified Orca capability and a usable fallback; shipped CSP forbids scripts. Text export portability remains unverified."
     }
   ],
   "task_reconciliations": [

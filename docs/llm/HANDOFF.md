@@ -1,15 +1,18 @@
-<!-- doc-version: 4.23.0 -->
+<!-- doc-version: 4.23.1 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Claude Code (claude-opus-5-5): downstream HTML Trace input recorded; earlier 2026-11-26 - Codex
-- Current source version: 4.23.0
+- Last Updated: 2026-11-27 - Codex: integrate Barcience input, compare received Neon designs and verify the clock
+- Current source version: 4.23.1
 - Owner: Carlos
-- State: 4.23.0 published at 45a4346; all 19 secondary worktrees retired.
+- State: 4.23.1 clock/distribution correction verified; exact Opus R2 review accepted.
+  All 19 secondary worktrees remain retired.
 - Local Dossier: L12 captured/exported and all five reader sections verified.
-- Release evidence: local checks passed; exact final hosted checks live in GitHub Actions.
+- Release evidence: smoke138/138, Trace25/25, native Windows6/6, visual6/6;
+  exact Opus5.5/high R2 SOURCE_GO and bounded CURATION_GO accepted.
+  Publication and final hosted checks require exact commit readback.
 - Operator presentation: Carlos requested three static HTML Trace layouts to choose;
   previews do not change the published default until he selects one.
 - Session focus: complete inherited source, publish instead of abandoning edits,
@@ -20,8 +23,14 @@
 
 ## Open work - next concrete step
 
-Carlos chooses the static Trace layout from the three Orca previews; the agent
-then applies and validates that selection in `scripts/dockit-trace-render.py`.
+Carlos requested Neon to author the design after supplying the Barcience note.
+Three static proposals returned through the requested Neon route: ledger-sheet
+(Neon recommendation), split-rail and command-strip. Canonical model identity
+is not present in the CLI response; operator selection is still pending. The
+agent compares these actual proposals in
+`docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`; Carlos can then select
+a layout before it is applied to `scripts/dockit-trace-render.py`. The earlier
+Codex options are retained history, not the active default choice.
 Completed source, cleanup and local Dossier evidence are recorded in
 `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. The 19 historical
 secondary registrations are retired; only the primary checkout remains. The
@@ -38,14 +47,16 @@ absorbed by 18d64a3/925fa2a; partial supersession is not full integration. This 
 published retained work, not an uncommitted change or a remaining worktree.
 Unrelated ForgeOS/Home Infra Dossier implementation remains with its owner.
 
-Downstream input to compare before the layout choice (added 2026-11-27, Claude
-Code claude-opus-5-5 at Carlos's request): two HTML Trace prototypes made in a
-barcience-survey Orca chat on 2026-11-16, the proposal from that session, and a
-time-zone defect that still exists in 4.23.0: on OCTA Git Bash
-`scripts/dockit-trace-status.sh` line 154 (`TZ=... date`) labels UTC as
-Europe/Madrid without error (seen: 23:02:32 printed, 00:02:32 real). See
-`docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md`. Not yet fixed
-or reviewed; the button interactivity of prototype 2 is unverified.
+The Barcience source note and two prototypes are preserved unchanged in
+`docs/operations/TRACE_HTML_DOWNSTREAM_BARCIENCE_2026-11-16.md` and its linked
+HTML directory. 4.23.1 corrects the reported Git Bash timezone failure in
+`scripts/dockit-trace-status.sh`: one UTC instant, verified conversion, explicit
+unverified fallback. Trace tests pass 25/25; native SPITFIRE-2 Windows tests pass
+6/6. A separate diagnostic reproduced the old defect. OCTA adoption is not verified.
+The initializer excludes these source-only notes/prototypes from new project
+scaffolds while preserving the source originals. Full smoke passed138/138 with no failures and
+removed all disposable fixtures. Exact Opus5.5/high R2 accepted the source, corrected
+documentation, actual visual comparison and bounded post-publication curation.
 
 ## Current capability and acceptance limits
 
@@ -54,7 +65,7 @@ or reviewed; the button interactivity of prototype 2 is unverified.
 - Trace renders static HTML for an advertised Orca capability, text otherwise;
   `scripts/dockit-trace-status.sh --language es` is the Spanish operator route.
   Static HTML has been emitted in this Orca chat; terminal tests pass.
-  Carlos is comparing three layouts; selection and final client acceptance remain separate.
+  Three Neon-route proposals were received; selection and final client acceptance remain separate.
 - Leave-no-residue forbids repeated allocation per read/poll. It cannot replace
   actual producer adoption or host health checks. NAS2/Dossier runtime is owned
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
@@ -92,12 +103,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-26 23:32:31 CET (22:32:31 UTC)
-- Subject: authorized inherited-source publication, Orca Trace and workspace closure
-- Resulting state: version=4.23.0; source published;19 secondary worktrees retired
-- Repo state: main11e94e0 verified published and clean before this receipt
-- Validation: smoke138/138, Trace13/13, publication8/8; exact Opus R2 SOURCE_GO
-- Next gate: Carlos selects Trace layout; owner gates for Windows/shared reader remain separate
+- Sent: 2026-11-27 00:42:38 Europe/Madrid (23:42:38 UTC)
+- Subject: Barcience input, requested Neon designs and verified Trace clock
+- Resulting state: version=4.23.1; source candidate; production layout unchanged
+- Repo state: main18251ba equals fetched origin; scoped source/docs edits pending publication
+- Validation: Trace25/25 and native SPITFIRE-2 Windows6/6; smoke138/138; exact Opus R2 SOURCE_GO and bounded CURATION_GO accepted
+- Next gate: agent publishes verified source and captures local L13; Carlos selects a layout independently
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

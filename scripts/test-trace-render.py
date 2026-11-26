@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Exercise Trace rendering and fallback without services or persistent fixtures."""
 import importlib.util
+from datetime import datetime, timezone
+import shlex
 from html.parser import HTMLParser
 import json
 import os
@@ -188,6 +190,178 @@ class TraceRendering(unittest.TestCase):
         self.assertTrue(text.startswith("Trace\n"))
         self.assertIn("Model: unknown\n", text)
         self.assertEqual(len(list(self.root.glob("trace-*.html"))), 1)
+
+
+class TraceClock(unittest.TestCase):
+    """Isolated PATH simulations; these are not native Windows qualification."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="dockit-trace-clock-")
+        self.root = Path(self.temp.name)
+        self.bin = self.root / "bin"
+        self.bin.mkdir()
+        self.project = self.root / "project"
+        self.project.mkdir()
+        self.clock_log = self.root / "clock-calls"
+        self.ps_log = self.root / "powershell-calls"
+        self.addCleanup(self.retire)
+        for name in ("awk", "sed", "dirname", "tr", "dd", "cat"):
+            (self.bin / name).symlink_to(shutil.which(name))
+        self.date = shutil.which("date")
+        self.env = dict(os.environ, PATH=str(self.bin))
+        self.env.pop("ORCA_CHAT_SCRATCH_DIR", None)
+        self.env.pop("OS", None)
+        self.zone("Europe/Madrid")
+
+    def retire(self):
+        self.temp.cleanup()
+        self.assertFalse(self.root.exists())
+
+    def executable(self, name, source):
+        target = self.bin / name
+        target.write_text(source)
+        target.chmod(0o755)
+
+    def zone(self, name):
+        (self.project / ".dockit-config.yml").write_text(
+            "trace_protocol:\n  local_timezone: " + name + "\n")
+
+    def clock(self, utc, *, ignore_tz=False, bsd=False):
+        epoch = int(datetime.fromisoformat(utc).replace(tzinfo=timezone.utc).timestamp())
+        conversion = "exec " + shlex.quote(self.date) + ' "$@"'
+        if ignore_tz:
+            conversion = "TZ=UTC " + conversion
+        if bsd:
+            conversion = '''if [ "$1" = -u ]; then shift; utc=-u; else utc=; fi
+if [ "$1" != -r ]; then exit 1; fi
+shift
+instant=$1
+shift
+exec ''' + shlex.quote(self.date) + ' $utc -d "@$instant" "$@"'
+        self.executable("date", "#!/bin/sh\n" +
+            'if [ "$*" = "-u +%s" ]; then\n' +
+            " printf 'clock\\n' >> " + shlex.quote(str(self.clock_log)) + "\n" +
+            f" printf '%s\\n' '{epoch}'\n exit 0\nfi\n" + conversion + "\n")
+        return epoch
+
+    def python(self, *, missing_zoneinfo=False):
+        if missing_zoneinfo:
+            # Disable both system TZPATH and optional site-packaged tzdata so
+            # the real converter raises ZoneInfoNotFoundError on Madrid.
+            self.executable("python3", '#!/bin/sh\nif [ "$1" = - ]; then\n' +
+                            ' PYTHONTZPATH=' + shlex.quote(str(self.root / "absent-zoneinfo")) +
+                            ' exec ' + shlex.quote(sys.executable) + ' -S "$@"\nfi\nexec ' +
+                            shlex.quote(sys.executable) + ' "$@"\n')
+        else:
+            (self.bin / "python3").symlink_to(sys.executable)
+
+    def powershell(self, *, available=True, epoch=None):
+        self.env["OS"] = "Windows_NT"
+        self.executable("powershell.exe", f"#!{sys.executable}\n" +
+            "import os,sys\nfrom datetime import datetime, timezone\nfrom zoneinfo import ZoneInfo\n" +
+            f"with open({str(self.ps_log)!r}, 'a') as f: f.write('call\\n')\n" +
+            ("sys.exit(1)\n" if not available else "") +
+            "command=sys.argv[-1]\n" +
+            f"if 'UtcNow' in command:\n print({epoch!r})\n sys.exit(0)\n" +
+            "assert 'FindSystemTimeZoneById' in command\n" +
+            "assert 'Romance Standard Time' in command\n" +
+            "assert 'ConvertTimeFromUtc' in command\n" +
+            "instant=datetime.fromtimestamp(int(os.environ['DOCKIT_TRACE_EPOCH']), timezone.utc)\n" +
+            "local=instant.astimezone(ZoneInfo(os.environ['DOCKIT_TRACE_ZONE']))\n" +
+            "print(local.strftime('%Y-%m-%d %H:%M:%S')+'|'+instant.strftime('%H:%M:%S UTC'))\n")
+
+    def run_trace(self, format="text"):
+        result = subprocess.run(["/bin/sh", str(ROOT / "scripts/dockit-trace-status.sh"),
+            "--project", str(self.project), "--format", format], env=self.env,
+            capture_output=True, text=True, check=True)
+        return result.stdout
+
+    def sent(self):
+        output = self.run_trace()
+        self.assertEqual(len(output.splitlines()), 8)
+        return output.splitlines()[2].removeprefix("Sent: ")
+
+    def test_python_ignores_broken_date_timezone_and_preserves_midnight(self):
+        self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.python()
+        self.assertEqual(self.sent(), "2026-11-27 00:02:32 Europe/Madrid (23:02:32 UTC)")
+        self.assertEqual(self.clock_log.read_text().splitlines(), ["clock"])
+
+    def test_python_dst_transition_from_same_utc_instant(self):
+        self.python()
+        cases = [("2026-03-29T00:59:59", "2026-03-29 01:59:59", "00:59:59"),
+                 ("2026-03-29T01:00:00", "2026-03-29 03:00:00", "01:00:00"),
+                 ("2026-10-25T00:59:59", "2026-10-25 02:59:59", "00:59:59"),
+                 ("2026-10-25T01:00:00", "2026-10-25 02:00:00", "01:00:00")]
+        for instant, local, utc in cases:
+            with self.subTest(instant=instant):
+                self.clock(instant, ignore_tz=True)
+                self.assertEqual(self.sent(), f"{local} Europe/Madrid ({utc} UTC)")
+
+    def test_python_accepts_legitimate_zero_offset_zones(self):
+        self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.python()
+        for zone in ("Europe/London", "UTC", "Africa/Abidjan"):
+            with self.subTest(zone=zone):
+                self.zone(zone)
+                self.assertEqual(self.sent(), f"2026-11-26 23:02:32 {zone} (23:02:32 UTC)")
+
+    def test_no_python_date_ignoring_tz_is_unverified(self):
+        epoch = self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.assertEqual(self.sent(), f"unverified client time (UTC epoch {epoch}; requested zone Europe/Madrid)")
+
+    def test_no_python_real_tzif_conversion_and_zero_offset(self):
+        self.clock("2026-11-26T23:02:32")
+        self.assertEqual(self.sent(), "2026-11-27 00:02:32 Europe/Madrid (23:02:32 UTC)")
+        self.zone("Europe/London")
+        self.assertEqual(self.sent(), "2026-11-26 23:02:32 Europe/London (23:02:32 UTC)")
+
+    def test_bsd_date_interface_requires_same_tzif_probe(self):
+        self.clock("2026-07-01T23:02:32", bsd=True)
+        self.assertEqual(self.sent(), "2026-07-02 01:02:32 Europe/Madrid (23:02:32 UTC)")
+
+    def test_missing_zone_database_uses_powershell_simulation(self):
+        self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.python(missing_zoneinfo=True)
+        self.powershell()
+        self.assertEqual(self.sent(), "2026-11-27 00:02:32 Europe/Madrid (23:02:32 UTC)")
+        self.assertEqual(self.ps_log.read_text().splitlines(), ["call"])
+
+    def test_powershell_failure_is_unverified_with_broken_date(self):
+        self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.python(missing_zoneinfo=True)
+        self.powershell(available=False)
+        self.assertTrue(self.sent().startswith("unverified client time"))
+
+    def test_powershell_can_supply_clock_without_python_or_date(self):
+        epoch = int(datetime(2026, 11, 26, 23, 2, 32, tzinfo=timezone.utc).timestamp())
+        self.powershell(epoch=epoch)
+        self.assertEqual(self.sent(), "2026-11-27 00:02:32 Europe/Madrid (23:02:32 UTC)")
+        self.assertEqual(self.ps_log.read_text().splitlines(), ["call", "call"])
+
+    def test_all_clock_sources_absent_are_explicit(self):
+        self.assertEqual(self.sent(), "unverified client time (clock unavailable; requested zone Europe/Madrid)")
+
+    def test_unknown_zone_never_gets_an_invented_offset(self):
+        self.clock("2026-11-26T23:02:32")
+        self.python()
+        self.zone("Example/Unknown")
+        self.assertTrue(self.sent().startswith("unverified client time"))
+
+    def test_text_json_html_share_one_snapshot_and_one_clock_read(self):
+        self.clock("2026-11-26T23:02:32", ignore_tz=True)
+        self.python()
+        text = self.run_trace()
+        snapshot = json.loads(self.run_trace("json"))["fields"]
+        self.env["ORCA_CHAT_SCRATCH_DIR"] = str(self.project)
+        directive = self.run_trace("html")
+        artifact = re.search(r'file="([^"]+)"', directive).group(1)
+        document = Document((self.project / artifact).read_text())
+        sent = "2026-11-27 00:02:32 Europe/Madrid (23:02:32 UTC)"
+        self.assertIn("Sent: " + sent + "\n", text)
+        self.assertEqual(snapshot["sent"], sent)
+        self.assertIn(sent, document.values)
+        self.assertEqual(self.clock_log.read_text().splitlines(), ["clock"] * 3)
 
 
 if __name__ == "__main__":

@@ -1407,3 +1407,12 @@ outputs, not throwaway scaffolding. Failure to render falls back to text.
 Durable HANDOFF/HISTORY semantics remain unchanged; optional provenance grants
 no authority. See docs/integrations/ORCA.md. Source availability, actual client
 readback and fleet adoption are separate observations.
+
+
+Follow-up 2026-11-27: Carlos supplied the Barcience prototypes and requested
+Neon as designer. Preserve the original input; compare actual returned designs
+before selecting a production layout. Visible next actor and native selectable
+text are considered without introducing unqualified clipboard/script behavior.
+The confirmed Windows timezone bug is a patch correction, not a change to Trace
+semantics. One UTC instant and verified zone conversion are required; failure is
+explicitly unverified. See docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md.
