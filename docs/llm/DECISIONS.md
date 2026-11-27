@@ -1444,3 +1444,19 @@ template files remain synchronized only by an operator-gated dockit-sync, so
 "latest instructions" does not mean "latest files in every repository". Codex
 hook trust stays a human /hooks review. Coverage is this DEV host's installed
 hooks; other hosts need their own installation.
+
+## D-039 - Operator corrections enter a checked learning register
+
+Date: 2026-11-27. Authority: Carlos asked Home Infra and DocKit to learn from
+the Executor recovery and TREK access errors so agents do not repeat them.
+DF-068 records the observed errors and their distinct causal evidence.
+
+Adopters may create `docs/llm/FAILURE_LEARNING.json` as an explicit case
+register. The validator checks its declared structure and refuses a closed
+case without established cause and existing source/prevention references.
+The managed orientation requires agents to reconcile an operator correction
+with current source, actual client capability, a prevention artifact and
+observed acceptance. The checker cannot detect omitted conversations or
+validate the truth of prose. An open or mitigated case is visible work, not
+permission to claim the affected runtime fixed. `docs/FAILURE_LEARNING.md`
+owns the procedure; project owners own adoption and actual verification.

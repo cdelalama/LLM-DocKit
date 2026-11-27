@@ -217,6 +217,19 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier historical coverage and owner queues remain unchanged.",
       "cursor": "Before automating template sync or installing notices on another host."
+    },
+    {
+      "id": "B-failure-learning-20261127",
+      "date": "2026-11-27",
+      "sources": [
+        {"path": "docs/llm/DECISIONS.md", "contains": "## D-039"},
+        {"path": "docs/DOWNSTREAM_FEEDBACK.md", "contains": "## DF-068"}
+      ],
+      "excluded": ["Private native conversations and credentials; only the operator correction in this session is summarized."],
+      "unknown": ["Unrecorded corrections in other conversations and actual Android Codex Remote use."],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical coverage and owner queues remain unchanged.",
+      "cursor": "Before claiming a failure case closed or deploying correction detection across clients."
     }
   ],
   "entries": [
@@ -625,6 +638,38 @@
         }
       ],
       "rationale": "D-038 delivers current instructions and once-per-change notices. Automatic writes into 49 repositories, ten of them dirty with other sessions' work, stay operator-gated."
+    },
+    {
+      "id": "REF-D-039",
+      "record": "reference",
+      "kind": "accepted_decision",
+      "title": "Operator corrections enter a checked learning register",
+      "origin": {
+        "date": "2026-11-27",
+        "attribution": "Carlos explicitly requested Home Infra and LLM-DocKit to learn from the Executor mistakes and prevent repetition.",
+        "sources": [{"path": "docs/llm/DECISIONS.md", "contains": "## D-039"}]
+      },
+      "batch": "B-failure-learning-20261127",
+      "owner": "LLM-DocKit",
+      "recall_trigger": "When an operator corrects an agent or a case is marked closed.",
+      "ref": {"path": "docs/llm/DECISIONS.md", "contains": "## D-039"}
+    },
+    {
+      "id": "IDEA-AUTO-CORRECTION-DETECTION-20261127",
+      "record": "native",
+      "kind": "operator_request",
+      "title": "Detect corrections even when an agent forgets to declare a case",
+      "origin": {
+        "date": "2026-11-27",
+        "attribution": "Carlos asked for a protocol that forces agents to auto-learn after this incident.",
+        "sources": [{"path": "docs/llm/DECISIONS.md", "contains": "## D-039"}]
+      },
+      "batch": "B-failure-learning-20261127",
+      "owner": "LLM-DocKit",
+      "state": "deferred",
+      "recall_trigger": "When a consented native-session capture mechanism can compare corrections with case coverage without reading unrelated private chats.",
+      "documentation_refs": [{"path": "docs/FAILURE_LEARNING.md"}, {"path": "docs/DOWNSTREAM_FEEDBACK.md"}],
+      "rationale": "The 4.26.0 validator checks declared cases only; silent omission detection needs explicit source scope and privacy review."
     }
   ],
   "task_reconciliations": [

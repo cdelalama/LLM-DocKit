@@ -21,6 +21,7 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- VERSIONING_RULES.md
 |  +- version-sync-manifest.yml  (lists files tracked for version sync)
 |  +- DELIVERY_CONTRACT.md      (opt-in delivery evidence and recovery contract)
+|  +- FAILURE_LEARNING.md        (operator-correction procedure)
 |  +- archive/                   (source-only preserved handoff history)
 |  +- ROADMAP.md                  (LLM-DocKit source roadmap; not synced downstream)
 |  +- FLEET_ROLLOUT_2026-09-12.md (verified policy rollout ledger; source only)
@@ -35,6 +36,8 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
 |  +- dockit-update-notice.py    (central per-prompt update notice hook -- template only)
 |  +- dockit-validate-session.sh (validates LLM documentation state)
+|  +- dockit-learning.py         (checks adopted correction cases)
+|  +- test-learning.py           (source regression fixtures)
 |  +- dockit-delivery-check.sh  (read-only delivery evidence check)
 |  +- dockit-delivery-record.sh (serialized attempt/review/evidence writer)
 |  +- dockit-delivery-lib.sh    (shared declaration and continuity checks)
@@ -71,11 +74,15 @@ Document the repository structure here. Replace this paragraph and the example t
 | docs/FLEET_ROLLOUT_2026-09-12.md | Exact adopter registration, publication, and exception evidence for the 2026-09-12 policy rollout | Source only; not synced downstream |
 | docs/RIEGO_DELIVERY_POSTMORTEM_2026-09-19.md | Delivery postmortem and separate-session implementation brief (DF-058, issue #1) | Source only; proposed controls |
 | docs/version-sync-manifest.yml | Lists files requiring version markers | Required |
+| docs/FAILURE_LEARNING.md | Current-source, client-capability and case-closure procedure | Copied to adopters |
+| docs/llm/FAILURE_LEARNING.json | Optional project-owned correction case register | Never overwritten by sync |
 | dockit-sync-manifest.yml | Sync strategy per file (copy/skip/section-merge/yaml-merge) | Template only |
 | scripts/bump-version.sh | Updates version markers in all tracked files | Required for version bumps |
 | scripts/check-version-sync.sh | Validates version sync across tracked files | Required |
 | scripts/pre-commit-hook.sh | Git pre-commit hook template | Recommended |
 | scripts/dockit-validate-session.sh | Validates HANDOFF/HISTORY/DECISIONS/version-sync state | Required for enforcement |
+| scripts/dockit-learning.py | Checks declared failure-learning cases and adoption evidence | Copied to adopters |
+| scripts/test-learning.py | Exercises supported and refused case closures in isolated repos | Source regression test |
 | scripts/dockit-session-gate.sh | Records session baselines and drives Claude Code Stop validation | Required for Claude Code enforcement |
 | scripts/test-validator.sh | Smoke-tests validator edge cases in throwaway repos | Recommended before validator changes |
 | scripts/dockit-sync.sh | Propagates full or `--only` scoped template updates to downstream projects | Template only |

@@ -4,6 +4,21 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.26.0] - 2026-11-27
+
+### Added
+
+- Optional failure-learning register and validator check for declared operator
+  corrections, plus a managed orientation rule for source precedence and
+  real client capability verification.
+
+### Changed
+
+- Recorded DF-068 from the Executor recovery and TREK access incident; adopter
+  installation and live acceptance remain separate.
+
+### Fixed
+
 ## [4.25.0] - 2026-11-27
 
 ### Added

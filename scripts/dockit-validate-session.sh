@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
         --help|-h)
             echo "Usage: $0 [--human|--json] [--quiet] [--check NAME]... [--project PATH]"
             echo ""
-            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, runtime-lifecycle, workspace-leftovers, publication-state"
+            echo "Checks: handoff-date, history-entry, decisions-referenced, version-sync, external-context, external-triggers, orientation, handoff-shape, orientation-drift, template-residue, trace-protocol, work-records, idea-continuity, failure-learning, runtime-lifecycle, workspace-leftovers, publication-state"
             echo ""
             echo "Exit codes: 0=pass, 1=fail, 2=script error"
             exit 0
@@ -1179,6 +1179,30 @@ check_idea_continuity() {
 
 # ── Run all checks ──────────────────────────────────────────────────────────
 
+check_failure_learning() {
+    if ! should_run "failure-learning"; then return; fi
+    if [ ! -f "$PROJECT_ROOT/docs/llm/FAILURE_LEARNING.json" ]; then
+        if git -C "$PROJECT_ROOT" cat-file -e "HEAD:docs/llm/FAILURE_LEARNING.json" 2>/dev/null \
+            || git -C "$PROJECT_ROOT" cat-file -e "HEAD^:docs/llm/FAILURE_LEARNING.json" 2>/dev/null; then
+            add_result "failure-learning" "FAIL" "Tracked failure-learning register is missing"
+            return
+        fi
+        skip_result "failure-learning" "No adopted failure-learning register in worktree or recent history"
+        return
+    fi
+    if ! command -v "$DOCKIT_PYTHON" >/dev/null 2>&1 || [ ! -f "$PROJECT_ROOT/scripts/dockit-learning.py" ]; then
+        add_result "failure-learning" "FAIL" "Register adopted but Python 3 or checker missing"
+        return
+    fi
+    _learning_rc=0
+    _learning_result=$("$DOCKIT_PYTHON" "$PROJECT_ROOT/scripts/dockit-learning.py" --project "$PROJECT_ROOT" 2>&1) || _learning_rc=$?
+    if [ "$_learning_rc" -eq 0 ]; then
+        add_result "failure-learning" "PASS" "$_learning_result"
+    else
+        add_result "failure-learning" "FAIL" "$_learning_result"
+    fi
+}
+
 check_handoff_date
 check_history_entry
 check_decisions_referenced
@@ -1193,6 +1217,7 @@ check_trace_protocol
 check_work_records
 check_runtime_lifecycle
 check_idea_continuity
+check_failure_learning
 check_workspace_leftovers
 check_publication_state
 

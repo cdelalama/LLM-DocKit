@@ -1,23 +1,32 @@
-<!-- doc-version: 4.25.0 -->
+<!-- doc-version: 4.26.0 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Claude: central update notices and collector-first Trace (4.25.0).
-- Current source version: 4.25.0
+- Last Updated: 2026-11-27 - Codex: declared failure-learning cases and guard (4.26.0).
+- Current source version: 4.26.0
 - Owner: Carlos
-- Session focus: Carlos asked that every project and every open session pick
-  up DocKit updates. The central SessionStart bootstrap now names the central
-  Trace collector (text anywhere, Cobalto only in Orca), and
-  `scripts/dockit-update-notice.py` gives a running session one notice per
-  central VERSION change. See D-038 in `docs/llm/DECISIONS.md`.
-- Previous state: `ea02fb3` published Cobalto 4.24.0; local Dossier L15 verified.
+- Session focus: Carlos corrected the Executor recovery and TREK client access
+  analysis and requested durable learning. DF-068, D-039,
+  `docs/FAILURE_LEARNING.md` and the optional `failure-learning` check record
+  and validate declared cases. Home Infra adoption and actual client acceptance
+  are a separate owner task.
+- Previous state: 4.25.0 central update notices and collector-first Trace were
+  published; their DEV hook trust and live notification gate remains open.
 - Limits: instructions are central and current; project template files still
   change only through operator-gated `scripts/dockit-sync.sh` (49 adopters
-  report OUTDATED). Codex runs the new hooks only after /hooks trust.
+  reported OUTDATED at the earlier count; refresh before quoting a new count).
+  Codex runs the update-notice hooks only after /hooks trust. The learning
+  checker sees declared cases only; it cannot discover missed chat corrections.
 
 ## Open work - next concrete step
+
+For DF-068, review and publish 4.26.0, then adopt the learning register and
+checker in Home Infra without overwriting its concurrent work. Record the
+three distinct errors and verify the current V2 and per-client TREK source.
+An actual OCTA/Android tool call remains an owner-client acceptance, separate
+from DocKit source. Other adopters receive no automatic template replacement.
 
 Update-notice rollout on DEV (commands in `docs/integrations/CODEX.md`):
 (1) DONE 2026-11-27 02:24 UTC - installed into `~/.claude/settings.json` and both

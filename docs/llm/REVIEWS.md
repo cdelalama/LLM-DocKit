@@ -1,3 +1,20 @@
+## 2026-11-27 - Failure-learning source 4.26.0
+
+Independent Claude `claude-opus-5-5`/high reviewed the exact DocKit source in
+three rounds. R1 and R2 returned NO_GO: a deleted tracked register could be
+misreported as unadopted, and the new closure check needed a discriminating
+repeatable test. The validator now fails on a register present at HEAD or HEAD^
+but missing in the worktree; `scripts/test-learning.py` exercises unadopted,
+deleted, malformed, duplicate, unsupported-close, outside-project and valid
+close states. R3 returned SOURCE_GO after the path-escape fixture was changed
+to use a real outside file. Four focused and 140 validator-smoke tests passed locally; the reviewer did
+not run them. Strict CAP-001 v2 accepted the native final round under session
+`0c983c66-f049-4200-bdf9-747e74dd34d4`, manifest SHA-256
+`e98f9052130cc151f57192c86111dc7569871e7b869c210a76e7a1fd93ac424e`.
+Hook status is unknown with zero recorded errors; this does not invalidate the
+independently accepted round. Home Infra adoption and runtime client evidence
+are separate.
+
 ## 2026-11-27 - Cobalto 4.24.0 and local Dossier L15
 
 Codex/GPT resumed the interrupted candidate on 8bc8437. Independent read-only

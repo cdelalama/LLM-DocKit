@@ -2447,3 +2447,33 @@ and add regressions: staging only `.claude/settings.json`, or only a workflow
 file, requires no VERSION; staging `scripts/x.sh` still does. Correct it
 together with DF-065 because both live in the same hook. This intake authorizes
 neither implementation nor installation and changes no existing work priority.
+
+## DF-068 - An incident correction did not change the next agent's evidence order
+
+- Source: Executor beta.79 upgrade and subsequent TREK client-access correction,
+  Home Infra, 2026-11-27; Carlos explicitly requested protocol learning.
+- Date observed: 2026-11-27
+- Category: recurring operational error
+- Status: implemented in DocKit 4.26.0; Home Infra adoption and live client
+  acceptance are separate receipts.
+- Related: DF-018, DF-024, D-009, Home Infra D-036
+
+Observation: an older V1 Executor backup note led an agent to ask Carlos for a
+private age identity although the current V2 recovery generation was already
+retrievable through the authorized Doppler route. A dirty concurrent Home Infra
+checkout was treated as evidence that another session might be writing to
+Executor, without checking the actual workload. After the beta.79 update,
+another agent interpreted the 11 visible TREK reader tools in OCTA as a writer
+regression, without comparing DEV and OCTA connection policies; the writer app
+and DEV grant remained intact. These are distinct mistakes with one process
+gap: the correction stayed in chat/handoff, while source precedence and client
+capability checks were not made durable and reviewable.
+
+DocKit 4.26.0 adds `docs/FAILURE_LEARNING.md`, a managed orientation block and
+an optional project case register checked by `failure-learning`. An adopted
+register makes a structurally unsupported `closed` state fail validation.
+The checker cannot discover omitted conversations or establish that prose is
+true. Semantic reconciliation, current authority, an actual client call and
+project-specific prevention remain the owner's and reviewer's responsibility.
+Source publication does not make an adopter current; Home Infra receives its
+own adopted case records and current-source warnings in this task.

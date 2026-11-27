@@ -1,6 +1,6 @@
 ## DocKit source maintainer context - 2026-11-27
 
-Source version: 4.25.0. Current owner state and next action are in
+Source version: 4.26.0. Current owner state and next action are in
 `docs/llm/HANDOFF.md`; source architecture is in `HOW_TO_USE.md` under
 "Source maintainer context". README, PROJECT_CONTEXT and ARCHITECTURE below
 are distributable starter templates, not an inventory of DocKit runtime.
@@ -8,7 +8,10 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-4.25.0 adds central update notices (`scripts/dockit-update-notice.py`, D-038):
+4.26.0 adds declared failure-learning cases and the optional validation gate
+(DF-068, D-039). Home Infra adoption and actual client checks are the next
+owner step; source publication alone does not install the rule. Separately,
+4.25.0 added central update notices (`scripts/dockit-update-notice.py`, D-038):
 DEV hook installation, Carlos's Codex `/hooks` trust per home and one observed
 live notice per client remain pending as separate steps. The DocKit maintainer reviews the retained Windows path fix in
 `scripts/dockit-init-project.sh` by 2026-12-03. See `docs/llm/HANDOFF.md`.
@@ -19,7 +22,7 @@ Previous source observations are preserved in
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.25.0 -->
+<!-- doc-version: 4.26.0 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 
@@ -136,6 +139,19 @@ Run the idea check against the explicit reviewed start revision before publishin
 Retain unknown coverage and the historical-backfill cursor; never claim all chats
 were captured. Complete the existing Dossier refresh/no_change assessment.
 <!-- DOCKIT-TEMPLATE:END idea-continuity -->
+
+<!-- DOCKIT-TEMPLATE:START failure-learning -->
+### Learn from corrections
+
+When Carlos or another operator points out a recurring factual or operational
+error, fix the active task and follow `docs/FAILURE_LEARNING.md`. Record an
+attributed case in `docs/llm/FAILURE_LEARNING.json`, trace the mistaken source
+and current authority, add a concrete prevention artifact, and verify the
+actual affected client or service. Do not close a case on documentation alone.
+Run `scripts/dockit-validate-session.sh --check failure-learning` after adoption.
+The check sees only declared cases; author and reviewer still reconcile the
+conversation and the actual operator view.
+<!-- DOCKIT-TEMPLATE:END failure-learning -->
 
 <!-- DOCKIT-TEMPLATE:START runtime-lifecycle -->
 ### Retire disposable test runtime
