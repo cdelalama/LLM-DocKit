@@ -4,6 +4,38 @@ DocKit collects one current Git/time snapshot and presents it as text, JSON or a
 small static HTML document. HTML is presentation only: durable HANDOFF and HISTORY
 contracts remain unchanged. Model choice does not determine rendering support.
 
+## Cobalto default (4.24.0)
+
+Carlos explicitly selected Cobalto on 2026-11-27. HTML output now uses that
+presentation by default: subject, role, observed local/UTC time and next actor
+are immediately visible. Native details/summary exposes every labeled field,
+including optional provenance, and the full canonical Trace as selectable text.
+Each value remains escaped text and multiline values retain their line breaks.
+The terminal and JSON contracts are unchanged.
+
+The renderer loads its managed sibling `scripts/dockit-trace-cobalt.html` only
+for HTML output. Keep the renderer and this template together when installing
+or synchronizing. Both are included by the initializer and managed sync manifest;
+source-only design experiments remain excluded from downstream scaffolds.
+A missing or invalid template returns the original text instead of a partial
+visual. Text/JSON rendering does not require the HTML template.
+
+The renderer checks the SHA-256 of the managed template after normalizing CRLF
+to LF. A partial sync or changed template uses the same text fallback. When
+maintaining the pair, update the template pin with the reviewed content.
+
+The self-contained template embeds the selected Source Sans 3 and Literata font
+bytes, with their complete SIL OFL notices. CSP permits inline styles and data
+fonts; scripts and external requests remain disabled. The fixed porcelain/cobalt
+inner palette is the selected design; the outer surface follows Orca theme tokens.
+The approximately 165 KiB baseline per visual is an intentional consequence of
+self-contained fonts. The existing strict 512 KiB limit still applies to the full
+artifact, including dynamic values; excessive output falls back to text.
+
+Source release and generated local output do not imply that every existing
+project has synchronized its installed helpers. Existing adopters receive the
+new renderer/template pair through their normal authorized DocKit sync.
+
 ## Use
 
 ```sh
@@ -63,7 +95,7 @@ Each successful invocation writes one fresh `trace-<uuid>.html`, strictly under
 512 KiB, with exclusive creation. It never creates the parent directory,
 overwrites an older visual or deletes chat history. These are intentional chat
 deliverables, retained for the chat lifetime under Orca's policy. Test fixtures
-are separate and removed by their tests. Missing Python/renderer, invalid or
+are separate and removed by their tests. Missing Python/renderer/template, invalid template, invalid or
 unwritable directory, or excessive HTML size returns the original text on stdout
 and a warning on stderr. No partial artifact is retained after a caught write
 failure. Abrupt process/host death remains the client's recovery boundary.

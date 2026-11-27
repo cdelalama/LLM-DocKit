@@ -164,3 +164,6 @@ CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cos
 - `docs/operations/trace-html-neon-2026-11-27/`: source-only Neon-authored
   static layout examples: the retained first round and three second-round
   alternatives. Each round uses its own fixed historical snapshot.
+
+- `scripts/dockit-trace-cobalt.html`: managed self-contained Cobalto template
+  shipped beside the Trace renderer, including fonts and their OFL notices.

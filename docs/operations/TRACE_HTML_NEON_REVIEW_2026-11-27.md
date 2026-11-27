@@ -156,7 +156,7 @@ permanent reader availability and OCTA adoption are not established.
 
 Retained: published source examples, immutable chat previews, original advisor
 and review evidence, native Windows receipts and browser screenshots. Owner:
-DocKit/Carlos; private evidence custody review2026-12-04, no automatic deletion.
+DocKit/Carlos; private evidence custody review 2026-12-04, no automatic deletion.
 Removed: owned local test directories, browser/build staging and the temporary
 Windows qualification fixture (absence checked through a second connection).
 No worktree, branch, service, container or image was created for this follow-up.
@@ -262,3 +262,44 @@ his choice and a separate implementation/qualification of the selected layout.
 Owned browser/build staging and profiles were removed; delivered source/chat
 HTML and private review/qualification history stay under declared custody.
 This receipt needs no version bump or recursive Dossier revision.
+
+## Explicit selection and implementation (2026-11-27)
+
+Carlos subsequently instructed "Implementa cobalto". This supersedes the earlier
+pending-choice statements as current state; those observations remain historical
+receipts. Cobalto is selected, not another proposal awaiting a vote.
+
+4.24.0 implements the selected composition in the production renderer using a
+managed self-contained sibling template, with source fonts/full OFL notices,
+fixed English/Spanish labels, native disclosure and full selectable text.
+Optional metadata becomes separately labeled rows with line breaks preserved.
+The renderer consumes the actual collected snapshot; historical prototype
+values are never reused. Missing/invalid template falls back to text. Init/sync
+must carry the renderer/template pair; no fleet-wide adoption is implied by
+publishing the source. No JavaScript/clipboard/network feature is introduced.
+
+Implementation, generated-output qualification, independent review, source
+publication and local L15 receipt are recorded as they complete. The selected
+prototype and all rejected alternatives remain unchanged historical evidence.
+Private evidence: `~/.local/state/LLM-DocKit/cobalt-implementation-20261127`,
+owner DocKit/Carlos, custody review 2026-12-04 with no automatic deletion.
+Owned test/browser staging must be removed; source/template and chat artifacts
+are intentional deliverables. No new worktree, server, container or image.
+
+The resumed session generated a Spanish card in Orca's declared chat directory
+from one collected snapshot with all 14 fields. The author inspected the card
+collapsed on mobile and expanded on desktop. Four Chromium cases covered real
+and long multiline data at 390 and 1280 px, local fonts, light/dark surroundings,
+keyboard disclosure, field equality, native selection and zero external requests.
+A first readback found Chromium omitted the canonical final newline on selection.
+A trailing HTML line break fixed the selection while preserving exact DOM text.
+The corrected directive was presented inline. Carlos's personal readback and
+downstream sync remain separate. The focused suite passed 32 tests.
+
+The paired Orca desktop browser also rendered the exact qualified file
+(SHA-256 4b0ff24af86169f2fbc03abb4bcca62ee178ddb12381680155e33d293817d2ce).
+The desktop cannot navigate directly to a file on its SSH host. The agent
+supplied the document bytes to a new, empty Orca browser tab and read back the
+subject, all 14 labeled rows, both loaded fonts and the canonical text. The
+tab was closed and verified absent. This checks the desktop browser surface;
+Carlos's personal use of the inline chat disclosure remains unobserved.

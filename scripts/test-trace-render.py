@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Exercise Trace rendering and fallback without services or persistent fixtures."""
 import importlib.util
+import base64
+import hashlib
 from datetime import datetime, timezone
 import shlex
 from html.parser import HTMLParser
@@ -35,6 +37,8 @@ class Document(HTMLParser):
         self.tags = []
         self.values = []
         self.in_dd = False
+        self.in_pre = False
+        self.pre = ""
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
@@ -42,14 +46,20 @@ class Document(HTMLParser):
         if tag == "dd":
             self.in_dd = True
             self.values.append("")
+        if tag == "pre":
+            self.in_pre = True
 
     def handle_endtag(self, tag):
         if tag == "dd":
             self.in_dd = False
+        if tag == "pre":
+            self.in_pre = False
 
     def handle_data(self, data):
         if self.in_dd:
             self.values[-1] += data
+        if self.in_pre:
+            self.pre += data
 
 
 class TraceRendering(unittest.TestCase):
@@ -190,6 +200,91 @@ class TraceRendering(unittest.TestCase):
         self.assertTrue(text.startswith("Trace\n"))
         self.assertIn("Model: unknown\n", text)
         self.assertEqual(len(list(self.root.glob("trace-*.html"))), 1)
+
+    def copied_helper(self, format="html"):
+        helper = self.root / "helper"
+        helper.mkdir(exist_ok=True)
+        shutil.copyfile(ROOT / "scripts/dockit-trace-render.py", helper / "dockit-trace-render.py")
+        command = [sys.executable, "-B", str(helper / "dockit-trace-render.py"), "--format", format]
+        command.extend("--" + key.replace("_", "-") + "=" + value for key, value in SNAPSHOT.items())
+        return subprocess.run(command, env=dict(os.environ, ORCA_CHAT_SCRATCH_DIR=str(self.root)),
+                              capture_output=True, text=True, check=True)
+
+    def test_copied_helper_without_template_falls_back_without_artifact(self):
+        result = self.copied_helper()
+        self.assertEqual(result.stdout, RENDER.text_snapshot(SNAPSHOT))
+        self.assertIn("using text", result.stderr)
+        self.assertEqual(list(self.root.glob("trace-*.html")), [])
+
+    def test_copied_helper_with_packaged_template_renders(self):
+        helper = self.root / "helper"
+        helper.mkdir()
+        shutil.copyfile(RENDER.TEMPLATE_PATH, helper / RENDER.TEMPLATE_PATH.name)
+        result = self.copied_helper()
+        artifact = re.search(r'file="([^"]+)"', result.stdout).group(1)
+        document = Document((self.root / artifact).read_text())
+        self.assertEqual(document.values, list(SNAPSHOT.values()))
+        self.assertEqual(document.pre, RENDER.text_snapshot(SNAPSHOT))
+
+    def test_malformed_template_falls_back_without_artifact(self):
+        helper = self.root / "helper"
+        helper.mkdir()
+        original = RENDER.TEMPLATE_PATH.read_bytes()
+        malformed = [b"not HTML", b"\xff", b"x" * RENDER.MAX_HTML_BYTES,
+                     original.replace(b"@@DOCKIT_SUBJECT@@", b"@@DOCKIT_UNKNOWN@@"),
+                     original.replace(b"@@DOCKIT_SUBJECT@@", b"@@DOCKIT_SUBJECT@@" * 2),
+                     original.replace(b"</body>", b""),
+                     original.replace(b"<h1>@@DOCKIT_SUBJECT@@</h1>", b'<h1 title="@@DOCKIT_SUBJECT@@">invalid context</h1>'),
+                     original.replace(b"</head>", b"<script>invalid()</script></head>")]
+        for index, candidate in enumerate(malformed):
+            with self.subTest(case=index):
+                (helper / RENDER.TEMPLATE_PATH.name).write_bytes(candidate)
+                result = self.copied_helper()
+                self.assertEqual(result.stdout, RENDER.text_snapshot(SNAPSHOT))
+                self.assertIn("using text", result.stderr)
+                self.assertEqual(list(self.root.glob("trace-*.html")), [])
+
+    def test_crlf_checkout_of_packaged_template_renders(self):
+        helper = self.root / "helper"
+        helper.mkdir()
+        template = RENDER.TEMPLATE_PATH.read_bytes().replace(b"\r\n", b"\n")
+        (helper / RENDER.TEMPLATE_PATH.name).write_bytes(template.replace(b"\n", b"\r\n"))
+        self.assertTrue(self.copied_helper().stdout.startswith("::orca-visual{"))
+
+    def test_text_and_json_do_not_read_template(self):
+        helper = self.root / "helper"
+        helper.mkdir()
+        (helper / RENDER.TEMPLATE_PATH.name).write_bytes(b"\xff")
+        self.assertEqual(self.copied_helper("text").stdout, RENDER.text_snapshot(SNAPSHOT))
+        self.assertEqual(json.loads(self.copied_helper("json").stdout)["fields"], SNAPSHOT)
+
+    def test_one_pass_placeholders_and_all_optional_rows(self):
+        values = {key: f'{key}: @@DOCKIT_ROWS@@ @@DOCKIT_SUBJECT@@ <script>bad</script> & "\nsecond line'
+                  for key, _ in RENDER.FIELDS + RENDER.OPTIONAL_FIELDS}
+        for language in ("en", "es"):
+            with self.subTest(language=language):
+                document = Document(RENDER.html_snapshot(values, language).decode())
+                self.assertEqual(document.values, list(values.values()))
+                self.assertEqual(document.pre, RENDER.text_snapshot(values))
+                self.assertEqual(sum(tag == "dt" for tag, _ in document.tags), 14)
+                self.assertFalse(any(tag == "script" for tag, _ in document.tags))
+        with self.assertRaises(ValueError):
+            RENDER.html_snapshot(values, 'en" onload="bad')
+
+    def test_selected_fonts_and_full_licenses_preserved(self):
+        # Source-only prototypes are deliberately omitted from new scaffolds.
+        template = RENDER.TEMPLATE_PATH.read_text(encoding="utf-8")
+        fonts = re.findall(r'data:font/woff2;base64,([A-Za-z0-9+/=]+)', template)
+        self.assertEqual([hashlib.sha256(base64.b64decode(font)).hexdigest() for font in fonts], [
+            "7a19a7027e125257d310c6dbd78ae3a30b5ea1e3794d60b12bb28227a003bfda",
+            "7478e1920209e51dcc235d151d2056a0a6e3c54b4436f7030d256f231fe09b58"])
+        notices = re.findall(r'<!-- Bundled unmodified font:.*?-->', template, re.DOTALL)
+        self.assertEqual([hashlib.sha256(note.encode()).hexdigest() for note in notices], [
+            "16ebe6d2178122559f2ab6199ca7d54bd2fcb9faafdff80e67f373d4c92d6340",
+            "1eb4acb361338476c239b8773a70722114402c795c79f13f5fdbf1f2546e1e94",
+        ])
+        self.assertIn("font-src data:", template)
+        self.assertLess(len(RENDER.html_snapshot(SNAPSHOT)), RENDER.MAX_HTML_BYTES)
 
 
 class TraceClock(unittest.TestCase):

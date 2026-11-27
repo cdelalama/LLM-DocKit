@@ -1,3 +1,29 @@
+## 2026-11-27 - Cobalto 4.24.0 and local Dossier L15
+
+Codex/GPT resumed the interrupted candidate on 8bc8437. Independent read-only
+review covered tree 05c4c0f4ffbaa00a4a5212c93481b22bf095dc79, the actual
+generated card and the Spanish draft in all five local reader views. The packet
+includes the source diff, 32 Trace tests, four Chromium cases, documentation
+validator output and the private L14 preservation baseline.
+
+Claude Code ran `claude --safe-mode --permission-mode plan --tools Read,Glob,Grep
+--allowedTools Read Glob Grep --add-dir <repository> --no-chrome
+--model claude-opus-5-5 --effort high --session-id 62112e0c-fc64-4ae9-8ed5-d98c1f6eeedf
+--print --output-format json` from the private packet directory. Returned
+firstParty canonical model `claude-opus-5-5` produced 13,453 output tokens. Native
+metadata records auxiliary Haiku usage separately. Strict CAP-001 v2 accepted
+manifest c02c8c6571838fa42da6a5152126c6632d29c55480ce82c6ebc9edd2e1bc5a2b.
+Hook outcome unknown, zero recorded errors.
+
+SOURCE_GO required a passing full final smoke and an explicit ideas check from
+8bc8437 before commit. The final smoke passed 140/140, including actual
+init and sync renders. The explicit-baseline ideas check passed without warnings.
+CURATION_GO covered the two published source pins,
+refreshed observation time, five-section readback and bounded factual receipts.
+The reviewer suggested identifying the Orca task chat explicitly for returning
+readers. Both author and reviewer inspected the generated card and Ahora.
+Carlos's personal readback and downstream adoption remain unverified.
+
 ## 2026-11-26 - Integrated 4.23.0 source and Dossier R2
 
 This current verdict supersedes the pending disposition of the earlier inherited

@@ -44,6 +44,7 @@ files:
 - path: scripts/test-validator.sh       strategy: copy
 - path: scripts/dockit-trace-status.sh  strategy: copy
 - path: scripts/dockit-trace-render.py strategy: copy
+- path: scripts/dockit-trace-cobalt.html strategy: copy
 - path: scripts/dockit-bootstrap-context.sh strategy: copy
 - path: scripts/dockit-session-gate.sh strategy: copy
 - path: scripts/dockit-stop.py strategy: copy

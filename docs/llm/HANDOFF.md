@@ -1,63 +1,40 @@
-<!-- doc-version: 4.23.1 -->
+<!-- doc-version: 4.24.0 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex: replace the rejected first Neon comparison with three new round-2 proposals
-- Current source version: 4.23.1
+- Last Updated: 2026-11-27 - Codex qualified the generated Cobalto card.
+- Current source version: 4.24.0
 - Owner: Carlos
-- State: 4.23.1 remains published; new visual examples are published at64cc5a6.
-  Its source release passed exact Opus R2 review; the new visual comparison passed its separate exact Opus5.5/high review.
-  All 19 secondary worktrees remain retired.
-- Local Dossier: L14 capture/export and five-section readback completed;
-  all13 earlier revisions and20 historical sources are preserved.
-- Published-release evidence: smoke138/138, Trace25/25, native Windows6/6,
-  first-round visual6/6 (technical rendering passed; Carlos rejected the appearance);
-  exact Opus5.5/high R2 SOURCE_GO and bounded CURATION_GO accepted.
-  Live publication verified at850aeda; final hosted check receipts live in GitHub Actions.
-- Operator presentation: Carlos rejected ledger-sheet, split-rail and command-strip
-  as visually unattractive and requested a much more attractive second round.
-  New proposals are received, not accepted; the production layout stays unchanged.
-- Session focus: evaluate the published second Neon visual round after rejection
-  of the first; preserve the source release, history and separate owner gates.
-- Authority: Carlos explicitly approved the analysis and instructed implementation,
-  agent delegation, cleanup and publication of inherited pending work on November26.
-- Source details: docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md.
+- State: Cobalto is implemented on the 4.24.0 candidate based on 8bc8437.
+  Carlos selected the second-round design with "Implementa cobalto".
+- Qualification: 32 Trace tests passed. Chromium checked the actual Orca chat
+  artifact and long multiline data at 390 and 1280 px. Native selection includes
+  the final newline. No external request or horizontal overflow was observed.
+- Local Dossier: L14 remains current until reviewed source publication. L15
+  will retain all 14 revisions and 21 sources and add HANDOFF and D-037 pins.
 
 ## Open work - next concrete step
 
-Carlos rejected all three first-round Neon proposals: ledger-sheet, split-rail
-and command-strip. Their original files remain unchanged as history; they are
-no longer the current choice set. The requested Neon route returned three new
-static proposals in `docs/operations/trace-html-neon-2026-11-27/`:
-`r2-cobalt-folio.html`, `r2-verdigris-dispatch.html` and `r2-plum-atelier.html`.
-Neon recommends cobalt-folio; the executing agent also prefers it after inspecting
-all three desktop views. Neither preference is Carlos's selection.
-The CLI does not return canonical model metadata;
-the requested `gemini-4-neon-medium` route is evidenced, actual identity is unverified.
+The DocKit maintainer obtains independent source and Spanish L15 curation review
+for the candidate in `scripts/dockit-trace-render.py` and
+`scripts/dockit-trace-cobalt.html`. After the ordinary push to main, verify the
+live remote with `scripts/dockit-publication.py --require-published`, pin both
+reviewed sources, capture/export L15 and inspect its five local reader sections.
+Follow `docs/operations/DOSSIER.md` and `docs/integrations/ORCA.md`.
+Existing downstream projects can adopt the pair through their usual authorized
+sync. Personal acceptance of the generated card remains with Carlos.
 
-Final localized browser qualification passed all six mobile/desktop views,
-preserving all 12 exact fields and six keyboard-operated native disclosures.
-The agent presented all three proposals inline in Orca; this is not acceptance.
-The independent source/curation review is accepted, the examples are published
-and local Dossier L14 capture/export/readback is complete. Carlos
-then evaluates the actual designs; none is selected or accepted. Applying a
-chosen layout to `scripts/dockit-trace-render.py` remains a later step. The
-production renderer and version 4.23.1 are unchanged by these source examples.
-See `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md` for provenance and
-qualification. The new files share one observed 2026-11-27 01:12:50 CET snapshot
-(00:12:50 UTC), not live status. Source Sans 3 and Literata bytes from Portal
-2f913 are embedded unchanged, with full OFL notices; Neon authored the layout,
-while Codex escaped snapshot values, embedded those fonts and full OFL notices,
-translated labels and the document language to Spanish, and corrected outer Orca
-theme-token names. The inner palettes and layout geometry remain Neon-authored.
-Completed source, cleanup and local Dossier evidence are recorded in
-`docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. The 19 historical
-secondary registrations are retired; only the primary checkout remains. The
-17 associated local branches and 9 remote branches were removed through reviewed
-plans. Two original commits are archived remotely and six administrative files
-remain under verified private custody. The task's ForgeOS checkout is also gone.
+The selected reference is
+`docs/operations/trace-html-neon-2026-11-27/r2-cobalt-folio.html`.
+All previous examples remain immutable history. Neon authored the selected
+layout; the renderer implements current values, fixed Spanish/English labels,
+separate optional provenance rows and full selectable canonical text. The
+embedded Source Sans 3/Literata font bytes retain complete OFL notices. The HTML
+uses native disclosure and no JavaScript/network request. Do not reuse the
+prototype's historical clock/Git values as live state. No clipboard behavior is
+introduced. Source-only prototype notes remain excluded from new scaffolds.
 
 Preserve the published Windows candidate `b6a369f` on
 `origin/fix/windows-documentary-validation`: it still contains an unintegrated
@@ -75,31 +52,27 @@ HTML directory. 4.23.1 corrects the reported Git Bash timezone failure in
 unverified fallback. Trace tests pass 25/25; native SPITFIRE-2 Windows tests pass
 6/6. A separate diagnostic reproduced the old defect. OCTA adoption is not verified.
 The initializer excludes these source-only notes/prototypes from new project
-scaffolds while preserving the source originals. Full smoke passed138/138 with no failures and
-removed all disposable fixtures. Exact Opus5.5/high R2 accepted the source, corrected
+scaffolds while preserving the source originals. Full smoke passed 138/138 with no failures and
+removed all disposable fixtures. Exact Opus 5.5/high R2 accepted the source, corrected
 documentation, first-round visual comparison and bounded post-publication curation.
 
 ## Current capability and acceptance limits
 
 - Roles remain executor/auditor/advisor; docs/AGENT_ROLES.md separates model,
   client, account and task. ForgeOS owns routing; project owners define scope.
-- Trace renders static HTML for an advertised Orca capability, text otherwise;
-  `scripts/dockit-trace-status.sh --language es` is the Spanish operator route.
-  Static HTML has been emitted in this Orca chat; terminal tests pass.
-  First-round Neon appearance was rejected; three second-round proposals are
-  qualified in six browser views and presented inline; Carlos's evaluation
-  remains pending. No default was selected.
+- Cobalto is the default HTML layout in the 4.24.0 candidate. Text remains available and is the no-capability fallback.
+  Optional provenance has separate labeled fields and preserved line breaks.
 - Leave-no-residue forbids repeated allocation per read/poll. It cannot replace
   actual producer adoption or host health checks. NAS2/Dossier runtime is owned
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
 - Publication checker has offline advisory and explicit live post-push modes.
   It never automatically publishes arbitrary dirty work or grants permission.
-- Dossier: L14 local capture/export/readback completed with pinned1.1.0 engine;
-  all13 earlier snapshots and20 historical sources preserved. One new HANDOFF
-  source pins64cc5a6;21 sources total. Revision: local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1.
-  All five Portal reader sections passed84 visible assertions; root and agent
+- Dossier: L14 local capture/export/readback completed with pinned 1.1.0 engine;
+  all 13 earlier snapshots and 20 historical sources preserved. One new HANDOFF
+  source pins 64cc5a6; 21 sources total. Revision: local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1.
+  All five Portal reader sections passed 84 visible assertions; root and agent
   inspected Ahora. New pin/hash checked against the published Git blob.
-  No external requests; browser and fixture/profile removed. Permanent4319 and
+  No external requests; browser and fixture/profile removed. Permanent port 4319 and
   shared Portal remain unavailable/unproven; shared recovery stays owner-held.
 
 ## Retained work and separate owners
@@ -112,7 +85,7 @@ documentation, first-round visual comparison and bounded post-publication curati
 - DF-064/065/066/067 and other feedback remain in docs/DOWNSTREAM_FEEDBACK.md;
   source review must not erase them or imply all clients have equivalent hooks.
 - Project authentication is per owner policy. Historical Authelia next steps in
-  archived handoffs are superseded by Home Infra's October16 per-application
+  archived handoffs are superseded by Home Infra's October 16 per-application
   Better Auth decision; this source task performs no authentication migration.
 - Historical portfolio consensus is preserved verbatim in
   docs/archive/DOCKIT_ECOSYSTEM_CONSENSUS_2026-09-29.md, not new runtime authority.
@@ -127,12 +100,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 01:28:07 Europe/Madrid (00:28:07 UTC)
-- Subject: Second Neon visual comparison after Carlos rejected the first round
-- Resulting state: HEAD=64cc5a6; version=4.23.1; second comparison published; default unchanged; L14 verified
-- Repo state: main=origin/main=64cc5a6 verified clean before this receipt
-- Validation: second-round localized browser6/6 and inline presentation completed; prior release checks remain historical evidence; exact Opus5.5/high SOURCE_GO and CURATION_GO accepted
-- Next gate: Carlos evaluates the three new designs before any production layout change
+- Sent: 2026-11-27 02:09:54 Europe/Madrid (01:09:54 UTC)
+- Subject: Qualify generated Cobalto for DocKit 4.24.0
+- Resulting state: HEAD=8bc8437; version=4.24.0; reviewed publication pending
+- Repo state: main and origin/main at 8bc8437 before the candidate commit
+- Validation: 32 Trace tests and four generated browser cases passed
+- Next gate: independent source/curation review, publication and local L15 readback
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

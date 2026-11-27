@@ -1,6 +1,6 @@
 ## DocKit source maintainer context - 2026-11-27
 
-Source version: 4.23.1. Current owner state and next action are in
+Source version: 4.24.0. Current owner state and next action are in
 `docs/llm/HANDOFF.md`; source architecture is in `HOW_TO_USE.md` under
 "Source maintainer context". README, PROJECT_CONTEXT and ARCHITECTURE below
 are distributable starter templates, not an inventory of DocKit runtime.
@@ -8,17 +8,16 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Compare the second-round Neon designs after Carlos rejected the first round;
-see `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`. The 4.23.1 clock/
-distribution patch is published and the 19 legacy worktrees are retired. Use
-`scripts/dockit-publication.py --require-published` after pushing. Orca Trace uses
-`scripts/dockit-trace-status.sh --language es`; terminal text remains available.
+Cobalto is implemented and browser-qualified in the 4.24.0 candidate.
+Follow `docs/llm/HANDOFF.md` for independent review, source publication and
+local Dossier L15. Orca Trace uses `scripts/dockit-trace-status.sh --language es`.
+Terminal clients retain the text format.
 Previous source observations are preserved in
 `docs/archive/ONBOARDING_OWNER_STATUS_BEFORE_2026-11-26.md`; they are historical,
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.23.1 -->
+<!-- doc-version: 4.24.0 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 

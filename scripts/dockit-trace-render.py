@@ -5,9 +5,11 @@ The shell collector owns observation. Caller-supplied provenance is not verified
 here. Chat-owned HTML outputs are immutable deliverables, never rotated or pruned.
 """
 import argparse
+import hashlib
 import html
 import json
 import os
+import re
 from pathlib import Path
 import sys
 import uuid
@@ -43,26 +45,49 @@ def text_snapshot(snapshot):
     return "Trace\n" + "".join(f"{label}: {value}\n" for label, value in field_values(snapshot))
 
 
+TEMPLATE_PATH = Path(__file__).with_name("dockit-trace-cobalt.html")
+SLOT = re.compile(r"@@DOCKIT_([A-Z_]+)@@")
+# The renderer and its reviewed template ship as one managed pair.
+# Pin LF-normalized bytes so a partial sync or corrupt asset takes the text path.
+TEMPLATE_SHA256 = "ec7918b6dc53edeeac26f87d09eddd77a2f5dc09c0aab18189369c7b8a2fcff1"
+
+
+def read_template():
+    with TEMPLATE_PATH.open("rb") as source:
+        raw = source.read(MAX_HTML_BYTES)
+    if len(raw) >= MAX_HTML_BYTES:
+        raise ValueError("Template exceeds size limit")
+    raw = raw.replace(b"\r\n", b"\n")
+    if hashlib.sha256(raw).hexdigest() != TEMPLATE_SHA256:
+        raise ValueError("Unexpected Cobalto template")
+    return raw.decode("utf-8")
+
+
 def html_snapshot(snapshot, language="en"):
-    # Values appear only in HTML text nodes. Never turn them into links, CSS,
-    # attributes, script, raw Markdown or HTML, including the Dossier field.
-    rows = "\n".join(f"<div><dt>{SPANISH_LABELS[label] if language == 'es' else label}</dt><dd>{html.escape(value)}</dd></div>"
-                     for label, value in field_values(snapshot))
-    return (f'<!DOCTYPE html>\n<html lang="{language}"><head><meta charset="utf-8">\n' + """
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
-<meta name="referrer" content="no-referrer">
-<title>Trace</title><style>
-*{box-sizing:border-box}
-body{margin:0;padding:1rem;background:var(--background,#fff);color:var(--foreground,#171717);font:14px/1.5 var(--font-sans,system-ui,sans-serif)}
-main{max-inline-size:72rem;margin-inline:auto;border:1px solid var(--border,#d4d4d4);border-radius:var(--radius,8px);padding:1rem 1.25rem;background:var(--card,#fff);color:var(--card-foreground,#171717)}
-h1{font-size:1.1rem;font-weight:650;margin:0 0 .7rem}
-dl{margin:0}dl>div{display:grid;grid-template-columns:9.5rem minmax(0,1fr);gap:.25rem 1rem;padding-block:.35rem;border-block-start:1px solid var(--border,#d4d4d4)}
-dt{color:var(--muted-foreground,#525252);font-weight:550}
-dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-inline-size:0}
-@media(max-width:32rem){body{padding:.5rem}main{padding:.8rem}dl>div{grid-template-columns:minmax(0,1fr);gap:0}}
-</style></head><body><main><h1>Trace</h1><dl>
-""" + rows + "\n</dl></main></body></html>\n").encode("utf-8")
+    if language not in ("en", "es"):
+        raise ValueError("Unsupported Trace language")
+    # The packaged asset is loaded only for HTML. Values are escaped text;
+    # ROWS is generated markup with fixed tags/labels and individually escaped
+    # values. No caller data can become attributes, CSS, links or raw HTML.
+    template = read_template()
+    rows = []
+    for label, value in field_values(snapshot):
+        title = SPANISH_LABELS[label] if language == "es" else label
+        rows.append(
+            f'<div class="kv"><dt class="k">{title}</dt>'
+            f'<dd class="v">{html.escape(value)}</dd></div>'
+        )
+    values = {
+        "LANG": language, "ROWS": "\n".join(rows),
+        "NEXT_LABEL": "Siguiente paso" if language == "es" else "Next gate",
+        "DISCLOSURE_LABEL": "Evidencia y Trace" if language == "es" else "Evidence and Trace",
+        "TEXT_LABEL": "Trace completo" if language == "es" else "Full Trace",
+        "FULL_TEXT": html.escape(text_snapshot(snapshot)),
+    }
+    values.update({key: html.escape(snapshot[key.lower()]) for key in ("SUBJECT", "ROLE", "SENT", "NEXT")})
+    # One substitution pass only: template-looking caller text is never parsed
+    # again, including strings inserted into ROWS or the canonical text block.
+    return SLOT.sub(lambda match: values[match.group(1)], template).encode("utf-8")
 
 
 def write_visual(snapshot, directory, language="en"):

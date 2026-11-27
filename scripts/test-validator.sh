@@ -971,6 +971,20 @@ else
     note_fail "bump-version wrote package-lock top-level and root package versions"
 fi
 
+trace_package_renders() (
+    project=$1
+    visual_dir="$project/.git/trace-visual"
+    cmp "$PROJECT_ROOT/scripts/dockit-trace-cobalt.html" "$project/scripts/dockit-trace-cobalt.html" || return 1
+    mkdir "$visual_dir" || return 1
+    directive=$(ORCA_CHAT_SCRATCH_DIR="$visual_dir" "$project/scripts/dockit-trace-status.sh" \
+        --project "$project" --format html --language es --subject 'Packaged Cobalto' \
+        --validation PASS --next Review) || return 1
+    set -- "$visual_dir"/trace-*.html
+    [ "$#" -eq 1 ] && [ -f "$1" ] \
+        && [ "$directive" = "::orca-visual{file=\"$(basename "$1")\" title=\"Trace\"}" ] \
+        && grep -Fq '<h1>Packaged Cobalto</h1>' "$1"
+)
+
 if [ ! -x "$SYNC_TOOL" ]; then
     note_pass "dockit-sync missing-section smoke skipped when sync tool is absent"
 else
@@ -995,6 +1009,9 @@ else
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-sync inserts missing full-adopter sections before footer"
     fi
+
+    expect_pass "dockit-sync transports the standalone Cobalto template and renders downstream" \
+        trace_package_renders "$SYNC_FOOTER_REPO"
 
     # Placement of a newly added section, line endings and repeated syncs.
     sync_fixture() {
@@ -1814,6 +1831,8 @@ POLICY
         mv "$OUT.tmp" "$OUT"
         note_fail "dockit-init demotes ARCHITECTURE.md and scaffold passes residue checks"
     fi
+    expect_pass "dockit-init packages the standalone Cobalto template and renders downstream" \
+        trace_package_renders "$SCAFFOLD_REPO"
 fi
 
 # Coverage must remain honest even when PASS rows are filtered away.

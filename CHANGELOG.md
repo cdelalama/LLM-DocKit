@@ -4,6 +4,24 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.24.0] - 2026-11-27
+
+### Added
+
+- Cobalto as the default static Orca Trace presentation, explicitly selected by
+  Carlos. Self-contained Source Sans 3/Literata fonts and full OFL notices,
+  native keyboard disclosure, labeled evidence/provenance and selectable text.
+- A managed Cobalto template distributed with the renderer through init/sync;
+  an absent or mismatched template falls back to the original textual Trace.
+
+### Changed
+
+- Preserve the existing collector, text/JSON field contract and immutable
+  artifact behavior while generating the selected design from current data.
+- Keep optional provenance in separate labeled rows with preserved newlines.
+  Native selection of the full Trace includes its final newline.
+  No clipboard action, external asset request, service or runtime deployment.
+
 ## [4.23.1] - 2026-11-27
 
 ### Fixed

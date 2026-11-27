@@ -1416,3 +1416,15 @@ text are considered without introducing unqualified clipboard/script behavior.
 The confirmed Windows timezone bug is a patch correction, not a change to Trace
 semantics. One UTC instant and verified zone conversion are required; failure is
 explicitly unverified. See docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md.
+
+
+Selection 2026-11-27: Carlos explicitly instructed "Implementa cobalto" after
+reviewing the second Neon comparison. Cobalto becomes the default HTML Trace
+presentation in 4.24.0, preserving existing text/JSON contracts and capability
+fallback. Ship the static template with the renderer through init/sync, with
+self-contained selected fonts/full OFL notices, native disclosure and separately
+labeled optional fields. No JavaScript, clipboard feature or network asset
+loading is introduced. The selected prototype remains immutable provenance;
+production uses the current collected snapshot, never its historical example.
+Visual selection, source publication, actual generated readback and downstream
+fleet adoption remain distinct. See docs/integrations/ORCA.md.

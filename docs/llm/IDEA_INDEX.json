@@ -532,14 +532,14 @@
       "batch": "B-neon-trace-barcience-20261127",
       "owner": "LLM-DocKit",
       "state": "in_progress",
-      "recall_trigger": "Before presenting current Trace design options or applying a new default; do not revive the rejected first trio as the active choice set.",
+      "recall_trigger": "Before changing the selected Cobalto layout or claiming renderer/client/fleet adoption.",
       "documentation_refs": [
         {
           "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
         }
       ],
-      "rationale": "Carlos explicitly rejected the first Neon trio as visually unattractive and requested a much more attractive second round. New proposals r2-cobalt-folio, r2-verdigris-dispatch and r2-plum-atelier are received; Neon recommends cobalt-folio. Localized browser6/6 passed and all three were presented inline. Operator evaluation remains pending; no production layout is selected.",
-      "authority": "Carlos requested Neon authorship and then explicitly rejected the first three designs in this conversation on 2026-11-27."
+      "rationale": "Carlos rejected the first Neon trio, reviewed the richer second round, then explicitly instructed \"Implementa cobalto\". The selected design is implemented in the renderer and managed template. Generated browser output passed qualification. Record the published source revision after review.",
+      "authority": "Carlos requested Neon design, then explicitly selected and ordered implementation of Cobalto on 2026-11-27."
     },
     {
       "id": "IDEA-TRACE-CLIPBOARD-20261127",
