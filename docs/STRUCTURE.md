@@ -161,5 +161,6 @@ CI maintenance: `docs/CI_EFFICIENCY.md` records scheduling, verification and cos
 
 - `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`: source-only integration
   assessment, design provenance, clock correction and acceptance limits.
-- `docs/operations/trace-html-neon-2026-11-27/`: three source-only Neon-authored
-  static layout examples populated from one fixed historical snapshot.
+- `docs/operations/trace-html-neon-2026-11-27/`: source-only Neon-authored
+  static layout examples: the retained first round and three second-round
+  alternatives. Each round uses its own fixed historical snapshot.

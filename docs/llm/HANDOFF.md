@@ -4,18 +4,22 @@
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex: integrate Barcience input, compare received Neon designs and verify the clock
+- Last Updated: 2026-11-27 - Codex: replace the rejected first Neon comparison with three new round-2 proposals
 - Current source version: 4.23.1
 - Owner: Carlos
-- State: 4.23.1 published at850aeda; exact Opus R2 review accepted.
+- State: 4.23.1 remains published; current main baseline is 5be30a6.
+  Its source release passed exact Opus R2 review; the new visual comparison passed its separate exact Opus5.5/high review.
   All 19 secondary worktrees remain retired.
-- Local Dossier: L13 captured/exported and all five reader sections verified;
-  all12 earlier revisions preserved.
-- Release evidence: smoke138/138, Trace25/25, native Windows6/6, visual6/6;
+- Local Dossier: L13 is the last completed capture/export/readback;
+  refresh L14 is required because Carlos rejected the choices it presents.
+  Preserve all 13 existing revisions and 20 historical sources.
+- Published-release evidence: smoke138/138, Trace25/25, native Windows6/6,
+  first-round visual6/6 (technical rendering passed; Carlos rejected the appearance);
   exact Opus5.5/high R2 SOURCE_GO and bounded CURATION_GO accepted.
   Live publication verified at850aeda; final hosted check receipts live in GitHub Actions.
-- Operator presentation: Carlos requested three static HTML Trace layouts to choose;
-  previews do not change the published default until he selects one.
+- Operator presentation: Carlos rejected ledger-sheet, split-rail and command-strip
+  as visually unattractive and requested a much more attractive second round.
+  New proposals are received, not accepted; the production layout stays unchanged.
 - Session focus: complete inherited source, publish instead of abandoning edits,
   deliver static Orca Trace, and retire legacy task workspaces without losing history.
 - Authority: Carlos explicitly approved the analysis and instructed implementation,
@@ -24,14 +28,31 @@
 
 ## Open work - next concrete step
 
-Carlos requested Neon to author the design after supplying the Barcience note.
-Three static proposals returned through the requested Neon route: ledger-sheet
-(Neon recommendation), split-rail and command-strip. Canonical model identity
-is not present in the CLI response; operator selection is still pending. The
-agent compares these actual proposals in
-`docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`; Carlos can then select
-a layout before it is applied to `scripts/dockit-trace-render.py`. The earlier
-Codex options are retained history, not the active default choice.
+Carlos rejected all three first-round Neon proposals: ledger-sheet, split-rail
+and command-strip. Their original files remain unchanged as history; they are
+no longer the current choice set. The requested Neon route returned three new
+static proposals in `docs/operations/trace-html-neon-2026-11-27/`:
+`r2-cobalt-folio.html`, `r2-verdigris-dispatch.html` and `r2-plum-atelier.html`.
+Neon recommends cobalt-folio; the executing agent also prefers it after inspecting
+all three desktop views. Neither preference is Carlos's selection.
+The CLI does not return canonical model metadata;
+the requested `gemini-4-neon-medium` route is evidenced, actual identity is unverified.
+
+Final localized browser qualification passed all six mobile/desktop views,
+preserving all 12 exact fields and six keyboard-operated native disclosures.
+The agent presented all three proposals inline in Orca; this is not acceptance.
+The independent source/curation review is accepted. The agent must publish the
+reviewed documents and complete local Dossier L14 capture/export/readback. Carlos
+then evaluates the actual designs; none is selected or accepted. Applying a
+chosen layout to `scripts/dockit-trace-render.py` remains a later step. The
+production renderer and version 4.23.1 are unchanged by these source examples.
+See `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md` for provenance and
+qualification. The new files share one observed 2026-11-27 01:12:50 CET snapshot
+(00:12:50 UTC), not live status. Source Sans 3 and Literata bytes from Portal
+2f913 are embedded unchanged, with full OFL notices; Neon authored the layout,
+while Codex escaped snapshot values, embedded those fonts and full OFL notices,
+translated labels and the document language to Spanish, and corrected outer Orca
+theme-token names. The inner palettes and layout geometry remain Neon-authored.
 Completed source, cleanup and local Dossier evidence are recorded in
 `docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md`. The 19 historical
 secondary registrations are retired; only the primary checkout remains. The
@@ -57,7 +78,7 @@ unverified fallback. Trace tests pass 25/25; native SPITFIRE-2 Windows tests pas
 The initializer excludes these source-only notes/prototypes from new project
 scaffolds while preserving the source originals. Full smoke passed138/138 with no failures and
 removed all disposable fixtures. Exact Opus5.5/high R2 accepted the source, corrected
-documentation, actual visual comparison and bounded post-publication curation.
+documentation, first-round visual comparison and bounded post-publication curation.
 
 ## Current capability and acceptance limits
 
@@ -66,7 +87,9 @@ documentation, actual visual comparison and bounded post-publication curation.
 - Trace renders static HTML for an advertised Orca capability, text otherwise;
   `scripts/dockit-trace-status.sh --language es` is the Spanish operator route.
   Static HTML has been emitted in this Orca chat; terminal tests pass.
-  Three Neon-route proposals were received; selection and final client acceptance remain separate.
+  First-round Neon appearance was rejected; three second-round proposals are
+  qualified in six browser views and presented inline; Carlos's evaluation
+  remains pending. No default was selected.
 - Leave-no-residue forbids repeated allocation per read/poll. It cannot replace
   actual producer adoption or host health checks. NAS2/Dossier runtime is owned
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
@@ -75,7 +98,8 @@ documentation, actual visual comparison and bounded post-publication curation.
 - Dossier: L13 local capture/export/readback completed with the pinned1.1.0
   engine; all12 earlier snapshots and17 historical sources preserved. Three new
   sources pin850aeda;20 sources total. Revision: local:6c99af3dedf5b5292f0b18e0a4b3568731c88c41460f8ec92fd197eb01cbea13.
-  All five Portal reader sections passed81 visible assertions; root inspected
+  L13 still describes the old comparison; L14 refresh is pending.
+  Its five Portal reader sections passed81 visible assertions; root inspected
   Ahora/Fuentes and agent inspected the real view. No external requests.
   Permanent4319 and shared Portal remain unavailable/unproven; do not invoke
   the old container-per-read route. Shared recovery stays with its owner.
@@ -105,12 +129,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 00:45:53 Europe/Madrid (23:45:53 UTC)
-- Subject: Barcience input, requested Neon designs and verified Trace clock
-- Resulting state: version=4.23.1; source published; local Dossier L13 verified; layout choice pending
-- Repo state: main850aeda verified clean and equal to live origin before this receipt
-- Validation: Trace25/25 and native SPITFIRE-2 Windows6/6; smoke138/138; exact Opus R2 SOURCE_GO and bounded CURATION_GO accepted
-- Next gate: Carlos selects a layout; agent applies it; Windows branch/OCTA/shared reader remain separately owned
+- Sent: 2026-11-27 01:24:17 Europe/Madrid (00:24:17 UTC)
+- Subject: Second Neon visual comparison after Carlos rejected the first round
+- Resulting state: HEAD=5be30a6; version=4.23.1; comparison candidate received; default unchanged; L14 refresh pending
+- Repo state: main=origin/main=5be30a6 at observation; new proposals and owner documentation are uncommitted
+- Validation: second-round localized browser6/6 and inline presentation completed; prior release checks remain historical evidence; exact Opus5.5/high SOURCE_GO and CURATION_GO accepted
+- Next gate: agent publishes and refreshes L14; Carlos evaluates the three new designs before any production layout change
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

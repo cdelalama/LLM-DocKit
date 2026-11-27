@@ -1,6 +1,8 @@
 # Trace: Barcience input, Neon design and verified clock
 
-Status: source candidate 4.23.1; design proposals are not operator acceptance.
+Status: 4.23.1 is published; the first Neon designs were rejected. A second
+source-only visual comparison is received and visually qualified; independent
+review, publication, Dossier refresh and operator acceptance remain separate.
 Owner: LLM-DocKit. Authority: Carlos requested integration of the published
 Barcience note and asked Neon to author the design, following his authorization
 to implement, test, delegate, clean up and publish this work.
@@ -93,7 +95,7 @@ Published HTML examples are intentional source evidence; chat copies are
 intentional deliverables retained for the chat lifetime. Disposable validation
 fixtures must be removed and their absence verified.
 
-## Received Neon designs
+## First-round Neon designs: rejected appearance, preserved evidence
 
 The fresh `gemini-4-neon-medium` route returned SUCCESS in 75.216 seconds,
 conversation `da36dfe9-a7d4-4ef1-9292-7b27794558f1`. Neon authored all three HTML/CSS
@@ -111,9 +113,9 @@ fields describe the sample Codex executor, not the external designer.
 
 | Proposal | Composition | Disposition |
 | --- | --- | --- |
-| `ledger-sheet.html` | Compact register; state evidence and full text in native disclosures | Neon's recommendation; operator choice pending |
-| `split-rail.html` | Asymmetric typography; next actor alongside the subject | Alternative; operator choice pending |
-| `command-strip.html` | Full-width next-action band; evidence always visible | Alternative; operator choice pending |
+| `ledger-sheet.html` | Compact register; state evidence and full text in native disclosures | Rejected by Carlos; retained history |
+| `split-rail.html` | Asymmetric typography; next actor alongside the subject | Rejected by Carlos; retained history |
+| `command-strip.html` | Full-width next-action band; evidence always visible | Rejected by Carlos; retained history |
 
 All three are in `trace-html-neon-2026-11-27/`. They are static, script-free and
 use native details/summary. No browser result asserts clipboard capability,
@@ -135,10 +137,11 @@ browser profile was removed and source hashes stayed unchanged. An initial
 keyboard-harness attempt omitted the Enter character event; it was corrected
 in the test harness, with no HTML changes and the failed receipt preserved.
 
-The three files were presented inline in this Orca conversation. Carlos's
-selection remains pending. Neon recommends ledger-sheet; Codex's visual
-preference is split-rail for its compact subject/next-actor arrangement. Neither
-recommendation is an operator decision or production-layout change.
+The three files were presented inline in this Orca conversation. Carlos then
+rejected all three as visually unattractive and requested a much more attractive
+result. The earlier Neon recommendation of ledger-sheet and Codex preference
+for split-rail are historical opinions, not current choices or operator
+acceptance. Rendering checks did not establish aesthetic acceptance.
 
 ## Publication and local closure
 
@@ -159,3 +162,86 @@ Windows qualification fixture (absence checked through a second connection).
 No worktree, branch, service, container or image was created for this follow-up.
 The19 earlier secondary worktrees remain retired; only the primary is registered.
 This publication/readback receipt requires no new version or recursive Dossier.
+
+
+## Second round after explicit operator rejection
+
+Carlos rejected the first trio in this conversation on 2026-11-27: "Joder, puede
+ser mucho más atractivo!" This is a request for a new visual direction, not a
+selection among the rejected files. All earlier source and chat artifacts remain
+preserved. The production renderer and source version 4.23.1 remain unchanged.
+
+The fresh requested `gemini-4-neon-medium` call returned SUCCESS in 95.241 seconds,
+conversation `99ea28ef-ac4e-4465-ad6c-cda46975b5a3`. The returned CLI data still
+has no canonical model identity: actual model metadata is unverified. Neon
+supplied the HTML/CSS/SVG geometry; Codex substituted HTML-escaped values from
+one fixed snapshot, mechanically embedded unchanged Source Sans 3 and Literata
+font bytes from Portal 2f913 with full OFL notices, translated labels and the
+document language to Spanish, and corrected outer Orca theme-token names.
+The inner palettes and layout geometry remain Neon-authored; the final files
+are not claimed to be byte-identical to the original Neon templates.
+No network font dependency or new production renderer behavior is introduced.
+
+All three new examples use the same observed snapshot: 2026-11-27 01:12:50 CET
+(00:12:50 UTC), HEAD5be30a6, version4.23.1. Their model/client values describe
+the sample executor and do not verify the external designer. The fixed values
+are evidence for comparison, not a live status feed.
+
+| Second-round file | Visual direction | Current disposition |
+| --- | --- | --- |
+| `r2-cobalt-folio.html` | Warm porcelain, serif display type and a cobalt next-actor panel | Neon recommendation; operator evaluation pending |
+| `r2-verdigris-dispatch.html` | Dark slate and verdigris with a separate desktop action column | Alternative; operator evaluation pending |
+| `r2-plum-atelier.html` | Cream and sand editorial framing with a plum action panel | Alternative; operator evaluation pending |
+
+The files are in the existing `trace-html-neon-2026-11-27/` source-only directory.
+They add no initializer path or installation change. After inspecting all three
+desktop views, the executing agent prefers cobalt-folio as the most balanced.
+This agrees with Neon's recommendation but is not Carlos's selection. Final
+localized Chromium qualification passed all six views (390 and 1280 pixels for
+each file), retaining all 12 exact snapshot fields and all six keyboard-operated
+native disclosures. No horizontal overflow or external request was observed.
+Source Sans 3 loaded in all three; Literata loaded in Cobalt/Plum, where used.
+Verdigris uses sans only, so its embedded unused serif remained unloaded.
+Contrast checks reported zero warnings and zero excluded background-image cases;
+gradients used conservative composited color-stop endpoints. These are bounded
+checks, not a claim of universal accessibility certification.
+
+The visual agent inspected all three mobile/desktop localized closed views and
+all three dark expanded mobile views. Root inspected the desktop views and
+presented the three localized files inline in this Orca turn. Presentation is
+not Carlos's acceptance. Source hashes stayed unchanged; the disposable browser
+profile is absent. Final evidence is `browser-inspection/inspection-receipt.json`
+in the private custody directory below. Exact Opus5.5/high independent review accepted the new examples and bounded
+curation, including the later license-comment whitespace normalization;
+no operator selection or production-layout change is claimed.
+
+SHA-256 values of the localized rendered examples (pre-localization hashes
+remain in the private artifact receipt):
+- `r2-cobalt-folio.html`: `1d7a467c888e7077c6d83b3d2b94b37f3a520adfe7ef57c1e996699b2c428711`.
+- `r2-verdigris-dispatch.html`: `8704103f388e45039b39d316bd352c942c8849be6cd9ab3d7b618a019ded5bdb`.
+- `r2-plum-atelier.html`: `b469cdeff14e13a9935451adc4f09747702d03d304b82c27e449a0ca33e83d5c`.
+
+Dossier assessment: refresh required. L13 still describes the now-rejected trio
+as the available choice set. L14 must record the rejection, the three new names,
+Neon's recommendation, unchanged default and the current evaluation/next-step
+state. Preserve all 13 earlier revisions and 20 historical sources; pin the new
+allowlisted HANDOFF source only after reviewed publication. Capture/export and
+actual reader readback remain pending. The eventual receipt does not itself
+require another recursive capture.
+
+Original advisor inputs/results, font provenance, hashes and review/qualification
+evidence are retained privately under
+`~/.local/state/LLM-DocKit/neon-trace-visual-r2-20261127`, owner DocKit/Carlos,
+custody review 2026-12-04; no automatic deletion authority. New source HTML and
+immutable chat copies are intentional deliverables. Remove only owned disposable
+browser/validation staging and verify its absence. No new worktree, branch,
+server, container or image is needed. This visual/documentary iteration requires
+focused content, continuity and browser checks, not a rerun of unchanged runtime
+smoke tests.
+
+After browser inspection, trailing whitespace in embedded OFL license comment
+lines was normalized for the repository whitespace check. Full license wording
+and font bytes are unchanged; an HTML-parser comparison verified identical
+rendered tags, attributes, CSS and text before/after. Private
+`license-comment-normalization.json` maps inspected hashes to published hashes;
+chat copies retain the visually identical pre-normalization comments.

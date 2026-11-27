@@ -8,9 +8,9 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Integrate the supplied Barcience input and compare actual Neon Trace designs in
-`docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`; publish the independently
-reviewed 4.23.1 clock/distribution patch. The 19 legacy worktrees are retired. Use
+Compare the second-round Neon designs after Carlos rejected the first round;
+see `docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md`. The 4.23.1 clock/
+distribution patch is published and the 19 legacy worktrees are retired. Use
 `scripts/dockit-publication.py --require-published` after pushing. Orca Trace uses
 `scripts/dockit-trace-status.sh --language es`; terminal text remains available.
 Previous source observations are preserved in
