@@ -19,11 +19,14 @@
 
 ## Open work - next concrete step
 
-Update-notice rollout on DEV has three separate steps (commands in
-`docs/integrations/CODEX.md`): (1) install into `~/.claude/settings.json` and
-both Codex homes - agent; (2) trust both new hooks in Codex `/hooks`, once per
-Codex home (`~/.codex`, `~/.codex-lamanoriega`) - Carlos; (3) observe one live
-notice per client - agent, after (2). Claude needs no trust step. Fleet template
+Update-notice rollout on DEV (commands in `docs/integrations/CODEX.md`):
+(1) DONE 2026-11-27 02:24 UTC - installed into `~/.claude/settings.json` and both
+Codex homes; a simulated open session in cortex got one notice, then silence.
+Backups `*.bak.20261127T022402Z` beside each config are kept until step 2 is
+verified (owner Carlos, review by 2026-12-04). (2) NEXT - Carlos trusts both new
+hooks in Codex `/hooks`, once per Codex home (`~/.codex`, `~/.codex-lamanoriega`).
+(3) agent observes one live notice per client after (2). Claude needs no trust
+step. Home Infra registry records 4.25.0 at `5a24a184`. Fleet template
 sync with `scripts/dockit-sync.sh` remains a separate operator-gated decision.
 
 By 2026-12-03 the DocKit maintainer reviews the retained Windows candidate
