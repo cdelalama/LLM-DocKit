@@ -6,7 +6,7 @@
 
 - Last Updated: 2026-11-27 - Codex: worktree sync discovery correction (4.26.1).
 - Current source version: 4.26.1
-- Publication: candidate pending push to origin/main.
+- Publication: 4.26.1 published on origin/main at `e2af83e`.
 - Owner: Carlos
 - Session focus: Carlos corrected the Executor recovery and TREK client access
   analysis and requested durable learning. DF-068, D-039,
@@ -14,8 +14,10 @@
   and validate declared cases. Home Infra adopted the narrow guard and
   applied OCTA's scoped server policy; native client acceptance remains open.
   DF-069 records that DocKit sync mistook a managed worktree's `.git` file for
-  a missing repository. Patch 4.26.1 recognizes it and protects Git discovery;
-  a worktree still needs its own state and durable backup closeout.
+  a missing repository. Published patch 4.26.1 recognizes it and protects Git
+  discovery; a worktree still needs its own state and durable backup closeout.
+  Executor's clean primary adopted the full template at 0.18.2, published as
+  `6146fa6` with a later source receipt at `b64e9f6`.
 - Previous state: 4.25.0 central update notices and collector-first Trace were
   published; their DEV hook trust and live notification gate remains open.
 - Limits: instructions are central and current; project template files still
@@ -26,9 +28,8 @@
 
 ## Open work - next concrete step
 
-For DF-069, finish review and publish the bounded 4.26.1 discovery correction.
-Do not run a full sync in a disposable managed worktree until state and backup
-custody through task retirement have a reviewed design. Home Infra's exact
+For DF-069, design durable state and backup custody through managed worktree
+retirement before a full sync there. Home Infra's exact
 published-file copy is recorded as selective adoption, with no full sync claim.
 Fresh OCTA/Android client use and an authorized natural TREK write remain Home
 Infra acceptance, separate from DocKit source. Other adopters receive no
