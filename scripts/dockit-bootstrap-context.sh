@@ -150,6 +150,11 @@ trace_chat_enabled() {
     esac
 }
 
+# Single-quote a value for display in a copy-pasteable shell command.
+sh_quote() {
+    printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
+}
+
 trace_local_timezone() {
     _timezone=$(read_trace_value local_timezone || true)
     if [ -n "$_timezone" ]; then
@@ -276,6 +281,24 @@ Trace Protocol:
     current clock before acting on its Repo state.
   - If this project has trace_protocol.enabled: true, durable HANDOFF/HISTORY
     trace fields are enforced by scripts/dockit-validate-session.sh."
+    # Prefer the collector shipped beside this script (the central LLM-DocKit
+    # copy when invoked by a global hook). It observes clock/Git itself and
+    # chooses the format: Cobalto HTML only when the client supplies
+    # ORCA_CHAT_SCRATCH_DIR (Orca), the plain text header everywhere else.
+    TRACE_COLLECTOR="$(cd "$(dirname "$0")" 2>/dev/null && pwd)/dockit-trace-status.sh"
+    if [ -x "$TRACE_COLLECTOR" ]; then
+        MESSAGE="$MESSAGE
+  - Generate the header with the collector instead of writing it by hand:
+      $(sh_quote "$TRACE_COLLECTOR") --project $(sh_quote "$PROJECT_ROOT") \\
+        --role <role> --subject <text> --validation <text> --next <text> \\
+        [--language es] [--client <client>] [--model <exact-model|unknown>] \\
+        [--dossier <last checked status>]
+    Paste its stdout verbatim at the top of the reply, outside code fences. In
+    any client it prints the eight-field text header; when the client provides
+    ORCA_CHAT_SCRATCH_DIR (Orca chat) it prints an ::orca-visual directive for
+    the Cobalto card instead. Never hand-write Sent/HEAD/Repo state values when
+    the collector is available; if it fails, use the text format above."
+    fi
 fi
 
 if [ -f "$HANDOFF" ]; then

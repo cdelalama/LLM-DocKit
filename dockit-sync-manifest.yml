@@ -18,7 +18,8 @@ schema_version: 1
 
 files:
 # --- Scripts (copy: always latest template) ---
-# Note: dockit-sync.sh and dockit-sync-check.sh are NOT listed here.
+# Note: dockit-sync.sh, dockit-sync-check.sh and dockit-update-notice.py are
+# NOT listed here.
 # They are control-plane scripts that run only from LLM-DocKit root.
 - path: scripts/bump-version.sh           strategy: copy
 - path: scripts/check-version-sync.sh     strategy: copy

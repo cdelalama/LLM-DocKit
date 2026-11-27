@@ -1,21 +1,30 @@
-<!-- doc-version: 4.24.0 -->
+<!-- doc-version: 4.25.0 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex published Cobalto and verified local L15.
-- Current source version: 4.24.0
+- Last Updated: 2026-11-27 - Claude: central update notices and collector-first Trace (4.25.0).
+- Current source version: 4.25.0
 - Owner: Carlos
-- State: `ea02fb3` published the Cobalto renderer and managed template to main.
-  Carlos selected the second-round design with "Implementa cobalto".
-- Qualification: 32 Trace tests, 140 smoke tests including init/sync transport,
-  four Chromium cases, and a separate readback in the paired Orca desktop browser
-  passed. Exact Opus 5.5/high approved the source and Spanish L15 curation.
-- Local Dossier: L15 captured, exported and verified across five reader views.
-  All 14 prior revisions and 21 prior sources were preserved.
+- Session focus: Carlos asked that every project and every open session pick
+  up DocKit updates. The central SessionStart bootstrap now names the central
+  Trace collector (text anywhere, Cobalto only in Orca), and
+  `scripts/dockit-update-notice.py` gives a running session one notice per
+  central VERSION change. See D-038 in `docs/llm/DECISIONS.md`.
+- Previous state: `ea02fb3` published Cobalto 4.24.0; local Dossier L15 verified.
+- Limits: instructions are central and current; project template files still
+  change only through operator-gated `scripts/dockit-sync.sh` (49 adopters
+  report OUTDATED). Codex runs the new hooks only after /hooks trust.
 
 ## Open work - next concrete step
+
+Update-notice rollout on DEV has three separate steps (commands in
+`docs/integrations/CODEX.md`): (1) install into `~/.claude/settings.json` and
+both Codex homes - agent; (2) trust both new hooks in Codex `/hooks`, once per
+Codex home (`~/.codex`, `~/.codex-lamanoriega`) - Carlos; (3) observe one live
+notice per client - agent, after (2). Claude needs no trust step. Fleet template
+sync with `scripts/dockit-sync.sh` remains a separate operator-gated decision.
 
 By 2026-12-03 the DocKit maintainer reviews the retained Windows candidate
 `b6a369f` in `scripts/dockit-init-project.sh`, qualifies the Git Bash path
@@ -98,13 +107,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 02:23:42 Europe/Madrid (01:23:42 UTC)
-- Subject: `ea02fb3` - feat: render Cobalto as the default static Trace card
-- Commit time: 2026-11-27 01:21:24 UTC
-- Resulting state: HEAD=ea02fb3; version=4.24.0; Cobalto source and local Dossier verified
-- Repo state: main and live origin/main matched ea02fb3 before this receipt
-- Validation: 32 Trace tests, 140 smoke tests, four browser cases, Orca desktop and 89 local reader assertions passed
-- Next gate: DocKit owner reviews the retained Windows candidate by 2026-12-03
+- Sent: 2026-11-27 03:23:43 Europe/Madrid (02:23:43 UTC)
+- Subject: feat: central update notices and collector-first Trace onboarding (4.25.0)
+- Resulting state: base HEAD=38e240f; version=4.25.0; gate=next-slice; source reviewed, DEV hook rollout pending
+- Repo state: main matched origin/main at 38e240f before this commit; worktree carried only this task
+- Validation: notice suite ALL PASS, 32 Trace tests OK, 140 smoke passed; independent Codex gpt-6.2-astra review GO after six rounds
+- Next gate: agent installs hooks on DEV; Carlos trusts them in Codex /hooks per home
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

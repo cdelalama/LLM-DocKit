@@ -1428,3 +1428,19 @@ loading is introduced. The selected prototype remains immutable provenance;
 production uses the current collected snapshot, never its historical example.
 Visual selection, source publication, actual generated readback and downstream
 fleet adoption remain distinct. See docs/integrations/ORCA.md.
+
+## D-038 - Central instructions reach every session; template files stay gated
+
+Date: 2026-11-27. Authority: Carlos asked that every project pick up DocKit
+updates, including already-open sessions on their next message, through a hook
+that only checks for an update. Global hooks already run the central
+bootstrap, so the central copy is the delivery path for instructions: it names
+the central Trace collector, whose own capability check selects text or Cobalto.
+`scripts/dockit-update-notice.py` adds one notice per session per VERSION change;
+it is silent otherwise and never fetches, edits a project or runs sync. A
+recurring SessionStart never moves a baseline; a missing baseline is silent
+except for one "may be older" notice during the first 7 days after install. Project
+template files remain synchronized only by an operator-gated dockit-sync, so
+"latest instructions" does not mean "latest files in every repository". Codex
+hook trust stays a human /hooks review. Coverage is this DEV host's installed
+hooks; other hosts need their own installation.

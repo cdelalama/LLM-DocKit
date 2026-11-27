@@ -1,6 +1,6 @@
 ## DocKit source maintainer context - 2026-11-27
 
-Source version: 4.24.0. Current owner state and next action are in
+Source version: 4.25.0. Current owner state and next action are in
 `docs/llm/HANDOFF.md`; source architecture is in `HOW_TO_USE.md` under
 "Source maintainer context". README, PROJECT_CONTEXT and ARCHITECTURE below
 are distributable starter templates, not an inventory of DocKit runtime.
@@ -8,8 +8,9 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Cobalto 4.24.0 was published at ea02fb3. Local Dossier L15 is verified.
-The DocKit maintainer reviews the retained Windows path fix in
+4.25.0 adds central update notices (`scripts/dockit-update-notice.py`, D-038):
+DEV hook installation, Carlos's Codex `/hooks` trust per home and one observed
+live notice per client remain pending as separate steps. The DocKit maintainer reviews the retained Windows path fix in
 `scripts/dockit-init-project.sh` by 2026-12-03. See `docs/llm/HANDOFF.md`.
 Orca Trace uses `scripts/dockit-trace-status.sh --language es`; terminal
 clients retain the text format.
@@ -18,7 +19,7 @@ Previous source observations are preserved in
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.24.0 -->
+<!-- doc-version: 4.25.0 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 

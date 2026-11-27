@@ -4,6 +4,29 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.25.0] - 2026-11-27
+
+### Added
+
+- Central-only `scripts/dockit-update-notice.py`: global Claude Code/Codex
+  SessionStart + UserPromptSubmit hooks that stay silent while the central
+  DocKit VERSION is unchanged and give a running session one notice when it
+  changes (reload the central onboarding; report project template lag without
+  syncing). Resume/compaction never consumes a pending notice; sessions with no
+  baseline are silent except one "may be older" notice during the first 7 days
+  after install. One bounded state file under an absolute state directory, no
+  network, no per-request files. `install`/`uninstall` edit only owned handlers
+  in Claude settings and Codex config, with unique backups, validation and
+  atomic replacement (Codex /hooks trust remains a human review), tested by
+  `scripts/test-update-notice.py`.
+
+### Changed
+
+- The SessionStart onboarding Trace section now tells agents to generate the
+  header with the collector beside the bootstrap script. It prints the text
+  header in any client and the Cobalto directive only when Orca supplies
+  `ORCA_CHAT_SCRATCH_DIR`; hand-written values remain the fallback only.
+
 ## [4.24.0] - 2026-11-27
 
 ### Added

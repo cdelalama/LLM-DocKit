@@ -33,6 +33,7 @@ Document the repository structure here. Replace this paragraph and the example t
 |  +- pre-commit-hook.sh         (git pre-commit hook template)
 |  +- dockit-sync.sh             (sync template to downstream -- template only)
 |  +- dockit-sync-check.sh       (check downstream sync status -- template only)
+|  +- dockit-update-notice.py    (central per-prompt update notice hook -- template only)
 |  +- dockit-validate-session.sh (validates LLM documentation state)
 |  +- dockit-delivery-check.sh  (read-only delivery evidence check)
 |  +- dockit-delivery-record.sh (serialized attempt/review/evidence writer)
@@ -79,6 +80,7 @@ Document the repository structure here. Replace this paragraph and the example t
 | scripts/test-validator.sh | Smoke-tests validator edge cases in throwaway repos | Recommended before validator changes |
 | scripts/dockit-sync.sh | Propagates full or `--only` scoped template updates to downstream projects | Template only |
 | scripts/dockit-sync-check.sh | Reports sync status of all downstream projects | Template only |
+| scripts/dockit-update-notice.py | Global Claude/Codex hook: one notice per session when central DocKit VERSION changes; installs/uninstalls itself | Template only |
 | scripts/dockit-generate-external-context.sh | Generates External Context section in LLM_START_HERE.md from .dockit-config.yml | Downstream + template |
 | scripts/dockit-install-codex-hook.sh | Installs the Codex CLI SessionStart onboarding hook | Downstream + template |
 | .dockit-enabled | Empty marker file opting a project into sync | Downstream only |

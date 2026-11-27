@@ -177,6 +177,7 @@ echo "  copied scaffold (tracked files only, via git archive)"
 #   - ROADMAP.md             -- LLM-DocKit source roadmap, not project roadmap
 #   - dockit-sync-manifest.yml -- template-propagation manifest
 #   - scripts/dockit-sync.sh, dockit-sync-check.sh -- template propagation
+#   - scripts/dockit-update-notice.py (+ test) -- central operator hook
 #   - scripts/dockit-init-project.sh -- this script itself
 #
 # Downstream projects can always invoke them from the source LLM-DocKit
@@ -201,6 +202,7 @@ if [ -d .forgeos ]; then rmdir .forgeos 2>/dev/null || :; fi
 rm -f dockit-sync-manifest.yml
 rm -f scripts/dockit-sync.sh
 rm -f scripts/dockit-sync-check.sh
+rm -f scripts/dockit-update-notice.py scripts/test-update-notice.py
 rm -f scripts/dockit-init-project.sh
 
 # Owner records are not portable templates. Only the new target is reset.

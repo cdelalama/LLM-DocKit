@@ -1,4 +1,4 @@
-<!-- doc-version: 4.24.0 -->
+<!-- doc-version: 4.25.0 -->
 # Codex CLI Integration
 
 LLM-DocKit's session-start onboarding uses `scripts/dockit-bootstrap-context.sh`.
@@ -64,6 +64,27 @@ DF-037 follow-up before adding a stateful `--codex` mode.
 The release process does not reinstall the operator hook automatically. Treat
 installation as a separate operator action: inspect the backup and resulting
 config diff, complete `/hooks` review, then start a fresh verification session.
+
+## Update notices (central-only)
+
+`scripts/dockit-update-notice.py` gives running sessions one notice when the
+central DocKit VERSION changes. Install it for Claude Code and each Codex home:
+
+```sh
+~/src/LLM-DocKit/scripts/dockit-update-notice.py install \
+  --claude-settings ~/.claude/settings.json \
+  --codex-config ~/.codex/config.toml \
+  --codex-config ~/.codex-lamanoriega/config.toml
+```
+
+It adds a SessionStart hook (records the session baseline) and a
+UserPromptSubmit hook (silent unless VERSION changed). Codex runs both only
+after they are trusted in `/hooks`, once per Codex home. `uninstall` with the
+same flags removes only the managed entries. A resumed or compacted session
+keeps its baseline. Sessions that began before installation get one notice
+worded "may be older" on their next prompt during the first 7 days after
+install; later, a missing baseline is recorded silently. The notice never syncs
+project files; it names the operator-gated dry run when a project lags.
 
 ## Ownership
 

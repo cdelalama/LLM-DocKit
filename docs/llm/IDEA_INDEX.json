@@ -199,6 +199,24 @@
       "coverage_claim": "declared_corpus_only",
       "remaining_backfill": "Earlier historical coverage and owner queues remain unchanged.",
       "cursor": "Before selecting the Trace layout, adding interactivity or claiming native Windows adoption."
+    },
+    {
+      "id": "B-update-notice-20261127",
+      "date": "2026-11-27",
+      "sources": [
+        {
+          "path": "docs/llm/DECISIONS.md"
+        }
+      ],
+      "excluded": [
+        "Raw private chat; the session's live conversation is summarized only through D-038."
+      ],
+      "unknown": [
+        "Codex UserPromptSubmit output handling until a trusted live session is observed; other hosts' hook installations."
+      ],
+      "coverage_claim": "declared_corpus_only",
+      "remaining_backfill": "Earlier historical coverage and owner queues remain unchanged.",
+      "cursor": "Before automating template sync or installing notices on another host."
     }
   ],
   "entries": [
@@ -579,6 +597,34 @@
         }
       ],
       "rationale": "Clipboard requires qualified Orca capability and a usable fallback; shipped CSP forbids scripts. Text export portability remains unverified."
+    },
+    {
+      "id": "IDEA-FLEET-AUTO-SYNC-20261127",
+      "record": "native",
+      "kind": "operator_request",
+      "title": "Every project always on the latest LLM-DocKit (fleet template sync)",
+      "origin": {
+        "date": "2026-11-27",
+        "attribution": "Carlos asked whether each project can update itself; Claude separated central instructions (delivered) from per-repository template files.",
+        "sources": [
+          {
+            "path": "docs/llm/DECISIONS.md"
+          }
+        ]
+      },
+      "batch": "B-update-notice-20261127",
+      "owner": "LLM-DocKit",
+      "state": "deferred",
+      "recall_trigger": "When Carlos authorizes a fleet dockit-sync or asks for unattended template updates.",
+      "documentation_refs": [
+        {
+          "path": "docs/llm/DECISIONS.md"
+        },
+        {
+          "path": "docs/integrations/CODEX.md"
+        }
+      ],
+      "rationale": "D-038 delivers current instructions and once-per-change notices. Automatic writes into 49 repositories, ten of them dirty with other sessions' work, stay operator-gated."
     }
   ],
   "task_reconciliations": [
