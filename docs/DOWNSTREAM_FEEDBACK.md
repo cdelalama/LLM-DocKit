@@ -2477,3 +2477,33 @@ true. Semantic reconciliation, current authority, an actual client call and
 project-specific prevention remain the owner's and reviewer's responsibility.
 Source publication does not make an adopter current; Home Infra receives its
 own adopted case records and current-source warnings in this task.
+
+## DF-069 - Sync rejected managed Git worktrees
+
+- Source: Home Infra D-036 selective DocKit adoption, 2026-11-27.
+- Date observed: 2026-11-27
+- Category: usability
+- Status: partially implemented in DocKit 4.26.1; safe Git-file discovery
+  and an explicit worktree-state error are implemented, while durable
+  cross-worktree state/backup closeout remains open. Home Infra's earlier
+  selective copy is not retroactively called a full sync.
+- Related: DF-068, Home Infra D-030
+
+Observation: `dockit-sync.sh --project` rejected the Home Infra managed task
+worktree as "not a git repository" because it required `.git` to be a directory.
+Linked Git worktrees use a `.git` file pointing to their private Git directory.
+The sync-state, lock and backup paths also assumed `.git/` was inside the
+project. The owner used exact published-file copies for the narrow guard while
+preserving the dirty primary checkout; no full template state was claimed.
+
+Protocol implication: resolve `git rev-parse --absolute-git-dir` for each
+project, store its state/lock/backups there, and accept `.git` file checkouts
+in sync and sync-check discovery. Unset inherited Git locator variables and
+require the requested path to be the repository root. A Git-file fixture
+checks the path; a real managed Home Infra dry-run now reaches the honest
+"no per-worktree sync state" error. No `--init-state` was run there. A
+worktree has its own private state and backups, which task retirement would
+remove; applying sync there needs a separate custody and state-portability
+design. The narrow Home Infra adoption copied exact published files and
+did not claim full template currency. This patch does not authorize a full
+sync or alter an adopter's recorded template identity.

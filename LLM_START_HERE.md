@@ -22,7 +22,7 @@ Previous source observations are preserved in
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.26.0 -->
+<!-- doc-version: 4.26.1 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 

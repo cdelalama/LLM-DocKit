@@ -990,6 +990,37 @@ if [ ! -x "$SYNC_TOOL" ]; then
 else
     SYNC_FOOTER_REPO="$TMP_ROOT/sync-footer"
     init_sync_section_repo "$SYNC_FOOTER_REPO" "with-footer"
+    SYNC_WORKTREE="$TMP_ROOT/sync-worktree"
+    init_sync_section_repo "$SYNC_WORKTREE" "with-footer"
+    _worktree_gitfile_dir="$TMP_ROOT/sync-worktree-gitdir"
+    mv "$SYNC_WORKTREE/.git" "$_worktree_gitfile_dir"
+    printf 'gitdir: %s\n' "$_worktree_gitfile_dir" >"$SYNC_WORKTREE/.git"
+    _worktree_scan="$TMP_ROOT/sync-worktree-scan"
+    mkdir "$_worktree_scan"
+    ln -s "$SYNC_WORKTREE" "$_worktree_scan/fixture"
+    mkdir "$SYNC_WORKTREE/nested"
+    touch "$SYNC_WORKTREE/nested/.dockit-enabled"
+    if _worktree_git_dir=$(git -C "$SYNC_WORKTREE" rev-parse --absolute-git-dir) \
+        && GIT_DIR="$SYNC_FOOTER_REPO/.git" "$SYNC_TOOL" --init-state \
+            --project "$SYNC_WORKTREE" >"$OUT" 2>&1 \
+        && [ -f "$_worktree_git_dir/.dockit/state.yml" ] \
+        && [ ! -e "$SYNC_FOOTER_REPO/.git/.dockit/state.yml" ] \
+        && "$SYNC_TOOL" --dry-run --project "$SYNC_WORKTREE" \
+            --only docs/FAILURE_LEARNING.md >"$OUT" 2>&1 \
+        && ! grep -q 'not a git repository' "$OUT" \
+        && "$PROJECT_ROOT/scripts/dockit-sync-check.sh" --src-root "$_worktree_scan" \
+            >"$OUT" 2>&1 \
+        && grep -q 'CURRENT' "$OUT" \
+        && ! "$SYNC_TOOL" --dry-run --project "$SYNC_WORKTREE/nested" \
+            >"$OUT.nested" 2>&1 \
+        && grep -q 'not a git repository' "$OUT.nested" \
+        && ! GIT_DIR="$SYNC_FOOTER_REPO/.git" "$SYNC_TOOL" --dry-run \
+            --project "$SYNC_WORKTREE/nested" >"$OUT.nested" 2>&1 \
+        && grep -q 'not a git repository' "$OUT.nested"; then
+        note_pass "dockit-sync and sync-check accept a Git-file checkout"
+    else
+        note_fail "dockit-sync and sync-check accept a Git-file checkout"
+    fi
     if "$SYNC_TOOL" --init-state --project "$SYNC_FOOTER_REPO" >"$OUT" 2>&1 \
         && "$SYNC_TOOL" --apply --project "$SYNC_FOOTER_REPO" >"$OUT" 2>&1 \
         && awk '

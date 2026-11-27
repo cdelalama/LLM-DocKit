@@ -22,12 +22,16 @@
 # This script runs ONLY from LLM-DocKit root. It is NOT copied to downstream.
 
 set -e
+# Repository discovery must be tied to --project, never inherited from a
+# caller's unrelated Git command or hook environment.
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE \
+    GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_NAMESPACE
 
 # ============================================================================
 # Constants
 # ============================================================================
 
-SYNC_TOOL_VERSION="1.2.0"
+SYNC_TOOL_VERSION="1.2.1"
 SUPPORTED_SCHEMA_VERSION="1"
 DOCKIT_DIR_NAME=".dockit"
 
@@ -60,6 +64,7 @@ BACKUP_MANIFEST=""
 HAS_CONFLICTS=false
 CURRENT_PROJECT=""
 LOCK_ERROR_DETAIL=""
+PROJECT_GIT_DIR=""
 
 # Counters (per-project, reset in sync_project)
 COUNT_UPDATED=0
@@ -277,7 +282,7 @@ parse_manifest() {
 
 acquire_lock() {
     _project_root="$1"
-    _dockit_dir="$_project_root/.git/$DOCKIT_DIR_NAME"
+    _dockit_dir="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME"
     _candidate_lock="$_dockit_dir/sync.lock"
     LOCK_ERROR_DETAIL=""
 
@@ -319,7 +324,7 @@ release_lock() {
 create_backup_dir() {
     _project_root="$1"
     _ts=$(date +%Y%m%d_%H%M%S)
-    _backups_root="$_project_root/.git/$DOCKIT_DIR_NAME/backups"
+    _backups_root="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/backups"
     mkdir -p "$_backups_root"
     # Never truncate a previous run's manifest when two applies share a second.
     BACKUP_DIR=$(mktemp -d "$_backups_root/$_ts.XXXXXX")
@@ -389,7 +394,7 @@ rollback() {
 restore_backup() {
     _project_root="$1"
     _timestamp="$2"
-    _backup_dir="$_project_root/.git/$DOCKIT_DIR_NAME/backups/$_timestamp"
+    _backup_dir="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/backups/$_timestamp"
 
     if [ ! -d "$_backup_dir" ]; then
         warn "Backup not found: $_backup_dir"
@@ -540,7 +545,7 @@ write_state() {
     _mode="$2"
     _section_hashes_file="$3"  # optional: tmpfile with "filename section_id hash" lines
 
-    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    _state_file="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/state.yml"
     mkdir -p "$(dirname "$_state_file")"
 
     _now=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date +%Y-%m-%dT%H:%M:%SZ)
@@ -584,7 +589,7 @@ STATEEOF
 write_state_selective() {
     _project_root="$1"
     _selected_hashes_file="$2"
-    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    _state_file="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/state.yml"
 
     if [ ! -f "$_state_file" ]; then
         warn "Selective state merge requires an existing state file: $_state_file"
@@ -1023,7 +1028,7 @@ sync_section_merge() {
     _relpath="$2"
     _template_file="$DOCKIT_ROOT/$_relpath"
     _downstream_file="$_project_root/$_relpath"
-    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    _state_file="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/state.yml"
     _adoption_mode=$(read_adoption_mode "$_project_root")
 
     if [ ! -f "$_template_file" ]; then
@@ -1471,7 +1476,8 @@ find_projects() {
     : > "$_projects_file"
 
     for _d in "$_src_root"/*/; do
-        if [ -f "$_d/.dockit-enabled" ] && [ -d "$_d/.git" ]; then
+        if [ -f "$_d/.dockit-enabled" ] &&
+           (cd "$_d" && git rev-parse --is-inside-work-tree 2>/dev/null | grep -qx true); then
             # Store realpath
             _rpath=$(cd "$_d" && pwd)
             echo "$_rpath" >> "$_projects_file"
@@ -1485,7 +1491,7 @@ find_projects() {
 
 do_init_state() {
     _project_root="$1"
-    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    _state_file="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/state.yml"
 
     info "Initializing sync state for: $_project_root"
 
@@ -1575,7 +1581,10 @@ sync_project() {
     _project_root="$1"
     _project_name=$(basename "$_project_root")
     CURRENT_PROJECT="$_project_name"
-    _state_file="$_project_root/.git/$DOCKIT_DIR_NAME/state.yml"
+    PROJECT_GIT_DIR=$(git -C "$_project_root" rev-parse --absolute-git-dir 2>/dev/null) || PROJECT_GIT_DIR=""
+    _actual_root=$(git -C "$_project_root" rev-parse --show-toplevel 2>/dev/null) || _actual_root=""
+    _requested_root=$(cd "$_project_root" 2>/dev/null && pwd -P) || _requested_root=""
+    _state_file="$PROJECT_GIT_DIR/$DOCKIT_DIR_NAME/state.yml"
     _project_failed=false
 
     COUNT_UPDATED=0
@@ -1588,7 +1597,9 @@ sync_project() {
     info ""
     info "=== Syncing: $_project_name ($MODE) ==="
 
-    if [ ! -d "$_project_root/.git" ]; then
+    if [ -z "$PROJECT_GIT_DIR" ] || [ ! -d "$PROJECT_GIT_DIR" ] ||
+       [ ! -e "$_requested_root/.git" ] ||
+       [ -z "$_requested_root" ] || [ "$_actual_root" != "$_requested_root" ]; then
         report_entry "__project__" "ERROR" "not a git repository"
         return 1
     fi
@@ -1624,7 +1635,12 @@ sync_project() {
 
     # Require state (unless init-state)
     if [ ! -f "$_state_file" ]; then
-        report_entry "__project__" "ERROR" "no sync state; run --init-state first"
+        _common_git_dir=$(git -C "$_project_root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || _common_git_dir=""
+        if [ -n "$_common_git_dir" ] && [ "$_common_git_dir" != "$PROJECT_GIT_DIR" ]; then
+            report_entry "__project__" "ERROR" "no per-worktree sync state; review custody, then use --init-state --untracked-existing-adoption if appropriate"
+        else
+            report_entry "__project__" "ERROR" "no sync state; run --init-state first"
+        fi
         release_lock
         return 1
     fi

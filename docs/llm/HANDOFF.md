@@ -1,17 +1,21 @@
-<!-- doc-version: 4.26.0 -->
+<!-- doc-version: 4.26.1 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex: declared failure-learning cases and guard (4.26.0).
-- Current source version: 4.26.0
+- Last Updated: 2026-11-27 - Codex: worktree sync discovery correction (4.26.1).
+- Current source version: 4.26.1
+- Publication: candidate pending push to origin/main.
 - Owner: Carlos
 - Session focus: Carlos corrected the Executor recovery and TREK client access
   analysis and requested durable learning. DF-068, D-039,
   `docs/FAILURE_LEARNING.md` and the optional `failure-learning` check record
-  and validate declared cases. Home Infra adoption and actual client acceptance
-  are a separate owner task.
+  and validate declared cases. Home Infra adopted the narrow guard and
+  applied OCTA's scoped server policy; native client acceptance remains open.
+  DF-069 records that DocKit sync mistook a managed worktree's `.git` file for
+  a missing repository. Patch 4.26.1 recognizes it and protects Git discovery;
+  a worktree still needs its own state and durable backup closeout.
 - Previous state: 4.25.0 central update notices and collector-first Trace were
   published; their DEV hook trust and live notification gate remains open.
 - Limits: instructions are central and current; project template files still
@@ -22,11 +26,13 @@
 
 ## Open work - next concrete step
 
-For DF-068, review and publish 4.26.0, then adopt the learning register and
-checker in Home Infra without overwriting its concurrent work. Record the
-three distinct errors and verify the current V2 and per-client TREK source.
-An actual OCTA/Android tool call remains an owner-client acceptance, separate
-from DocKit source. Other adopters receive no automatic template replacement.
+For DF-069, finish review and publish the bounded 4.26.1 discovery correction.
+Do not run a full sync in a disposable managed worktree until state and backup
+custody through task retirement have a reviewed design. Home Infra's exact
+published-file copy is recorded as selective adoption, with no full sync claim.
+Fresh OCTA/Android client use and an authorized natural TREK write remain Home
+Infra acceptance, separate from DocKit source. Other adopters receive no
+automatic template replacement.
 
 Update-notice rollout on DEV (commands in `docs/integrations/CODEX.md`):
 (1) DONE 2026-11-27 02:24 UTC - installed into `~/.claude/settings.json` and both

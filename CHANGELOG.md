@@ -4,6 +4,19 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.26.1] - 2026-11-27
+
+### Changed
+
+- Sync and sync-check resolve each checkout's Git directory, clear inherited
+  Git locator variables and reject non-root project paths.
+
+### Fixed
+
+- Managed worktrees with a `.git` file are recognized. A missing private sync
+  state is reported explicitly; durable state and backup closeout across
+  worktree retirement remains open in DF-069.
+
 ## [4.26.0] - 2026-11-27
 
 ### Added

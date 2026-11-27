@@ -7,7 +7,7 @@
 # States:
 #   CURRENT   -- template_version matches LLM-DocKit VERSION
 #   OUTDATED  -- template_version differs (string compare, not SemVer)
-#   NO_STATE  -- has .dockit-enabled but no .git/.dockit/state.yml
+#   NO_STATE  -- has .dockit-enabled but no state.yml in its Git directory
 #   (partial) -- detail suffix when adoption_mode=partial in .dockit-config.yml
 #
 # Exit 0 if all CURRENT, exit 1 if any OUTDATED or NO_STATE.
@@ -15,6 +15,8 @@
 # This script runs ONLY from LLM-DocKit root. It is NOT copied to downstream.
 
 set -e
+unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE \
+    GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_NAMESPACE
 
 # ============================================================================
 # Init
@@ -68,11 +70,16 @@ printf "  %-30s %-12s %s\n" "-------" "------" "-------"
 for _dir in "$SRC_ROOT"/*/; do
     [ -d "$_dir" ] || continue
     [ -f "$_dir/.dockit-enabled" ] || continue
-    [ -d "$_dir/.git" ] || continue
+    _git_dir=$(git -C "$_dir" rev-parse --absolute-git-dir 2>/dev/null) || continue
+    [ -d "$_git_dir" ] || continue
+    _actual_root=$(git -C "$_dir" rev-parse --show-toplevel 2>/dev/null) || continue
+    _requested_root=$(cd "$_dir" && pwd -P) || continue
+    [ "$_actual_root" = "$_requested_root" ] || continue
+    [ -e "$_requested_root/.git" ] || continue
 
     PROJECT_COUNT=$((PROJECT_COUNT + 1))
     _name=$(basename "$_dir")
-    _state_file="$_dir/.git/.dockit/state.yml"
+    _state_file="$_git_dir/.dockit/state.yml"
 
     # Read adoption_mode for (partial) detail
     _adoption_detail=""
@@ -87,7 +94,13 @@ for _dir in "$SRC_ROOT"/*/; do
 
     # Determine status
     if [ ! -f "$_state_file" ]; then
-        printf "  %-30s %-12s %s\n" "$_name" "NO_STATE" "run --init-state"
+        _common_git_dir=$(git -C "$_dir" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || _common_git_dir=""
+        if [ -n "$_common_git_dir" ] && [ "$_common_git_dir" != "$_git_dir" ]; then
+            _next="review custody; --init-state --untracked-existing-adoption"
+        else
+            _next="run --init-state"
+        fi
+        printf "  %-30s %-12s %s\n" "$_name" "NO_STATE" "$_next"
         HAS_PROBLEMS=true
         continue
     fi
