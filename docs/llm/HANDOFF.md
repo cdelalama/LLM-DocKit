@@ -4,27 +4,26 @@
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex qualified the generated Cobalto card.
+- Last Updated: 2026-11-27 - Codex published Cobalto and verified local L15.
 - Current source version: 4.24.0
 - Owner: Carlos
-- State: Cobalto is implemented on the 4.24.0 candidate based on 8bc8437.
+- State: `ea02fb3` published the Cobalto renderer and managed template to main.
   Carlos selected the second-round design with "Implementa cobalto".
-- Qualification: 32 Trace tests passed. Chromium checked the actual Orca chat
-  artifact and long multiline data at 390 and 1280 px. Native selection includes
-  the final newline. No external request or horizontal overflow was observed.
-- Local Dossier: L14 remains current until reviewed source publication. L15
-  will retain all 14 revisions and 21 sources and add HANDOFF and D-037 pins.
+- Qualification: 32 Trace tests, 140 smoke tests including init/sync transport,
+  four Chromium cases, and a separate readback in the paired Orca desktop browser
+  passed. Exact Opus 5.5/high approved the source and Spanish L15 curation.
+- Local Dossier: L15 captured, exported and verified across five reader views.
+  All 14 prior revisions and 21 prior sources were preserved.
 
 ## Open work - next concrete step
 
-The DocKit maintainer obtains independent source and Spanish L15 curation review
-for the candidate in `scripts/dockit-trace-render.py` and
-`scripts/dockit-trace-cobalt.html`. After the ordinary push to main, verify the
-live remote with `scripts/dockit-publication.py --require-published`, pin both
-reviewed sources, capture/export L15 and inspect its five local reader sections.
-Follow `docs/operations/DOSSIER.md` and `docs/integrations/ORCA.md`.
-Existing downstream projects can adopt the pair through their usual authorized
-sync. Personal acceptance of the generated card remains with Carlos.
+By 2026-12-03 the DocKit maintainer reviews the retained Windows candidate
+`b6a369f` in `scripts/dockit-init-project.sh`, qualifies the Git Bash path
+correction on native Windows before integration, or records an explicit discard.
+Cobalto source publication and local Dossier L15 are complete. Existing projects
+can adopt the renderer and template through their authorized sync as described
+in `docs/integrations/ORCA.md`. Personal acceptance of the generated card
+remains with Carlos.
 
 The selected reference is
 `docs/operations/trace-html-neon-2026-11-27/r2-cobalt-folio.html`.
@@ -60,20 +59,19 @@ documentation, first-round visual comparison and bounded post-publication curati
 
 - Roles remain executor/auditor/advisor; docs/AGENT_ROLES.md separates model,
   client, account and task. ForgeOS owns routing; project owners define scope.
-- Cobalto is the default HTML layout in the 4.24.0 candidate. Text remains available and is the no-capability fallback.
+- Cobalto is the default HTML layout in 4.24.0. Text remains available and is the no-capability fallback.
   Optional provenance has separate labeled fields and preserved line breaks.
 - Leave-no-residue forbids repeated allocation per read/poll. It cannot replace
   actual producer adoption or host health checks. NAS2/Dossier runtime is owned
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
 - Publication checker has offline advisory and explicit live post-push modes.
   It never automatically publishes arbitrary dirty work or grants permission.
-- Dossier: L14 local capture/export/readback completed with pinned 1.1.0 engine;
-  all 13 earlier snapshots and 20 historical sources preserved. One new HANDOFF
-  source pins 64cc5a6; 21 sources total. Revision: local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1.
-  All five Portal reader sections passed 84 visible assertions; root and agent
-  inspected Ahora. New pin/hash checked against the published Git blob.
-  No external requests; browser and fixture/profile removed. Permanent port 4319 and
-  shared Portal remain unavailable/unproven; shared recovery stays owner-held.
+- Dossier: L15 local revision local:08fbb1e9dae90f15e2a66dadb5bbc05c9deb5871f983f5dbdff49c1a9f7d4559.
+  The pinned 1.1.0 engine verified the export. The Portal reader passed 89
+  visible assertions across Ahora, Hoja de ruta, Informes, Decisiones and
+  Fuentes. Both new pins resolve to the published HANDOFF and DECISIONS blobs
+  in ea02fb3. No external requests occurred. Permanent reader reachability and
+  shared Portal recovery remain with their respective owners.
 
 ## Retained work and separate owners
 
@@ -100,12 +98,13 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 02:09:54 Europe/Madrid (01:09:54 UTC)
-- Subject: Qualify generated Cobalto for DocKit 4.24.0
-- Resulting state: HEAD=8bc8437; version=4.24.0; reviewed publication pending
-- Repo state: main and origin/main at 8bc8437 before the candidate commit
-- Validation: 32 Trace tests and four generated browser cases passed
-- Next gate: independent source/curation review, publication and local L15 readback
+- Sent: 2026-11-27 02:23:42 Europe/Madrid (01:23:42 UTC)
+- Subject: `ea02fb3` - feat: render Cobalto as the default static Trace card
+- Commit time: 2026-11-27 01:21:24 UTC
+- Resulting state: HEAD=ea02fb3; version=4.24.0; Cobalto source and local Dossier verified
+- Repo state: main and live origin/main matched ea02fb3 before this receipt
+- Validation: 32 Trace tests, 140 smoke tests, four browser cases, Orca desktop and 89 local reader assertions passed
+- Next gate: DocKit owner reviews the retained Windows candidate by 2026-12-03
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence

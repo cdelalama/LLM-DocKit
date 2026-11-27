@@ -531,15 +531,29 @@
       },
       "batch": "B-neon-trace-barcience-20261127",
       "owner": "LLM-DocKit",
-      "state": "in_progress",
+      "state": "implemented",
       "recall_trigger": "Before changing the selected Cobalto layout or claiming renderer/client/fleet adoption.",
       "documentation_refs": [
         {
           "path": "docs/operations/TRACE_HTML_NEON_REVIEW_2026-11-27.md"
         }
       ],
-      "rationale": "Carlos rejected the first Neon trio, reviewed the richer second round, then explicitly instructed \"Implementa cobalto\". The selected design is implemented in the renderer and managed template. Generated browser output passed qualification. Record the published source revision after review.",
-      "authority": "Carlos requested Neon design, then explicitly selected and ordered implementation of Cobalto on 2026-11-27."
+      "rationale": "Carlos selected Cobalto after the second Neon comparison. The published renderer uses the selected layout and the managed template ships through init and sync. Text and JSON retain their contracts.",
+      "authority": "Carlos requested Neon design, then explicitly selected and ordered implementation of Cobalto on 2026-11-27.",
+      "evidence": [
+        {
+          "path": "scripts/dockit-trace-render.py",
+          "revision": "ea02fb306a2269d306a25128fcfae3c182b9c582"
+        },
+        {
+          "path": "scripts/dockit-trace-cobalt.html",
+          "revision": "ea02fb306a2269d306a25128fcfae3c182b9c582"
+        }
+      ],
+      "acceptance": {
+        "state": "pending",
+        "reason": "Source, generated browser output and transport are verified. Carlos selected the design; his personal use of the generated card and existing downstream installations are separate observations."
+      }
     },
     {
       "id": "IDEA-TRACE-CLIPBOARD-20261127",

@@ -8,10 +8,11 @@ This preface is source-only and is removed by the initializer.
 
 ### Open work - next concrete step
 
-Cobalto is implemented and browser-qualified in the 4.24.0 candidate.
-Follow `docs/llm/HANDOFF.md` for independent review, source publication and
-local Dossier L15. Orca Trace uses `scripts/dockit-trace-status.sh --language es`.
-Terminal clients retain the text format.
+Cobalto 4.24.0 was published at ea02fb3. Local Dossier L15 is verified.
+The DocKit maintainer reviews the retained Windows path fix in
+`scripts/dockit-init-project.sh` by 2026-12-03. See `docs/llm/HANDOFF.md`.
+Orca Trace uses `scripts/dockit-trace-status.sh --language es`; terminal
+clients retain the text format.
 Previous source observations are preserved in
 `docs/archive/ONBOARDING_OWNER_STATUS_BEFORE_2026-11-26.md`; they are historical,
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain

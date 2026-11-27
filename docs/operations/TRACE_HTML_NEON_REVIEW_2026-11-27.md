@@ -303,3 +303,12 @@ supplied the document bytes to a new, empty Orca browser tab and read back the
 subject, all 14 labeled rows, both loaded fonts and the canonical text. The
 tab was closed and verified absent. This checks the desktop browser surface;
 Carlos's personal use of the inline chat disclosure remains unobserved.
+
+The 4.24.0 source was published at ea02fb3 and verified against live main.
+The full smoke passed 140/140, including init and sync. Both hosted checks
+passed. Independent source and curation provenance are in docs/llm/REVIEWS.md;
+local L15 readback and its source pins are in docs/operations/DOSSIER.md.
+The temporary test repositories, browser profiles, desktop tab and qualification
+helpers were retired. The chat owns its delivered visuals. DocKit/Carlos
+retains private qualification, review and Dossier evidence for custody review
+on 2026-12-04, with no automatic deletion.

@@ -1,12 +1,25 @@
 # LLM-DocKit Dossier adoption
 
-Status (2026-11-27): local L14 capture/export and five-section reader readback
+Status (2026-11-27): local L15 capture/export and five-section reader readback
 verified. Shared NAS/Portal publication is paused/unavailable; permanent local
 reader reachability is unproven. Historical deployment receipts below do not
 establish current availability. Physical independent backup placement remains open.
 Owner: this repository. User direction: use ForgeOS Dossier for DocKit's own
 project tracking, 2026-09-25. This is not a fleet opt-in.
 
+
+## Cobalto local receipt (2026-11-27)
+
+Local L15 `local:08fbb1e9dae90f15e2a66dadb5bbc05c9deb5871f983f5dbdff49c1a9f7d4559` records
+Carlos's selection and the generated 4.24.0 card. All 14 preceding revisions
+and 21 earlier sources were preserved. The two new source entries pin HANDOFF
+and DECISIONS at ea02fb306a2269d306a25128fcfae3c182b9c582.
+The export SHA-256 is 5e0c090eae01b5ab52e7c5fa949fe15ab1d6f4c1be7dd15a276d1c6704e0cc44.
+The pinned 1.1.0 engine checked, captured and exported L15 and verified its
+Trace and latest revision. All five local Portal views passed 89 visible
+assertions, including the two new source hashes. The author inspected Ahora.
+The reader made zero external requests. Its temporary bundle, browser and
+profile were removed. This receipt does not trigger another capture.
 
 ## Operator-facing language (2026-09-30 clarification)
 
