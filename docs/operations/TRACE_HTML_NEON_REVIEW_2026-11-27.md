@@ -245,3 +245,20 @@ and font bytes are unchanged; an HTML-parser comparison verified identical
 rendered tags, attributes, CSS and text before/after. Private
 `license-comment-normalization.json` maps inspected hashes to published hashes;
 chat copies retain the visually identical pre-normalization comments.
+
+## Second-round publication receipt
+
+Published normally to main at `64cc5a621c7d9e0748c9521b84239f405c8a4516` and
+verified clean against the live remote. Exact Opus5.5/high source/curation GO
+and normalization acknowledgment captured with final manifest `d4c4a1a0a865888078f98448b64c0719b721f4683863b0fbec74a2a1f16f8b96`.
+The source index/orientation mechanically records retained R1 versus new R2;
+no renderer, version or runtime changed. Both automatic hosted ownership/idea
+checks passed for that source. Local L14 `local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1` passed
+all five real reader views and84 visible checks, preserving13 prior revisions
+and20 historical sources. New HANDOFF pin/hash matched published Git bytes.
+
+The new designs remain proposals. Carlos has selected none; adoption requires
+his choice and a separate implementation/qualification of the selected layout.
+Owned browser/build staging and profiles were removed; delivered source/chat
+HTML and private review/qualification history stay under declared custody.
+This receipt needs no version bump or recursive Dossier revision.

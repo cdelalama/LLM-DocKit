@@ -1,6 +1,6 @@
 # LLM-DocKit Dossier adoption
 
-Status (2026-11-27): local L13 capture/export and five-section reader readback
+Status (2026-11-27): local L14 capture/export and five-section reader readback
 verified. Shared NAS/Portal publication is paused/unavailable; permanent local
 reader reachability is unproven. Historical deployment receipts below do not
 establish current availability. Physical independent backup placement remains open.
@@ -227,3 +227,22 @@ The aggregate historical-source freshness warning remains; it does not describe
 uncommitted current pins. Permanent local4319 and shared Portal remain
 unavailable/unproven. No server, container, NAS operation or fleet adoption.
 This receipt adds no substantive curation and does not recursively capture.
+
+
+## L14 visual comparison closeout (2026-11-27)
+
+Carlos rejected the first three Neon appearances; L14 replaces that active
+choice set with the published second round while preserving all prior records.
+Source64cc5a621c7d9e0748c9521b84239f405c8a4516, exact Opus5.5/high source/curation
+GO; final capture manifest `d4c4a1a0a865888078f98448b64c0719b721f4683863b0fbec74a2a1f16f8b96`.
+Observed2026-11-27T00:25:48Z, captured2026-11-27T00:26:06Z.
+Revision `local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1`; export SHA-256 `e1290ba2bc884fedc596d083cc3c58e56bca4bee8684795842947d257f9db3bb`.
+
+All13 prior revisions and20 historical sources are exact;14 revisions,16
+milestones,9 decisions,21 sources. The single new HANDOFF pin and its hash were
+checked against published Git bytes. Five actual local reader views passed84
+visible assertions with no external requests; root/agent inspected Ahora.
+Disposable fixture/profile/browser/script were removed. Retained private
+review/design evidence and screenshots: DocKit custody review2026-12-04.
+No production-layout selection, version change, NAS/shared publication or
+permanent-reader acceptance. This receipt does not trigger recursive capture.

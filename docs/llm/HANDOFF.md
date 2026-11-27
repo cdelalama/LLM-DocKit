@@ -7,12 +7,11 @@
 - Last Updated: 2026-11-27 - Codex: replace the rejected first Neon comparison with three new round-2 proposals
 - Current source version: 4.23.1
 - Owner: Carlos
-- State: 4.23.1 remains published; current main baseline is 5be30a6.
+- State: 4.23.1 remains published; new visual examples are published at64cc5a6.
   Its source release passed exact Opus R2 review; the new visual comparison passed its separate exact Opus5.5/high review.
   All 19 secondary worktrees remain retired.
-- Local Dossier: L13 is the last completed capture/export/readback;
-  refresh L14 is required because Carlos rejected the choices it presents.
-  Preserve all 13 existing revisions and 20 historical sources.
+- Local Dossier: L14 capture/export and five-section readback completed;
+  all13 earlier revisions and20 historical sources are preserved.
 - Published-release evidence: smoke138/138, Trace25/25, native Windows6/6,
   first-round visual6/6 (technical rendering passed; Carlos rejected the appearance);
   exact Opus5.5/high R2 SOURCE_GO and bounded CURATION_GO accepted.
@@ -20,8 +19,8 @@
 - Operator presentation: Carlos rejected ledger-sheet, split-rail and command-strip
   as visually unattractive and requested a much more attractive second round.
   New proposals are received, not accepted; the production layout stays unchanged.
-- Session focus: complete inherited source, publish instead of abandoning edits,
-  deliver static Orca Trace, and retire legacy task workspaces without losing history.
+- Session focus: evaluate the published second Neon visual round after rejection
+  of the first; preserve the source release, history and separate owner gates.
 - Authority: Carlos explicitly approved the analysis and instructed implementation,
   agent delegation, cleanup and publication of inherited pending work on November26.
 - Source details: docs/operations/ORCA_PUBLICATION_CLOSEOUT_2026-11-26.md.
@@ -41,8 +40,8 @@ the requested `gemini-4-neon-medium` route is evidenced, actual identity is unve
 Final localized browser qualification passed all six mobile/desktop views,
 preserving all 12 exact fields and six keyboard-operated native disclosures.
 The agent presented all three proposals inline in Orca; this is not acceptance.
-The independent source/curation review is accepted. The agent must publish the
-reviewed documents and complete local Dossier L14 capture/export/readback. Carlos
+The independent source/curation review is accepted, the examples are published
+and local Dossier L14 capture/export/readback is complete. Carlos
 then evaluates the actual designs; none is selected or accepted. Applying a
 chosen layout to `scripts/dockit-trace-render.py` remains a later step. The
 production renderer and version 4.23.1 are unchanged by these source examples.
@@ -95,14 +94,13 @@ documentation, first-round visual comparison and bounded post-publication curati
   by Home Infra/ForgeOS/Portal; no NAS deployment is part of this task.
 - Publication checker has offline advisory and explicit live post-push modes.
   It never automatically publishes arbitrary dirty work or grants permission.
-- Dossier: L13 local capture/export/readback completed with the pinned1.1.0
-  engine; all12 earlier snapshots and17 historical sources preserved. Three new
-  sources pin850aeda;20 sources total. Revision: local:6c99af3dedf5b5292f0b18e0a4b3568731c88c41460f8ec92fd197eb01cbea13.
-  L13 still describes the old comparison; L14 refresh is pending.
-  Its five Portal reader sections passed81 visible assertions; root inspected
-  Ahora/Fuentes and agent inspected the real view. No external requests.
-  Permanent4319 and shared Portal remain unavailable/unproven; do not invoke
-  the old container-per-read route. Shared recovery stays with its owner.
+- Dossier: L14 local capture/export/readback completed with pinned1.1.0 engine;
+  all13 earlier snapshots and20 historical sources preserved. One new HANDOFF
+  source pins64cc5a6;21 sources total. Revision: local:042af7e9e66436cc7df37ada98da680612be5e2a2df38a8f3f085cd6143417c1.
+  All five Portal reader sections passed84 visible assertions; root and agent
+  inspected Ahora. New pin/hash checked against the published Git blob.
+  No external requests; browser and fixture/profile removed. Permanent4319 and
+  shared Portal remain unavailable/unproven; shared recovery stays owner-held.
 
 ## Retained work and separate owners
 
@@ -129,12 +127,12 @@ records preserve separately unfinished product work when a checkout is retired.
 ## Trace Anchor
 
 - Role: executor
-- Sent: 2026-11-27 01:24:17 Europe/Madrid (00:24:17 UTC)
+- Sent: 2026-11-27 01:28:07 Europe/Madrid (00:28:07 UTC)
 - Subject: Second Neon visual comparison after Carlos rejected the first round
-- Resulting state: HEAD=5be30a6; version=4.23.1; comparison candidate received; default unchanged; L14 refresh pending
-- Repo state: main=origin/main=5be30a6 at observation; new proposals and owner documentation are uncommitted
+- Resulting state: HEAD=64cc5a6; version=4.23.1; second comparison published; default unchanged; L14 verified
+- Repo state: main=origin/main=64cc5a6 verified clean before this receipt
 - Validation: second-round localized browser6/6 and inline presentation completed; prior release checks remain historical evidence; exact Opus5.5/high SOURCE_GO and CURATION_GO accepted
-- Next gate: agent publishes and refreshes L14; Carlos evaluates the three new designs before any production layout change
+- Next gate: Carlos evaluates the three new designs before any production layout change
 <!-- DOCKIT-STATE:END -->
 
 ## Historical evidence
