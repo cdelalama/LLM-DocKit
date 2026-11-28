@@ -46,6 +46,26 @@ current task. A reader must not invent a single linear journey from independent
 branches. If the format cannot encode branches, explain them visibly in the
 current phase and milestone text without inventing machine-readable edges.
 
+## Reports reach the operator as a page with a link
+
+Decided by the operator on 2026-11-28: a research report delivered as a `.md`
+file in a temporary folder could not be opened from his phone, which is where
+he reads most results. A report, study, comparison or any explanation too long
+for a chat reply is delivered as a styled HTML page published at a link he can
+open on his phone and desktop.
+
+- Claude: write the page as HTML and publish it with the Artifact tool; the
+  reply carries the claude.ai link. Artifacts are private to the operator by
+  default.
+- Codex, Gemini or another agent without a publishing tool: give an equivalent
+  HTTPS link to the rendered page (for example a page the project already
+  publishes), or hand publication to an agent that can publish. Never answer
+  with only a file path, a Markdown file or an attachment to download.
+- A Markdown source may be kept next to the page for the repository, but it is
+  not the delivery.
+- The chat reply stays short: the conclusion, what needs a decision, and the
+  link.
+
 ## Review before delivery
 
 Read the operator view without the originating chat and answer:

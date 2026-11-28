@@ -4,6 +4,15 @@ All notable changes to this scaffold are documented in this file.
 
 This project follows Semantic Versioning (SemVer): MAJOR.MINOR.PATCH.
 
+## [4.27.0] - 2026-11-28
+
+### Added
+
+- Operator-clarity rule (managed section and OPERATOR_CLARITY.md): reports,
+  studies, comparisons and long explanations reach the operator as a readable
+  HTML page with a link that opens on a phone; a Markdown file or local path
+  alone is never the delivery (operator decision 2026-11-28).
+
 ## [4.26.1] - 2026-11-27
 
 ### Changed

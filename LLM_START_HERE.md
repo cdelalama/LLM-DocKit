@@ -22,7 +22,7 @@ Previous source observations are preserved in
 not today's next actions. Existing fleet, DF-058 and recovery obligations remain
 in the current handoff with their owners.
 
-<!-- doc-version: 4.26.1 -->
+<!-- doc-version: 4.27.0 -->
 
 # LLM Start Guide - <PROJECT_NAME>
 
@@ -122,6 +122,12 @@ section (workspaces). `workspace-leftovers` warns on backup/temporary files.
   source disclosure is implied. Report an actual blocker and retain the draft;
   do not call the Dossier current while it is stale. Receipt-only commits do
   not trigger another capture. See the closeout section in OPERATOR_CLARITY.md.
+- Deliver every report, study, comparison or long explanation meant for the
+  operator as a readable HTML page with a link that opens on a phone. Claude
+  publishes it with its Artifact tool and gives the link; an agent without such
+  a tool gives an equivalent HTTPS link or hands publication to one that has it.
+  A Markdown file or a local path alone is never the delivery. Keep the chat
+  summary short and put the link in it. See OPERATOR_CLARITY.md.
 <!-- DOCKIT-TEMPLATE:END operator-clarity -->
 
 <!-- DOCKIT-TEMPLATE:START idea-continuity -->

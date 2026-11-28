@@ -1,11 +1,11 @@
-<!-- doc-version: 4.26.1 -->
+<!-- doc-version: 4.27.0 -->
 # LLM-DocKit handoff
 
 <!-- DOCKIT-STATE:START -->
 ## Current Status
 
-- Last Updated: 2026-11-27 - Codex: worktree sync discovery correction (4.26.1).
-- Current source version: 4.26.1
+- Last Updated: 2026-11-28 - Claude Code (claude-opus-5-5): operator reports delivered as an HTML page with a phone-openable link (4.27.0, operator-clarity).
+- Current source version: 4.27.0
 - Publication: 4.26.1 published on origin/main at `e2af83e`.
 - Owner: Carlos
 - Session focus: Carlos corrected the Executor recovery and TREK client access

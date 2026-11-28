@@ -1,4 +1,4 @@
-<!-- doc-version: 4.26.1 -->
+<!-- doc-version: 4.27.0 -->
 # Codex CLI Integration
 
 LLM-DocKit's session-start onboarding uses `scripts/dockit-bootstrap-context.sh`.
